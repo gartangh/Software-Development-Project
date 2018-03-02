@@ -2,32 +2,34 @@ package user;
 
 public class User {
 
-	protected String username;
-	protected String password;
-	protected Integer level;
-	protected Long xp;
+	private String username;
+	private String password;
+	private int level;
+	private long xp;
 
-	protected User() {
+	User() {
 		// Empty default constructor
 	}
 
 	public User(String username, String password) {
-		// TODO: check if username is unique
+		// TODO: check uniqueness of username
 		if (username.matches("[a-zA-Z0-9]{4,8}"))
-				this.username = username;
-		else
+			this.username = username;
+		else {
 			// TODO: Go back and show error
+		}
 
 		if (password.matches("[a-zA-Z0-9]{4,8}"))
 			this.password = password;
-		else
-			// TODO: Go back and show error 
-		
+		else {
+			// TODO: Go back and show error
+		}
+
 		this.level = 1;
 		this.xp = 0L;
 	}
-	
-	protected User(User user) {
+
+	User(User user) {
 		// Copy constructor
 		this.username = user.username;
 		this.password = user.password;
@@ -35,52 +37,54 @@ public class User {
 		this.xp = user.xp;
 	}
 
+	// Getters
 	public String getUsername() {
 		return username;
 	}
 
-	public String getPassword() {
-		return password;
+	public int getLevel() {
+		return level;
 	}
 
+	public long getXp() {
+		return xp;
+	}
+
+	// Setters
 	public void setUsername(String username) {
-		// TODO: check if username is valid and unique
-		this.username = username;
+		// TODO: check uniqueness of username
+		if (username.matches("[a-zA-Z0-9]{4,8}"))
+			this.username = username;
+		else {
+			// TODO: Go back and show error
+		}
 	}
 
 	public void setPassword(String password1, String password2) {
-		if (password1 == password2) {
-			// TODO: check if password is valid
+		if (password1.equals(password2) && password1.matches("[a-zA-Z0-9]{4,8}"))
 			this.password = password1;
+		else {
+			// TODO: Go back and show error
 		}
 	}
-	
-	public Integer getLevel() {
-		return level;
-	}
-	
+
 	public void levelUp() {
 		this.level++;
 	}
-	
-	public Long getXp() {
-		return xp;
-	}
-	
-	public void addXp(Integer xp) {
+
+	public void addXp(int xp) {
 		this.xp += xp;
-		
-		if (this.xp >= level * 1000) {
-			this.xp -= level * 1000;
+
+		if (this.xp >= level * 1000)
+			// TODO: Show level up
 			this.level++;
-		}
 	}
-	
+
 	// Downcasting
 	public Guest castToGuest() {
 		return new Guest(this);
 	}
-	
+
 	public Host castToHost() {
 		return new Host(this);
 	}
