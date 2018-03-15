@@ -48,10 +48,10 @@ public class Round {
 		for (amountOfQuestions = 0; amountOfQuestions < maxAmountOfQuestions; amountOfQuestions++) {
 			switch (type) {
 			case MC:
-				new MCQuestion(difficulty, theme);
+				question = new MCQuestion(difficulty, theme);
 				break;
 			case IP:
-				new IPQuestion(difficulty, theme);
+				question = new IPQuestion(difficulty, theme);
 				break;
 
 			default:

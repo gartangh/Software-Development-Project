@@ -1,15 +1,13 @@
 package user;
 
+import application.Context;
+
 public class User {
 
 	private String username;
 	private String password;
 	private int level;
 	private long xp;
-
-	User() {
-		// Empty default constructor
-	}
 
 	public User(String username, String password) {
 		// TODO: check uniqueness of username
@@ -27,6 +25,8 @@ public class User {
 
 		this.level = 1;
 		this.xp = 0L;
+		
+		Context.getContext().setUser(this);
 	}
 
 	User(User user) {
@@ -35,6 +35,8 @@ public class User {
 		this.password = user.password;
 		this.level = user.level;
 		this.xp = user.xp;
+		
+		Context.getContext().setUser(this);
 	}
 
 	// Getters

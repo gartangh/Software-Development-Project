@@ -1,18 +1,20 @@
 package user;
 
-public class Host extends User {
+import application.Context;
 
-	public Host() {
-		// Empty default constructor
-	}
+public class Host extends User {
 
 	public Host(User user) {
 		super(user);
+		
+		Context.getContext().setUser(this);
 	}
 
 	Host(Host host) {
-		super(host);
 		// Copy constructor
+		super(host);
+		
+		Context.getContext().setUser(this);
 	}
 
 	// Upcasting
