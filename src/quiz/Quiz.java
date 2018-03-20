@@ -1,21 +1,24 @@
 package quiz;
 
+import java.util.ArrayList;
+
 import user.Host;
 import user.Quizmaster;
 
 public class Quiz {
-
+	private int quizID;
 	private int amountOfTeams;
 	private int maxAmountOfTeams; // minAmountOfTeams = 2;
-	// TODO: add teams
+	private ArrayList<Team> teams=new ArrayList<Team>();
 	private int maxAmountofPlayersPerTeam; // maxAmountofPlayersPerTeam = 1;
 	private int amountOfRounds;
 	private int maxAmountOfRounds; // minAmountOfRounds = 1;
-	// TODO: add rounds
+	private ArrayList<Round> rounds=new ArrayList<Round>();
 	private int maxAmountofQuestionsPerRound; // minAmountofQuestionsPerRound = 1;
 	private Quizmaster quizmaster;
 
-	public Quiz(int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds, int maxAmountOfQuestionsPerRound, Host host) {
+	public Quiz(int quizID, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds, int maxAmountOfQuestionsPerRound, Host host) {
+		this.quizID=quizID;
 		this.amountOfTeams = 0;
 		this.maxAmountOfTeams = maxAmountOfTeams;
 		this.maxAmountofPlayersPerTeam = maxAmountOfPlayersPerTeam;
@@ -34,7 +37,9 @@ public class Quiz {
 		return maxAmountOfTeams;
 	}
 
-	// TODO: add getTeams()
+	public ArrayList<Team> getTeams(){
+		return teams;
+	}
 	
 	public int getMaxAmountOfPlayersPerTeam() {
 		return maxAmountofPlayersPerTeam;
@@ -48,7 +53,9 @@ public class Quiz {
 		return maxAmountOfRounds;
 	}
 
-	// TODO: Add getRounds()
+	public ArrayList<Round> getRound(){
+		return rounds;
+	}
 	
 	public int getMaxAmountOfQuestionsPerRound() {
 		return maxAmountofQuestionsPerRound;
@@ -61,7 +68,7 @@ public class Quiz {
 	// Adders
 	public void addTeam(Team team) {
 		if (amountOfTeams < maxAmountOfTeams) {
-			// TODO: Add team to teams
+			teams.add(team);
 			amountOfTeams++;
 			team.setMaxAmountOfPlayers(maxAmountofPlayersPerTeam);
 		}
@@ -72,7 +79,7 @@ public class Quiz {
 
 	public void addRound(Round round) {
 		if (amountOfRounds < maxAmountOfRounds) {
-			// TODO: Add round to rounds
+			rounds.add(round);
 			amountOfRounds++;
 			round.setMaxAmountOfQuestions(maxAmountofQuestionsPerRound);
 		}
@@ -83,6 +90,9 @@ public class Quiz {
 
 	// Removers
 	public void removeTeam(Team team) {
+		if (teams.remove(team)) {
+			amountOfTeams--;
+		}
 		// TODO: If remove team from teams worked: amountOfTeams--;
 	}
 
