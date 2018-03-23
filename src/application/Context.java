@@ -1,5 +1,6 @@
 package application;
 
+import gui.Gui;
 import quiz.Quiz;
 import user.User;
 
@@ -10,8 +11,12 @@ public class Context {
 	private User user;
 	private Quiz quiz;
 
+	private Gui gui;
+
 	private Context() {
 		// Empty default constructor
+		gui = new Gui();
+		gui.startContextGUI();
 	}
 	
 	public static Context getContext() {
@@ -35,5 +40,6 @@ public class Context {
 	public void setQuiz(Quiz quiz) {
 		this.quiz = quiz;
 	}
-
+	
+	// run Context
 }
