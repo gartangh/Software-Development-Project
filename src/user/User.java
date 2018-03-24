@@ -27,7 +27,7 @@ public class User {
 		this.level = 1;
 		this.xp = 0L;
 		
-		Context.getContext().setUser(this);
+		//Context.getContext().setUser(this);
 	}
 
 	User(User user) {
@@ -37,7 +37,7 @@ public class User {
 		this.level = user.level;
 		this.xp = user.xp;
 		
-		Context.getContext().setUser(this);
+		//Context.getContext().setUser(this);
 	}
 
 	// Getters

@@ -6,6 +6,7 @@ import user.Host;
 import user.Quizmaster;
 
 public class Quiz {
+	private String quizName;
 	private int quizID;
 	private int amountOfTeams;
 	private int maxAmountOfTeams; // minAmountOfTeams = 2;
@@ -17,7 +18,8 @@ public class Quiz {
 	private int maxAmountofQuestionsPerRound; // minAmountofQuestionsPerRound = 1;
 	private Quizmaster quizmaster;
 
-	public Quiz(int quizID, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds, int maxAmountOfQuestionsPerRound, Host host) {
+	public Quiz(String quizName, int quizID, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds, int maxAmountOfQuestionsPerRound, Host host) {
+		this.quizName = quizName;
 		this.quizID=quizID;
 		this.amountOfTeams = 0;
 		this.maxAmountOfTeams = maxAmountOfTeams;
@@ -29,6 +31,10 @@ public class Quiz {
 	}
 
 	// Getters
+	public String getQuizName() {
+		return quizName;
+	}
+	
 	public int getAmountOfTeams() {
 		return amountOfTeams;
 	}

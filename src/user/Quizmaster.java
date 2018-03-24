@@ -7,7 +7,7 @@ public class Quizmaster extends Host {
 	public Quizmaster(Host host) {
 		super(host);
 		
-		Context.getContext().setUser(this);
+		//Context.getContext().setUser(this);
 	}
 
 	// Upcasting
