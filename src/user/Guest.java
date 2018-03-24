@@ -6,15 +6,15 @@ public class Guest extends User {
 
 	Guest(User user) {
 		super(user);
-		
+
 		Context.getContext().setUser(this);
 	}
 
 	Guest(Guest guest) {
 		// Copy constructor
 		super(guest);
-		
-		Context.getContext().setUser(this);
+
+		Context.getContext().setUser(this); // Problems with multi-threating
 	}
 
 	// Upcasting

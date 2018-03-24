@@ -11,7 +11,7 @@ public class Main {
 
 		// Tests
 		if (DEBUG && !Test.test())
-				return;
+			return;
 
 		// TODO: Show WelcomeScreen
 		// TODO: Show Login or CreateAccount to identify a User

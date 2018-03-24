@@ -8,12 +8,12 @@ public class Player extends Guest {
 	private int quizScore;
 
 	public Player(Guest guest) {
-		super (guest);
-		
+		super(guest);
+
 		this.roundScore = 0;
 		this.quizScore = 0;
-		
-		Context.getContext().setUser(this);
+
+		Context.getContext().setUser(this); // Problems with multi-threating
 	}
 
 	// Getters

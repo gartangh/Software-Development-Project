@@ -26,7 +26,7 @@ public class User {
 		this.level = 1;
 		this.xp = 0L;
 		
-		Context.getContext().setUser(this);
+		Context.getContext().setUser(this); // Problems with multi-threating
 	}
 
 	User(User user) {
