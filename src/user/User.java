@@ -11,13 +11,14 @@ public class User {
 
 	public User(String username, String password) {
 		// TODO: check uniqueness of username
-		if (username.matches("[a-zA-Z0-9]{4,8}"))
+		String regex = "^[a-zA-Z0-9._-]{3,}$";
+		if (username.matches(regex))
 			this.username = username;
 		else {
 			// TODO: Go back and show error
 		}
 
-		if (password.matches("[a-zA-Z0-9]{4,8}"))
+		if (password.matches(regex))
 			this.password = password;
 		else {
 			// TODO: Go back and show error
