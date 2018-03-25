@@ -5,30 +5,34 @@ import application.Context;
 public class Guest extends User {
 
 	Guest(User user) {
-		super(user);
-
-		Context.getContext().setUser(this);
-	}
-
-	Guest(Guest guest) {
 		// Copy constructor
-		super(guest);
-
-		Context.getContext().setUser(this); // Problems with multi-threating
+		super(user);
 	}
 
 	// Upcasting
 	public User castToUser() {
-		return new User(this);
+		User user = new User(this);
+
+		Context.getContext().setUser(user);
+
+		return user;
 	}
 
 	// Downcasting
 	public Player castToPlayer() {
-		return new Player(this);
+		Player player = new Player(this);
+
+		Context.getContext().setUser(player);
+
+		return player;
 	}
 
 	public Spectator castToSpectator() {
-		return new Spectator(this);
+		Spectator spectator = new Spectator(this);
+
+		Context.getContext().setUser(spectator);
+
+		return spectator;
 	}
 
 }

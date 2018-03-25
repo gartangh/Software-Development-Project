@@ -4,27 +4,27 @@ import application.Context;
 
 public class Host extends User {
 
-	public Host(User user) {
-		super(user);
-
-		Context.getContext().setUser(this);
-	}
-
-	Host(Host host) {
+	Host(User user) {
 		// Copy constructor
-		super(host);
-
-		Context.getContext().setUser(this); // Problems with multi-threating
+		super(user);
 	}
 
 	// Upcasting
 	public User castToUser() {
-		return new User(this);
+		User user = new User(this);
+
+		Context.getContext().setUser(user);
+
+		return user;
 	}
 
 	// Downcasting
 	public Quizmaster castToQuizmaster() {
-		return new Quizmaster(this);
+		Quizmaster quizmaster = new Quizmaster(this);
+
+		Context.getContext().setUser(quizmaster);
+
+		return quizmaster;
 	}
 
 }

@@ -5,14 +5,17 @@ import application.Context;
 public class Spectator extends Guest {
 
 	public Spectator(Guest guest) {
+		// Copy constructor
 		super(guest);
-
-		Context.getContext().setUser(this); // Problems with multi-threating
 	}
 
 	// Upcasting
 	public Guest castToGuest() {
-		return new Guest(this);
+		Guest guest = new Guest(this);
+		
+		Context.getContext().setUser(guest);
+		
+		return guest;
 	}
 
 }

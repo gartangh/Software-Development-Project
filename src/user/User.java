@@ -4,30 +4,25 @@ import application.Context;
 
 public class User {
 
+	private final static String regex = "^[a-zA-Z0-9._-]{3,}$";
+
 	private String username;
 	private String password;
 	private int level;
 	private long xp;
 
-	public User(String username, String password) {
-		// TODO: check uniqueness of username
-		String regex = "^[a-zA-Z0-9._-]{3,}$";
-		if (username.matches(regex))
-			this.username = username;
-		else {
-			// TODO: Go back and show error
-		}
-
-		if (password.matches(regex))
-			this.password = password;
-		else {
-			// TODO: Go back and show error
-		}
-
+	private User(String username, String password) {
+		this.username = username;
+		this.password = password;
 		this.level = 1;
 		this.xp = 0L;
-		
-		Context.getContext().setUser(this); // Problems with multi-threating
+	}
+	
+	private User(String username, String password, int level, long xp) {
+		this.username = username;
+		this.password = password;
+		this.level = level;
+		this.xp = xp;
 	}
 
 	User(User user) {
@@ -36,8 +31,52 @@ public class User {
 		this.password = user.password;
 		this.level = user.level;
 		this.xp = user.xp;
-		
-		Context.getContext().setUser(this);
+	}
+
+	// Factory method
+	public static int createAccount(String username, String password) {
+		if (!username.matches(regex))
+			return 1;
+		else if (!password.matches(regex))
+			return 2;
+		else if (!isUnique(username))
+			return 3;
+
+		// Everything is valid
+		User user = new User(username, password);
+
+		// TODO: Add User to database
+
+		Context.getContext().setUser(user);
+
+		return 0;
+	}
+
+	// Upcasting
+	// Factory method
+	public static User createUser(User user) {
+		User newUser = new User(user);
+
+		Context.getContext().setUser(newUser);
+
+		return newUser;
+	}
+
+	// Downcasting
+	public Guest castToGuest() {
+		Guest guest = new Guest(this);
+
+		Context.getContext().setUser(guest);
+
+		return guest;
+	}
+
+	public Host castToHost() {
+		Host host = new Host(this);
+
+		Context.getContext().setUser(host);
+
+		return host;
 	}
 
 	// Getters
@@ -54,42 +93,66 @@ public class User {
 	}
 
 	// Setters
-	public void setUsername(String username) {
-		// TODO: check uniqueness of username
-		if (username.matches("[a-zA-Z0-9]{4,8}"))
-			this.username = username;
-		else {
+	public boolean setUsername(String username) {
+		if (!username.matches(regex)) {
 			// TODO: Go back and show error
+
+			return false;
+		} else if (!isUnique(username)) {
+			// TODO: Go back and show error
+
+			return false;
 		}
+
+		this.username = username;
+
+		return true;
 	}
 
-	public void setPassword(String password1, String password2) {
-		if (password1.equals(password2) && password1.matches("[a-zA-Z0-9]{4,8}"))
-			this.password = password1;
-		else {
+	public boolean setPassword(String password1, String password2) {
+		if (!password1.equals(password2)) {
 			// TODO: Go back and show error
-		}
-	}
 
-	public void levelUp() {
-		this.level++;
+			return false;
+		} else if (!password1.matches(regex)) {
+			// TODO: Go back and show error
+
+			return false;
+		}
+
+		this.password = password1;
+
+		return true;
 	}
 
 	public void addXp(int xp) {
 		this.xp += xp;
 
 		if (this.xp >= level * 1000)
-			// TODO: Show level up
 			this.level++;
 	}
 
-	// Downcasting
-	public Guest castToGuest() {
-		return new Guest(this);
+	// Methods
+	private static boolean isUnique(String username) {
+		// TODO: Check uniquenesss of username
+
+		return true; // Temporary
 	}
 
-	public Host castToHost() {
-		return new Host(this);
+	public static int signIn(String username, String password) {
+		// TODO: Check if username and password exist for a certain user
+		if (true) { // Temporary
+			return 1;
+		}
+		
+		int level = 0; // Temporary
+		long xp = 0L; // Temporary
+		
+		User user = new User(username, password, level, xp);
+		
+		Context.getContext().setUser(user);
+		
+		return 0;
 	}
 
 }

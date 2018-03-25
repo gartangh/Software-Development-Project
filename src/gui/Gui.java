@@ -1,17 +1,9 @@
 package gui;
 
-import java.io.File;
-
-import application.Context;
-import user.User;
-
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -22,16 +14,16 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
+
+import user.User;
 
 public class Gui extends Application implements Runnable {
 
 	Stage window;
-	Scene loginScene, quizListScene;
+	Scene loginScene;
+	Scene quizListScene;
 
 	public Gui() {
 		// Empty constructor
@@ -63,35 +55,56 @@ public class Gui extends Application implements Runnable {
 
 		Label labelUsername = new Label("Username: ");
 		GridPane.setConstraints(labelUsername, 0, 0);
-		TextField username = new TextField();
-		username.setPromptText("John Cena");
-		username.setFocusTraversable(false);
-		GridPane.setConstraints(username, 1, 0);
+		TextField mUsername = new TextField();
+		mUsername.setPromptText("John Cena");
+		mUsername.setFocusTraversable(false);
+		GridPane.setConstraints(mUsername, 1, 0);
 
 		Label labelPassword = new Label("Password: ");
 		GridPane.setConstraints(labelPassword, 0, 1);
-		PasswordField password = new PasswordField();
-		password.setPromptText("•••••••••");
-		password.setFocusTraversable(false);
-		GridPane.setConstraints(password, 1, 1);
+		PasswordField mPassword = new PasswordField();
+		mPassword.setPromptText("•••••••••");
+		mPassword.setFocusTraversable(false);
+		GridPane.setConstraints(mPassword, 1, 1);
 
-		FocusedButton buttonSignIn = new FocusedButton("Sign in");
-		buttonSignIn.defaultButtonProperty().bind(buttonSignIn.focusedProperty());
-		buttonSignIn.setOnAction(e -> {
-			if (verifyUsername(username, username.getText())) {
-				if (verifyPassword(password, password.getText())) {
-					// TODO: Add User to ListOfUsernames on server
-					// TODO: set Quiz
-					User user = new User(username.getText(), password.getText());
-					window.setScene(quizListScene);
-				} else
-					AlertBox.display("Error", "Password can not be empty!");
-			} else
-				AlertBox.display("Error", "Username must be unique and can not be empty!");
+		FocusedButton mCreateAccount = new FocusedButton("CREATE ACCOUNT");
+		mCreateAccount.defaultButtonProperty().bind(mCreateAccount.focusedProperty());
+		mCreateAccount.setOnAction(e -> {
+			switch (User.createAccount(mUsername.getText(), mPassword.getText())) {
+			case 0:
+				window.setScene(quizListScene);
+				break;
+			case 1:
+				AlertBox.display("Error", "Username is invalid!");
+				break;
+			case 2:
+				AlertBox.display("Error", "Password is invalid!");
+				break;
+			case 3:
+				AlertBox.display("Error", "Username is not unique!");
+				break;
+			default:
+				AlertBox.display("Error", "Something went wrong!");
+			}
 		});
 
-		GridPane.setConstraints(buttonSignIn, 0, 2);
-		loginLayout.getChildren().addAll(labelUsername, username, labelPassword, password, buttonSignIn);
+		FocusedButton mSignIn = new FocusedButton("SIGN IN");
+		mSignIn.defaultButtonProperty().bind(mSignIn.focusedProperty());
+		mSignIn.setOnAction(e -> {
+			switch (User.signIn(mUsername.getText(), mPassword.getText())) {
+			case 0:
+				window.setScene(quizListScene);
+				break;
+			case 1:
+				AlertBox.display("Error", "The credentials are invalid");
+				break;
+			default:
+				AlertBox.display("Error", "Something went wrong!");
+			}
+		});
+
+		GridPane.setConstraints(mCreateAccount, 0, 2);
+		loginLayout.getChildren().addAll(labelUsername, mUsername, labelPassword, mPassword, mCreateAccount);
 		Image image = new Image(Gui.class.getResourceAsStream("images/login_background.jpg"));
 		BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, true, false);
 		BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT,
@@ -110,21 +123,6 @@ public class Gui extends Application implements Runnable {
 
 		window.setScene(loginScene);
 		window.show();
-	}
-
-	public boolean verifyUsername(TextField input, String message) {
-		// TODO: check for uniqueness!
-		if (message.isEmpty())
-			return false;
-		else
-			return true;
-	}
-
-	public boolean verifyPassword(TextField input, String message) {
-		if (message.isEmpty())
-			return false;
-		else
-			return true;
 	}
 
 	public void closeProgram() {

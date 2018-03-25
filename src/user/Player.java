@@ -8,12 +8,11 @@ public class Player extends Guest {
 	private int quizScore;
 
 	public Player(Guest guest) {
+		// Copy constructor
 		super(guest);
 
 		this.roundScore = 0;
 		this.quizScore = 0;
-
-		Context.getContext().setUser(this); // Problems with multi-threating
 	}
 
 	// Getters
@@ -41,7 +40,11 @@ public class Player extends Guest {
 
 	// Upcasting
 	public Guest castToGuest() {
-		return new Guest(this);
+		Guest guest = new Guest(this);
+		
+		Context.getContext().setUser(guest);
+		
+		return guest;
 	}
 
 }

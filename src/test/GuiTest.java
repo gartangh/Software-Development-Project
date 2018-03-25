@@ -1,7 +1,5 @@
 package test;
 
-import gui.*;
-
 public class GuiTest {
 
 	static boolean guiTest() {

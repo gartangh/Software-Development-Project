@@ -1,7 +1,5 @@
 package test;
 
-import network.*;
-
 public class NetworkTest {
 
 	static boolean networkTest() {

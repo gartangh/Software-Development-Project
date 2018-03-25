@@ -1,7 +1,5 @@
 package test;
 
-import quiz.*;
-
 public class QuizTest {
 
 	static boolean quizTest() {
