@@ -21,12 +21,6 @@ public class Test {
 			return false;
 		}
 
-		if (!GuiTest.guiTest()) {
-			System.err.println("Something went wrong in the gui package!");
-
-			return false;
-		}
-
 		return true;
 	}
 

@@ -1,6 +1,6 @@
-package user;
+package user.model;
 
-import application.Context;
+import main.Context;
 
 public class Quizmaster extends Host {
 

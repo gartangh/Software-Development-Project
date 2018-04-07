@@ -1,6 +1,6 @@
-package user;
+package user.model;
 
-import application.Context;
+import main.Context;
 
 public class User {
 
@@ -142,15 +142,10 @@ public class User {
 	public static int signIn(String username, String password) {
 		// TODO: Check if username and password exist for a certain user
 		if (true) { // Temporary
+			Context.getContext().setUser(new User(username, password));
+			
 			return 1;
 		}
-		
-		int level = 0; // Temporary
-		long xp = 0L; // Temporary
-		
-		User user = new User(username, password, level, xp);
-		
-		Context.getContext().setUser(user);
 		
 		return 0;
 	}

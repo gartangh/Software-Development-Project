@@ -1,19 +1,23 @@
 package test;
 
-import user.Guest;
-import user.Host;
-import user.Player;
-import user.Quizmaster;
-import user.Spectator;
-import user.User;
+import main.Context;
+import user.model.Guest;
+import user.model.Host;
+import user.model.Player;
+import user.model.Quizmaster;
+import user.model.Spectator;
+import user.model.User;
 
 public class UserTest {
 
 	@SuppressWarnings("unused")
 	static boolean userTest() {
 		try {
+			Context context = Context.getContext();
+			
 			// Test casting
-			User user1 = User.createAccount("Username", "Password");
+			User.createAccount("Username", "Password");
+			User user1 = context.getUser();
 			Guest guest1 = user1.castToGuest();
 			Player player1 = guest1.castToPlayer();
 			Guest guest2 = player1.castToGuest();
@@ -27,19 +31,26 @@ public class UserTest {
 
 			// Test invalid input
 			// Username has invalid characters
-			User user4 = User.createAccount("Username.", "Password");
+			User.createAccount("Username.", "Password");
+			User user4 = context.getUser();
 			// Username to short
-			User user5 = User.createAccount("Use", "Password");
+			User.createAccount("Use", "Password");
+			User user5 = context.getUser();
 			// Username to long
-			User user6 = User.createAccount("Usernameabc", "Password");
+			User.createAccount("Usernameabc", "Password");
+			User user6 = context.getUser();
 			// Password has invalid characters
-			User user7 = User.createAccount("Usernam7", "Password.");
+			User.createAccount("Usernam7", "Password.");
+			User user7 = context.getUser();
 			// Password to short
-			User user8 = User.createAccount("Usernam8", "Pas");
+			User.createAccount("Usernam8", "Pas");
+			User user8 = context.getUser();
 			// Password to long
-			User user9 = User.createAccount("Usernam9", "Passwordabc");
+			User.createAccount("Usernam9", "Passwordabc");
+			User user9 = context.getUser();
 			// Username is not unique
-			User user10 = User.createAccount("Username", "Password");
+			User.createAccount("Username", "Password");
+			User user10 = context.getUser();
 
 			// TODO: add tests
 		} catch (Exception e) {

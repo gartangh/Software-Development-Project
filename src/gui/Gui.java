@@ -16,8 +16,7 @@ import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-
-import user.User;
+import user.model.User;
 
 public class Gui extends Application implements Runnable {
 
@@ -63,7 +62,7 @@ public class Gui extends Application implements Runnable {
 		Label labelPassword = new Label("Password: ");
 		GridPane.setConstraints(labelPassword, 0, 1);
 		PasswordField mPassword = new PasswordField();
-		mPassword.setPromptText("•••••••••");
+		mPassword.setPromptText("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
 		mPassword.setFocusTraversable(false);
 		GridPane.setConstraints(mPassword, 1, 1);
 

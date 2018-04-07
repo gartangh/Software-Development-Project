@@ -2,8 +2,8 @@ package quiz;
 
 import java.util.ArrayList;
 
-import user.Host;
-import user.Quizmaster;
+import user.model.Host;
+import user.model.Quizmaster;
 
 public class Quiz {
 	private int quizID;
