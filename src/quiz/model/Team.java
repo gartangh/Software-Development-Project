@@ -1,4 +1,4 @@
-package quiz;
+package quiz.model;
 
 import java.awt.Color;
 

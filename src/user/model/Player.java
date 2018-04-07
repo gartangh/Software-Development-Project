@@ -2,6 +2,7 @@ package user.model;
 
 import main.Context;
 
+@SuppressWarnings("serial")
 public class Player extends Guest {
 
 	private int roundScore;

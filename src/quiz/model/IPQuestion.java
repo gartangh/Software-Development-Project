@@ -1,4 +1,7 @@
-package quiz;
+package quiz.model;
+
+import quiz.util.Difficulty;
+import quiz.util.Theme;
 
 public class IPQuestion extends Question {
 

@@ -1,16 +1,21 @@
 package main;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import main.view.MenuController;
 import main.view.RootLayoutController;
-import test.Test;
+import network.Network;
 import user.view.LogInController;
+import user.view.ModeSelectorController;
 
 public class Main extends Application {
 
@@ -23,14 +28,24 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 
-		initRootLayout();
+		// TODO: Set up network connection
+		Network network = new Network();
+		Context.getContext().setNetwork(network);
 
-		showLogInScene();
+		try {
+			network.connect(InetAddress.getLocalHost(), 1025);
+
+			initRootLayout();
+
+			showLogInScene();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void main(String[] args) {
 		// Tests
-		if (DEBUG && !Test.test())
+		if (DEBUG && false)
 			return;
 
 		launch(args);
@@ -63,22 +78,38 @@ public class Main extends Application {
 	}
 
 	// Show scenes
-	private void showLogInScene() {
+	public void showLogInScene() {
 		try {
-			// Load person overview
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(Main.class.getResource("../user/view/LogIn.fxml"));
 			VBox logIn = (VBox) loader.load();
-
-			// Set person overview into the center of root layout
-			rootLayout.setCenter(logIn);
-
-			// Give the controller access to the main app
 			LogInController controller = loader.getController();
 			controller.setMainApp(this);
+
+			rootLayout.setCenter(logIn);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
+	public void showModeSelectorScene() {
+		try {
+			FXMLLoader modeSelectorLoader = new FXMLLoader();
+			modeSelectorLoader.setLocation(Main.class.getResource("../user/view/ModeSelector.fxml"));
+			VBox modeSelector = (VBox) modeSelectorLoader.load();
+			ModeSelectorController modeSelectorController = modeSelectorLoader.getController();
+			modeSelectorController.setMainApp(this);
+			rootLayout.setCenter(modeSelector);
+
+			FXMLLoader menuLoader = new FXMLLoader();
+			menuLoader.setLocation(Main.class.getResource("view/Menu.fxml"));
+			AnchorPane menu = (AnchorPane) menuLoader.load();
+			MenuController menuController = menuLoader.getController();
+			menuController.setMainApp(this);
+			rootLayout.setTop(menu);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 }

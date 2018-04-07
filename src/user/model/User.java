@@ -1,8 +1,11 @@
 package user.model;
 
+import java.io.Serializable;
+
 import main.Context;
 
-public class User {
+@SuppressWarnings("serial")
+public class User implements Serializable {
 
 	private final static String regex = "^[a-zA-Z0-9._-]{3,}$";
 
@@ -17,7 +20,7 @@ public class User {
 		this.level = 1;
 		this.xp = 0L;
 	}
-	
+
 	private User(String username, String password, int level, long xp) {
 		this.username = username;
 		this.password = password;
@@ -31,25 +34,6 @@ public class User {
 		this.password = user.password;
 		this.level = user.level;
 		this.xp = user.xp;
-	}
-
-	// Factory method
-	public static int createAccount(String username, String password) {
-		if (!username.matches(regex))
-			return 1;
-		else if (!password.matches(regex))
-			return 2;
-		else if (!isUnique(username))
-			return 3;
-
-		// Everything is valid
-		User user = new User(username, password);
-
-		// TODO: Add User to database
-
-		Context.getContext().setUser(user);
-
-		return 0;
 	}
 
 	// Upcasting
@@ -79,9 +63,41 @@ public class User {
 		return host;
 	}
 
-	// Getters
+	// Getters and setters
 	public String getUsername() {
 		return username;
+	}
+
+	public int setUsername(String username) {
+		if (!username.matches(regex)) {
+			// TODO: Go back and show error
+
+			return 1;
+		} else if (!isUnique(username)) {
+			// TODO: Go back and show error
+
+			return 2;
+		}
+
+		this.username = username;
+
+		return 0;
+	}
+
+	public int setPassword(String password1, String password2) {
+		if (!password1.equals(password2)) {
+			// TODO: Go back and show error
+
+			return 1;
+		} else if (!password1.matches(regex)) {
+			// TODO: Go back and show error
+
+			return 2;
+		}
+
+		this.password = password1;
+
+		return 0;
 	}
 
 	public int getLevel() {
@@ -92,62 +108,58 @@ public class User {
 		return xp;
 	}
 
-	// Setters
-	public boolean setUsername(String username) {
-		if (!username.matches(regex)) {
-			// TODO: Go back and show error
-
-			return false;
-		} else if (!isUnique(username)) {
-			// TODO: Go back and show error
-
-			return false;
-		}
-
-		this.username = username;
-
-		return true;
-	}
-
-	public boolean setPassword(String password1, String password2) {
-		if (!password1.equals(password2)) {
-			// TODO: Go back and show error
-
-			return false;
-		} else if (!password1.matches(regex)) {
-			// TODO: Go back and show error
-
-			return false;
-		}
-
-		this.password = password1;
-
-		return true;
-	}
-
+	// Methods
 	public void addXp(int xp) {
 		this.xp += xp;
 
-		if (this.xp >= level * 1000)
+		if (this.xp >= level * 1000) {
 			this.level++;
+			this.xp -= level * 1000;
+		}
 	}
 
-	// Methods
+	public static int createAccount(String username, String password) {
+		if (!username.matches(regex))
+			return 1;
+		else if (!password.matches(regex))
+			return 2;
+		else if (!isUnique(username))
+			return 3;
+
+		// Everything is valid
+		User user = new User(username, password);
+
+		// TODO: Add User to database
+
+		Context.getContext().setUser(user);
+
+		return 0;
+	}
+
+	public static int logIn(String username, String password) {
+		if (exists(username, password)) {
+			// TODO: Get level and xp from database
+			int level = 0;
+			int xp = 0;
+
+			Context.getContext().setUser(new User(username, password, level, xp));
+
+			return 0;
+		}
+
+		return -1;
+	}
+	
 	private static boolean isUnique(String username) {
-		// TODO: Check uniquenesss of username
+		// TODO: Check uniqueness of username
 
 		return true; // Temporary
 	}
 
-	public static int signIn(String username, String password) {
+	private static boolean exists(String username, String password) {
 		// TODO: Check if username and password exist for a certain user
-		if (true) { // Temporary
-			Context.getContext().setUser(new User(username, password));
-			
-			return 1;
-		}
-		
-		return 0;
+
+		return true;
 	}
 
 }

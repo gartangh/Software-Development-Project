@@ -1,7 +1,7 @@
 package main;
 
 import network.Network;
-import quiz.Quiz;
+import quiz.model.Quiz;
 import user.model.User;
 
 public class Context {

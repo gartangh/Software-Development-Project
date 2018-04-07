@@ -2,6 +2,7 @@ package user.model;
 
 import main.Context;
 
+@SuppressWarnings("serial")
 public class Quizmaster extends Host {
 
 	public Quizmaster(Host host) {

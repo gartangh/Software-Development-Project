@@ -24,14 +24,14 @@
          <children>
             <Label text="Username" />
             <Label text="Password" GridPane.rowIndex="1" />
-            <TextField GridPane.columnIndex="1" />
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="mUsername" GridPane.columnIndex="1" />
+            <TextField fx:id="mPassword" accessibleRole="PASSWORD_FIELD" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>
       </GridPane>
       <ButtonBar prefHeight="40.0" prefWidth="200.0">
         <buttons>
-          <Button mnemonicParsing="false" text="Create Account" />
-            <Button mnemonicParsing="false" text="Log In" />
+          <Button fx:id="mCreateAccount" defaultButton="true" mnemonicParsing="false" onAction="#handleCreateAccount" text="Create Account" />
+            <Button fx:id="mLogIn" mnemonicParsing="false" onAction="#handleLogIn" text="Log In" />
         </buttons>
       </ButtonBar>
    </children>

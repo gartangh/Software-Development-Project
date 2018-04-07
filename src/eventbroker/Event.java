@@ -1,10 +1,11 @@
 package eventbroker;
 
 public class Event {
-
+	
+	private static long n = 0;
+	
 	protected String type;
 	protected String message;
-	private static long n = 0;
 	private long id = n++;
 
 	public Event() {

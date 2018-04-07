@@ -2,6 +2,7 @@ package user.model;
 
 import main.Context;
 
+@SuppressWarnings("serial")
 public class Host extends User {
 
 	Host(User user) {

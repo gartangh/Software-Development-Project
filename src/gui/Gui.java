@@ -69,48 +69,15 @@ public class Gui extends Application implements Runnable {
 		FocusedButton mCreateAccount = new FocusedButton("CREATE ACCOUNT");
 		mCreateAccount.defaultButtonProperty().bind(mCreateAccount.focusedProperty());
 		mCreateAccount.setOnAction(e -> {
-			switch (User.createAccount(mUsername.getText(), mPassword.getText())) {
-			case 0:
-				window.setScene(quizListScene);
-				break;
-			case 1:
-				AlertBox.display("Error", "Username is invalid!");
-				break;
-			case 2:
-				AlertBox.display("Error", "Password is invalid!");
-				break;
-			case 3:
-				AlertBox.display("Error", "Username is not unique!");
-				break;
-			default:
-				AlertBox.display("Error", "Something went wrong!");
-			}
 		});
 
 		FocusedButton mSignIn = new FocusedButton("SIGN IN");
 		mSignIn.defaultButtonProperty().bind(mSignIn.focusedProperty());
 		mSignIn.setOnAction(e -> {
-			switch (User.signIn(mUsername.getText(), mPassword.getText())) {
-			case 0:
-				window.setScene(quizListScene);
-				break;
-			case 1:
-				AlertBox.display("Error", "The credentials are invalid");
-				break;
-			default:
-				AlertBox.display("Error", "Something went wrong!");
-			}
 		});
 
 		GridPane.setConstraints(mCreateAccount, 0, 2);
 		loginLayout.getChildren().addAll(labelUsername, mUsername, labelPassword, mPassword, mCreateAccount);
-		Image image = new Image(Gui.class.getResourceAsStream("images/login_background.jpg"));
-		BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, true, false);
-		BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT,
-				BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-		Background background = new Background(backgroundImage);
-		loginLayout.setBackground(background);
-		loginLayout.setAlignment(Pos.CENTER);
 		loginScene = new Scene(loginLayout, 400, 267);
 
 		// quizListScene
