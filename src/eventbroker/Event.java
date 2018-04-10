@@ -1,6 +1,8 @@
 package eventbroker;
 
-public class Event {
+import java.io.Serializable;
+
+public class Event implements Serializable{
 	
 	private static long n = 0;
 	

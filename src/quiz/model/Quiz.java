@@ -15,9 +15,9 @@ public class Quiz {
 	private int maxAmountOfRounds; // minAmountOfRounds = 1;
 	private ArrayList<Round> rounds=new ArrayList<Round>();
 	private int maxAmountofQuestionsPerRound; // minAmountofQuestionsPerRound = 1;
-	private Quizmaster quizmaster;
+	private int quizmasterID;
 
-	public Quiz(int quizID, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds, int maxAmountOfQuestionsPerRound, Host host) {
+	public Quiz(int quizID, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds, int maxAmountOfQuestionsPerRound, int hostID) {
 		this.quizID=quizID;
 		this.amountOfTeams = 0;
 		this.maxAmountOfTeams = maxAmountOfTeams;
@@ -25,7 +25,7 @@ public class Quiz {
 		this.maxAmountOfRounds = maxAmountOfRounds;
 		this.amountOfRounds = 0;
 		this.maxAmountofQuestionsPerRound = maxAmountOfQuestionsPerRound;
-		this.quizmaster = host.castToQuizmaster();
+		this.quizmasterID = hostID;
 	}
 
 	// Getters
@@ -61,8 +61,12 @@ public class Quiz {
 		return maxAmountofQuestionsPerRound;
 	}
 
-	public Quizmaster getQuizmaster() {
-		return quizmaster;
+	public int getQuizmasterID() {
+		return quizmasterID;
+	}
+	
+	public int getID() {
+		return quizID;
 	}
 
 	// Adders

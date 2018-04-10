@@ -2,6 +2,7 @@ package main;
 
 import network.Network;
 import quiz.model.Quiz;
+import quiz.model.Team;
 import user.model.User;
 
 public class Context {
@@ -11,6 +12,7 @@ public class Context {
 
 	private User user;
 	private Quiz quiz;
+	private Team team;
 	private Network network;
 
 	// Constructors
@@ -33,6 +35,14 @@ public class Context {
 
 	public void setQuiz(Quiz quiz) {
 		this.quiz = quiz;
+	}
+	
+	public Team getTeam() {
+		return team;
+	}
+
+	public void setTeam(Team team) {
+		this.team = team;
 	}
 
 	public Network getNetwork() {
