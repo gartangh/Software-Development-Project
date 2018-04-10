@@ -14,7 +14,8 @@ public class User implements Serializable {
 	private int level;
 	private long xp;
 
-	private User(String username, String password) {
+	//change back to private
+	public User(String username, String password) {
 		this.username = username;
 		this.password = password;
 		this.level = 1;
@@ -44,6 +45,10 @@ public class User implements Serializable {
 		Context.getContext().setUser(newUser);
 
 		return newUser;
+	}
+
+	public String toString(){
+		return username; //for tableview in quizroom
 	}
 
 	// Downcasting
@@ -149,7 +154,7 @@ public class User implements Serializable {
 
 		return -1;
 	}
-	
+
 	private static boolean isUnique(String username) {
 		// TODO: Check uniqueness of username
 

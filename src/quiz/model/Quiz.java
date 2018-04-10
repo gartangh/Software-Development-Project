@@ -2,6 +2,8 @@ package quiz.model;
 
 import java.util.ArrayList;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import user.model.Host;
 import user.model.Quizmaster;
 
@@ -9,7 +11,7 @@ public class Quiz {
 	private int quizID;
 	private int amountOfTeams;
 	private int maxAmountOfTeams; // minAmountOfTeams = 2;
-	private ArrayList<Team> teams=new ArrayList<Team>();
+	private ObservableList<Team> teams=FXCollections.observableArrayList();
 	private int maxAmountofPlayersPerTeam; // maxAmountofPlayersPerTeam = 1;
 	private int amountOfRounds;
 	private int maxAmountOfRounds; // minAmountOfRounds = 1;
@@ -37,10 +39,10 @@ public class Quiz {
 		return maxAmountOfTeams;
 	}
 
-	public ArrayList<Team> getTeams(){
+	public ObservableList<Team> getTeams(){
 		return teams;
 	}
-	
+
 	public int getMaxAmountOfPlayersPerTeam() {
 		return maxAmountofPlayersPerTeam;
 	}
@@ -56,7 +58,7 @@ public class Quiz {
 	public ArrayList<Round> getRound(){
 		return rounds;
 	}
-	
+
 	public int getMaxAmountOfQuestionsPerRound() {
 		return maxAmountofQuestionsPerRound;
 	}

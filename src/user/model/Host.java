@@ -5,7 +5,7 @@ import main.Context;
 @SuppressWarnings("serial")
 public class Host extends User {
 
-	Host(User user) {
+	public Host(User user) {
 		// Copy constructor
 		super(user);
 	}
