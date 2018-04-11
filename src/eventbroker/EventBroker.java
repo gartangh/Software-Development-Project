@@ -83,9 +83,8 @@ final public class EventBroker implements Runnable{
 	private void process(EventPublisher source, Event e) {
 		for (Map.Entry<String, ArrayList<EventListener>> entry : listeners.entrySet())
 			if (entry.getKey().equals(e.getType()))
-				for (EventListener el : entry.getValue()) {
+				for (EventListener el : entry.getValue())
 					el.handleEvent(e);
-				}
 	}
 
 	@Override
