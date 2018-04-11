@@ -32,7 +32,7 @@ public class ConnectionListener implements Runnable {
 				network.connect(client);
 			}
 		} catch (SocketException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {

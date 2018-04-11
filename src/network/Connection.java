@@ -7,8 +7,10 @@ import java.net.Socket;
 import java.net.SocketException;
 
 import eventbroker.Event;
+import eventbroker.EventBroker;
 
-public class Connection{
+public class Connection {
+
 
 	private Socket socket;
 	private ObjectInputStream objectInputStream;
@@ -36,10 +38,8 @@ public class Connection{
 	// Package local would be safer
 	public void send(Event e) {
 		try {
-			
-			synchronized(this) {
+			synchronized (this) {
 				// Client 7.1
-				
 				objectOutputStream.writeObject(e);
 				// Client 7.2
 				objectOutputStream.flush();
@@ -66,7 +66,7 @@ public class Connection{
 				objectOutputStream.close();
 				socket.close();
 			} catch (SocketException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -86,13 +86,13 @@ public class Connection{
 						// Server 4.2.2.2.1
 						Event event = (Event) objectInputStream.readObject();
 						if (event.getMessage().equals("stop")) {
-							// EventBroker.getEventBroker().stop(network);
+							EventBroker.getEventBroker().stop();
 
 							break;
 						} else
 							network.publishEvent(event);
 					} catch (SocketException e) {
-						e.printStackTrace();
+						//e.printStackTrace();
 
 						break;
 					} catch (ClassNotFoundException e) {
@@ -107,5 +107,4 @@ public class Connection{
 		}
 
 	}
-
 }

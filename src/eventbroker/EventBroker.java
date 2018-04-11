@@ -5,11 +5,18 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-final public class EventBroker implements Runnable {
+import chat.ChatController;
+import chat.ChatMessage;
+import network.Client;
+import network.Network;
+import network.Server;
+
+final public class EventBroker implements Runnable{
 
 	protected Map<String, ArrayList<EventListener>> listeners = new HashMap<>();
 
-	protected final static EventBroker broker = new EventBroker(); // Singleton
+	final static EventBroker broker = new EventBroker(); // Singleton
+
 
 	LinkedList<QueueItem> queue = new LinkedList<>();
 
@@ -66,16 +73,46 @@ final public class EventBroker implements Runnable {
 
 	void addEvent(EventPublisher source, Event e) {
 		QueueItem qI = new QueueItem(source, e);
-		synchronized (queue) {
+		synchronized (this) {
 			queue.add(qI);
+			this.setProceed(true);
+			this.notifyAll();
 		}
 	}
 
 	private void process(EventPublisher source, Event e) {
 		for (Map.Entry<String, ArrayList<EventListener>> entry : listeners.entrySet())
-			if (entry.getKey().equals(e.type))
-				for (EventListener el : entry.getValue())
-					el.handleEvent(e);
+			if (entry.getKey().equals(e.getType()))
+				for (EventListener el : entry.getValue()) {
+					switch (e.getType()) {
+						case "CHAT":
+							// Print message in chatBox
+							el.handleEvent(e);
+							
+							// Push message over network <=> source != listener -> how?
+							if(source instanceof ChatController) {
+								if(Client.getNetwork().isConnected())
+									Client.getNetwork().handleEvent(e);
+							}
+							else if(source instanceof Network) {
+								//if(((Network) source).getNetworkAddress() == ((Network) el).getNetworkAddress())
+									//Server.getNetwork().handleEvent(e);
+								// NEED FIX
+								if(Server.getNetwork() != null) {
+									if(Server.getNetwork().getConnection() != ((Network)source).getConnection())
+										Server.getNetwork().handleEvent(e);
+								}
+								else if(Client.getNetwork() != null) {
+									if(Client.getNetwork().getConnection() != ((Network)source).getConnection())
+										Client.getNetwork().handleEvent(e);
+								}
+							}
+							
+							break;
+						default:
+							System.out.println("Default handle");
+					}
+				}
 	}
 
 	@Override
@@ -90,14 +127,11 @@ final public class EventBroker implements Runnable {
 
 							break;
 						}
-						System.out.println("waiting for event");
 						wait();
-						System.out.println("received event");
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				
 				this.setProceed(false);
 			}
 
