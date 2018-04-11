@@ -11,10 +11,14 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.util.Callback;
 import quiz.model.*;
+import quiz.util.ClientVoteEvent;
+import quiz.util.NewTeamEvent;
 import main.*;
 import user.model.*;
+import server.*;
 
 
 import java.io.IOException;
@@ -30,26 +34,42 @@ public class QuizRoomController extends EventPublisher{
     private Label TeamnameLabel;
     @FXML
     private Label CaptainLabel;
-
-
     @FXML
     private ListView<String> teammemberslist;
+    @FXML
+    private Circle circle;
 
     private Quiz quiz;
 
     // TODO: change to real mainapp
     private MainQuizroom mainQuizRoom;
     private Main main;
+    private QuizroomHandler quizroomhandler=new QuizroomHandler();
 
-    /**
-     * The constructor.
-     * The constructor is called before the initialize() method.
-     */
+	public class QuizroomHandler implements EventListener{
+		public void handleEvent(Event e){
+			switch (e.getType()){
+				case "SERVER_NEW_TEAM":
+					ServerNewTeamEvent newTeamEvent=(ServerNewTeamEvent) e;
+					if (newTeamEvent.getQuizID()==Context.getContext().getQuiz().getID()) {//extra controle
+						quiz.addTeam(newTeamEvent.getTeam());//TAbleview vanzelf geupdatet via bindings
+						if (newTeamEvent.getTeam().getCaptainID()==Context.getContext().getUser().getID()){// i am the captain,change Team in context
+							Context.getContext().setTeam(newTeamEvent.getTeam());
+						}
+					}
+				}
+		}
+	}
+
     public QuizRoomController() {
     }
 
     public QuizRoomController(Quiz quiz){
     	this.quiz=quiz;
+    }
+
+    public void addListener(){
+    	EventBroker.getEventBroker().addEventListener(quizroomhandler);
     }
 
     @FXML
@@ -80,23 +100,31 @@ public class QuizRoomController extends EventPublisher{
             // Fill the labels with info from the person object.
         	TeamnameLabel.setText(team.getName());
             CaptainLabel.setText(team.getTeamMembers().get(team.getCaptainID()));
+            circle.setFill(team.getColor());
             ObservableList<String> membernames=FXCollections.observableArrayList(team.getTeamMembers().values());
             teammemberslist.setItems(membernames);
         } else {
         	TeamnameLabel.setText("");
             CaptainLabel.setText("");
+            circle.setFill(Color.TRANSPARENT);
             teammemberslist.setItems(FXCollections.observableArrayList());
         }
     }
 
     @FXML
     private void handleNewTeam() throws IOException{
-    	Team team = new Team(new SimpleStringProperty(""),Color.rgb(0,0,100),Context.getContext().getUser().getID(),Context.getContext().getUser().getUsername(),quiz.getMaxAmountOfPlayersPerTeam());
+    	/*Team team = new Team(new SimpleStringProperty(""),Color.rgb(0,0,100),Context.getContext().getUser().getID(),Context.getContext().getUser().getUsername(),quiz.getMaxAmountOfPlayersPerTeam());
     	boolean okClicked = mainQuizRoom.showNewTeam(team);
         if (okClicked) {
             quiz.addTeam(team);
             //TODO publish event to eventbroker, then delete previous line (is for the quizroomeventhandler)
+        }*/
+    	NewTeamEvent teamevent = new NewTeamEvent(Context.getContext().getQuiz().getID(),"",Color.TRANSPARENT);
+    	boolean okClicked = mainQuizRoom.showNewTeam(teamevent);
+        if (okClicked) {
+        	publishEvent(teamevent);
         }
+
     }
 
     @FXML

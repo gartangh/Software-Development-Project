@@ -2,7 +2,7 @@ package quiz.view;
 
 import java.io.IOException;
 
-
+import eventbroker.EventBroker;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 import main.Main;
@@ -26,6 +26,7 @@ public class Quizroom {
         quizcontroller = loader.getController();
         quizcontroller.setMain(main);
         quizcontroller.setQuiz(quiz);
+        quizcontroller.addListener();
 
 
 	}

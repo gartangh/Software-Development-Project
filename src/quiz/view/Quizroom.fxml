@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane minHeight="500.0" minWidth="800.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.QuizRoomController">
@@ -61,6 +62,7 @@
                                 <rowConstraints>
                                     <RowConstraints maxHeight="44.0" minHeight="10.0" prefHeight="30.39999694824219" vgrow="SOMETIMES" />
                                   <RowConstraints maxHeight="91.59998321533203" minHeight="10.0" prefHeight="35.999981689453115" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="91.59998321533203" minHeight="10.0" prefHeight="35.999981689453115" vgrow="SOMETIMES" />
                                     <RowConstraints maxHeight="184.79999389648435" minHeight="10.0" prefHeight="175.20001831054688" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
@@ -82,12 +84,18 @@
                                        <font>
                                           <Font size="15.0" />
                                        </font></Label>
-                                    <ListView fx:id="teammemberslist" prefHeight="178.0" prefWidth="222.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    <Label prefHeight="17.0" prefWidth="72.0" text="Members" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
+                                    <ListView fx:id="teammemberslist" prefHeight="178.0" prefWidth="222.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                    <Label prefHeight="17.0" prefWidth="72.0" text="Members" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="TOP">
                                        <font>
                                           <Font size="15.0" />
                                        </font>
                                     </Label>
+                                    <Label text="Color" GridPane.rowIndex="2">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Label>
+                                    <Circle fx:id="circle" fill="DODGERBLUE" radius="8.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                  </children>
                               </GridPane>
                               <ButtonBar layoutX="343.0" layoutY="250.0" prefHeight="40.0" prefWidth="114.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0">

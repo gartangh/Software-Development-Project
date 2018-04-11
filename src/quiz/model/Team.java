@@ -32,7 +32,7 @@ public class Team {
 		this.roundScore = 0;
 		this.quizScore = 0;
 		this.amountOfPlayers=1;//voorlopig
-		this.maxAmountOfPlayers=5;
+		this.maxAmountOfPlayers=maxamount;
 	}
 
 	public Team(int teamID,StringProperty name, Color color,int captainID,String captainname) {
@@ -55,8 +55,9 @@ public class Team {
 		this.roundScore = 0;
 		this.quizScore = 0;
 		this.amountOfPlayers=1;//voorlopig
-		this.maxAmountOfPlayers=5;
+		this.maxAmountOfPlayers=maxamount;
 	}
+
 
 	// Getters
 	public StringProperty getNameProperty() {

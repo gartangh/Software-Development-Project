@@ -7,6 +7,7 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import quiz.model.Team;
+import quiz.util.NewTeamEvent;
 
 public class NewTeamController {
 	@FXML
@@ -15,6 +16,7 @@ public class NewTeamController {
     private ColorPicker colorpicker;
 
     private Team team;
+    private NewTeamEvent teamevent;
 
 
     private Stage dialogStage;
@@ -37,7 +39,11 @@ public class NewTeamController {
     	this.team=team;
     }
 
-    @FXML
+    public void setTeamEvent(NewTeamEvent teamevent){
+    	this.teamevent=teamevent;
+    }
+
+    /*@FXML
     private void handleOk() {
         if (isInputValid()) {
             team.setName(newTeamname.getText());
@@ -46,7 +52,19 @@ public class NewTeamController {
             okClicked = true;
             dialogStage.close();
         }
+    }*/
+
+    @FXML
+    private void handleOk() {
+        if (isInputValid()) {
+            teamevent.setTeamName(newTeamname.getText());
+            teamevent.setColor(colorpicker.getValue());
+
+            okClicked = true;
+            dialogStage.close();
+        }
     }
+
 
     @FXML
     private void handleCancel() {

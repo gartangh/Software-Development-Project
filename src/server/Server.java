@@ -9,6 +9,7 @@ import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import network.Network;
 import quiz.util.ClientVoteEvent;
+import quiz.util.NewTeamEvent;
 
 public class Server extends EventPublisher{
 
@@ -16,14 +17,17 @@ public class Server extends EventPublisher{
 		public void handleEvent(Event e){
 			switch(e.getType()) {
 			case "CLIENT_VOTE":
-				//ClientVoteEvent clientVote = (ClientVoteEvent) e;
-
+				ClientVoteEvent clientVote = (ClientVoteEvent) e;
 				//ServerContext.getContext()
+			case "CLIENT_NEW_TEAM":
+				NewTeamEvent newteamevent=(NewTeamEvent) e;
+				ServerContext.getContext().addTeam(newteamevent.getQuizID(),newteamevent.getTeamName(),newteamevent.getColor(),newteamevent.getUserID());
 			}
+
 		}
 	}
 
-	private ServerHandler serverHandler;
+	private ServerHandler serverHandler=new ServerHandler();
 
 	public static void main(String[] args) {
 		try {

@@ -53,8 +53,9 @@ public class ServerContext {
 			Quiz q = quizMap.get(quizID);
 
 			int newID;
-			boolean unique = true;
+			boolean unique;
 			do {
+				unique=true;
 				newID = (int) (Math.random() * Integer.MAX_VALUE);
 				for(Team t : q.getTeams()) {
 					if(t.getID() == newID) unique = false;
