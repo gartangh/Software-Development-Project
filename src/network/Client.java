@@ -11,6 +11,8 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import quiz.util.ClientCreateEvent;
+import server.ServerContext;
 
 public class Client extends Application{
 
@@ -37,7 +39,8 @@ public class Client extends Application{
 		// Create new network (Server that listens to incoming
 		// connections)
 		network = new Network(port);
-		connectToNetwork(InetAddress.getLocalHost(), 1234);
+		Connection connection = connectToNetwork(InetAddress.getLocalHost(), 1234);
+		ClientCreateEvent clientCreateEvent = new ClientCreateEvent(connection);
 		// ChatPanel (ChatModel and ChatController) are created
 		ChatPanel chatPanel = ChatPanel.createChatPanel();
 		chatPanel.getChatModel().setName(name);
@@ -55,8 +58,8 @@ public class Client extends Application{
 	}
 	
 
-	public static void connectToNetwork(InetAddress ip, int port) {
-		network.connect(ip, port);
+	public static Connection connectToNetwork(InetAddress ip, int port) {
+		return network.connect(ip, port);
 	}
 	
 

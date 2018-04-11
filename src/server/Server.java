@@ -8,6 +8,7 @@ import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import network.Network;
+import quiz.util.ClientCreateEvent;
 import quiz.util.ClientVoteEvent;
 
 public class Server extends EventPublisher{
@@ -19,6 +20,11 @@ public class Server extends EventPublisher{
 				ClientVoteEvent clientVote = (ClientVoteEvent) e;
 				
 				//ServerContext.getContext()
+				break;
+				
+			case "CLIENT_CREATE":
+				ClientCreateEvent clientCreate = (ClientCreateEvent) e;
+				ServerContext.getContext().addConnection(clientCreate.getUserID(), clientCreate.getConnection());
 			}
 		}
 	}
