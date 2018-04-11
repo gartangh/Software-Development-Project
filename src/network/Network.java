@@ -11,6 +11,7 @@ import eventbroker.EventPublisher;
 public class Network extends EventPublisher implements EventListener {
 
 	private Connection connection;
+
 	private boolean isConnected = false;
 
 	private ConnectionListener connectionListener;
@@ -83,5 +84,9 @@ public class Network extends EventPublisher implements EventListener {
 
 	public InetAddress getNetworkAddress() {
 		return networkAddress;
+	}
+
+	public Connection getConnection() {
+		return connection;
 	}
 }

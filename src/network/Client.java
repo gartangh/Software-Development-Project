@@ -29,7 +29,7 @@ public class Client extends Application{
 		
 		// Valid input
 		String name = "Arthur";
-		int port = Integer.parseInt("1235");
+		int port = Integer.parseInt("1236");
 
 		// Start event broker
 		EventBroker.getEventBroker().start();

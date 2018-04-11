@@ -83,7 +83,6 @@ final public class EventBroker implements Runnable{
 		for (Map.Entry<String, ArrayList<EventListener>> entry : listeners.entrySet())
 			if (entry.getKey().equals(e.type))
 				for (EventListener el : entry.getValue()) {
-					System.out.println("printing chat");
 					switch (e.getType()) {
 						case "CHAT":
 							// Print message in chatBox
@@ -98,7 +97,14 @@ final public class EventBroker implements Runnable{
 								//if(((Network) source).getNetworkAddress() == ((Network) el).getNetworkAddress())
 									//Server.getNetwork().handleEvent(e);
 								// NEED FIX
-								Server.getNetwork().handleEvent(e);
+								if(Server.getNetwork() != null) {
+									if(Server.getNetwork().getConnection() != ((Network)source).getConnection())
+										Server.getNetwork().handleEvent(e);
+								}
+								else if(Client.getNetwork() != null) {
+									if(Client.getNetwork().getConnection() != ((Network)source).getConnection())
+										Client.getNetwork().handleEvent(e);
+								}
 							}
 							
 							break;
