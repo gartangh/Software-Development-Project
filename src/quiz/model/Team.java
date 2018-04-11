@@ -1,7 +1,10 @@
 package quiz.model;
 
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
 
+import javafx.util.Pair;
 import user.model.Player;
 
 public class Team {
@@ -9,18 +12,25 @@ public class Team {
 	private int amountOfPlayers;
 	private int maxAmountOfPlayers; // minAmountOfTeamPlayers = 1;
 	// TODO: Add players
+	private Map<Integer, String> players;
 	private String name;
 	private Color color;
-	private Player captain;
+	private int captainID;
 	private int roundScore;
 	private int quizScore;
+	private int teamID;
 
-	public Team(String name, Color color, Player captain) {
+	public Team(int teamID, String name, Color color, int captainID, String captainUserName) {
+		this.teamID = teamID;
 		this.name = name;
 		this.color = color;
-		this.captain = captain;
+		this.captainID = captainID;
 		this.roundScore = 0;
 		this.quizScore = 0;
+		this.players = new HashMap<Integer, String>();
+		maxAmountOfPlayers = 1;
+		amountOfPlayers = 0;
+		this.addPlayer(captainID, captainUserName);
 	}
 
 	// Getters
@@ -40,10 +50,12 @@ public class Team {
 		return maxAmountOfPlayers;
 	}
 
-	// TODO: Add getPlayers()
+	public Map<Integer, String> getPlayers(){
+		return players;
+	}
 
-	public Player getCaptain() {
-		return captain;
+	public int getCaptainID() {
+		return captainID;
 	}
 
 	public int getRoundScore() {
@@ -53,23 +65,27 @@ public class Team {
 	public int getQuizScore() {
 		return quizScore;
 	}
+	
+	public int getID() {
+		return teamID;
+	}
 
 	// Setters
 	public void setMaxAmountOfPlayers(int maxAmountOfPlayers) {
-		this.maxAmountOfPlayers = maxAmountOfPlayers;
+		if(maxAmountOfPlayers > amountOfPlayers) this.maxAmountOfPlayers = maxAmountOfPlayers;
 	}
 
 	// Adders
-	public void addPlayer(Player player) {
+	public void addPlayer(int playerID, String playerName) {
 		if (amountOfPlayers < maxAmountOfPlayers) {
-			// TODO: Add player to players
+			players.put(playerID, playerName);
 			amountOfPlayers++;
 		}
 	}
 
 	// Removers
-	public void removePlayer(Player player) {
-		// TODO: If remove player from players worked: amountOfPlayers--;
+	public void removePlayer(int playerID) {
+		if(players.remove(playerID)!=null) amountOfPlayers--;
 	}
 
 }

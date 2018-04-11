@@ -6,7 +6,6 @@ import user.model.Host;
 import user.model.Quizmaster;
 
 public class Quiz {
-	private String quizName;
 	private int quizID;
 	private int amountOfTeams;
 	private int maxAmountOfTeams; // minAmountOfTeams = 2;
@@ -16,10 +15,9 @@ public class Quiz {
 	private int maxAmountOfRounds; // minAmountOfRounds = 1;
 	private ArrayList<Round> rounds=new ArrayList<Round>();
 	private int maxAmountofQuestionsPerRound; // minAmountofQuestionsPerRound = 1;
-	private Quizmaster quizmaster;
+	private int quizmasterID;
 
-	public Quiz(String quizName, int quizID, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds, int maxAmountOfQuestionsPerRound, Host host) {
-		this.quizName = quizName;
+	public Quiz(int quizID, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds, int maxAmountOfQuestionsPerRound, int hostID) {
 		this.quizID=quizID;
 		this.amountOfTeams = 0;
 		this.maxAmountOfTeams = maxAmountOfTeams;
@@ -27,14 +25,10 @@ public class Quiz {
 		this.maxAmountOfRounds = maxAmountOfRounds;
 		this.amountOfRounds = 0;
 		this.maxAmountofQuestionsPerRound = maxAmountOfQuestionsPerRound;
-		this.quizmaster = host.castToQuizmaster();
+		this.quizmasterID = hostID;
 	}
 
 	// Getters
-	public String getQuizName() {
-		return quizName;
-	}
-	
 	public int getAmountOfTeams() {
 		return amountOfTeams;
 	}
@@ -67,8 +61,12 @@ public class Quiz {
 		return maxAmountofQuestionsPerRound;
 	}
 
-	public Quizmaster getQuizmaster() {
-		return quizmaster;
+	public int getQuizmasterID() {
+		return quizmasterID;
+	}
+	
+	public int getID() {
+		return quizID;
 	}
 
 	// Adders

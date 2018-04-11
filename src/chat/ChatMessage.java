@@ -5,7 +5,7 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class ChatMessage extends eventbroker.Event implements Serializable {
 
-	public final static String TYPE_CHAT = "CHAT";
+	public final static String TYPE_CHAT = "SERVER_CHAT";
 
 	private String sender;
 
