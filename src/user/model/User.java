@@ -13,14 +13,15 @@ public class User implements Serializable {
 	private String password;
 	private int level;
 	private long xp;
+	private int userID;
 
-	//change back to private
-	public User(String username, String password) {
+	private User(String username, String password) {
 		this.username = username;
 		this.password = password;
 		this.level = 1;
 		this.xp = 0L;
 	}
+
 
 	private User(String username, String password, int level, long xp) {
 		this.username = username;
@@ -29,12 +30,33 @@ public class User implements Serializable {
 		this.xp = xp;
 	}
 
+	public User(int userID, String username, String password) { // Changed to public for testing purposes
+		this.userID = userID;
+		this.username = username;
+		this.password = password;
+		this.level = 1;
+		this.xp = 0L;
+	}
+
+	private User(int userID, String username, String password, int level, long xp) {
+		this.userID = userID;
+		this.username = username;
+		this.password = password;
+		this.level = level;
+		this.xp = xp;
+}
+
 	User(User user) {
 		// Copy constructor
 		this.username = user.username;
 		this.password = user.password;
 		this.level = user.level;
 		this.xp = user.xp;
+		this.userID=user.userID;
+	}
+
+	public int getID(){
+		return this.userID;
 	}
 
 	// Upcasting

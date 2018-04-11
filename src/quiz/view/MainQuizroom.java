@@ -29,21 +29,15 @@ public class MainQuizroom extends Application{
 		this.primaryStage=primaryStage;
 		this.primaryStage.setTitle("Quiz");
 		//User.logIn("Hannes","1234");
-		User user1=new User("hannes","1234");
-		User user2=new User("Anse","dqd");
-		User user3=new User("kendrik", "lamar");
-		User user4=new User("inlist", "1154");
-		Host host=new Host(user1);
-		Player player1=new Player(user2.castToGuest());
-		Player player2=new Player(user3.castToGuest());
-		Player player3=new Player(user4.castToGuest());
-		Quiz quiz=new Quiz(5,5,5,5,5,host);
+		User user1=new User(1,"hannes","1234");
+		user1=User.createUser(user1);
+		Quiz quiz=new Quiz(5,5,5,5,5,20);
 
 
-		Team team1 = new Team(new SimpleStringProperty("Deborah leemans"),Color.rgb(0,0,255),player1,quiz.getMaxAmountOfPlayersPerTeam());
-		team1.addMember(player3);
-		team1.addMember(player2);
-		Team team2 = new Team(new SimpleStringProperty("Team2"),Color.rgb(0,0,255),player2,quiz.getMaxAmountOfPlayersPerTeam());
+		Team team1 = new Team(new SimpleStringProperty("Deborah leemans"),Color.rgb(0,0,255),2,"james",quiz.getMaxAmountOfPlayersPerTeam());
+		team1.addTeamMember(4,"Hendrik");
+		team1.addTeamMember(5,"Natalie");
+		Team team2 = new Team(new SimpleStringProperty("Team2"),Color.rgb(0,0,255),4,"Precious",quiz.getMaxAmountOfPlayersPerTeam());
 		quiz.addTeam(team1);
 		quiz.addTeam(team2);
 		quizroom=new Quizroom(quiz,this);

@@ -18,7 +18,6 @@ public class NewTeamController {
 
 
     private Stage dialogStage;
-    //private Person person;
     private boolean okClicked = false;
 
     @FXML

@@ -82,7 +82,7 @@
                                        <font>
                                           <Font size="15.0" />
                                        </font></Label>
-                                    <ListView fx:id="memberslist" prefHeight="178.0" prefWidth="222.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <ListView fx:id="teammemberslist" prefHeight="178.0" prefWidth="222.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                     <Label prefHeight="17.0" prefWidth="72.0" text="Members" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
                                        <font>
                                           <Font size="15.0" />
