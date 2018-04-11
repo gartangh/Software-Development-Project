@@ -5,11 +5,18 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-final public class EventBroker implements Runnable {
+import chat.ChatController;
+import chat.ChatMessage;
+import network.Client;
+import network.Network;
+import network.Server;
+
+final public class EventBroker implements Runnable{
 
 	protected Map<String, ArrayList<EventListener>> listeners = new HashMap<>();
 
-	protected final static EventBroker broker = new EventBroker(); // Singleton
+	final static EventBroker broker = new EventBroker(); // Singleton
+
 
 	LinkedList<QueueItem> queue = new LinkedList<>();
 
@@ -66,16 +73,20 @@ final public class EventBroker implements Runnable {
 
 	void addEvent(EventPublisher source, Event e) {
 		QueueItem qI = new QueueItem(source, e);
-		synchronized (queue) {
+		synchronized (this) {
 			queue.add(qI);
+			this.setProceed(true);
+			this.notifyAll();
 		}
 	}
 
 	private void process(EventPublisher source, Event e) {
 		for (Map.Entry<String, ArrayList<EventListener>> entry : listeners.entrySet())
-			if (entry.getKey().equals(e.type))
+			if (entry.getKey().equals(e.getType()) || entry.getKey().equals("all"))
 				for (EventListener el : entry.getValue())
-					el.handleEvent(e);
+					if (el !=source){
+						el.handleEvent(e);
+					}
 	}
 
 	@Override
@@ -90,14 +101,11 @@ final public class EventBroker implements Runnable {
 
 							break;
 						}
-						System.out.println("waiting for event");
 						wait();
-						System.out.println("received event");
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				
 				this.setProceed(false);
 			}
 

@@ -1,6 +1,7 @@
 package quiz.view;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -48,16 +49,20 @@ public class QuizRoomController extends EventPublisher{
 
 	public class QuizroomHandler implements EventListener{
 		public void handleEvent(Event e){
+			if (e!=null){
 			switch (e.getType()){
 				case "SERVER_NEW_TEAM":
 					ServerNewTeamEvent newTeamEvent=(ServerNewTeamEvent) e;
 					if (newTeamEvent.getQuizID()==Context.getContext().getQuiz().getID()) {//extra controle
-						quiz.addTeam(newTeamEvent.getTeam());//TAbleview vanzelf geupdatet via bindings
-						if (newTeamEvent.getTeam().getCaptainID()==Context.getContext().getUser().getID()){// i am the captain,change Team in context
-							Context.getContext().setTeam(newTeamEvent.getTeam());
+						Team newTeam=new Team(newTeamEvent.getQuizID(),new SimpleStringProperty(newTeamEvent.getTeamName()),newTeamEvent.getColor(),newTeamEvent.getCaptainID(),newTeamEvent.getCaptainName(),quiz.getMaxAmountOfPlayersPerTeam());
+						quiz.addTeam(newTeam);//TAbleview vanzelf geupdatet via bindings
+						if (newTeam.getCaptainID()==Context.getContext().getUser().getID()){// i am the captain,change Team in context
+							Context.getContext().setTeam(newTeam);
 						}
 					}
 				}
+			}
+			else System.out.println("received_null_event");
 		}
 	}
 
@@ -123,6 +128,7 @@ public class QuizRoomController extends EventPublisher{
     	boolean okClicked = mainQuizRoom.showNewTeam(teamevent);
         if (okClicked) {
         	publishEvent(teamevent);
+        	System.out.println(teamevent.getTeamName());
         }
 
     }

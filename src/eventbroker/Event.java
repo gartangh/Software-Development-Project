@@ -1,7 +1,10 @@
 package eventbroker;
 
-public class Event {
-	
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class Event implements Serializable {
+
 	private static long n = 0;
 	
 	protected String type;
@@ -9,7 +12,8 @@ public class Event {
 	private long id = n++;
 
 	public Event() {
-		// Empty default constructor
+		this.type = ""; //no nullpointers
+		this.message = "";
 	}
 	
 	public Event(String type, String message) {

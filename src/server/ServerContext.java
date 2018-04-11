@@ -48,8 +48,17 @@ public class ServerContext {
 		quizMap.put(newID, newQuiz);
 	}
 
-	public void addTeam(int quizID, String teamName, Color color, int captainID) {
-		if(quizMap.containsKey(quizID)) {
+	//testing code
+	public void addQuizwithQuizID(int quizID){
+		quizMap.put(quizID,new Quiz(1,5,5,5,5,20));
+	}
+	
+	public void addUserwithUserID(int userID){
+		userMap.put(userID,new User(1,"hannes","1234"));
+	}
+
+	public Team addTeam(int quizID, String teamName, Color color, int captainID) {
+		if(quizMap.containsKey(quizID) && userMap.containsKey(captainID)) {
 			Quiz q = quizMap.get(quizID);
 
 			int newID;
@@ -61,12 +70,14 @@ public class ServerContext {
 					if(t.getID() == newID) unique = false;
 				}
 			} while(!unique);
-
+			
 			//Team team = new Team(newID, teamName, color, captainID, userMap.get(captainID).getUsername());
 			Team team = new Team(newID, new SimpleStringProperty(teamName), color, captainID, userMap.get(captainID).getUsername());
 			team.setMaxAmountOfPlayers(q.getMaxAmountOfPlayersPerTeam());
 			q.addTeam(team);
 			quizMap.put(quizID, q);
+			return team;
 		}
+		else return null;
 	}
 }

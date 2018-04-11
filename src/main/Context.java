@@ -9,7 +9,7 @@ public class Context {
 
 	// Singleton
 	private static Context context = new Context();
-
+	
 	private User user;
 	private Quiz quiz;
 	private Network network;

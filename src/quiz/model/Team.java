@@ -1,5 +1,6 @@
 package quiz.model;
 
+import java.io.Serializable;
 //import java.awt.Color;
 import java.util.ArrayList;
 
@@ -10,14 +11,15 @@ import javafx.collections.ObservableMap;
 import javafx.scene.paint.Color;
 import user.model.Player;
 
-public class Team {
+public class Team implements Serializable {
 
 	private int amountOfPlayers;
 	private int maxAmountOfPlayers; // minAmountOfTeamPlayers = 1;
-	private ObservableList<Player> members=FXCollections.observableArrayList();
 	private ObservableMap<Integer,String> teamMembers=FXCollections.observableHashMap();
 	private StringProperty name;
-	private Color color;
+	private int colorRed; //to make it seriazable
+	private int colorGreen;
+	private int colorBlue;
 	private int captainID;
 	private int roundScore;
 	private int quizScore;
@@ -26,7 +28,9 @@ public class Team {
 	public Team(int teamID,StringProperty name, Color color,int captainID,String captainname,int maxamount) {
 		this.teamID=teamID;
 		this.name = name;
-		this.color = color;
+		this.colorRed = (int) (color.getRed()*255);
+		this.colorGreen = (int) (color.getGreen()*255);
+		this.colorBlue = (int) (color.getBlue()*255);
 		this.captainID=captainID;
 		this.teamMembers.put(captainID,captainname);
 		this.roundScore = 0;
@@ -38,7 +42,9 @@ public class Team {
 	public Team(int teamID,StringProperty name, Color color,int captainID,String captainname) {
 		this.teamID=teamID;
 		this.name = name;
-		this.color = color;
+		this.colorRed = (int) (color.getRed()*255);
+		this.colorGreen = (int) (color.getGreen()*255);
+		this.colorBlue = (int) (color.getBlue()*255);
 		this.captainID=captainID;
 		this.teamMembers.put(captainID,captainname);
 		this.roundScore = 0;
@@ -49,7 +55,9 @@ public class Team {
 
 	public Team(StringProperty name, Color color,int captainID,String captainname,int maxamount) {
 		this.name = name;
-		this.color = color;
+		this.colorRed = (int) (color.getRed()*255);
+		this.colorGreen = (int) (color.getGreen()*255);
+		this.colorBlue = (int) (color.getBlue()*255);
 		this.captainID=captainID;
 		this.teamMembers.put(captainID,captainname);
 		this.roundScore = 0;
@@ -77,7 +85,7 @@ public class Team {
 	}
 
 	public Color getColor() {
-		return color;
+		return Color.rgb(colorRed,colorGreen,colorBlue);
 	}
 
 	public int getAmountOfPlayers() {
@@ -86,10 +94,6 @@ public class Team {
 
 	public int getMaxAmountOfPlayers() {
 		return maxAmountOfPlayers;
-	}
-
-	public ObservableList<Player> getMembers(){
-		return members;
 	}
 
 	public ObservableMap<Integer,String> getTeamMembers(){
@@ -110,12 +114,6 @@ public class Team {
 	}
 
 	// Adders
-	public void addMember(Player player) {
-		if (amountOfPlayers < maxAmountOfPlayers) {
-			members.add(player);
-			amountOfPlayers++;
-		}
-	}
 
 	public void addTeamMember(int userID,String userName){
 		if (amountOfPlayers <maxAmountOfPlayers){
@@ -128,8 +126,10 @@ public class Team {
 		this.name.setValue(teamname);
 	}
 
-	public void setColor(Color c){
-		this.color=c;
+	public void setColor(Color color){
+		this.colorRed = ((int) color.getRed()*255);
+		this.colorGreen = ((int) color.getGreen()*255);
+		this.colorBlue = ((int) color.getBlue()*255);
 	}
 	// Removers
 	public void removePlayer(Player player) {

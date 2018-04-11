@@ -48,6 +48,7 @@ public class Quizroom {
         quizcontroller = loader.getController();
         quizcontroller.setMain(main);
         quizcontroller.setQuiz(quiz);
+        quizcontroller.addListener();
 
 	}
 
