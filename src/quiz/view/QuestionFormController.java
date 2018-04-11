@@ -1,6 +1,5 @@
 package quiz.view;
 
-import chat.ChatMessage;
 import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
@@ -11,7 +10,13 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.text.TextFlow;
-import quiz.util.VoteEvent;
+import main.Context;
+import quiz.model.Quiz;
+import quiz.model.VoteModel;
+import quiz.util.ClientVoteEvent;
+import server.Server;
+import server.ServerContext;
+import server.ServerVoteEvent;
 
 public class QuestionFormController extends EventPublisher {
 	
@@ -57,20 +62,50 @@ public class QuestionFormController extends EventPublisher {
 	private ProgressBar voteProgressC;
 	@FXML
 	private ProgressBar voteProgressD;
+	private VoteModel voteModel;
 	
 	public class QuestionFormEventHandler implements EventListener{ // TODO: add handling of events 
 		public void handleEvent(Event e){
 			switch(e.getType()) {
+			case "SERVER_VOTE":
+				ServerVoteEvent serverVote = (ServerVoteEvent) e;
+				
+				Quiz quiz = Context.getContext().getQuiz();
+				quiz.addVote(serverVote.getUserID(), serverVote.getTeamID(), serverVote.getVote());
+				Context.getContext().setQuiz(quiz);
+				voteModel.updateModel(quiz, serverVote.getTeamID());
+				
+				System.out.println("Event received and handled: " + e.getType());
+				break;
 			default:
+				System.out.println("Event received but left unhandled: " + e.getType());
 				break;
 			}
 		}
 	}
 	
+	public QuestionFormController() {
+		this.voteModel = new VoteModel();
+	}
+	
 	private QuestionFormEventHandler eventHandler;
 	
-	
 	public void initialize() {
+		eventHandler = new QuestionFormEventHandler();
+		EventBroker.getEventBroker().addEventListener(eventHandler);
+		
+		voteProgressA.progressProperty().bind(voteModel.getProgressPropertyA());
+		voteProgressB.progressProperty().bind(voteModel.getProgressPropertyB());
+		voteProgressC.progressProperty().bind(voteModel.getProgressPropertyC());
+		voteProgressD.progressProperty().bind(voteModel.getProgressPropertyD());
+		
+		percentageA.textProperty().bind(voteModel.getPercentagePropertyA());
+		percentageB.textProperty().bind(voteModel.getPercentagePropertyB());
+		percentageC.textProperty().bind(voteModel.getPercentagePropertyC());
+		percentageD.textProperty().bind(voteModel.getPercentagePropertyD());
+		numberOfVotes.textProperty().bind(voteModel.getNumberOfVotesProperty());
+		
+		voteModel.updateModel(Context.getContext().getQuiz(), Context.getContext().getTeamID());
 	}
 	
 	private void handleCheck(int answer) {
@@ -111,8 +146,8 @@ public class QuestionFormController extends EventPublisher {
 	private void handleVote() {
 		int vote = this.getChecked();
 		if(vote >= 0) {
-			VoteEvent v = new VoteEvent(vote);
-			this.publishEvent(v);
+			ClientVoteEvent cve = new ClientVoteEvent(vote);
+			this.publishEvent(cve);
 		}
 	}
 	

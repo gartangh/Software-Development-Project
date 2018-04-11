@@ -11,9 +11,12 @@ import eventbroker.EventPublisher;
 public class Network extends EventPublisher implements EventListener {
 
 	private Connection connection;
+
 	private boolean isConnected = false;
-	
+
 	private ConnectionListener connectionListener;
+	
+	private InetAddress networkAddress;
 
 	public Network() {
 		// Empty constructor
@@ -22,12 +25,15 @@ public class Network extends EventPublisher implements EventListener {
 	// A factory method would be a better solution
 	public Network(int serverPort) {
 		// Server 2
-		// Not safe when multi-threated
+		// Not safe when multi-threaded
 		connectionListener = new ConnectionListener(this, serverPort);
 		new Thread(connectionListener).start();
 	}
 
 	public Connection connect(InetAddress address, int port) {
+		
+		networkAddress = address;
+		
 		try {
 			// Client 2.1
 			Socket socket = new Socket(address, port);
@@ -37,7 +43,6 @@ public class Network extends EventPublisher implements EventListener {
 			connection.receive();
 
 			isConnected = true;
-			
 			return connection;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -74,5 +79,13 @@ public class Network extends EventPublisher implements EventListener {
 
 	public boolean isConnected() {
 		return isConnected;
+	}
+
+	public InetAddress getNetworkAddress() {
+		return networkAddress;
+	}
+
+	public Connection getConnection() {
+		return connection;
 	}
 }

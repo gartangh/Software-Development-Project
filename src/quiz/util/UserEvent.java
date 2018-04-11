@@ -11,6 +11,7 @@ public class UserEvent extends Event {
 		super();
 		this.userID = Context.getContext().getUser().getID();
 		this.type = "USER";
+		this.message = "";
 	}
 	
 	public int getUserID() {
