@@ -1,19 +1,19 @@
-package user;
+package user.model;
 
-import application.Context;
+import main.Context;
 
+@SuppressWarnings("serial")
 public class Player extends Guest {
 
 	private int roundScore;
 	private int quizScore;
 
 	public Player(Guest guest) {
-		super (guest);
-		
+		// Copy constructor
+		super(guest);
+
 		this.roundScore = 0;
 		this.quizScore = 0;
-		
-		Context.getContext().setUser(this);
 	}
 
 	// Getters
@@ -41,7 +41,11 @@ public class Player extends Guest {
 
 	// Upcasting
 	public Guest castToGuest() {
-		return new Guest(this);
+		Guest guest = new Guest(this);
+		
+		Context.getContext().setUser(guest);
+		
+		return guest;
 	}
 
 }

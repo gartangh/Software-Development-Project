@@ -43,7 +43,6 @@ public class Network extends EventPublisher implements EventListener {
 			connection.receive();
 
 			isConnected = true;
-
 			return connection;
 		} catch (IOException e) {
 			e.printStackTrace();

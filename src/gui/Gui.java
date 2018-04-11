@@ -6,12 +6,9 @@ import java.util.Arrays;
 
 import application.Context;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.PasswordField;
@@ -26,18 +23,18 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
+
 import quiz.Quiz;
 import user.Host;
 import user.User;
+import user.model.User;
 
 public class Gui extends Application implements Runnable {
 
 	Stage window;
+	
 	Scene loginScene, quizListScene, quizScene;
 	
 	boolean readQuizzes=false;
@@ -55,11 +52,14 @@ public class Gui extends Application implements Runnable {
 	private ArrayList<Quiz> listOfQuizzes = new ArrayList<>(Arrays.asList(quiz1, quiz2));
 	private Quiz currentQuiz;
 	
+	Scene loginScene;
+	Scene quizListScene;
+
 	public Gui() {
-		// TODO Auto-generated constructor stub
+		// Empty constructor
 	}
-	
-	public void startContextGUI(){
+
+	public void startContextGUI() {
 		new Thread(this).start();
 	}
 
@@ -67,6 +67,7 @@ public class Gui extends Application implements Runnable {
 	public void run() {
 		launch();
 	}
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		
@@ -86,20 +87,28 @@ public class Gui extends Application implements Runnable {
 		};
 		
 		//loginScene
+		window = primaryStage;
+		window.setTitle("Quiz");
+		window.setOnCloseRequest(e -> {
+			e.consume();
+			closeProgram();
+		});
+		
 		GridPane loginLayout = new GridPane();
-		loginLayout.setPadding(new Insets(10,10,10,10));
+		loginLayout.setPadding(new Insets(10, 10, 10, 10));
 		loginLayout.setVgap(8);
 		loginLayout.setHgap(10);
-		
+
 		Label labelUsername = new Label("Username: ");
 		GridPane.setConstraints(labelUsername, 0, 0);
-		TextField username = new TextField();
-		username.setPromptText("John Cena");
-		username.setFocusTraversable(false);
-		GridPane.setConstraints(username, 1, 0);
-		
+		TextField mUsername = new TextField();
+		mUsername.setPromptText("John Cena");
+		mUsername.setFocusTraversable(false);
+		GridPane.setConstraints(mUsername, 1, 0);
+
 		Label labelPassword = new Label("Password: ");
 		GridPane.setConstraints(labelPassword, 0, 1);
+		
 		PasswordField password = new PasswordField();
 		password.setPromptText("•••••••••");
 		password.setFocusTraversable(false);
@@ -167,7 +176,7 @@ public class Gui extends Application implements Runnable {
 		});
 		quizListLayout.setCenter(listView);
 		BorderPane.setAlignment(listView, Pos.CENTER);
-		
+
 		FocusedButton buttonBack = new FocusedButton("Log out");
 		buttonBack.setOnAction(e -> {
 			readQuizzes=false;
@@ -223,11 +232,15 @@ public class Gui extends Application implements Runnable {
 	
 	
 	public void closeProgram(){
-		Boolean answer = ConfirmBox.display("Terminate", "Are you sure?");
-		if(answer)
-			window.close();
+
+		window.setScene(loginScene);
+		window.show();
 	}
 
-	
+	public void closeProgram() {
+		Boolean answer = ConfirmBox.display("Terminate", "Are you sure?");
+		if (answer)
+			window.close();
+	}
 
 }

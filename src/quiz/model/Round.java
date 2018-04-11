@@ -1,4 +1,8 @@
-package quiz;
+package quiz.model;
+
+import quiz.util.Difficulty;
+import quiz.util.Theme;
+import quiz.util.Type;
 
 public class Round {
 

@@ -17,6 +17,7 @@ final public class EventBroker implements Runnable{
 
 	final static EventBroker broker = new EventBroker(); // Singleton
 
+
 	LinkedList<QueueItem> queue = new LinkedList<>();
 
 	private boolean stop = false;
@@ -81,7 +82,7 @@ final public class EventBroker implements Runnable{
 
 	private void process(EventPublisher source, Event e) {
 		for (Map.Entry<String, ArrayList<EventListener>> entry : listeners.entrySet())
-			if (entry.getKey().equals(e.type))
+			if (entry.getKey().equals(e.getType()))
 				for (EventListener el : entry.getValue()) {
 					switch (e.getType()) {
 						case "CHAT":
@@ -131,7 +132,6 @@ final public class EventBroker implements Runnable{
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-
 				this.setProceed(false);
 			}
 

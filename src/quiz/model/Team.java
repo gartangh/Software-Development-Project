@@ -1,8 +1,8 @@
-package quiz;
+package quiz.model;
 
 import java.awt.Color;
 
-import user.Player;
+import user.model.Player;
 
 public class Team {
 

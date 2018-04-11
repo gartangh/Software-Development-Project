@@ -10,7 +10,6 @@ public class Event implements Serializable {
 	protected String type;
 	protected String message;
 	private long id = n++;
-	
 
 	public Event() {
 		// Empty default constructor

@@ -11,6 +11,7 @@ import eventbroker.EventBroker;
 
 public class Connection {
 
+
 	private Socket socket;
 	private ObjectInputStream objectInputStream;
 	private ObjectOutputStream objectOutputStream;
@@ -106,5 +107,4 @@ public class Connection {
 		}
 
 	}
-
 }
