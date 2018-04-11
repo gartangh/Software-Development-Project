@@ -9,7 +9,6 @@ import chat.ChatController;
 import chat.ChatMessage;
 import network.Client;
 import network.Network;
-import network.Server;
 
 final public class EventBroker implements Runnable{
 
@@ -82,7 +81,7 @@ final public class EventBroker implements Runnable{
 
 	private void process(EventPublisher source, Event e) {
 		for (Map.Entry<String, ArrayList<EventListener>> entry : listeners.entrySet())
-			if (entry.getKey().equals(e.getType()))
+			if (entry.getKey().equals(e.getType()) || entry.getKey().equals("all"))
 				for (EventListener el : entry.getValue())
 					el.handleEvent(e);
 	}

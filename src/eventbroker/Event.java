@@ -7,6 +7,7 @@ public class Event implements Serializable{
 	private static long n = 0;
 	
 	protected String type;
+
 	protected String message;
 	private long id = n++;
 
@@ -30,6 +31,10 @@ public class Event implements Serializable{
 	@Override
 	public String toString() {
 		return "ID" + id + "[" + type + "] : " + message;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }

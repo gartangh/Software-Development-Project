@@ -17,9 +17,11 @@ public class ServerContext {
 	private static ServerContext context = new ServerContext();
 
 	private Map<Integer, User> userMap = new HashMap<Integer, User>();
+
+
 	private Map<Integer, Quiz> quizMap = new HashMap<Integer, Quiz>();
 	private Network network;
-	
+
 	private Map<Integer, Connection> connectionMap = new HashMap<Integer, Connection>();
 
 	// Constructors
@@ -31,13 +33,14 @@ public class ServerContext {
 		return context;
 	}
 	
-	public void addUser(String username, String password) {
+	public int addUser(String username, String password) {
 		int newID;
 		do {
 			newID = (int) (Math.random() * Integer.MAX_VALUE);
 		} while(userMap.containsKey(newID));
 		User newUser = new User(newID, username, password);
 		userMap.put(newID, newUser);
+		return newID;
 	}
 	
 	public void addQuiz(int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds, int maxAmountOfQuestionsPerRound, int hostID) {
@@ -76,5 +79,19 @@ public class ServerContext {
 
 	public Map<Integer, Connection> getConnectionMap() {
 		return connectionMap;
+	}
+	
+	public Map<Integer, User> getUserMap() {
+		return userMap;
+	}
+	
+
+	
+	public Network getNetwork() {
+		return network;
+	}
+
+	public void setNetwork(Network network) {
+		this.network = network;
 	}
 }

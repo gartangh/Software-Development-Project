@@ -4,6 +4,7 @@ import java.net.InetAddress;
 
 import chat.ChatPanel;
 import eventbroker.EventBroker;
+import eventbroker.EventPublisher;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
@@ -11,15 +12,18 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import main.Context;
 import quiz.util.ClientCreateEvent;
 import server.ServerContext;
+import user.model.User;
 
-public class Client extends Application{
+public class Client extends Application {
 
 	private Stage window;
 	
 	private static Network network;
-
+	private static Connection connection;
+	
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -31,7 +35,9 @@ public class Client extends Application{
 		
 		// Valid input
 		String name = "Arthur";
-		int port = Integer.parseInt("1236");
+		User user = new User(0, name, "test");
+		Context.getContext().setUser(user);
+		int port = Integer.parseInt("1026");
 
 		// Start event broker
 		EventBroker.getEventBroker().start();
@@ -39,8 +45,11 @@ public class Client extends Application{
 		// Create new network (Server that listens to incoming
 		// connections)
 		network = new Network(port);
-		Connection connection = connectToNetwork(InetAddress.getLocalHost(), 1234);
-		ClientCreateEvent clientCreateEvent = new ClientCreateEvent(connection);
+		connection = connectToNetwork(InetAddress.getLocalHost(), 1025);
+		ClientCreateEvent clientCreateEvent = new ClientCreateEvent(user, connection);
+				// --> send event over network
+		EventBroker.getEventBroker().addEventListener(network);
+		
 		// ChatPanel (ChatModel and ChatController) are created
 		ChatPanel chatPanel = ChatPanel.createChatPanel();
 		chatPanel.getChatModel().setName(name);
@@ -66,5 +75,9 @@ public class Client extends Application{
 
 	public static Network getNetwork() {
 		return network;
+	}
+	
+	public static Connection getConnection() {
+		return connection;
 	}
 }
