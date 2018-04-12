@@ -22,8 +22,10 @@ import user.model.User;
 
 public class Network extends EventPublisher implements EventListener {
 
+	// ConnectionID -> Connection
 	private Map<Integer, Connection> connectionMap = new HashMap<Integer, Connection>();
 
+	// UserID -> ConnectionID
 	private Map<Integer, Integer> UserIDConnectionIDMap = new HashMap<Integer, Integer>();
 
 	private ConnectionListener connectionListener;
