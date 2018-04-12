@@ -1,5 +1,7 @@
 package quiz.view;
 
+import java.util.ArrayList;
+
 import chat.ChatMessage;
 import eventbroker.Event;
 import eventbroker.EventBroker;
@@ -65,6 +67,9 @@ public class QuestionFormController extends EventPublisher {
 				break;
 			}
 		}
+
+		@Override
+		public void handleEvent(Event e, ArrayList<Integer> destinations) {}
 	}
 	
 	private QuestionFormEventHandler eventHandler;

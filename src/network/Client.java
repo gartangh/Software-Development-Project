@@ -1,6 +1,7 @@
 package network;
 
 import java.net.InetAddress;
+import java.util.concurrent.TimeUnit;
 
 import chat.ChatPanel;
 import eventbroker.EventBroker;
@@ -37,7 +38,7 @@ public class Client extends Application {
 		String name = "Arthur";
 		User user = new User(0, name, "test");
 		Context.getContext().setUser(user);
-		int port = Integer.parseInt("1026");
+		int port = Integer.parseInt("1029");
 
 		// Start event broker
 		EventBroker.getEventBroker().start();
@@ -49,11 +50,14 @@ public class Client extends Application {
 		ClientCreateEvent clientCreateEvent = new ClientCreateEvent(user, connection);
 				// --> send event over network
 		EventBroker.getEventBroker().addEventListener(network);
-		
+
 		// ChatPanel (ChatModel and ChatController) are created
 		ChatPanel chatPanel = ChatPanel.createChatPanel();
 		chatPanel.getChatModel().setName(name);
 
+		TimeUnit.SECONDS.sleep(1);
+		EventBroker.getEventBroker().addEvent(network, clientCreateEvent);
+		
 		// Create GUI
 		BorderPane borderPane = new BorderPane();
 		borderPane.setBottom(chatPanel.getContent());

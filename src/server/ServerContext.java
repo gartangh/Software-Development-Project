@@ -22,8 +22,6 @@ public class ServerContext {
 	private Map<Integer, Quiz> quizMap = new HashMap<Integer, Quiz>();
 	private Network network;
 
-	private Map<Integer, Connection> connectionMap = new HashMap<Integer, Connection>();
-
 	// Constructors
 	private ServerContext() {
 		// Empty default constructor
@@ -72,20 +70,10 @@ public class ServerContext {
 			quizMap.put(quizID, q);
 		}
 	}
-	
-	public void addConnection(int userID, Connection connection) {
-		connectionMap.put(userID, connection);
-	}
 
-	public Map<Integer, Connection> getConnectionMap() {
-		return connectionMap;
-	}
-	
 	public Map<Integer, User> getUserMap() {
 		return userMap;
 	}
-	
-
 	
 	public Network getNetwork() {
 		return network;

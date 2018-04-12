@@ -1,5 +1,8 @@
 package chat;
 
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
 import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
@@ -10,6 +13,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import network.Client;
+import quiz.util.ClientCreateEvent;
+import server.ServerContext;
+import server.ServerReturnUserIDEvent;
+import user.model.User;
 
 final public class ChatController extends EventPublisher {
 
@@ -77,20 +85,52 @@ final public class ChatController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event e) {
-			if (e instanceof ChatMessage) {
-				ChatMessage chatMessage = (ChatMessage) e; // Safe cast
-				chatModel.addMessage(chatMessage);
-				
-				// Update local GUI
-				Platform.runLater(new Runnable() {
-					public void run() {
-						// Update messages in chatTextArea
-						chatModel.update();
-					}
-				});
-			} else
-				System.out.println("Not an instance of ChatMessage!");
+			
+			ChatMessage chatMessage;
+			
+			switch(e.getType()) {
+				case "CLIENT_CREATE":
+					Client.getNetwork().handleEvent(e);
+					break;
+				case "SERVER_RETURN_USERID":
+					ServerReturnUserIDEvent serverCreate = (ServerReturnUserIDEvent) e;
+					User user = main.Context.getContext().getUser();
+					user.setUserID(serverCreate.getUserID());
+					main.Context.getContext().setUser(user);
+					System.out.println("Nailed it");
+					break;
+					
+				case "CLIENT_CHAT":
+					chatMessage = (ChatMessage) e;
+					chatModel.addMessage(chatMessage);
+					
+					// Update local GUI
+					Platform.runLater(new Runnable() {
+						public void run() {
+							// Update messages in chatTextArea
+							chatModel.update();
+						}
+					});
+					break;
+					
+				case "SERVER_CHAT":
+					chatMessage = (ChatMessage) e;
+					chatModel.addMessage(chatMessage);
+					
+					// Update local GUI
+					Platform.runLater(new Runnable() {
+						public void run() {
+							// Update messages in chatTextArea
+							chatModel.update();
+						}
+					});
+					break;
+					
+			}
 		}
+
+		@Override
+		public void handleEvent(Event e, ArrayList<Integer> destinations) {}
 
 	}
 

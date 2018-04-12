@@ -31,9 +31,7 @@ public class ChatPanel {
 		chatPanel.chatController = loader.getController();
 		chatPanel.chatModel = chatPanel.chatController.getChatModel();
 
-		EventBroker.getEventBroker().addEventListener(ChatMessage.TYPE_CHAT,
-				chatPanel.chatController.getChatEventHandler());
-
+		EventBroker.getEventBroker().addEventListener(chatPanel.chatController.getChatEventHandler());
 		return chatPanel;
 	}
 

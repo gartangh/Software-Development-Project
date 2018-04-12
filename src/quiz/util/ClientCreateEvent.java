@@ -1,26 +1,27 @@
 package quiz.util;
 
+import java.io.Serializable;
+
 import network.Connection;
 import user.model.User;
 
 @SuppressWarnings("serial")
-
-public class ClientCreateEvent extends UserEvent {
+public class ClientCreateEvent extends UserEvent implements Serializable {
 	
 	private String username;
 	private String password;
-	private Connection connection;
+	private int connectionID;
 	
 	public ClientCreateEvent(User user, Connection connection) {
 		super();
-		this.connection = connection;
+		this.connectionID = connection.getClientConnectionID();
 		this.username = user.getUsername();
 		this.password = user.getPassword();
 		this.type = "CLIENT_CREATE";
 	}
 
-	public Connection getConnection() {
-		return connection;
+	public int getConnectionID() {
+		return connectionID;
 	}
 
 	public String getUsername() {

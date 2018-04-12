@@ -19,6 +19,10 @@ final public class EventBroker implements Runnable{
 
 	LinkedList<QueueItem> queue = new LinkedList<>();
 
+	public LinkedList<QueueItem> getQueue() {
+		return queue;
+	}
+
 	private boolean stop = false;
 	private boolean proceed;
 	private boolean done;
@@ -70,7 +74,7 @@ final public class EventBroker implements Runnable{
 		}
 	}
 
-	void addEvent(EventPublisher source, Event e) {
+	public void addEvent(EventPublisher source, Event e) {
 		QueueItem qI = new QueueItem(source, e);
 		synchronized (this) {
 			queue.add(qI);
@@ -83,7 +87,8 @@ final public class EventBroker implements Runnable{
 		for (Map.Entry<String, ArrayList<EventListener>> entry : listeners.entrySet())
 			if (entry.getKey().equals(e.getType()) || entry.getKey().equals("all"))
 				for (EventListener el : entry.getValue())
-					el.handleEvent(e);
+					if(el != source)
+						el.handleEvent(e);
 	}
 
 	@Override
@@ -113,7 +118,7 @@ final public class EventBroker implements Runnable{
 					if (!queue.isEmpty())
 						qI = queue.poll();
 				}
-
+				
 				if (qI != null)
 					process(qI.source, qI.event);
 			}

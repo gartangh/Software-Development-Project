@@ -9,10 +9,6 @@ public class User implements Serializable {
 
 	private final static String regex = "^[a-zA-Z0-9._-]{3,}$";
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
 	private String username;
 	private String password;
 	private int level;
@@ -191,6 +187,15 @@ public class User implements Serializable {
 
 	public String getPassword() {
 		return password;
+	}
+	
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	public void setUserID(int userID) {
+		this.userID = userID;
 	}
 
 
