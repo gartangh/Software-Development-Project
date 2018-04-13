@@ -1,5 +1,9 @@
 package chat;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -32,10 +36,20 @@ final public class ChatController extends EventPublisher {
 
 	private ChatEventHandler chatEventHandler;
 	private ChatModel chatModel;
-
+	
+	ArrayList<String> prohibitedWords = new ArrayList<>();
+	
 	public ChatController() {
 		this.chatEventHandler = new ChatEventHandler();
 		this.chatModel = new ChatModel();
+		try (BufferedReader br = new BufferedReader(new FileReader("./Files/swearWords.txt"))) {
+		    String line;
+		    while ((line = br.readLine()) != null) {
+		       prohibitedWords.add(line);
+		    }
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	// Getters
@@ -54,8 +68,31 @@ final public class ChatController extends EventPublisher {
 	public void handle(ActionEvent e) {
 		// Get message from chatTextField
 		String message = chatTextField.getText();
-		if (message != null && message.length() > 0)
+		if(message != null && message.length() > 0) {
+			message = checkMessage(message);
 			sendMessage(message);
+		}
+	}
+
+	private String checkMessage(String message) {
+		int lengthMessage = message.length();
+		String newMessage = message.toLowerCase();
+		boolean first = false;
+		for(int i=0;i<lengthMessage-1;i++)
+			for(int j=i+1;j<=lengthMessage;j++)
+				for(int k=0;k<prohibitedWords.size();k++)
+					if(newMessage.substring(i, j).equals(prohibitedWords.get(k))) {
+						newMessage = newMessage.substring(0, i);
+						for(int l=0;l<j-i;l++)
+							newMessage += "*";
+						if(j<lengthMessage)
+							if(!first) newMessage += message.substring(j);
+							else newMessage += newMessage.substring(j);
+					}
+		String tempMessage = newMessage;
+		newMessage = newMessage.substring(0,1).toUpperCase();
+		if(tempMessage.length() > 1) newMessage += tempMessage.substring(1);
+		return newMessage;
 	}
 
 	public void sendMessage(String message) {

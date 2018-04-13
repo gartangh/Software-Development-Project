@@ -40,7 +40,7 @@ public class Client extends Application {
 		String name = "Arthur";
 		user = new User(0, name, "test");
 		Context.getContext().setUser(user);
-		int port = Integer.parseInt("1028");
+		int port = Integer.parseInt("1026");
 
 		// Start event broker
 		EventBroker.getEventBroker().start();
