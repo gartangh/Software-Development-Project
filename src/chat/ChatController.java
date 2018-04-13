@@ -47,6 +47,7 @@ final public class ChatController extends EventPublisher {
 		    while ((line = br.readLine()) != null) {
 		       prohibitedWords.add(line);
 		    }
+		    br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
