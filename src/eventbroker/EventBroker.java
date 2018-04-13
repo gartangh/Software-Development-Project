@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+import chat.ChatController;
+import chat.ChatMessage;
+import network.Client;
+import network.Network;
 
 final public class EventBroker implements Runnable{
 
@@ -14,6 +18,10 @@ final public class EventBroker implements Runnable{
 
 
 	LinkedList<QueueItem> queue = new LinkedList<>();
+
+	public LinkedList<QueueItem> getQueue() {
+		return queue;
+	}
 
 	private boolean stop = false;
 	private boolean proceed;
@@ -66,7 +74,7 @@ final public class EventBroker implements Runnable{
 		}
 	}
 
-	void addEvent(EventPublisher source, Event e) {
+	public void addEvent(EventPublisher source, Event e) {
 		QueueItem qI = new QueueItem(source, e);
 		synchronized (this) {
 			queue.add(qI);
@@ -109,7 +117,7 @@ final public class EventBroker implements Runnable{
 					if (!queue.isEmpty())
 						qI = queue.poll();
 				}
-
+				
 				if (qI != null)
 					process(qI.source, qI.event);
 			}

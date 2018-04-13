@@ -1,0 +1,11 @@
+.list-view .list-cell:even {
+	-fx-text-fill: black;
+}
+
+.list-view .list-cell:odd {
+	-fx-text-fill: black;
+}
+
+.list-cell:empty {
+    -fx-opacity: 0;
+}

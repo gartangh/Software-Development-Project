@@ -13,7 +13,6 @@ public class QuizzerEvent extends UserEvent{
 		this.teamID = Context.getContext().getTeamID();
 		this.quizID = Context.getContext().getQuiz().getID();
 		this.type = "QUIZZER";
-		this.message = "";
 	}
 	
 	public int getTeamID() {

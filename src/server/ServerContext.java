@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javafx.scene.paint.Color;
+
 import network.Network;
+import network.Connection;
 import quiz.model.Quiz;
 import quiz.model.Team;
 import user.model.Host;
@@ -30,9 +32,9 @@ public class ServerContext {
 	
 	public void getSimpleUsers() {
 		Map<Integer, String> res = new HashMap<Integer, String>();
-		
+		// TODO
 	}
-	
+    
 	public int addUser(String username, String password) {
 		int newID;
 		do {
@@ -40,18 +42,19 @@ public class ServerContext {
 		} while(userMap.containsKey(newID));
 		
 		newID = 1; // Testing purposes
-		
+
 		User newUser = new User(newID, username, password);
 		userMap.put(newID, newUser);
 		return newID;
 	}
 	
+
 	public int addQuiz(int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds, int maxAmountOfQuestionsPerRound, int hostID) {
 		int newID;
 		do {
 			newID = (int) (Math.random() * Integer.MAX_VALUE);
 		} while(quizMap.containsKey(newID));
-		
+
 		newID = 1; // Testing purposes
 		
 		Quiz newQuiz = new Quiz(newID, maxAmountOfTeams, maxAmountOfPlayersPerTeam, maxAmountOfRounds, maxAmountOfQuestionsPerRound, hostID);
@@ -72,14 +75,13 @@ public class ServerContext {
 					if(t.getID() == newID) unique = false;
 				}
 			} while(!unique);
-			
+
 			newID = 1; // Testing purposes
-			
+
 			Team team = new Team(newID, teamName, color, captainID, userMap.get(captainID).getUsername());
 			team.setMaxAmountOfPlayers(q.getMaxAmountOfPlayersPerTeam());
 			q.addTeam(team);
-			quizMap.put(quizID, q);
-			
+			quizMap.put(quizID, q);			
 			return newID;
 		}
 		return -1;
@@ -91,5 +93,17 @@ public class ServerContext {
 	
 	public void updateQuiz(Quiz updatedQuiz) {
 		quizMap.put(updatedQuiz.getID(), updatedQuiz);
+	}
+
+	public Map<Integer, User> getUserMap() {
+		return userMap;
+	}
+	
+	public Network getNetwork() {
+		return network;
+	}
+
+	public void setNetwork(Network network) {
+		this.network = network;
 	}
 }

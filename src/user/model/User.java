@@ -183,5 +183,20 @@ public class User implements Serializable {
 
 		return true;
 	}
+	
+
+	public String getPassword() {
+		return password;
+	}
+	
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	public void setUserID(int userID) {
+		this.userID = userID;
+	}
+
 
 }

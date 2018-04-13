@@ -1,7 +1,9 @@
 package quiz.model;
 
+import java.util.HashMap;
+import java.util.Map;
+import javafx.util.Pair;
 import java.io.Serializable;
-//import java.awt.Color;
 import java.util.ArrayList;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -16,7 +18,7 @@ public class Team implements Serializable {
 
 	private int amountOfPlayers;
 	private int maxAmountOfPlayers; // minAmountOfTeamPlayers = 1;
-	private ObservableMap<Integer,String> teamMembers=FXCollections.observableHashMap();
+	private ObservableMap<Integer,String> players=FXCollections.observableHashMap();
 	private StringProperty name;
 	private int colorRed; //to make it seriazable
 	private int colorGreen;
@@ -110,7 +112,7 @@ public class Team implements Serializable {
 	public int getMaxAmountOfPlayers() {
 		return maxAmountOfPlayers;
 	}
-
+  
 	public ObservableMap<Integer,String> getTeamMembers(){
 		return teamMembers;
 	}
@@ -122,17 +124,20 @@ public class Team implements Serializable {
 	public int getQuizScore() {
 		return quizScore;
 	}
+	
+	public int getID() {
+		return teamID;
+	}
 
 	// Setters
 	public void setMaxAmountOfPlayers(int maxAmountOfPlayers) {
-		this.maxAmountOfPlayers = maxAmountOfPlayers;
+		if(maxAmountOfPlayers > amountOfPlayers) this.maxAmountOfPlayers = maxAmountOfPlayers;
 	}
 
 	// Adders
-
-	public void addTeamMember(int userID,String userName){
-		if (amountOfPlayers <maxAmountOfPlayers){
-			teamMembers.put(userID,userName);
+	public void addPlayer(int playerID, String playerName) {
+		if (amountOfPlayers < maxAmountOfPlayers) {
+			players.put(playerID, playerName);
 			amountOfPlayers++;
 		}
 	}
@@ -147,8 +152,8 @@ public class Team implements Serializable {
 		this.colorBlue = ((int) color.getBlue()*255);
 	}
 	// Removers
-	public void removePlayer(Player player) {
-		// TODO: If remove player from players worked: amountOfPlayers--;
+	public void removePlayer(int playerID) {
+		if(players.remove(playerID)!=null) amountOfPlayers--;
 	}
 
 }

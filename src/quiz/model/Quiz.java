@@ -21,7 +21,6 @@ public class Quiz {
 	private int quizmasterID;
 	private Map<Integer, Map<Integer, Integer>> votes;	// Map(teamID -> Map(userID -> vote))
 	private int currentRound;
-	
 
 	public Quiz(int quizID, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds, int maxAmountOfQuestionsPerRound, int hostID) {
 		this.quizID=quizID;
@@ -76,7 +75,7 @@ public class Quiz {
 	public int getQuizmasterID() {
 		return quizmasterID;
 	}
-
+  
 	public int getID() {
 		return quizID;
 	}

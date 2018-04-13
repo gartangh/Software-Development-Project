@@ -9,7 +9,6 @@ public class ClientVoteEvent extends QuizzerEvent{
 		super();
 		this.vote = vote;
 		this.type = "CLIENT_VOTE";
-		this.message = "";
 	}
 	
 	public int getVote() {

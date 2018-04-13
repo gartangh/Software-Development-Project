@@ -3,6 +3,7 @@ package network;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.Socket;
 import java.net.SocketException;
 
@@ -16,6 +17,9 @@ public class Connection {
 	private ObjectInputStream objectInputStream;
 	private ObjectOutputStream objectOutputStream;
 	private Network network;
+
+	private static int n = 0;
+	private int clientConnectionID = n;
 
 	// Package local would be safer
 	public Connection(Socket socket, Network network) {
@@ -75,6 +79,14 @@ public class Connection {
 		System.out.println("Connection closed");
 	}
 
+	public int getClientConnectionID() {
+		return clientConnectionID;
+	}
+	
+	public void setClientConnectionID(int clientConnectionID) {
+		this.clientConnectionID = clientConnectionID;
+	}
+
 	// Internal class
 	private class ReceiverThread implements Runnable {
 
@@ -85,12 +97,14 @@ public class Connection {
 					try {
 						// Server 4.2.2.2.1
 						Event event = (Event) objectInputStream.readObject();
-						if (event.getMessage().equals("stop")) {
-							EventBroker.getEventBroker().stop();
+						if(event.getMessage() != null) {
+							if (event.getMessage().equals("stop")) {
+								EventBroker.getEventBroker().stop();
 
-							break;
-						} else
-							network.publishEvent(event);
+								break;
+							} 
+						}
+						network.publishEvent(event);
 					} catch (SocketException e) {
 						//e.printStackTrace();
 

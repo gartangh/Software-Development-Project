@@ -1,5 +1,8 @@
 package quiz.view;
 
+import java.util.ArrayList;
+
+import chat.ChatMessage;
 import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
@@ -64,6 +67,7 @@ public class QuestionFormController extends EventPublisher {
 	private ProgressBar voteProgressC;
 	@FXML
 	private ProgressBar voteProgressD;
+
 	private AnswerVoteModel answerVoteModel;
 	
 	public class QuestionFormEventHandler implements EventListener{ // TODO: add handling of events 
@@ -180,5 +184,5 @@ public class QuestionFormController extends EventPublisher {
 			ClientAnswerEvent cae = new ClientAnswerEvent(1, 1, answer); // Testing purposes
 			this.publishEvent(cae);
 		}
-	}	
+	}
 }
