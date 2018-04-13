@@ -75,21 +75,25 @@ final public class ChatController extends EventPublisher {
 		}
 	}
 
+	
+	// TO DO: Change: for all prohibitedWords do: if contains, loop! else next word => faster!
 	private String checkMessage(String message) {
 		int lengthMessage = message.length();
+		String oldMessage = message;
 		String newMessage = message.toLowerCase();
-		boolean first = false;
-		for(int i=0;i<lengthMessage-1;i++)
-			for(int j=i+1;j<=lengthMessage;j++)
-				for(int k=0;k<prohibitedWords.size();k++)
-					if(newMessage.substring(i, j).equals(prohibitedWords.get(k))) {
-						newMessage = newMessage.substring(0, i);
-						for(int l=0;l<j-i;l++)
-							newMessage += "*";
-						if(j<lengthMessage)
-							if(!first) newMessage += message.substring(j);
-							else newMessage += newMessage.substring(j);
-					}
+		for(int k=0;k<prohibitedWords.size();k++) {
+			if(newMessage.contains(prohibitedWords.get(k)))
+			for(int i=0;i<lengthMessage-1;i++)
+				for(int j=i+1;j<=lengthMessage;j++)
+						if(newMessage.substring(i, j).equals(prohibitedWords.get(k))) {
+							newMessage = oldMessage.substring(0, i);
+							for(int l=0;l<j-i;l++)
+								newMessage += "*";
+							if(j<lengthMessage)
+								newMessage += oldMessage.substring(j);
+							oldMessage = newMessage;
+						}
+		}
 		String tempMessage = newMessage;
 		newMessage = newMessage.substring(0,1).toUpperCase();
 		if(tempMessage.length() > 1) newMessage += tempMessage.substring(1);
