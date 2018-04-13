@@ -95,7 +95,7 @@
                         <ButtonBar layoutY="497.0" minWidth="300.0" prefHeight="40.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
                           <buttons>
                               <Button fx:id="voteButton" mnemonicParsing="false" onAction="#handleVote" text="Vote" />
-                            <Button fx:id="confirmButton" mnemonicParsing="false" text="Confirm" />
+                            <Button fx:id="confirmButton" mnemonicParsing="false" onAction="#handleAnswer" text="Confirm" />
                           </buttons>
                            <padding>
                               <Insets right="5.0" />

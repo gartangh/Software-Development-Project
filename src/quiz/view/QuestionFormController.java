@@ -12,9 +12,11 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.text.TextFlow;
 import main.Context;
 import quiz.model.Quiz;
-import quiz.model.VoteModel;
+import quiz.model.AnswerVoteModel;
+import quiz.util.ClientAnswerEvent;
 import quiz.util.ClientVoteEvent;
 import server.Server;
+import server.ServerAnswerEvent;
 import server.ServerContext;
 import server.ServerVoteEvent;
 
@@ -62,18 +64,29 @@ public class QuestionFormController extends EventPublisher {
 	private ProgressBar voteProgressC;
 	@FXML
 	private ProgressBar voteProgressD;
-	private VoteModel voteModel;
+	private AnswerVoteModel answerVoteModel;
 	
 	public class QuestionFormEventHandler implements EventListener{ // TODO: add handling of events 
 		public void handleEvent(Event e){
 			switch(e.getType()) {
 			case "SERVER_VOTE":
+				
 				ServerVoteEvent serverVote = (ServerVoteEvent) e;
 				
-				Quiz quiz = Context.getContext().getQuiz();
-				quiz.addVote(serverVote.getUserID(), serverVote.getTeamID(), serverVote.getVote());
-				Context.getContext().setQuiz(quiz);
-				voteModel.updateModel(quiz, serverVote.getTeamID());
+				Quiz quiz0 = Context.getContext().getQuiz();
+				quiz0.addVote(serverVote.getUserID(), serverVote.getTeamID(), serverVote.getVote());
+				answerVoteModel.updateVotes(serverVote.getTeamID());
+				
+				System.out.println("Event received and handled: " + e.getType());
+				break;
+				
+			case "SERVER_ANSWER":
+				
+				ServerAnswerEvent serverAnswer = (ServerAnswerEvent) e;
+				
+				Quiz quiz1 = Context.getContext().getQuiz();
+				quiz1.addAnswer(serverAnswer.getTeamID(), serverAnswer.getQuestionID(), serverAnswer.getAnswer());
+				answerVoteModel.updateAnswer(serverAnswer.getAnswer(), serverAnswer.getCorrectAnswer());
 				
 				System.out.println("Event received and handled: " + e.getType());
 				break;
@@ -85,7 +98,7 @@ public class QuestionFormController extends EventPublisher {
 	}
 	
 	public QuestionFormController() {
-		this.voteModel = new VoteModel();
+		this.answerVoteModel = new AnswerVoteModel();
 	}
 	
 	private QuestionFormEventHandler eventHandler;
@@ -94,18 +107,26 @@ public class QuestionFormController extends EventPublisher {
 		eventHandler = new QuestionFormEventHandler();
 		EventBroker.getEventBroker().addEventListener(eventHandler);
 		
-		voteProgressA.progressProperty().bind(voteModel.getProgressPropertyA());
-		voteProgressB.progressProperty().bind(voteModel.getProgressPropertyB());
-		voteProgressC.progressProperty().bind(voteModel.getProgressPropertyC());
-		voteProgressD.progressProperty().bind(voteModel.getProgressPropertyD());
+		voteProgressA.progressProperty().bind(answerVoteModel.getProgressPropertyA());
+		voteProgressB.progressProperty().bind(answerVoteModel.getProgressPropertyB());
+		voteProgressC.progressProperty().bind(answerVoteModel.getProgressPropertyC());
+		voteProgressD.progressProperty().bind(answerVoteModel.getProgressPropertyD());
 		
-		percentageA.textProperty().bind(voteModel.getPercentagePropertyA());
-		percentageB.textProperty().bind(voteModel.getPercentagePropertyB());
-		percentageC.textProperty().bind(voteModel.getPercentagePropertyC());
-		percentageD.textProperty().bind(voteModel.getPercentagePropertyD());
-		numberOfVotes.textProperty().bind(voteModel.getNumberOfVotesProperty());
+		percentageA.textProperty().bind(answerVoteModel.getPercentagePropertyA());
+		percentageB.textProperty().bind(answerVoteModel.getPercentagePropertyB());
+		percentageC.textProperty().bind(answerVoteModel.getPercentagePropertyC());
+		percentageD.textProperty().bind(answerVoteModel.getPercentagePropertyD());
+		numberOfVotes.textProperty().bind(answerVoteModel.getNumberOfVotesProperty());
 		
-		voteModel.updateModel(Context.getContext().getQuiz(), Context.getContext().getTeamID());
+		answerA.textFillProperty().bind(answerVoteModel.getPaintPropertyA());
+		answerB.textFillProperty().bind(answerVoteModel.getPaintPropertyB());
+		answerC.textFillProperty().bind(answerVoteModel.getPaintPropertyC());
+		answerD.textFillProperty().bind(answerVoteModel.getPaintPropertyD());
+		
+		voteButton.visibleProperty().bind(answerVoteModel.getVoteVisibilityProperty());
+		confirmButton.visibleProperty().bind(answerVoteModel.getConfirmVisibilityProperty());
+		
+		answerVoteModel.updateVotes(Context.getContext().getTeamID());
 	}
 	
 	private void handleCheck(int answer) {
@@ -151,7 +172,13 @@ public class QuestionFormController extends EventPublisher {
 		}
 	}
 	
-
-	
-	
+	@FXML
+	private void handleAnswer() {
+		int answer = this.getChecked();
+		if(answer >= 0) {
+			//ClientAnswerEvent cae = new ClientAnswerEvent(Context.getContext().getQuestion().getQuestionID(), Context.getContext().getTeamID(), answer);
+			ClientAnswerEvent cae = new ClientAnswerEvent(1, 1, answer); // Testing purposes
+			this.publishEvent(cae);
+		}
+	}	
 }

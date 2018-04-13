@@ -20,6 +20,7 @@ public class Quiz {
 	private int maxAmountofQuestionsPerRound; // minAmountofQuestionsPerRound = 1;
 	private int quizmasterID;
 	private Map<Integer, Map<Integer, Integer>> votes;	// Map(teamID -> Map(userID -> vote))
+	private int currentRound;
 	
 
 	public Quiz(int quizID, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds, int maxAmountOfQuestionsPerRound, int hostID) {
@@ -32,6 +33,7 @@ public class Quiz {
 		this.maxAmountofQuestionsPerRound = maxAmountOfQuestionsPerRound;
 		this.quizmasterID = hostID;
 		this.votes = new HashMap<Integer, Map<Integer, Integer>>();
+		this.currentRound = 0;
 	}
 
 	// Getters
@@ -117,6 +119,11 @@ public class Quiz {
 		}
 		teamVotes.put(userID, vote);
 		votes.put(teamID, teamVotes);
+	}
+	
+	public void addAnswer(int teamID, int questionID, int answer) {
+		//Round round = rounds.get(currentRound);
+		//round.addAnswer(teamID, questionID, answer);
 	}
 
 }

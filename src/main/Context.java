@@ -3,7 +3,8 @@ package main;
 import network.Network;
 import quiz.model.Quiz;
 import quiz.model.Team;
-import quiz.model.VoteModel;
+import quiz.model.AnswerVoteModel;
+import quiz.model.Question;
 import user.model.User;
 
 public class Context {
@@ -14,6 +15,8 @@ public class Context {
 	private User user;
 	private Quiz quiz;
 	private int teamID;
+	private boolean captain = true;
+	private Question question;
 	private Network network;
 
 	// Constructors
@@ -44,6 +47,14 @@ public class Context {
 
 	public void setTeamID(int teamID) {
 		this.teamID = teamID;
+	}
+	
+	public Question getQuestion() {
+		return question;
+	}
+
+	public void setQuestion(Question question) {
+		this.question = question;
 	}
 
 	public Network getNetwork() {

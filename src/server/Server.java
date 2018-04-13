@@ -10,6 +10,7 @@ import eventbroker.EventPublisher;
 import javafx.scene.paint.Color;
 import network.Network;
 import quiz.model.Quiz;
+import quiz.util.ClientAnswerEvent;
 import quiz.util.ClientVoteEvent;
 
 public class Server extends EventPublisher{
@@ -18,17 +19,33 @@ public class Server extends EventPublisher{
 		public void handleEvent(Event e){
 			switch(e.getType()) {
 			case "CLIENT_VOTE":
+				
 				ClientVoteEvent clientVote = (ClientVoteEvent) e;
 				
-				Quiz quiz = ServerContext.getContext().getQuiz(clientVote.getQuizID());
-				quiz.addVote(clientVote.getUserID(), clientVote.getTeamID(), clientVote.getVote());
-				ServerContext.getContext().updateQuiz(quiz);
+				Quiz quiz0 = ServerContext.getContext().getQuiz(clientVote.getQuizID());
+				quiz0.addVote(clientVote.getUserID(), clientVote.getTeamID(), clientVote.getVote());
 				
 				ServerVoteEvent serverVote = new ServerVoteEvent(clientVote.getUserID(), clientVote.getTeamID(), clientVote.getQuizID(), clientVote.getVote());
 				Server.getServer().publishEvent(serverVote);
 				
 				System.out.println("Event received and handled: " + e.getType());
 				break;
+			
+			case "CLIENT_ANSWER":
+				
+				ClientAnswerEvent clientAnswer = (ClientAnswerEvent) e;
+				
+				Quiz quiz1 = ServerContext.getContext().getQuiz(clientAnswer.getQuizID());
+				quiz1.addAnswer( clientAnswer.getTeamID(), clientAnswer.getQuestionID(), clientAnswer.getAnswer());
+				
+				// TODO: search correct answer for question
+				
+				ServerAnswerEvent serverAnswer = new ServerAnswerEvent(clientAnswer.getTeamID(), clientAnswer.getQuestionID(), clientAnswer.getAnswer(), 3);
+				Server.getServer().publishEvent(serverAnswer);
+				
+				System.out.println("Event received and handled: " + e.getType());
+				break;
+				
 			default:
 				System.out.println("Event received but left unhandled: " + e.getType());
 				break;
