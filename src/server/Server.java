@@ -9,6 +9,7 @@ import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import javafx.scene.paint.Color;
 import network.Network;
+import quiz.util.ChangeTeamEvent;
 import quiz.util.ClientVoteEvent;
 import quiz.util.NewTeamEvent;
 import quiz.model.Team;
@@ -31,6 +32,15 @@ public class Server extends EventPublisher{
 					ServerNewTeamEvent serverNewTeamEvent=new ServerNewTeamEvent(newteamevent.getQuizID(),newteam.getID(),newteam.getName(),newteam.getColor(),newteam.getCaptainID(),newteam.getTeamMembers().get(newteam.getCaptainID()));
 					Server.getServer().publishEvent(serverNewTeamEvent);
 				}
+			case "CLIENT_CHANGE_TEAM":
+				ChangeTeamEvent cte=(ChangeTeamEvent) e;
+				String userName=ServerContext.getContext().changeTeam(cte.getQuizID(),cte.getNewTeamID(),cte.getUserID(),'a');
+				ServerContext.getContext().changeTeam(cte.getQuizID(),cte.getOldTeamID(),cte.getUserID(),'d');
+				if (userName!=null){
+					ServerChangeTeamEvent serverChangeTeamEvent=new ServerChangeTeamEvent(cte.getQuizID(),cte.getNewTeamID(),cte.getOldTeamID(),cte.getUserID(),userName);
+					Server.getServer().publishEvent(serverChangeTeamEvent);
+				}
+				//TODO oldteam (check for null) and newteam modifien
 			}
 
 			}

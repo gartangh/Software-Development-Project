@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.Callback;
 import quiz.model.*;
+import quiz.util.ChangeTeamEvent;
 import quiz.util.ClientVoteEvent;
 import quiz.util.NewTeamEvent;
 import main.*;
@@ -60,6 +61,43 @@ public class QuizRoomController extends EventPublisher{
 							Context.getContext().setTeam(newTeam);
 						}
 					}
+				case "SERVER_CHANGE_TEAM":
+					ServerChangeTeamEvent cte=(ServerChangeTeamEvent) e;
+					if (cte.getQuizID()==Context.getContext().getQuiz().getID()){
+						int newteamID=cte.getNewTeamID();
+						int oldteamID=cte.getOldTeamID();
+						int userID=cte.getUserID();
+						String userName=cte.getUserName();
+						Team newteam=null;
+						Team oldteam=null;
+						for (int i=0;i<quiz.getTeams().size();i++){
+							if (quiz.getTeams().get(i).getID()==newteamID){
+								newteam=quiz.getTeams().get(i);
+							}
+							else if (quiz.getTeams().get(i).getID()==oldteamID){
+								oldteam=quiz.getTeams().get(i);
+							}
+
+						}
+
+						if (newteam!=null){//should always happen
+							newteam.addTeamMember(userID,userName);
+							if (Context.getContext().getUser().getID()==userID){
+									Context.getContext().setTeam(newteam);
+							}
+							else if (Context.getContext().getTeam().getID()==newteam.getID()){// team already changed if you are the user
+									Context.getContext().getTeam().addTeamMember(userID,userName);
+							}
+						}
+						if (oldteam!=null){
+							oldteam.removeTeamMember(userID,userName);
+							if (Context.getContext().getTeam().getID()==oldteam.getID()){// team already changed if you are the user
+								Context.getContext().getTeam().removeTeamMember(userID,userName);
+							}
+						}
+						Team selectedTeam = teamTable.getSelectionModel().getSelectedItem();
+						showTeamDetails(selectedTeam);
+					}
 				}
 			}
 			else System.out.println("received_null_event");
@@ -71,6 +109,7 @@ public class QuizRoomController extends EventPublisher{
 
     public QuizRoomController(Quiz quiz){
     	this.quiz=quiz;
+    	//via serverContext rechtstreeks? wordt nu meegegeven via argument maar hoeft niet
     }
 
     public void addListener(){
@@ -118,12 +157,6 @@ public class QuizRoomController extends EventPublisher{
 
     @FXML
     private void handleNewTeam() throws IOException{
-    	/*Team team = new Team(new SimpleStringProperty(""),Color.rgb(0,0,100),Context.getContext().getUser().getID(),Context.getContext().getUser().getUsername(),quiz.getMaxAmountOfPlayersPerTeam());
-    	boolean okClicked = mainQuizRoom.showNewTeam(team);
-        if (okClicked) {
-            quiz.addTeam(team);
-            //TODO publish event to eventbroker, then delete previous line (is for the quizroomeventhandler)
-        }*/
     	NewTeamEvent teamevent = new NewTeamEvent(Context.getContext().getQuiz().getID(),"",Color.TRANSPARENT);
     	boolean okClicked = mainQuizRoom.showNewTeam(teamevent);
         if (okClicked) {
@@ -143,11 +176,24 @@ public class QuizRoomController extends EventPublisher{
     	Team selectedTeam = teamTable.getSelectionModel().getSelectedItem();
     	if (selectedTeam!=null){
     		User currUser=Context.getContext().getUser();
-    		if (selectedTeam.getTeamMembers().get(currUser.getID())==null){//user nog niet in dit team
-    			selectedTeam.getTeamMembers().put(currUser.getID(),currUser.getUsername());
-    			showTeamDetails(selectedTeam);
-    			//TODO error handling, get out of other team, check if team not full (error report)
-    			//naar quizroomlistener brengen en via eventbroker!! (anders dubbel werk), eerst genoeg checks doen!
+    		int currTeamID;
+    		int currCaptainID;
+
+    		if (Context.getContext().getTeam() != null){
+    			currTeamID= Context.getContext().getTeam().getID();
+    			currCaptainID = Context.getContext().getTeam().getCaptainID();
+    		}
+    		else {
+    			currTeamID=-1; //Standard value
+    			currCaptainID= -1;
+    		}
+
+    		if (selectedTeam.getTeamMembers().get(currUser.getID())==null  && currCaptainID != currUser.getID()){//user nog niet in dit team en user is geen captain (userID never -1)
+    			ChangeTeamEvent changeTeamEvent=new ChangeTeamEvent(Context.getContext().getQuiz().getID(),selectedTeam.getID(),currTeamID,currUser.getID());
+    			publishEvent(changeTeamEvent);
+    			/*selectedTeam.getTeamMembers().put(currUser.getID(),currUser.getUsername());
+    			showTeamDetails(selectedTeam);*/
+    			//TODO error handling,
     		}
     	}
     }

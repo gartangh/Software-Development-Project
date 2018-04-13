@@ -132,8 +132,11 @@ public class Team implements Serializable {
 		this.colorBlue = ((int) color.getBlue()*255);
 	}
 	// Removers
-	public void removePlayer(Player player) {
-		// TODO: If remove player from players worked: amountOfPlayers--;
+	public void removeTeamMember(int userID,String userName) {
+		if (teamMembers.get(userID)!=null){
+			teamMembers.remove(userID);
+			amountOfPlayers--;
+		}
 	}
 
 }
