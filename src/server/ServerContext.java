@@ -50,7 +50,12 @@ public class ServerContext {
 
 	//testing code
 	public void addQuizwithQuizID(int quizID){
-		quizMap.put(quizID,new Quiz(1,5,5,5,5,20));
+		Quiz quiz=new Quiz(1,5,5,5,5,20);
+		quizMap.put(quizID,quiz);
+		Team team1 = new Team(1,new SimpleStringProperty("Deborah leemans"),Color.rgb(0,0,255),2,"james",quiz.getMaxAmountOfPlayersPerTeam());
+		Team team2 = new Team(2,new SimpleStringProperty("Team2"),Color.rgb(255,0,0),4,"Precious",quiz.getMaxAmountOfPlayersPerTeam());
+		quiz.addTeam(team1);
+		quiz.addTeam(team2);
 	}
 
 	public void addUserwithUserID(int userID){

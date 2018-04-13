@@ -41,10 +41,10 @@ public class MainQuizroom extends Application{
 		user1=User.createUser(user1);
 		Quiz quiz=new Quiz(1,5,5,5,5,20);
 		Context.getContext().setQuiz(quiz);
-		Team team1 = new Team(new SimpleStringProperty("Deborah leemans"),Color.rgb(0,0,255),2,"james",quiz.getMaxAmountOfPlayersPerTeam());
+		Team team1 = new Team(1,new SimpleStringProperty("Deborah leemans"),Color.rgb(0,0,255),2,"james",quiz.getMaxAmountOfPlayersPerTeam());
 		team1.addTeamMember(4,"Hendrik");
 		team1.addTeamMember(5,"Natalie");
-		Team team2 = new Team(new SimpleStringProperty("Team2"),Color.rgb(255,0,0),4,"Precious",quiz.getMaxAmountOfPlayersPerTeam());
+		Team team2 = new Team(2,new SimpleStringProperty("Team2"),Color.rgb(255,0,0),4,"Precious",quiz.getMaxAmountOfPlayersPerTeam());
 		quiz.addTeam(team1);
 		quiz.addTeam(team2);
 

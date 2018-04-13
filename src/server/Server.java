@@ -24,6 +24,7 @@ public class Server extends EventPublisher{
 			switch(e.getType()) {
 			case "CLIENT_VOTE":
 				ClientVoteEvent clientVote = (ClientVoteEvent) e;
+				break;
 				//ServerContext.getContext()
 			case "CLIENT_NEW_TEAM":
 				NewTeamEvent newteamevent=(NewTeamEvent) e;
@@ -32,6 +33,7 @@ public class Server extends EventPublisher{
 					ServerNewTeamEvent serverNewTeamEvent=new ServerNewTeamEvent(newteamevent.getQuizID(),newteam.getID(),newteam.getName(),newteam.getColor(),newteam.getCaptainID(),newteam.getTeamMembers().get(newteam.getCaptainID()));
 					Server.getServer().publishEvent(serverNewTeamEvent);
 				}
+				break;
 			case "CLIENT_CHANGE_TEAM":
 				ChangeTeamEvent cte=(ChangeTeamEvent) e;
 				String userName=ServerContext.getContext().changeTeam(cte.getQuizID(),cte.getNewTeamID(),cte.getUserID(),'a');
@@ -40,9 +42,9 @@ public class Server extends EventPublisher{
 					ServerChangeTeamEvent serverChangeTeamEvent=new ServerChangeTeamEvent(cte.getQuizID(),cte.getNewTeamID(),cte.getOldTeamID(),cte.getUserID(),userName);
 					Server.getServer().publishEvent(serverChangeTeamEvent);
 				}
+				break;
 				//TODO oldteam (check for null) and newteam modifien
 			}
-
 			}
 		}
 

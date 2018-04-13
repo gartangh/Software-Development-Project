@@ -61,6 +61,7 @@ public class QuizRoomController extends EventPublisher{
 							Context.getContext().setTeam(newTeam);
 						}
 					}
+				break;
 				case "SERVER_CHANGE_TEAM":
 					ServerChangeTeamEvent cte=(ServerChangeTeamEvent) e;
 					if (cte.getQuizID()==Context.getContext().getQuiz().getID()){
@@ -98,6 +99,7 @@ public class QuizRoomController extends EventPublisher{
 						Team selectedTeam = teamTable.getSelectionModel().getSelectedItem();
 						showTeamDetails(selectedTeam);
 					}
+					break;
 				}
 			}
 			else System.out.println("received_null_event");
