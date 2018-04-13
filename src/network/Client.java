@@ -25,6 +25,8 @@ public class Client extends Application {
 	private static Network network;
 	private static Connection connection;
 	
+	private static User user;
+	
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -36,26 +38,27 @@ public class Client extends Application {
 		
 		// Valid input
 		String name = "Arthur";
-		User user = new User(0, name, "test");
+		user = new User(0, name, "test");
 		Context.getContext().setUser(user);
-		int port = Integer.parseInt("1029");
+		int port = Integer.parseInt("1028");
 
 		// Start event broker
 		EventBroker.getEventBroker().start();
-
-		// Create new network (Server that listens to incoming
-		// connections)
-		network = new Network(port);
-		connection = connectToNetwork(InetAddress.getLocalHost(), 1025);
-		ClientCreateEvent clientCreateEvent = new ClientCreateEvent(user, connection);
-				// --> send event over network
-		EventBroker.getEventBroker().addEventListener(network);
 
 		// ChatPanel (ChatModel and ChatController) are created
 		ChatPanel chatPanel = ChatPanel.createChatPanel();
 		chatPanel.getChatModel().setName(name);
 
+		// Create new network (Server that listens to incoming
+		// connections)
+		network = new Network(port, "CLIENT");
+		connection = connectToNetwork(InetAddress.getLocalHost(), 1025);
+				// --> send event over network
+		EventBroker.getEventBroker().addEventListener(network);
+
+
 		TimeUnit.SECONDS.sleep(1);
+		ClientCreateEvent clientCreateEvent = new ClientCreateEvent(user);
 		EventBroker.getEventBroker().addEvent(network, clientCreateEvent);
 		
 		// Create GUI
@@ -70,6 +73,16 @@ public class Client extends Application {
 		window.show();
 	}
 	
+
+	public static User getUser() {
+		return user;
+	}
+
+
+	public static void setUser(User newUser) {
+		user = newUser;
+	}
+
 
 	public static Connection connectToNetwork(InetAddress ip, int port) {
 		return network.connect(ip, port);

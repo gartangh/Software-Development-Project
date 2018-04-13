@@ -55,7 +55,7 @@ public class Server extends EventPublisher implements Runnable{
 		try {
 			EventBroker.getEventBroker().start();
 			System.out.println(InetAddress.getLocalHost());
-			Network network = new Network(1025);
+			Network network = new Network(1025, "SERVER");
 			ServerContext.getContext().setNetwork(network);
 			EventBroker.getEventBroker().addEventListener(serverHandler);
 			EventBroker.getEventBroker().addEventListener(network);

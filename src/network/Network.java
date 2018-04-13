@@ -17,11 +17,13 @@ import javafx.application.Platform;
 import main.Main;
 import quiz.util.ClientCreateEvent;
 import server.ServerContext;
+import server.ServerReturnConnectionIDEvent;
 import server.ServerReturnUserIDEvent;
 import user.model.User;
 
 public class Network extends EventPublisher implements EventListener {
 
+	private String TYPE;
 	// ConnectionID -> Connection
 	private Map<Integer, Connection> connectionMap = new HashMap<Integer, Connection>();
 
@@ -37,9 +39,10 @@ public class Network extends EventPublisher implements EventListener {
 	}
 
 	// A factory method would be a better solution
-	public Network(int serverPort) {
+	public Network(int serverPort, String type) {
 		// Server 2
 		// Not safe when multi-threaded
+		TYPE = type;
 		connectionListener = new ConnectionListener(this, serverPort);
 		new Thread(connectionListener).start();
 	}
@@ -57,6 +60,20 @@ public class Network extends EventPublisher implements EventListener {
 			
 			connection.receive();
 			
+			if(TYPE == "CLIENT") {
+				connectionMap.put(connection.getClientConnectionID(), connection);
+			}
+			else if(TYPE == "SERVER") {
+				int newServerUserConnectionID;
+				do {
+					newServerUserConnectionID = (int) (Math.random() * Integer.MAX_VALUE);
+				} while(connectionMap.containsKey(newServerUserConnectionID));
+				ServerReturnConnectionIDEvent returnConnection = new ServerReturnConnectionIDEvent(newServerUserConnectionID);
+				connection.send(returnConnection);
+				connectionMap.put(newServerUserConnectionID, connection);
+			}
+			
+			
 			connectionMap.put(connection.getClientConnectionID(), connection);
 			
 			return connection;
@@ -73,8 +90,21 @@ public class Network extends EventPublisher implements EventListener {
 		Connection connection = new Connection(socket, this);
 		// Server 4.2.2
 		connection.receive();
-
-		connectionMap.put(connection.getClientConnectionID(), connection);
+		
+		if(TYPE == "CLIENT") {
+			connectionMap.put(connection.getClientConnectionID(), connection);
+		}
+		else if(TYPE == "SERVER") {
+			int newServerUserConnectionID;
+			do {
+				newServerUserConnectionID = (int) (Math.random() * Integer.MAX_VALUE);
+			} while(connectionMap.containsKey(newServerUserConnectionID));
+			connection.setClientConnectionID(newServerUserConnectionID);
+			ServerReturnConnectionIDEvent returnConnection = new ServerReturnConnectionIDEvent(newServerUserConnectionID);
+			connection.send(returnConnection);
+			connectionMap.put(newServerUserConnectionID, connection);
+		}
+		
 		
 		return connection;
 	}
@@ -83,10 +113,14 @@ public class Network extends EventPublisher implements EventListener {
 
 	@Override
 	public void handleEvent(Event e) {
-		connectionMap.get(0).send(e);
+		
 		switch(e.getType()) {
 		case "CLIENT_CREATE":
+			connectionMap.get(((ClientCreateEvent)e).getConnectionID()).send(e);
 			break;
+		default:
+			// Get user from userContext 
+			connectionMap.get(UserIDConnectionIDMap.get(Client.getUser().getID())).send(e);
 		}
 	}
 	
@@ -96,20 +130,10 @@ public class Network extends EventPublisher implements EventListener {
 		switch(e.getType()) {
 			case "SERVER_CREATE":
 				ClientCreateEvent serverCreate = (ClientCreateEvent) e;
-				Connection connection = connectionMap.get(serverCreate.getConnectionID());
-				connectionMap.remove(serverCreate.getConnectionID(), connection);
-				
-				int newServerUserConnectionID;
-				do {
-					newServerUserConnectionID = (int) (Math.random() * Integer.MAX_VALUE);
-				} while(connectionMap.containsKey(newServerUserConnectionID));
-				connection.setClientConnectionID(newServerUserConnectionID);
-				connectionMap.put(newServerUserConnectionID, connection);
-				
 				int userID = ServerContext.getContext().addUser(serverCreate.getUsername(), serverCreate.getPassword());
-				UserIDConnectionIDMap.put(userID, newServerUserConnectionID);
-				ServerReturnUserIDEvent returnIDEvent = new ServerReturnUserIDEvent(userID);
-				connectionMap.get(newServerUserConnectionID).send(returnIDEvent);
+				UserIDConnectionIDMap.put(userID, serverCreate.getConnectionID());
+				ServerReturnUserIDEvent returnIDEvent = new ServerReturnUserIDEvent(userID, serverCreate.getConnectionID());
+				connectionMap.get(serverCreate.getConnectionID()).send(returnIDEvent);
 				break;
 			
 			case "CLIENT_CHAT":

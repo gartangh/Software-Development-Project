@@ -14,8 +14,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import network.Client;
+import network.Connection;
 import quiz.util.ClientCreateEvent;
 import server.ServerContext;
+import server.ServerReturnConnectionIDEvent;
 import server.ServerReturnUserIDEvent;
 import user.model.User;
 
@@ -92,11 +94,21 @@ final public class ChatController extends EventPublisher {
 				case "CLIENT_CREATE":
 					Client.getNetwork().handleEvent(e);
 					break;
+					
+				case "SERVER_RETURN_CONNECTIONID":
+					ServerReturnConnectionIDEvent returnConnectionID = (ServerReturnConnectionIDEvent) e;
+					Connection connection = Client.getNetwork().getConnectionMap().remove(0);
+					connection.setClientConnectionID(returnConnectionID.getConnectionID());
+					Client.getConnection().setClientConnectionID(returnConnectionID.getConnectionID());
+					Client.getNetwork().getConnectionMap().put(returnConnectionID.getConnectionID(), connection);
+					break;
+					
 				case "SERVER_RETURN_USERID":
 					ServerReturnUserIDEvent serverCreate = (ServerReturnUserIDEvent) e;
-					User user = main.Context.getContext().getUser();
+					User user = Client.getUser();
 					user.setUserID(serverCreate.getUserID());
-					main.Context.getContext().setUser(user);
+					Client.setUser(user);
+					Client.getNetwork().getUserIDConnectionIDMap().put(serverCreate.getUserID(), serverCreate.getConnectionID());
 					System.out.println("Nailed it");
 					break;
 					
