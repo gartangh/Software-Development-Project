@@ -1,45 +1,108 @@
 package quiz.model;
 
-import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
-
 import javafx.util.Pair;
+import java.io.Serializable;
+import java.util.ArrayList;
+
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
+import javafx.scene.paint.Color;
 import user.model.Player;
 
-public class Team {
+public class Team implements Serializable {
 
 	private int amountOfPlayers;
 	private int maxAmountOfPlayers; // minAmountOfTeamPlayers = 1;
-	// TODO: Add players
-	private Map<Integer, String> players;
-	private String name;
-	private Color color;
+	private ObservableMap<Integer,String> players=FXCollections.observableHashMap();
+	private StringProperty name;
+	private int colorRed; //to make it seriazable
+	private int colorGreen;
+	private int colorBlue;
 	private int captainID;
 	private int roundScore;
 	private int quizScore;
 	private int teamID;
 
-	public Team(int teamID, String name, Color color, int captainID, String captainUserName) {
-		this.teamID = teamID;
+	public Team(int teamID,StringProperty name, Color color,int captainID,String captainname,int maxamount) {
+		this.teamID=teamID;
 		this.name = name;
-		this.color = color;
-		this.captainID = captainID;
+		this.colorRed = (int) (color.getRed()*255);
+		this.colorGreen = (int) (color.getGreen()*255);
+		this.colorBlue = (int) (color.getBlue()*255);
+		this.captainID=captainID;
+		this.teamMembers.put(captainID,captainname);
 		this.roundScore = 0;
 		this.quizScore = 0;
-		this.players = new HashMap<Integer, String>();
-		maxAmountOfPlayers = 1;
-		amountOfPlayers = 0;
-		this.addPlayer(captainID, captainUserName);
+		this.amountOfPlayers=1;//voorlopig
+		this.maxAmountOfPlayers=maxamount;
+	}
+	
+	public Team(int teamID,String name, Color color,int captainID,String captainname) {
+		this.teamID=teamID;
+		this.name = new SimpleStringProperty(name);
+		this.colorRed = (int) (color.getRed()*255);
+		this.colorGreen = (int) (color.getGreen()*255);
+		this.colorBlue = (int) (color.getBlue()*255);
+		this.captainID=captainID;
+		this.teamMembers.put(captainID,captainname);
+		this.roundScore = 0;
+		this.quizScore = 0;
+		this.amountOfPlayers=1;//voorlopig
+		this.maxAmountOfPlayers=5;
 	}
 
+	public Team(int teamID,StringProperty name, Color color,int captainID,String captainname) {
+		this.teamID=teamID;
+		this.name = name;
+		this.colorRed = (int) (color.getRed()*255);
+		this.colorGreen = (int) (color.getGreen()*255);
+		this.colorBlue = (int) (color.getBlue()*255);
+		this.captainID=captainID;
+		this.teamMembers.put(captainID,captainname);
+		this.roundScore = 0;
+		this.quizScore = 0;
+		this.amountOfPlayers=1;//voorlopig
+		this.maxAmountOfPlayers=5;
+	}
+
+	public Team(StringProperty name, Color color,int captainID,String captainname,int maxamount) {
+		this.name = name;
+		this.colorRed = (int) (color.getRed()*255);
+		this.colorGreen = (int) (color.getGreen()*255);
+		this.colorBlue = (int) (color.getBlue()*255);
+		this.captainID=captainID;
+		this.teamMembers.put(captainID,captainname);
+		this.roundScore = 0;
+		this.quizScore = 0;
+		this.amountOfPlayers=1;//voorlopig
+		this.maxAmountOfPlayers=maxamount;
+	}
+
+
 	// Getters
-	public String getName() {
+	public StringProperty getNameProperty() {
 		return name;
 	}
 
+	public int getCaptainID(){
+		return captainID;
+	}
+
+	public int getID(){
+		return this.teamID;
+	}
+
+	public String getName(){
+		return name.get();
+	}
+
 	public Color getColor() {
-		return color;
+		return Color.rgb(colorRed,colorGreen,colorBlue);
 	}
 
 	public int getAmountOfPlayers() {
@@ -49,13 +112,9 @@ public class Team {
 	public int getMaxAmountOfPlayers() {
 		return maxAmountOfPlayers;
 	}
-
-	public Map<Integer, String> getPlayers(){
-		return players;
-	}
-
-	public int getCaptainID() {
-		return captainID;
+  
+	public ObservableMap<Integer,String> getTeamMembers(){
+		return teamMembers;
 	}
 
 	public int getRoundScore() {
@@ -83,6 +142,15 @@ public class Team {
 		}
 	}
 
+	public void setName(String teamname){
+		this.name.setValue(teamname);
+	}
+
+	public void setColor(Color color){
+		this.colorRed = ((int) color.getRed()*255);
+		this.colorGreen = ((int) color.getGreen()*255);
+		this.colorBlue = ((int) color.getBlue()*255);
+	}
 	// Removers
 	public void removePlayer(int playerID) {
 		if(players.remove(playerID)!=null) amountOfPlayers--;

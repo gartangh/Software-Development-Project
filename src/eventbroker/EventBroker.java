@@ -87,8 +87,7 @@ final public class EventBroker implements Runnable{
 		for (Map.Entry<String, ArrayList<EventListener>> entry : listeners.entrySet())
 			if (entry.getKey().equals(e.getType()) || entry.getKey().equals("all"))
 				for (EventListener el : entry.getValue())
-					if(el != source)
-						el.handleEvent(e);
+					if(source!=el) el.handleEvent(e);
 	}
 
 	@Override

@@ -8,12 +8,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class AlertBox {
-
+	
 	public static void display(String title, String message) {
 		Stage window = new Stage();
-		// Block input events with other windows, until this one is taken care
-		// of
-		window.initModality(Modality.APPLICATION_MODAL);
+		window.initModality(Modality.APPLICATION_MODAL);	// Block input events with other windows, until this one is taken care of
 		window.setTitle(title);
 		window.setMinWidth(300);
 

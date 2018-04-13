@@ -13,7 +13,15 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.text.TextFlow;
+import main.Context;
+import quiz.model.Quiz;
+import quiz.model.AnswerVoteModel;
+import quiz.util.ClientAnswerEvent;
 import quiz.util.ClientVoteEvent;
+import server.Server;
+import server.ServerAnswerEvent;
+import server.ServerContext;
+import server.ServerVoteEvent;
 
 public class QuestionFormController extends EventPublisher {
 	
@@ -59,23 +67,70 @@ public class QuestionFormController extends EventPublisher {
 	private ProgressBar voteProgressC;
 	@FXML
 	private ProgressBar voteProgressD;
+
+	private AnswerVoteModel answerVoteModel;
 	
 	public class QuestionFormEventHandler implements EventListener{ // TODO: add handling of events 
 		public void handleEvent(Event e){
 			switch(e.getType()) {
+			case "SERVER_VOTE":
+				
+				ServerVoteEvent serverVote = (ServerVoteEvent) e;
+				
+				Quiz quiz0 = Context.getContext().getQuiz();
+				quiz0.addVote(serverVote.getUserID(), serverVote.getTeamID(), serverVote.getVote());
+				answerVoteModel.updateVotes(serverVote.getTeamID());
+				
+				System.out.println("Event received and handled: " + e.getType());
+				break;
+				
+			case "SERVER_ANSWER":
+				
+				ServerAnswerEvent serverAnswer = (ServerAnswerEvent) e;
+				
+				Quiz quiz1 = Context.getContext().getQuiz();
+				quiz1.addAnswer(serverAnswer.getTeamID(), serverAnswer.getQuestionID(), serverAnswer.getAnswer());
+				answerVoteModel.updateAnswer(serverAnswer.getAnswer(), serverAnswer.getCorrectAnswer());
+				
+				System.out.println("Event received and handled: " + e.getType());
+				break;
 			default:
+				System.out.println("Event received but left unhandled: " + e.getType());
 				break;
 			}
 		}
-
-		@Override
-		public void handleEvent(Event e, ArrayList<Integer> destinations) {}
+	}
+	
+	public QuestionFormController() {
+		this.answerVoteModel = new AnswerVoteModel();
 	}
 	
 	private QuestionFormEventHandler eventHandler;
 	
-	
 	public void initialize() {
+		eventHandler = new QuestionFormEventHandler();
+		EventBroker.getEventBroker().addEventListener(eventHandler);
+		
+		voteProgressA.progressProperty().bind(answerVoteModel.getProgressPropertyA());
+		voteProgressB.progressProperty().bind(answerVoteModel.getProgressPropertyB());
+		voteProgressC.progressProperty().bind(answerVoteModel.getProgressPropertyC());
+		voteProgressD.progressProperty().bind(answerVoteModel.getProgressPropertyD());
+		
+		percentageA.textProperty().bind(answerVoteModel.getPercentagePropertyA());
+		percentageB.textProperty().bind(answerVoteModel.getPercentagePropertyB());
+		percentageC.textProperty().bind(answerVoteModel.getPercentagePropertyC());
+		percentageD.textProperty().bind(answerVoteModel.getPercentagePropertyD());
+		numberOfVotes.textProperty().bind(answerVoteModel.getNumberOfVotesProperty());
+		
+		answerA.textFillProperty().bind(answerVoteModel.getPaintPropertyA());
+		answerB.textFillProperty().bind(answerVoteModel.getPaintPropertyB());
+		answerC.textFillProperty().bind(answerVoteModel.getPaintPropertyC());
+		answerD.textFillProperty().bind(answerVoteModel.getPaintPropertyD());
+		
+		voteButton.visibleProperty().bind(answerVoteModel.getVoteVisibilityProperty());
+		confirmButton.visibleProperty().bind(answerVoteModel.getConfirmVisibilityProperty());
+		
+		answerVoteModel.updateVotes(Context.getContext().getTeamID());
 	}
 	
 	private void handleCheck(int answer) {
@@ -116,12 +171,18 @@ public class QuestionFormController extends EventPublisher {
 	private void handleVote() {
 		int vote = this.getChecked();
 		if(vote >= 0) {
-			ClientVoteEvent v = new ClientVoteEvent(vote);
-			this.publishEvent(v);
+			ClientVoteEvent cve = new ClientVoteEvent(vote);
+			this.publishEvent(cve);
 		}
 	}
 	
-
-	
-	
+	@FXML
+	private void handleAnswer() {
+		int answer = this.getChecked();
+		if(answer >= 0) {
+			//ClientAnswerEvent cae = new ClientAnswerEvent(Context.getContext().getQuestion().getQuestionID(), Context.getContext().getTeamID(), answer);
+			ClientAnswerEvent cae = new ClientAnswerEvent(1, 1, answer); // Testing purposes
+			this.publishEvent(cae);
+		}
+	}
 }

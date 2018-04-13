@@ -23,6 +23,7 @@ import user.model.User;
 
 public class Network extends EventPublisher implements EventListener {
 
+
 	private String TYPE;
 	// ConnectionID -> Connection
 	private Map<Integer, Connection> connectionMap = new HashMap<Integer, Connection>();
@@ -59,7 +60,7 @@ public class Network extends EventPublisher implements EventListener {
 			// Client 2.3
 			
 			connection.receive();
-			
+      
 			if(TYPE == "CLIENT") {
 				connectionMap.put(connection.getClientConnectionID(), connection);
 			}
@@ -75,7 +76,6 @@ public class Network extends EventPublisher implements EventListener {
 			
 			
 			connectionMap.put(connection.getClientConnectionID(), connection);
-			
 			return connection;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -168,5 +168,13 @@ public class Network extends EventPublisher implements EventListener {
 	
 	public Map<Integer, Connection> getConnectionMap() {
 		return connectionMap;
+	}
+
+	public InetAddress getNetworkAddress() {
+		return networkAddress;
+	}
+
+	public Connection getConnection() {
+		return connection;
 	}
 }

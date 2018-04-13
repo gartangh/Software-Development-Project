@@ -3,26 +3,25 @@ package server;
 @SuppressWarnings("serial")
 public class ServerVoteEvent extends ServerEvent {
 	
-	protected int newVote, prevVote;
-	protected boolean update; // To know if the voter already voted before
+	protected int userID, teamID, vote;
 
-	public ServerVoteEvent(int newVote, boolean update, int prevVote) {
+	public ServerVoteEvent(int userID, int teamID, int quizID, int vote) {
 		super();
-		this.newVote = newVote;
-		this.update = update;
-		this.prevVote = prevVote;
+		this.userID = userID;
+		this.teamID = teamID;
+		this.vote = vote;
 		this.type = "SERVER_VOTE";
 	}
 
-	public int getNewVote() {
-		return newVote;
+	public int getVote() {
+		return vote;
 	}
-
-	public int getPrevVote() {
-		return prevVote;
+	
+	public int getTeamID() {
+		return teamID;
 	}
-
-	public boolean isUpdate() {
-		return update;
+	
+	public int getUserID() {
+		return userID;
 	}
 }

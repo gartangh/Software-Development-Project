@@ -1,37 +1,26 @@
 package quiz.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import quiz.util.Difficulty;
 import quiz.util.Theme;
 import quiz.util.Type;
 
 public class Round {
 
-	private int amountOfQuestions;
-	private int maxAmountOfQuestions;
-	// TODO: add questions
 	private Type type;
 	private Difficulty difficulty;
 	private Theme theme;
+	private Map<Integer, Map<Integer, Integer>> answers; // Map(questionID -> Map(teamID -> answerID))	
 
-	public Round(int maxAmountOfQuestions, Type type, Difficulty difficulty, Theme theme) {
-		this.maxAmountOfQuestions = maxAmountOfQuestions;
+	public Round(Type type, Difficulty difficulty, Theme theme) {
 		this.type = type;
 		this.difficulty = difficulty;
 		this.theme = theme;
-
-		makeQuestions();
 	}
 
-	// Getters
-	public int getAmountOfQuestions() {
-		return amountOfQuestions;
-	}
-
-	public int getMaxAmountOfQuestions() {
-		return maxAmountOfQuestions;
-	}
-
-	// TODO: Add getQuestions()
+ 	// TODO: Add getQuestions()
 
 	public Difficulty getDifficulty() {
 		return difficulty;
@@ -40,14 +29,9 @@ public class Round {
 	public Theme getTheme() {
 		return theme;
 	}
-	
-	// Setters
-	public void setMaxAmountOfQuestions(int maxAmountOfQuestions) {
-		this.maxAmountOfQuestions = maxAmountOfQuestions;
-	}
 
 	// Methods
-	public void makeQuestions() {
+	/*public void makeQuestions() {
 		Question question;
 		for (amountOfQuestions = 0; amountOfQuestions < maxAmountOfQuestions; amountOfQuestions++) {
 			switch (type) {
@@ -65,6 +49,15 @@ public class Round {
 
 			// TODO: Add question to questions
 		}
+	}*/
+	
+	public void addAnswer(int teamID, int questionID, int answer) {
+		Map<Integer, Integer> questionAnswers = answers.get(questionID);
+		if(questionAnswers == null) {
+			questionAnswers = new HashMap<Integer, Integer>();
+		}
+		questionAnswers.put(teamID, answer);
+		answers.put(questionID, questionAnswers);
 	}
 
 }

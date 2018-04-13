@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 @SuppressWarnings("serial")
 public class Event implements Serializable{
-	
+
 	private static long n = 0;
 	
 	protected String type;
