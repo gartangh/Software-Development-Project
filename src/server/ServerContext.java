@@ -41,7 +41,7 @@ public class ServerContext {
 			newID = (int) (Math.random() * Integer.MAX_VALUE);
 		} while(userMap.containsKey(newID));
 		
-		newID = 1; // Testing purposes
+		//newID = 1; // Testing purposes
 
 		User newUser = new User(newID, username, password);
 		userMap.put(newID, newUser);

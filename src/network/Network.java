@@ -156,10 +156,6 @@ public class Network extends EventPublisher implements EventListener {
 		for(Map.Entry<Integer, Connection> entry : connectionMap.entrySet())
 			entry.getValue().close();
 	}
-
-	public InetAddress getNetworkAddress() {
-		return networkAddress;
-	}
 	
 	public Map<Integer, Integer> getUserIDConnectionIDMap() {
 		return UserIDConnectionIDMap;
@@ -172,9 +168,5 @@ public class Network extends EventPublisher implements EventListener {
 
 	public InetAddress getNetworkAddress() {
 		return networkAddress;
-	}
-
-	public Connection getConnection() {
-		return connection;
 	}
 }

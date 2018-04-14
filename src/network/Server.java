@@ -7,6 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import chat.ChatMessage;
 import eventbroker.Event;
@@ -27,7 +28,7 @@ public class Server implements Runnable {
 	}
 
 	public void run() {
-		network = new Network(serverPort);
+		network = new Network(serverPort, "SERVER");
 		EventBroker.getEventBroker().addEventListener(ChatMessage.TYPE_CHAT, handlemachine);
 	}
 	
@@ -43,5 +44,8 @@ public class Server implements Runnable {
 				System.out.println("juij");
 			}
 		}
+
+		@Override
+		public void handleEvent(Event e, ArrayList<Integer> destinations) {}
 	}
 }

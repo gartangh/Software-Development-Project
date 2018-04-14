@@ -35,7 +35,7 @@ public class Team implements Serializable {
 		this.colorGreen = (int) (color.getGreen()*255);
 		this.colorBlue = (int) (color.getBlue()*255);
 		this.captainID=captainID;
-		this.teamMembers.put(captainID,captainname);
+		this.players.put(captainID,captainname);
 		this.roundScore = 0;
 		this.quizScore = 0;
 		this.amountOfPlayers=1;//voorlopig
@@ -49,7 +49,7 @@ public class Team implements Serializable {
 		this.colorGreen = (int) (color.getGreen()*255);
 		this.colorBlue = (int) (color.getBlue()*255);
 		this.captainID=captainID;
-		this.teamMembers.put(captainID,captainname);
+		this.players.put(captainID,captainname);
 		this.roundScore = 0;
 		this.quizScore = 0;
 		this.amountOfPlayers=1;//voorlopig
@@ -63,7 +63,7 @@ public class Team implements Serializable {
 		this.colorGreen = (int) (color.getGreen()*255);
 		this.colorBlue = (int) (color.getBlue()*255);
 		this.captainID=captainID;
-		this.teamMembers.put(captainID,captainname);
+		this.players.put(captainID,captainname);
 		this.roundScore = 0;
 		this.quizScore = 0;
 		this.amountOfPlayers=1;//voorlopig
@@ -76,7 +76,7 @@ public class Team implements Serializable {
 		this.colorGreen = (int) (color.getGreen()*255);
 		this.colorBlue = (int) (color.getBlue()*255);
 		this.captainID=captainID;
-		this.teamMembers.put(captainID,captainname);
+		this.players.put(captainID,captainname);
 		this.roundScore = 0;
 		this.quizScore = 0;
 		this.amountOfPlayers=1;//voorlopig
@@ -91,10 +91,6 @@ public class Team implements Serializable {
 
 	public int getCaptainID(){
 		return captainID;
-	}
-
-	public int getID(){
-		return this.teamID;
 	}
 
 	public String getName(){
@@ -114,7 +110,7 @@ public class Team implements Serializable {
 	}
   
 	public ObservableMap<Integer,String> getTeamMembers(){
-		return teamMembers;
+		return players;
 	}
 
 	public int getRoundScore() {

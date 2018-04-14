@@ -23,25 +23,22 @@ import quiz.util.ClientVoteEvent;
 public class Server extends EventPublisher{
 	
 	public static class ServerHandler implements EventListener{ // TODO: add handling of all events 
+	
 		public void handleEvent(Event e){
+			ArrayList<Integer> destinations = new ArrayList<>();
 			switch(e.getType()) {
 			case "CLIENT_VOTE":
-				
 				ClientVoteEvent clientVote = (ClientVoteEvent) e;
-				
 				Quiz quiz0 = ServerContext.getContext().getQuiz(clientVote.getQuizID());
 				quiz0.addVote(clientVote.getUserID(), clientVote.getTeamID(), clientVote.getVote());
-				
 				ServerVoteEvent serverVote = new ServerVoteEvent(clientVote.getUserID(), clientVote.getTeamID(), clientVote.getQuizID(), clientVote.getVote());
 				Server.getServer().publishEvent(serverVote);
-				
 				System.out.println("Event received and handled: " + e.getType());
 				break;
 			
 			case "CLIENT_ANSWER":
 				
 				ClientAnswerEvent clientAnswer = (ClientAnswerEvent) e;
-				
 				Quiz quiz1 = ServerContext.getContext().getQuiz(clientAnswer.getQuizID());
 				quiz1.addAnswer( clientAnswer.getTeamID(), clientAnswer.getQuestionID(), clientAnswer.getAnswer());
 				
@@ -49,7 +46,6 @@ public class Server extends EventPublisher{
 				
 				ServerAnswerEvent serverAnswer = new ServerAnswerEvent(clientAnswer.getTeamID(), clientAnswer.getQuestionID(), clientAnswer.getAnswer(), 3);
 				Server.getServer().publishEvent(serverAnswer);
-				
 				System.out.println("Event received and handled: " + e.getType());
 				break;
                     
@@ -74,6 +70,12 @@ public class Server extends EventPublisher{
 				break;
 			}
 		}
+
+	@Override
+	public void handleEvent(Event e, ArrayList<Integer> destinations) {
+		// TODO Auto-generated method stub
+		
+	}
 	}
 	
 	private final static Server server = new Server();
@@ -83,19 +85,15 @@ public class Server extends EventPublisher{
 	}
 	
 	public static void main(String[] args) {
-		try {
-			Network network = new Network(1025, "SERVER");
-			ServerContext.getContext().setNetwork(network);
-			EventBroker.getEventBroker().addEventListener(serverHandler);
-			EventBroker.getEventBroker().addEventListener(network);
-			EventBroker.getEventBroker().start();
-			
-			int andreID = ServerContext.getContext().addUser("André", "");
-			int quizID = ServerContext.getContext().addQuiz(8, 4, 1, 20, andreID);
-			ServerContext.getContext().addTeam(quizID, "André en de boys", Color.BLUE, andreID);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
+		Network network = new Network(1025, "SERVER");
+		ServerContext.getContext().setNetwork(network);
+		EventBroker.getEventBroker().addEventListener(serverHandler);
+		EventBroker.getEventBroker().addEventListener(network);
+		EventBroker.getEventBroker().start();
+		
+		int andreID = ServerContext.getContext().addUser("André", "");
+		int quizID = ServerContext.getContext().addQuiz(8, 4, 1, 20, andreID);
+		ServerContext.getContext().addTeam(quizID, "André en de boys", Color.BLUE, andreID);
 	}
 	
 	public static Server getServer() {

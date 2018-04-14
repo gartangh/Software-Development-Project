@@ -99,6 +99,9 @@ public class QuestionFormController extends EventPublisher {
 				break;
 			}
 		}
+
+		@Override
+		public void handleEvent(Event e, ArrayList<Integer> destinations) {}
 	}
 	
 	public QuestionFormController() {

@@ -55,6 +55,9 @@ public class AnswerVoteModel {
 		confirmVisibilityProperty = new SimpleBooleanProperty(true);
 	}
 
+	/*
+	 * QuestionFormController calls this every SERVER_VOTE event
+	 */
 	public void updateVotes(int teamID) {
 		Map<Integer, Map<Integer, Integer>> allVotes = Context.getContext().getQuiz().getVotes();
 		if(allVotes != null) {
