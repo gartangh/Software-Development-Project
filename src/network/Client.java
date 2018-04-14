@@ -5,17 +5,12 @@ import java.util.concurrent.TimeUnit;
 
 import chat.ChatPanel;
 import eventbroker.EventBroker;
-import eventbroker.EventPublisher;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import main.Context;
 import quiz.util.ClientCreateEvent;
-import server.ServerContext;
 import user.model.User;
 
 public class Client extends Application {
@@ -40,7 +35,7 @@ public class Client extends Application {
 		String name = "Arthur";
 		user = new User(0, name, "test");
 		Context.getContext().setUser(user);
-		int port = Integer.parseInt("1026");
+		int port = Integer.parseInt("1029");
 
 		// Start event broker
 		EventBroker.getEventBroker().start();

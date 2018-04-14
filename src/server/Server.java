@@ -1,7 +1,5 @@
 package server;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -10,20 +8,18 @@ import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
-import network.Connection;
 import network.Network;
 import quiz.util.ClientCreateEvent;
 import quiz.util.ClientVoteEvent;
 import javafx.scene.paint.Color;
-import network.Network;
 import quiz.model.Quiz;
 import quiz.util.ClientAnswerEvent;
-import quiz.util.ClientVoteEvent;
 
 public class Server extends EventPublisher{
 	
 	public static class ServerHandler implements EventListener{ // TODO: add handling of all events 
 	
+		@Override
 		public void handleEvent(Event e){
 			ArrayList<Integer> destinations = new ArrayList<>();
 			switch(e.getType()) {
@@ -32,6 +28,7 @@ public class Server extends EventPublisher{
 				Quiz quiz0 = ServerContext.getContext().getQuiz(clientVote.getQuizID());
 				quiz0.addVote(clientVote.getUserID(), clientVote.getTeamID(), clientVote.getVote());
 				ServerVoteEvent serverVote = new ServerVoteEvent(clientVote.getUserID(), clientVote.getTeamID(), clientVote.getQuizID(), clientVote.getVote());
+				// TO DO: add recipients for vote (teamMembers)
 				Server.getServer().publishEvent(serverVote);
 				System.out.println("Event received and handled: " + e.getType());
 				break;
@@ -45,15 +42,19 @@ public class Server extends EventPublisher{
 				// TODO: search correct answer for question
 				
 				ServerAnswerEvent serverAnswer = new ServerAnswerEvent(clientAnswer.getTeamID(), clientAnswer.getQuestionID(), clientAnswer.getAnswer(), 3);
+				// TO DO: add recipients for answer
 				Server.getServer().publishEvent(serverAnswer);
 				System.out.println("Event received and handled: " + e.getType());
 				break;
                     
-            case "CLIENT_CREATE":
+            case "SERVER_CLIENT_CREATE":
 				ClientCreateEvent clientCreate = (ClientCreateEvent) e;
-				destinations.add(clientCreate.getConnectionID());
-				e.setType("SERVER_CREATE");
-				ServerContext.getContext().getNetwork().handleEvent(e, destinations);
+				int userID = ServerContext.getContext().addUser(clientCreate.getUsername(), clientCreate.getPassword());
+				ServerContext.getContext().getNetwork().getUserIDConnectionIDMap().put(userID, clientCreate.getConnectionID());
+				ServerReturnUserIDEvent returnIDEvent = new ServerReturnUserIDEvent(userID, clientCreate.getConnectionID());
+				returnIDEvent.addRecipient(userID);
+				Server.getServer().publishEvent(returnIDEvent);
+				System.out.println("Event received and handled: " + e.getType());
 				break;
 				
 			case "CLIENT_CHAT":
@@ -62,7 +63,11 @@ public class Server extends EventPublisher{
 				for(Map.Entry<Integer, Integer> entry : ServerContext.getContext().getNetwork().getUserIDConnectionIDMap().entrySet())
 					if(entry.getKey() != chatMessage.getUserID())
 						destinations.add(entry.getKey());
-				ServerContext.getContext().getNetwork().handleEvent(e, destinations);
+				
+				chatMessage.setType("SERVER_CHAT");
+				chatMessage.addRecipients(destinations);
+				Server.getServer().publishEvent(chatMessage);
+				System.out.println("Event received and handled: " + e.getType());
                 break;
 				
 			default:
@@ -70,14 +75,8 @@ public class Server extends EventPublisher{
 				break;
 			}
 		}
+	}
 
-	@Override
-	public void handleEvent(Event e, ArrayList<Integer> destinations) {
-		// TODO Auto-generated method stub
-		
-	}
-	}
-	
 	private final static Server server = new Server();
 	private static ServerHandler serverHandler = new ServerHandler();
 	

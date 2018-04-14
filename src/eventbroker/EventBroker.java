@@ -5,10 +5,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import chat.ChatController;
-import chat.ChatMessage;
-import network.Client;
-import network.Network;
 
 final public class EventBroker implements Runnable{
 

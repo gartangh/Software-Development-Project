@@ -1,6 +1,5 @@
 package quiz.model;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javafx.application.Platform;
@@ -69,12 +68,13 @@ public class AnswerVoteModel {
 					votes[vote]++;
 				}
 				if(total>0) {
-					int A = (int) Math.round(100*(votes[0]/total));
-					int B = (int) Math.round(100*(votes[1]/total));
-					int C = (int) Math.round(100*(votes[2]/total));
-					int D = (int) Math.round(100*(votes[3]/total));
+					int A = Math.round(100*(votes[0]/total));
+					int B = Math.round(100*(votes[1]/total));
+					int C = Math.round(100*(votes[2]/total));
+					int D = Math.round(100*(votes[3]/total));
 									
 					Platform.runLater(new Runnable() {
+						@Override
 						public void run() {
 							progressPropertyA.setValue((double) A/100);
 							progressPropertyB.setValue((double) B/100);
@@ -95,6 +95,7 @@ public class AnswerVoteModel {
 	
 	public void updateAnswer(int answer, int correctAnswer) {
 		Platform.runLater(new Runnable() {
+			@Override
 			public void run() {
 				if(answer != correctAnswer) {
 					switch(answer) {

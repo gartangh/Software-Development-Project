@@ -1,7 +1,5 @@
 package quiz.view;
 
-import java.util.ArrayList;
-
 import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
@@ -70,12 +68,6 @@ public class ScoreboardController extends EventPublisher {
 		public void handleEvent(Event e) {
 			
 		}
-
-		@Override
-		public void handleEvent(Event e, ArrayList<Integer> destinations) {
-			
-		}
-		
 	}
 	
 	public ScoreboardModel getScoreboardModel() {

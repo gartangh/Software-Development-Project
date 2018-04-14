@@ -3,12 +3,12 @@ package network;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.net.Socket;
 import java.net.SocketException;
 
 import eventbroker.Event;
 import eventbroker.EventBroker;
+import quiz.util.ClientCreateEvent;
 
 public class Connection {
 
@@ -18,8 +18,7 @@ public class Connection {
 	private ObjectOutputStream objectOutputStream;
 	private Network network;
 
-	private static int n = 0;
-	private int clientConnectionID = n;
+	private int connectionID;
 
 	// Package local would be safer
 	public Connection(Socket socket, Network network) {
@@ -79,12 +78,12 @@ public class Connection {
 		System.out.println("Connection closed");
 	}
 
-	public int getClientConnectionID() {
-		return clientConnectionID;
+	public int getConnectionID() {
+		return connectionID;
 	}
 	
-	public void setClientConnectionID(int clientConnectionID) {
-		this.clientConnectionID = clientConnectionID;
+	public void setConnectionID(int connectionID) {
+		this.connectionID = connectionID;
 	}
 
 	// Internal class
@@ -97,14 +96,20 @@ public class Connection {
 					try {
 						// Server 4.2.2.2.1
 						Event event = (Event) objectInputStream.readObject();
+						
 						if(event.getMessage() != null) {
 							if (event.getMessage().equals("stop")) {
 								EventBroker.getEventBroker().stop();
-
 								break;
 							} 
 						}
-						network.publishEvent(event);
+
+						ClientCreateEvent createEvent;
+						if(event.getType().equals("SERVER_CLIENT_CREATE")) {
+							createEvent = (ClientCreateEvent) event;
+							createEvent.setConnectionID(connectionID);
+							network.publishEvent(createEvent);
+						} else network.publishEvent(event);
 					} catch (SocketException e) {
 						//e.printStackTrace();
 

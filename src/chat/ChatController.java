@@ -1,11 +1,9 @@
 package chat;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 import eventbroker.Event;
 import eventbroker.EventBroker;
@@ -18,10 +16,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import network.Client;
-import network.Connection;
-import quiz.util.ClientCreateEvent;
-import server.ServerContext;
-import server.ServerReturnConnectionIDEvent;
 import server.ServerReturnUserIDEvent;
 import user.model.User;
 
@@ -106,6 +100,7 @@ final public class ChatController extends EventPublisher {
 
 		// Update local GUI
 		Platform.runLater(new Runnable() {
+			@Override
 			public void run() {
 				// Clear chatTextField
 				chatTextField.setText("");
@@ -134,24 +129,18 @@ final public class ChatController extends EventPublisher {
 			
 			switch(e.getType()) {
 				case "CLIENT_CREATE":
-					Client.getNetwork().handleEvent(e);
+					e.setType("SERVER_CLIENT_CREATE");
+					publishEvent(e);
+					System.out.println("Event received and handled: " + e.getType());
 					break;
-					
-				case "SERVER_RETURN_CONNECTIONID":
-					ServerReturnConnectionIDEvent returnConnectionID = (ServerReturnConnectionIDEvent) e;
-					Connection connection = Client.getNetwork().getConnectionMap().remove(0);
-					connection.setClientConnectionID(returnConnectionID.getConnectionID());
-					Client.getConnection().setClientConnectionID(returnConnectionID.getConnectionID());
-					Client.getNetwork().getConnectionMap().put(returnConnectionID.getConnectionID(), connection);
-					break;
-					
+				
 				case "SERVER_RETURN_USERID":
 					ServerReturnUserIDEvent serverCreate = (ServerReturnUserIDEvent) e;
 					User user = Client.getUser();
 					user.setUserID(serverCreate.getUserID());
 					Client.setUser(user);
-					Client.getNetwork().getUserIDConnectionIDMap().put(serverCreate.getUserID(), serverCreate.getConnectionID());
-					System.out.println("Nailed it");
+					Client.getNetwork().getUserIDConnectionIDMap().put(serverCreate.getUserID(), 0);
+					System.out.println("Event received and handled: " + e.getType());
 					break;
 					
 				case "CLIENT_CHAT":
@@ -160,11 +149,13 @@ final public class ChatController extends EventPublisher {
 					
 					// Update local GUI
 					Platform.runLater(new Runnable() {
+						@Override
 						public void run() {
 							// Update messages in chatTextArea
 							chatModel.update();
 						}
 					});
+					System.out.println("Event received and handled: " + e.getType());
 					break;
 					
 				case "SERVER_CHAT":
@@ -173,18 +164,17 @@ final public class ChatController extends EventPublisher {
 					
 					// Update local GUI
 					Platform.runLater(new Runnable() {
+						@Override
 						public void run() {
 							// Update messages in chatTextArea
 							chatModel.update();
 						}
 					});
+					System.out.println("Event received and handled: " + e.getType());
 					break;
 					
 			}
 		}
-
-		@Override
-		public void handleEvent(Event e, ArrayList<Integer> destinations) {}
 
 	}
 

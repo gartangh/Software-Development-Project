@@ -1,25 +1,13 @@
 package network;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import chat.ChatMessage;
 import eventbroker.Event;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
-import javafx.application.Platform;
-import main.Main;
-import quiz.util.ClientCreateEvent;
-import server.ServerContext;
-import server.ServerReturnConnectionIDEvent;
-import server.ServerReturnUserIDEvent;
-import user.model.User;
 
 public class Network extends EventPublisher implements EventListener {
 
@@ -62,20 +50,17 @@ public class Network extends EventPublisher implements EventListener {
 			connection.receive();
       
 			if(TYPE == "CLIENT") {
-				connectionMap.put(connection.getClientConnectionID(), connection);
+				connectionMap.put(0, connection);
 			}
 			else if(TYPE == "SERVER") {
 				int newServerUserConnectionID;
 				do {
 					newServerUserConnectionID = (int) (Math.random() * Integer.MAX_VALUE);
 				} while(connectionMap.containsKey(newServerUserConnectionID));
-				ServerReturnConnectionIDEvent returnConnection = new ServerReturnConnectionIDEvent(newServerUserConnectionID);
-				connection.send(returnConnection);
+				connection.setConnectionID(newServerUserConnectionID);
 				connectionMap.put(newServerUserConnectionID, connection);
 			}
 			
-			
-			connectionMap.put(connection.getClientConnectionID(), connection);
 			return connection;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -92,60 +77,38 @@ public class Network extends EventPublisher implements EventListener {
 		connection.receive();
 		
 		if(TYPE == "CLIENT") {
-			connectionMap.put(connection.getClientConnectionID(), connection);
+			connectionMap.put(connection.getConnectionID(), connection);
 		}
 		else if(TYPE == "SERVER") {
 			int newServerUserConnectionID;
 			do {
 				newServerUserConnectionID = (int) (Math.random() * Integer.MAX_VALUE);
 			} while(connectionMap.containsKey(newServerUserConnectionID));
-			connection.setClientConnectionID(newServerUserConnectionID);
-			ServerReturnConnectionIDEvent returnConnection = new ServerReturnConnectionIDEvent(newServerUserConnectionID);
-			connection.send(returnConnection);
+			connection.setConnectionID(newServerUserConnectionID);
 			connectionMap.put(newServerUserConnectionID, connection);
 		}
-		
 		
 		return connection;
 	}
 
 
-
+	/*
+	 * Network handler: client only has 1 connection in connectionMap with ID == 0 (the server)
+	 * 					Server needs recipients inside (serverEvent) event 
+	 */
 	@Override
 	public void handleEvent(Event e) {
-		
-		switch(e.getType()) {
-		case "CLIENT_CREATE":
-			connectionMap.get(((ClientCreateEvent)e).getConnectionID()).send(e);
-			break;
-		default:
-			// Get user from userContext 
-			connectionMap.get(UserIDConnectionIDMap.get(Client.getUser().getID())).send(e);
+		if(TYPE == "CLIENT") {
+			connectionMap.get(0).send(e);
 		}
+		else if(TYPE == "SERVER") {
+			for(Integer userID : e.getRecipients()) {
+				connectionMap.get(UserIDConnectionIDMap.get(userID)).send(e);
+			}
+		}
+		System.out.println("Event received and handled: " + e.getType());
 	}
 	
-	@Override
-	public void handleEvent(Event e, ArrayList<Integer> destinations) {
-		
-		switch(e.getType()) {
-			case "SERVER_CREATE":
-				ClientCreateEvent serverCreate = (ClientCreateEvent) e;
-				int userID = ServerContext.getContext().addUser(serverCreate.getUsername(), serverCreate.getPassword());
-				UserIDConnectionIDMap.put(userID, serverCreate.getConnectionID());
-				ServerReturnUserIDEvent returnIDEvent = new ServerReturnUserIDEvent(userID, serverCreate.getConnectionID());
-				connectionMap.get(serverCreate.getConnectionID()).send(returnIDEvent);
-				break;
-			
-			case "CLIENT_CHAT":
-				ChatMessage chatMessage = (ChatMessage) e;
-				chatMessage.setType("SERVER_CHAT");
-				for(Integer userId : destinations)
-					connectionMap.get(UserIDConnectionIDMap.get(userId)).send(e);
-				break;
-		
-		}
-	}
-
 	public void terminate() {
 		if (connectionListener != null) {
 			connectionListener.terminate();

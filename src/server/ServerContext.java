@@ -6,10 +6,8 @@ import java.util.Map;
 import javafx.scene.paint.Color;
 
 import network.Network;
-import network.Connection;
 import quiz.model.Quiz;
 import quiz.model.Team;
-import user.model.Host;
 import user.model.User;
 
 public class ServerContext {

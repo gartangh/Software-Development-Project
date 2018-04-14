@@ -14,7 +14,6 @@ import main.Context;
 import network.Network;
 import quiz.model.Quiz;
 import quiz.model.Team;
-import quiz.model.AnswerVoteModel;
 import quiz.view.QuestionFormController;
 import user.model.User;
 

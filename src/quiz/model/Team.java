@@ -1,18 +1,11 @@
 package quiz.model;
 
-import java.util.HashMap;
-import java.util.Map;
-import javafx.util.Pair;
 import java.io.Serializable;
-import java.util.ArrayList;
-
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.scene.paint.Color;
-import user.model.Player;
 
 public class Team implements Serializable {
 

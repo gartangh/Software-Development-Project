@@ -1,8 +1,5 @@
 package quiz.view;
 
-import java.util.ArrayList;
-
-import chat.ChatMessage;
 import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
@@ -18,9 +15,7 @@ import quiz.model.Quiz;
 import quiz.model.AnswerVoteModel;
 import quiz.util.ClientAnswerEvent;
 import quiz.util.ClientVoteEvent;
-import server.Server;
 import server.ServerAnswerEvent;
-import server.ServerContext;
 import server.ServerVoteEvent;
 
 public class QuestionFormController extends EventPublisher {
@@ -71,6 +66,7 @@ public class QuestionFormController extends EventPublisher {
 	private AnswerVoteModel answerVoteModel;
 	
 	public class QuestionFormEventHandler implements EventListener{ // TODO: add handling of events 
+		@Override
 		public void handleEvent(Event e){
 			switch(e.getType()) {
 			case "SERVER_VOTE":
@@ -99,9 +95,6 @@ public class QuestionFormController extends EventPublisher {
 				break;
 			}
 		}
-
-		@Override
-		public void handleEvent(Event e, ArrayList<Integer> destinations) {}
 	}
 	
 	public QuestionFormController() {

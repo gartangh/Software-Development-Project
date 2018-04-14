@@ -1,6 +1,7 @@
 package eventbroker;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public class Event implements Serializable{
@@ -11,6 +12,8 @@ public class Event implements Serializable{
 
 	protected String message;
 	private long id = n++;
+
+	ArrayList<Integer> recipients = new ArrayList<>();
 
 	public Event() {
 		// Empty default constructor
@@ -36,6 +39,19 @@ public class Event implements Serializable{
 
 	public void setType(String type) {
 		this.type = type;
+	}
+	
+	public ArrayList<Integer> getRecipients() {
+		return recipients;
+	}
+	
+	public void addRecipient(int userID) {
+		recipients.add(userID);
+	}
+	
+	public void addRecipients(ArrayList<Integer> userIDList) {
+		for(int userID : userIDList)
+			addRecipient(userID);
 	}
 
 }

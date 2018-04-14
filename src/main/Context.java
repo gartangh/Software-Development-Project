@@ -2,8 +2,6 @@ package main;
 
 import network.Network;
 import quiz.model.Quiz;
-import quiz.model.Team;
-import quiz.model.AnswerVoteModel;
 import quiz.model.Question;
 import user.model.User;
 

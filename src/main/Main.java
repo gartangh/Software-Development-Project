@@ -1,9 +1,6 @@
 package main;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -13,7 +10,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import main.view.MenuController;
 import main.view.RootLayoutController;
-import network.Network;
 import quiz.view.ScoreboardController;
 import user.view.LogInController;
 import user.view.ModeSelectorController;

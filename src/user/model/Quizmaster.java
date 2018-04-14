@@ -11,6 +11,7 @@ public class Quizmaster extends Host {
 	}
 
 	// Upcasting
+	@Override
 	public Host castToHost() {
 		Host host = new Host(this);
 		
