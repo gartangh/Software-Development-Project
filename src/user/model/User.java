@@ -7,7 +7,8 @@ import main.Context;
 @SuppressWarnings("serial")
 public class User implements Serializable {
 
-	private final static String regex = "^[a-zA-Z0-9._-]{3,}$";
+	private final static String USERNAMEREGEX = "^[a-zA-Z0-9._-]{3,}$";
+	private final static String PASSWORDREGEX = "^[a-zA-Z0-9._-]{3,}$";
 
 	private String username;
 	private String password;
@@ -69,11 +70,11 @@ public class User implements Serializable {
 	}
 
 	public int setUsername(String username) {
-		if (!username.matches(regex)) {
+		if (!username.matches(USERNAMEREGEX)) {
 			// TODO: Go back and show error
 
 			return 1;
-		} else if (!isUnique(username)) {
+		} else if (!isUniqueUsername(username)) {
 			// TODO: Go back and show error
 
 			return 2;
@@ -89,7 +90,7 @@ public class User implements Serializable {
 			// TODO: Go back and show error
 
 			return 1;
-		} else if (!password1.matches(regex)) {
+		} else if (!password1.matches(PASSWORDREGEX)) {
 			// TODO: Go back and show error
 
 			return 2;
@@ -118,12 +119,13 @@ public class User implements Serializable {
 		}
 	}
 
+	// Factory method
 	public static int createAccount(String username, String password) {
-		if (!username.matches(regex))
+		if (!username.matches(USERNAMEREGEX))
 			return 1;
-		else if (!password.matches(regex))
+		else if (!password.matches(PASSWORDREGEX))
 			return 2;
-		else if (!isUnique(username))
+		else if (!isUniqueUsername(username))
 			return 3;
 
 		// Everything is valid
@@ -149,8 +151,8 @@ public class User implements Serializable {
 
 		return -1;
 	}
-	
-	private static boolean isUnique(String username) {
+
+	private static boolean isUniqueUsername(String username) {
 		// TODO: Check uniqueness of username
 
 		return true; // Temporary

@@ -14,6 +14,8 @@ import javafx.stage.Stage;
 import main.view.MenuController;
 import main.view.RootLayoutController;
 import network.Network;
+import quiz.view.CreateQuizController;
+import quiz.view.JoinQuizController;
 import user.view.LogInController;
 import user.view.ModeSelectorController;
 
@@ -107,6 +109,32 @@ public class Main extends Application {
 			MenuController menuController = menuLoader.getController();
 			menuController.setMainApp(this);
 			rootLayout.setTop(menu);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void showCreateQuizScene() {
+		try {
+			FXMLLoader createQuizLoader = new FXMLLoader();
+			createQuizLoader.setLocation(Main.class.getResource("../quiz/view/CreateQuiz.fxml"));
+			VBox createQuiz = (VBox) createQuizLoader.load();
+			CreateQuizController createQuizController = createQuizLoader.getController();
+			createQuizController.setMainApp(this);
+			rootLayout.setCenter(createQuiz);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void showJoinQuizScene() {
+		try {
+			FXMLLoader joinQuizLoader = new FXMLLoader();
+			joinQuizLoader.setLocation(Main.class.getResource("../quiz/view/JoinQuiz.fxml"));
+			VBox joinQuiz = (VBox) joinQuizLoader.load();
+			JoinQuizController joinQuizController = joinQuizLoader.getController();
+			joinQuizController.setMainApp(this);
+			rootLayout.setCenter(joinQuiz);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -32,7 +32,10 @@ public class LogInController {
 
 	@FXML
 	private void handleCreateAccount() {
-		switch (User.createAccount(mUsername.getText(), mPassword.getText())) {
+		String username = mUsername.getText();
+		String password = mPassword.getText();
+
+		switch (User.createAccount(username, password)) {
 		case 0:
 			main.showModeSelectorScene();
 			break;
@@ -49,10 +52,13 @@ public class LogInController {
 			AlertBox.display("Error", "Something went wrong!");
 		}
 	}
-	
+
 	@FXML
 	private void handleLogIn() {
-		switch (User.logIn(mUsername.getText(), mPassword.getText())) {
+		String username = mUsername.getText();
+		String password = mPassword.getText();
+		
+		switch (User.logIn(username, password)) {
 		case 0:
 			main.showModeSelectorScene();
 			break;

@@ -2,18 +2,18 @@ package quiz.model;
 
 import quiz.util.Difficulty;
 import quiz.util.Theme;
-import quiz.util.Type;
+import quiz.util.QuizType;
 
 public class Round {
 
 	private int amountOfQuestions;
 	private int maxAmountOfQuestions;
 	// TODO: add questions
-	private Type type;
+	private QuizType type;
 	private Difficulty difficulty;
 	private Theme theme;
 
-	public Round(int maxAmountOfQuestions, Type type, Difficulty difficulty, Theme theme) {
+	public Round(int maxAmountOfQuestions, QuizType type, Difficulty difficulty, Theme theme) {
 		this.maxAmountOfQuestions = maxAmountOfQuestions;
 		this.type = type;
 		this.difficulty = difficulty;
