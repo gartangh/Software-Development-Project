@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import main.view.MenuController;
 import main.view.RootLayoutController;
 import network.Network;
+import quiz.view.ScoreboardController;
 import user.view.LogInController;
 import user.view.ModeSelectorController;
 
@@ -29,7 +30,7 @@ public class Main extends Application {
 		this.primaryStage = primaryStage;
 
 		// TODO: Set up network connection
-		Network network = new Network();
+		/*Network network = new Network();
 		Context.getContext().setNetwork(network);
 
 		try {
@@ -40,7 +41,10 @@ public class Main extends Application {
 			showLogInScene();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
-		}
+		}*/
+		
+
+		showScoreboard();
 	}
 
 	public static void main(String[] args) {
@@ -107,6 +111,22 @@ public class Main extends Application {
 			MenuController menuController = menuLoader.getController();
 			menuController.setMainApp(this);
 			rootLayout.setTop(menu);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void showScoreboard() {
+		try {
+			FXMLLoader scoreboardLoader = new FXMLLoader();
+			scoreboardLoader.setLocation(Main.class.getResource("../quiz/view/Scoreboard.fxml"));
+		
+			AnchorPane scoreboardRoot = (AnchorPane) scoreboardLoader.load();
+			ScoreboardController scoreboardController = scoreboardLoader.getController();
+			//scoreboardController.setMainApp(this);
+			Scene scene = new Scene(scoreboardRoot);
+			primaryStage.setScene(scene);
+			primaryStage.show();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

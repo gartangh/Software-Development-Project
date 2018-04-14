@@ -22,20 +22,20 @@ public class ScoreboardTeam {
 		this.score = new SimpleIntegerProperty(score);
 	}
 	
-	public IntegerProperty getRank() {
-		return rank;
+	public int getRank() {
+		return rank.get();
 	}
 
-	public StringProperty getTeamName() {
-		return teamName;
+	public String getTeamName() {
+		return teamName.get();
 	}
 
-	public IntegerProperty getTeamID() {
-		return teamID;
+	public int getTeamID() {
+		return teamID.get();
 	}
 
-	public IntegerProperty getScore() {
-		return score;
+	public int getScore() {
+		return score.get();
 	}
 
 }
