@@ -6,10 +6,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import main.Main;
 import quiz.model.Quiz;
-import user.model.User;
 
 public class CreateQuizController {
 
+	// Text fields
 	@FXML
 	private TextField mName;
 	@FXML
@@ -21,6 +21,7 @@ public class CreateQuizController {
 	@FXML
 	private TextField mPlayers;
 
+	// Buttons
 	@FXML
 	private Button mCreateQuiz;
 	@FXML
@@ -48,7 +49,7 @@ public class CreateQuizController {
 
 			switch (Quiz.createQuiz(mName.getText(), rounds, questions, teams, players)) {
 			case 0:
-				// TODO: Change scene
+				
 				break;
 			case 1:
 				AlertBox.display("Error", "Quizname is invalid!");

@@ -115,22 +115,6 @@ public class Main extends Application {
 		}
 	}
 
-	public void showScoreboard() {
-		try {
-			FXMLLoader scoreboardLoader = new FXMLLoader();
-			scoreboardLoader.setLocation(Main.class.getResource("../quiz/view/Scoreboard.fxml"));
-
-			AnchorPane scoreboardRoot = (AnchorPane) scoreboardLoader.load();
-			ScoreboardController scoreboardController = scoreboardLoader.getController();
-			// scoreboardController.setMainApp(this);
-			Scene scene = new Scene(scoreboardRoot);
-			primaryStage.setScene(scene);
-			primaryStage.show();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 	public void showCreateQuizScene() {
 		try {
 			FXMLLoader createQuizLoader = new FXMLLoader();
@@ -152,6 +136,22 @@ public class Main extends Application {
 			JoinQuizController joinQuizController = joinQuizLoader.getController();
 			joinQuizController.setMainApp(this);
 			rootLayout.setCenter(joinQuiz);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void showScoreboard() {
+		try {
+			FXMLLoader scoreboardLoader = new FXMLLoader();
+			scoreboardLoader.setLocation(Main.class.getResource("../quiz/view/Scoreboard.fxml"));
+
+			AnchorPane scoreboardRoot = (AnchorPane) scoreboardLoader.load();
+			ScoreboardController scoreboardController = scoreboardLoader.getController();
+			// scoreboardController.setMainApp(this);
+			Scene scene = new Scene(scoreboardRoot);
+			primaryStage.setScene(scene);
+			primaryStage.show();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

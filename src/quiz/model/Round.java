@@ -5,7 +5,7 @@ import java.util.Map;
 
 import quiz.util.Difficulty;
 import quiz.util.Theme;
-import quiz.util.QuizType;
+import quiz.util.RoundType;
 
 public class Round {
 
@@ -13,15 +13,15 @@ public class Round {
 	private int maxAmountOfQuestions;
 	// Map(questionID -> question)
 	private Map<Integer, Question> questions;
-	private QuizType quizType;
+	private RoundType roundType;
 	private Difficulty difficulty;
 	private Theme theme;
 	// Map(questionID -> Map(teamname -> answerID))
-	private Map<Integer, Map<String, Integer>> answers;
+	private Map<Integer, Map<String, Integer>> answers;		
 
-	public Round(int maxAmountOfQuestions, QuizType quizType, Difficulty difficulty, Theme theme) {
+	public Round(int maxAmountOfQuestions, RoundType roundType, Difficulty difficulty, Theme theme) {
 		this.maxAmountOfQuestions = maxAmountOfQuestions;
-		this.quizType = quizType;
+		this.roundType = roundType;
 		this.difficulty = difficulty;
 		this.theme = theme;
 	}
@@ -47,8 +47,8 @@ public class Round {
 		return questions;
 	}
 
-	public QuizType getQuizType() {
-		return quizType;
+	public RoundType getRoundType() {
+		return roundType;
 	}
 
 	public Difficulty getDifficulty() {
@@ -72,7 +72,7 @@ public class Round {
 	// Methods
 	public void makeQuestions() {
 		for (amountOfQuestions = 0; amountOfQuestions < maxAmountOfQuestions; amountOfQuestions++) {
-			switch (quizType) {
+			switch (roundType) {
 			case MC:
 				
 				questions.put(amountOfQuestions, new MCQuestion(difficulty, theme));
