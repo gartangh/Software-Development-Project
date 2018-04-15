@@ -16,6 +16,7 @@ import main.view.RootLayoutController;
 import network.Network;
 import quiz.view.CreateQuizController;
 import quiz.view.JoinQuizController;
+import quiz.view.JoinTeamController;
 import quiz.view.ScoreboardController;
 import user.view.LogInController;
 import user.view.ModeSelectorController;
@@ -136,6 +137,19 @@ public class Main extends Application {
 			JoinQuizController joinQuizController = joinQuizLoader.getController();
 			joinQuizController.setMainApp(this);
 			rootLayout.setCenter(joinQuiz);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void showJoinTeamScene() {
+		try {
+			FXMLLoader joinTeamLoader = new FXMLLoader();
+			joinTeamLoader.setLocation(Main.class.getResource("../quiz/view/JoinTeam.fxml"));
+			VBox joinTeam = (VBox) joinTeamLoader.load();
+			JoinTeamController joinTeamController = joinTeamLoader.getController();
+			joinTeamController.setMainApp(this);
+			rootLayout.setCenter(joinTeam);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

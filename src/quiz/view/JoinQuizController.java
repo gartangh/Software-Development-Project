@@ -1,13 +1,13 @@
 package quiz.view;
 
-import java.util.ArrayList;
-
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import main.Context;
 import main.Main;
 import quiz.model.Quiz;
 
@@ -16,7 +16,9 @@ public class JoinQuizController {
 	@FXML
 	private VBox mQuizzes;
 	@FXML
-	private Button back;
+	private Button mBack;
+
+	private ObservableList<Quiz> quizzes;
 
 	// Reference to the main application
 	private Main main;
@@ -27,10 +29,9 @@ public class JoinQuizController {
 
 	@FXML
 	private void initialize() {
-		ArrayList<Quiz> quizzes = Quiz.getQuizzes();
+		quizzes = Quiz.getQuizzes();
 
 		for (Quiz quiz : quizzes) {
-			// TODO: Visualize quiz
 			GridPane mQuiz = new GridPane();
 
 			// Quizname label
@@ -72,6 +73,10 @@ public class JoinQuizController {
 			TextField mPlayers = new TextField(Integer.toString(quiz.getMaxAmountOfPlayersPerTeam()));
 			GridPane.setConstraints(mPlayers, 1, 4);
 
+			// Add all constraints to mQuiz
+			mQuiz.getChildren().addAll(quiznameLabel, mQuizname, roundsLabel, mRounds, questionsLabel, mQuestions,
+					teamsLabel, mTeams, playersLabel, mPlayers);
+
 			mQuizzes.getChildren().add(mQuiz);
 		}
 	}
@@ -79,6 +84,8 @@ public class JoinQuizController {
 	@FXML
 	private void handleJoin(String quizname) {
 		// TODO: Handle join
+		// Context.getContext().setQuiz();
+		main.showJoinTeamScene();
 	}
 
 	@FXML

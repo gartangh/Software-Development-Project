@@ -177,8 +177,8 @@ public class Quiz implements Serializable {
 		return true; // Temporary
 	}
 	
-	public static ArrayList<Quiz> getQuizzes() {
-		ArrayList<Quiz> quizzes = new ArrayList<>();
+	public static ObservableList<Quiz> getQuizzes() {
+		ObservableList<Quiz> quizzes = null;
 		
 		// TODO: get quizzes from server
 		
