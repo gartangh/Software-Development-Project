@@ -9,8 +9,8 @@ public class MCQuestion extends Question {
 	private String[] answers = new String[4];
 	private int correctAnswer;
 
-	public MCQuestion(Difficulty difficulty, Theme theme, int questionID) {
-		super(difficulty, theme, questionID);
+	public MCQuestion(Difficulty difficulty, Theme theme) {
+		super(difficulty, theme);
 		// TODO: Get a question (with correct difficulty and theme), answers and correctAnswer from database
 	}
 

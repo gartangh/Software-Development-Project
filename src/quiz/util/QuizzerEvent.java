@@ -3,23 +3,22 @@ package quiz.util;
 import main.Context;
 
 @SuppressWarnings("serial")
-public class QuizzerEvent extends UserEvent{
-	
-	protected int teamID;
-	protected int quizID;
-	
-	public QuizzerEvent(){
-		super();
-		this.teamID = Context.getContext().getTeamID();
-		this.quizID = Context.getContext().getQuiz().getID();
+public class QuizzerEvent extends UserEvent {
+
+	protected String teamname;
+	protected String quizname;
+
+	public QuizzerEvent() {
+		this.teamname = Context.getContext().getTeam().getTeamname();
+		this.quizname = Context.getContext().getQuiz().getQuizname();
 		this.type = "QUIZZER";
 	}
-	
-	public int getTeamID() {
-		return teamID;
+
+	public String getTeamname() {
+		return teamname;
 	}
-	
-	public int getQuizID() {
-		return quizID;
+
+	public String getQuizname() {
+		return quizname;
 	}
 }

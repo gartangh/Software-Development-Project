@@ -12,12 +12,8 @@ public class Quizmaster extends Host {
 
 	// Upcasting
 	@Override
-	public Host castToHost() {
-		Host host = new Host(this);
-		
-		Context.getContext().setUser(host);
-		
-		return host;
+	public void castToHost() {		
+		Context.getContext().setUser(new Host(this));
 	}
 
 }

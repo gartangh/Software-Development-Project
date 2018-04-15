@@ -1,10 +1,11 @@
-package main.view;
+package quiz.view;
 
 import javafx.fxml.FXML;
 import main.Main;
 
-public class RootLayoutController {
+public class JoinQuizController {
 
+	// Reference to the main application
 	private Main main;
 
 	public void setMainApp(Main main) {

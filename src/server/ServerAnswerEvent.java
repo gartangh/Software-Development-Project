@@ -1,11 +1,16 @@
 package server;
 
+@SuppressWarnings("serial")
 public class ServerAnswerEvent extends ServerEvent {
-	protected int questionID, teamID, answer, correctAnswer;
 
-	public ServerAnswerEvent(int teamID, int questionID, int answer, int correctAnswer) {
+	private String teamname;
+	private int questionID;
+	private int answer;
+	private int correctAnswer;
+
+	public ServerAnswerEvent(String teamname, int questionID, int answer, int correctAnswer) {
 		super();
-		this.teamID = teamID;
+		this.teamname = teamname;
 		this.questionID = questionID;
 		this.answer = answer;
 		this.correctAnswer = correctAnswer;
@@ -16,15 +21,16 @@ public class ServerAnswerEvent extends ServerEvent {
 		return questionID;
 	}
 
-	public int getTeamID() {
-		return teamID;
+	public String getTeamname() {
+		return teamname;
 	}
 
 	public int getAnswer() {
 		return answer;
 	}
-	
+
 	public int getCorrectAnswer() {
 		return correctAnswer;
 	}
+
 }

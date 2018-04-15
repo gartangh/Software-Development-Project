@@ -12,12 +12,8 @@ public class Spectator extends Guest {
 
 	// Upcasting
 	@Override
-	public Guest castToGuest() {
-		Guest guest = new Guest(this);
-		
-		Context.getContext().setUser(guest);
-		
-		return guest;
+	public void castToGuest() {
+		Context.getContext().setUser(new Guest(this));
 	}
 
 }
