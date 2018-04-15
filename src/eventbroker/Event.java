@@ -53,5 +53,9 @@ public class Event implements Serializable{
 		for(int userID : userIDList)
 			addRecipient(userID);
 	}
+	
+	public void removeAllRecipients() {
+		recipients.clear();
+	}
 
 }

@@ -39,7 +39,7 @@ public class Main extends Application {
 			e.printStackTrace();
 		}*/
 		
-
+		Context.getContext().setTeamID(0);
 		showScoreboard();
 	}
 

@@ -17,6 +17,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import network.Client;
 import server.ServerReturnUserIDEvent;
+import server.ServerScoreboardDataEvent;
 import user.model.User;
 
 final public class ChatController extends EventPublisher {
@@ -172,6 +173,10 @@ final public class ChatController extends EventPublisher {
 					});
 					System.out.println("Event received and handled: " + e.getType());
 					break;
+				
+				case "SERVER_SCOREBOARDDATA":
+					ServerScoreboardDataEvent scoreboardData = (ServerScoreboardDataEvent) e;
+					// Handle data to scoreboard
 					
 			}
 		}

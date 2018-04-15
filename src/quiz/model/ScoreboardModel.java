@@ -14,7 +14,7 @@ public class ScoreboardModel {
 	private StringProperty winnerLoser;
 	
 	public ScoreboardModel() {
-		winnerLoser = new SimpleStringProperty("WINNER");
+		// Empty default constructor
 	}
 	
 	public ObservableList<ScoreboardTeam> getScoreboardTeams() {

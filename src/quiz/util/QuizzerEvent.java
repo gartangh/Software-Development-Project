@@ -11,7 +11,8 @@ public class QuizzerEvent extends UserEvent{
 	public QuizzerEvent(){
 		super();
 		this.teamID = Context.getContext().getTeamID();
-		this.quizID = Context.getContext().getQuiz().getID();
+		// this.quizID = Context.getContext().getQuiz().getID();
+		this.quizID = 0;	// testing purposes
 		this.type = "QUIZZER";
 	}
 	

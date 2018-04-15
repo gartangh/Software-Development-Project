@@ -17,6 +17,7 @@ public class ServerContext {
 
 	private Map<Integer, User> userMap = new HashMap<Integer, User>();
 	private Map<Integer, Quiz> quizMap = new HashMap<Integer, Quiz>();
+
 	private Network network;
 
 	// Constructors
@@ -53,7 +54,7 @@ public class ServerContext {
 			newID = (int) (Math.random() * Integer.MAX_VALUE);
 		} while(quizMap.containsKey(newID));
 
-		newID = 1; // Testing purposes
+		// newID = 1; // Testing purposes
 		
 		Quiz newQuiz = new Quiz(newID, maxAmountOfTeams, maxAmountOfPlayersPerTeam, maxAmountOfRounds, maxAmountOfQuestionsPerRound, hostID);
 		quizMap.put(newID, newQuiz);
@@ -74,7 +75,7 @@ public class ServerContext {
 				}
 			} while(!unique);
 
-			newID = 1; // Testing purposes
+			// newID = 1; // Testing purposes
 
 			Team team = new Team(newID, teamName, color, captainID, userMap.get(captainID).getUsername());
 			team.setMaxAmountOfPlayers(q.getMaxAmountOfPlayersPerTeam());
@@ -95,6 +96,10 @@ public class ServerContext {
 
 	public Map<Integer, User> getUserMap() {
 		return userMap;
+	}
+	
+	public Map<Integer, Quiz> getQuizMap() {
+		return quizMap;
 	}
 	
 	public Network getNetwork() {

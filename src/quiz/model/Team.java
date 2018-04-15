@@ -7,6 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import javafx.scene.paint.Color;
 
+@SuppressWarnings("serial")
 public class Team implements Serializable {
 
 	private int amountOfPlayers;
@@ -143,6 +144,20 @@ public class Team implements Serializable {
 	// Removers
 	public void removePlayer(int playerID) {
 		if(players.remove(playerID)!=null) amountOfPlayers--;
+	}
+	
+	
+	// Test
+	public void setQuizScore(int quizScore) {
+		this.quizScore = quizScore;
+	}
+
+	public int getTeamID() {
+		return teamID;
+	}
+
+	public void setTeamID(int teamID) {
+		this.teamID = teamID;
 	}
 
 }
