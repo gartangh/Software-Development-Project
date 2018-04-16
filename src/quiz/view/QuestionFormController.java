@@ -17,14 +17,13 @@ import quiz.model.MCQuestion;
 import quiz.util.ClientAnswerEvent;
 import quiz.util.ClientNewQuestionEvent;
 import quiz.util.ClientVoteEvent;
-import server.Server;
 import server.ServerAnswerEvent;
 import server.ServerContext;
 import server.ServerNewQuestionEvent;
 import server.ServerVoteEvent;
 
 public class QuestionFormController extends EventPublisher {
-	
+
 	@FXML
 	private Label questionTitle;
 	@FXML
@@ -36,7 +35,7 @@ public class QuestionFormController extends EventPublisher {
 	@FXML
 	private CheckBox checkC;
 	@FXML
-	private CheckBox checkD;	
+	private CheckBox checkD;
 	@FXML
 	private Label answerA;
 	@FXML
@@ -71,6 +70,8 @@ public class QuestionFormController extends EventPublisher {
 	private ProgressBar voteProgressD;
 	
 	private AnswerVoteModel answerVoteModel;
+	private QuestionFormEventHandler eventHandler;
+
 	
 	public class QuestionFormEventHandler implements EventListener{ // TODO: add handling of events 
 		public void handleEvent(Event e){
@@ -116,9 +117,7 @@ public class QuestionFormController extends EventPublisher {
 	public QuestionFormController() {
 		this.answerVoteModel = new AnswerVoteModel();
 	}
-	
-	private QuestionFormEventHandler eventHandler;
-	
+
 	public void initialize() {
 		eventHandler = new QuestionFormEventHandler();
 		EventBroker.getEventBroker().addEventListener(eventHandler);
@@ -139,6 +138,7 @@ public class QuestionFormController extends EventPublisher {
 		voteProgressB.progressProperty().bind(answerVoteModel.getProgressPropertyB());
 		voteProgressC.progressProperty().bind(answerVoteModel.getProgressPropertyC());
 		voteProgressD.progressProperty().bind(answerVoteModel.getProgressPropertyD());
+
 		percentageA.textProperty().bind(answerVoteModel.getPercentagePropertyA());
 		percentageB.textProperty().bind(answerVoteModel.getPercentagePropertyB());
 		percentageC.textProperty().bind(answerVoteModel.getPercentagePropertyC());
@@ -151,50 +151,60 @@ public class QuestionFormController extends EventPublisher {
 		
 		answerVoteModel.updateVotes(Context.getContext().getTeamID());
 	}
-	
+
 	private void handleCheck(int answer) {
-		if(answer != 0) checkA.setSelected(false);
-		if(answer != 1) checkB.setSelected(false);
-		if(answer != 2) checkC.setSelected(false);
-		if(answer != 3) checkD.setSelected(false);
+		if (answer != 0)
+			checkA.setSelected(false);
+		if (answer != 1)
+			checkB.setSelected(false);
+		if (answer != 2)
+			checkC.setSelected(false);
+		if (answer != 3)
+			checkD.setSelected(false);
 	}
-	
+
 	@FXML
 	private void handleCheckA() {
 		handleCheck(0);
 	}
+
 	@FXML
 	private void handleCheckB() {
 		handleCheck(1);
 	}
-	
+
 	@FXML
 	private void handleCheckC() {
 		handleCheck(2);
 	}
-	
+
 	@FXML
 	private void handleCheckD() {
 		handleCheck(3);
 	}
-	
+
 	private int getChecked() {
-		if(checkA.isSelected()) return 0;
-		else if(checkB.isSelected()) return 1;
-		else if(checkC.isSelected()) return 2;
-		else if(checkD.isSelected()) return 3;
-		else return -1;
+		if (checkA.isSelected())
+			return 0;
+		else if (checkB.isSelected())
+			return 1;
+		else if (checkC.isSelected())
+			return 2;
+		else if (checkD.isSelected())
+			return 3;
+		else
+			return -1;
 	}
-	
+
 	@FXML
 	private void handleVote() {
 		int vote = this.getChecked();
-		if(vote >= 0) {
+		if (vote >= 0) {
 			ClientVoteEvent cve = new ClientVoteEvent(vote);
 			this.publishEvent(cve);
 		}
 	}
-	
+
 	@FXML
 	private void handleAnswer() {
 		int answer = this.getChecked();

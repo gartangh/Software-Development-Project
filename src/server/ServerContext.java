@@ -14,11 +14,10 @@ import quiz.model.Quiz;
 import quiz.model.Team;
 import quiz.util.Difficulty;
 import quiz.util.Theme;
-import user.model.Host;
 import user.model.User;
 
 public class ServerContext {
-	
+
 	// Singleton
 	private static ServerContext context = new ServerContext();
 
@@ -28,20 +27,28 @@ public class ServerContext {
 	private Map<Integer, MCQuestion> allMCQuestions = new HashMap<Integer, MCQuestion>();
 	private Network network;
 
-	// Constructors
-	private ServerContext() {
-		// Empty default constructor
-	}
-	
+	// Getters and setters
 	public static ServerContext getContext() {
 		return context;
 	}
-	
-	public void getSimpleUsers() {
-		Map<Integer, String> res = new HashMap<Integer, String>();
-		
+
+	public void setNetwork(Network network) {
+		this.network = network;
 	}
-	
+
+	public Network getNetwork() {
+		return network;
+	}
+
+	public Map<Integer, User> getUserMap() {
+		return userMap;
+	}
+
+	public Map<Integer, Quiz> getQuizMap() {
+		return quizMap;
+	}
+
+	// Adders
 	public int addUser(String username, String password) {
 		int newID;
 		do {
@@ -55,7 +62,7 @@ public class ServerContext {
 		return newID;
 	}
 	
-	public int addQuiz(int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds, int maxAmountOfQuestionsPerRound, int hostID) {
+	public int addQuiz(String quizName, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds, int maxAmountOfQuestionsPerRound, int hostID) {
 		int newID;
 		do {
 			newID = (int) (Math.random() * Integer.MAX_VALUE);
@@ -63,7 +70,7 @@ public class ServerContext {
 		
 		newID = 1; // Testing purposes
 		
-		Quiz newQuiz = new Quiz(newID, maxAmountOfTeams, maxAmountOfPlayersPerTeam, maxAmountOfRounds, maxAmountOfQuestionsPerRound, hostID);
+		Quiz newQuiz = new Quiz(newID, quizName, maxAmountOfTeams, maxAmountOfPlayersPerTeam, maxAmountOfRounds, maxAmountOfQuestionsPerRound, hostID);
 		quizMap.put(newID, newQuiz);
 		return newID;
 	}
@@ -77,8 +84,8 @@ public class ServerContext {
 			do {
 				unique = true;
 				newID = (int) (Math.random() * Integer.MAX_VALUE);
-				for(Team t : q.getTeams()) {
-					if(t.getID() == newID) unique = false;
+				for(Team t : q.getTeams().values()) {
+					if(t.getTeamID() == newID) unique = false;
 				}
 			} while(!unique);
 			
@@ -93,13 +100,14 @@ public class ServerContext {
 		}
 		return -1;
 	}
-	
+
+	// Methods
+	public User getUser(int userID) {
+		return userMap.get(userID);
+	}
+
 	public Quiz getQuiz(int quizID) {
 		return quizMap.get(quizID);
-	}
-	
-	public void updateQuiz(Quiz updatedQuiz) {
-		quizMap.put(updatedQuiz.getID(), updatedQuiz);
 	}
 	
 	public Map<Integer, Map<Integer, Map<Integer, MCQuestion>>> getOrderedMCQuestionMap() {

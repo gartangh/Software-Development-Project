@@ -1,13 +1,16 @@
 package user.view;
 
-import gui.AlertBox;
+import eventbroker.EventPublisher;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import main.Context;
 import main.Main;
+import main.view.AlertBox;
+import quiz.util.ClientCreateAccountEvent;
 import user.model.User;
 
-public class LogInController {
+public class LogInController extends EventPublisher {
 
 	@FXML
 	private TextField mUsername;
@@ -32,8 +35,15 @@ public class LogInController {
 
 	@FXML
 	private void handleCreateAccount() {
-		switch (User.createAccount(mUsername.getText(), mPassword.getText())) {
+		String username = mUsername.getText();
+		String password = mPassword.getText();
+
+		/*switch (User.createAccount(username, password)) {
 		case 0:
+			User user = Context.getContext().getUser();
+			ClientCreateAccountEvent cCAE = new ClientCreateAccountEvent(user);
+			publishEvent(cCAE);
+
 			main.showModeSelectorScene();
 			break;
 		case 1:
@@ -47,13 +57,17 @@ public class LogInController {
 			break;
 		default:
 			AlertBox.display("Error", "Something went wrong!");
-		}
+		}*/
 	}
-	
+
 	@FXML
 	private void handleLogIn() {
-		switch (User.logIn(mUsername.getText(), mPassword.getText())) {
+		String username = mUsername.getText();
+		String password = mPassword.getText();
+
+		/*switch (User.logIn(username, password)) {
 		case 0:
+			// TODO: Handle log in
 			main.showModeSelectorScene();
 			break;
 		case 1:
@@ -61,7 +75,7 @@ public class LogInController {
 			break;
 		default:
 			AlertBox.display("Error", "Something went wrong!");
-		}
+		}*/
 	}
 
 }

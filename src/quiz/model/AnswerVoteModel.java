@@ -1,6 +1,5 @@
 package quiz.model;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javafx.application.Platform;
@@ -22,17 +21,19 @@ public class AnswerVoteModel {
 	private StringProperty answerPropertyA, answerPropertyB, answerPropertyC, answerPropertyD;	// Answer properties
 	private ObjectProperty<Paint> paintPropertyA, paintPropertyB, paintPropertyC, paintPropertyD;
 	
-	private DoubleProperty progressPropertyA, progressPropertyB, progressPropertyC, progressPropertyD;	// Vote properties
+	private DoubleProperty progressPropertyA, progressPropertyB, progressPropertyC, progressPropertyD; 	// Vote properties
 	private StringProperty percentagePropertyA, percentagePropertyB, percentagePropertyC, percentagePropertyD;
 	private StringProperty numberOfVotesProperty;
 	
 	private BooleanProperty voteDisableProperty, confirmDisableProperty, nextDisableProperty; // Button properties
-	
+
+	// Constructor
 	public AnswerVoteModel() {
 		questionTitleProperty = new SimpleStringProperty("Question:");
 		questionTextProperty = new SimpleStringProperty("");
-		
-		answerPropertyA = new SimpleStringProperty("");	// Answer properties
+
+		// Answer properties
+		answerPropertyA = new SimpleStringProperty("");
 		answerPropertyB = new SimpleStringProperty("");
 		answerPropertyC = new SimpleStringProperty("");
 		answerPropertyD = new SimpleStringProperty("");
@@ -40,15 +41,16 @@ public class AnswerVoteModel {
 		paintPropertyB = new SimpleObjectProperty<Paint>(Color.BLACK);
 		paintPropertyC = new SimpleObjectProperty<Paint>(Color.BLACK);
 		paintPropertyD = new SimpleObjectProperty<Paint>(Color.BLACK);
-		
-		progressPropertyA = new SimpleDoubleProperty(0.0);	// Vote properties
+
+		// Vote properties
+		progressPropertyA = new SimpleDoubleProperty(0.0);
 		progressPropertyB = new SimpleDoubleProperty(0.0);
 		progressPropertyC = new SimpleDoubleProperty(0.0);
 		progressPropertyD = new SimpleDoubleProperty(0.0);
-		percentagePropertyA = new SimpleStringProperty("0%");
-		percentagePropertyB = new SimpleStringProperty("0%");
-		percentagePropertyC = new SimpleStringProperty("0%");
-		percentagePropertyD = new SimpleStringProperty("0%");
+		percentagePropertyA = new SimpleStringProperty("0 %");
+		percentagePropertyB = new SimpleStringProperty("0 %");
+		percentagePropertyC = new SimpleStringProperty("0 %");
+		percentagePropertyD = new SimpleStringProperty("0 %");
 		numberOfVotesProperty = new SimpleStringProperty("0 votes");
 		
 		voteDisableProperty = new SimpleBooleanProperty(false);	// Button properties

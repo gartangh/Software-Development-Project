@@ -2,20 +2,24 @@ package user.model;
 
 import java.io.Serializable;
 
+import eventbroker.EventBroker;
 import main.Context;
+import quiz.util.ClientCreateAccountEvent;
 
 @SuppressWarnings("serial")
 public class User implements Serializable {
 
-	private final static String regex = "^[a-zA-Z0-9._-]{3,}$";
+	private final static String USERNAMEREGEX = "^[a-zA-Z0-9._-]{3,}$";
+	private final static String PASSWORDREGEX = "^[a-zA-Z0-9._-]{3,}$";
 
 	private String username;
+	private int userID;
 	private String password;
 	private int level;
 	private long xp;
-	private int userID;
-	
-	private User(String username, String password) {
+
+	public User(int userID, String username, String password) {
+		this.userID = userID;
 		this.username = username;
 		this.password = password;
 		this.level = 1;
@@ -29,56 +33,44 @@ public class User implements Serializable {
 		this.xp = xp;
 	}
 
-	public User(int userID, String username, String password) { // Changed to public for testing purposes
-		this.userID = userID;
-		this.username = username;
-		this.password = password;
-		this.level = 1;
-		this.xp = 0L;
-	}
-
-	private User(int userID, String username, String password, int level, long xp) {
-		this.userID = userID;
-		this.username = username;
-		this.password = password;
-		this.level = level;
-		this.xp = xp;
-	}
-
 	User(User user) {
 		// Copy constructor
-		this.userID = user.userID;
 		this.username = user.username;
 		this.password = user.password;
 		this.level = user.level;
 		this.xp = user.xp;
 	}
 
+	// Factory method
+	/*public static int createAccount(String username, String password) {
+		if (!username.matches(USERNAMEREGEX))
+			return 1;
+		else if (!password.matches(PASSWORDREGEX))
+			return 2;
+		else if (!isUniqueUsername(username))
+			return 3;
+
+		// Everything is valid
+		User user = new User(username, password);
+		
+		Context.getContext().setUser(user);
+
+		return 0;
+	}*/
+
 	// Upcasting
 	// Factory method
-	public static User createUser(User user) {
-		User newUser = new User(user);
-
-		Context.getContext().setUser(newUser);
-
-		return newUser;
+	public static void createUser(User user) {
+		Context.getContext().setUser(new User(user));
 	}
 
 	// Downcasting
-	public Guest castToGuest() {
-		Guest guest = new Guest(this);
-
-		Context.getContext().setUser(guest);
-
-		return guest;
+	public void castToGuest() {
+		Context.getContext().setUser(new Guest(this));
 	}
 
-	public Host castToHost() {
-		Host host = new Host(this);
-
-		Context.getContext().setUser(host);
-
-		return host;
+	public void castToHost() {
+		Context.getContext().setUser(new Host(this));
 	}
 
 	// Getters and setters
@@ -86,20 +78,12 @@ public class User implements Serializable {
 		return username;
 	}
 
-	public int setUsername(String username) {
-		if (!username.matches(regex)) {
-			// TODO: Go back and show error
+	public int getUserID() {
+		return userID;
+	}
 
-			return 1;
-		} else if (!isUnique(username)) {
-			// TODO: Go back and show error
-
-			return 2;
-		}
-
-		this.username = username;
-
-		return 0;
+	public void setUserID(int userID) {
+		this.userID = userID;
 	}
 
 	public int setPassword(String password1, String password2) {
@@ -107,7 +91,7 @@ public class User implements Serializable {
 			// TODO: Go back and show error
 
 			return 1;
-		} else if (!password1.matches(regex)) {
+		} else if (!password1.matches(PASSWORDREGEX)) {
 			// TODO: Go back and show error
 
 			return 2;
@@ -125,10 +109,6 @@ public class User implements Serializable {
 	public long getXp() {
 		return xp;
 	}
-	
-	public int getID() {
-		return userID;
-	}
 
 	// Methods
 	public void addXp(int xp) {
@@ -138,24 +118,6 @@ public class User implements Serializable {
 			this.level++;
 			this.xp -= level * 1000;
 		}
-	}
-
-	public static int createAccount(String username, String password) {
-		if (!username.matches(regex))
-			return 1;
-		else if (!password.matches(regex))
-			return 2;
-		else if (!isUnique(username))
-			return 3;
-
-		// Everything is valid
-		User user = new User(username, password);
-
-		// TODO: Add User to database
-
-		Context.getContext().setUser(user);
-
-		return 0;
 	}
 
 	public static int logIn(String username, String password) {
@@ -171,8 +133,8 @@ public class User implements Serializable {
 
 		return -1;
 	}
-	
-	private static boolean isUnique(String username) {
+
+	private static boolean isUniqueUsername(String username) {
 		// TODO: Check uniqueness of username
 
 		return true; // Temporary

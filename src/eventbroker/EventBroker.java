@@ -5,15 +5,16 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-
-final public class EventBroker implements Runnable{
-
-	protected Map<String, ArrayList<EventListener>> listeners = new HashMap<>();
+final public class EventBroker implements Runnable {
 
 	final static EventBroker broker = new EventBroker(); // Singleton
 
-
 	LinkedList<QueueItem> queue = new LinkedList<>();
+	Map<String, ArrayList<EventListener>> listeners = new HashMap<>();
+
+	public LinkedList<QueueItem> getQueue() {
+		return queue;
+	}
 
 	private boolean stop = false;
 	private boolean proceed;
@@ -66,7 +67,7 @@ final public class EventBroker implements Runnable{
 		}
 	}
 
-	void addEvent(EventPublisher source, Event e) {
+	public void addEvent(EventPublisher source, Event e) {
 		QueueItem qI = new QueueItem(source, e);
 		synchronized (this) {
 			queue.add(qI);
@@ -79,7 +80,8 @@ final public class EventBroker implements Runnable{
 		for (Map.Entry<String, ArrayList<EventListener>> entry : listeners.entrySet())
 			if (entry.getKey().equals(e.getType()) || entry.getKey().equals("all"))
 				for (EventListener el : entry.getValue())
-					if(source!=el) el.handleEvent(e);
+					if (source != el)
+						el.handleEvent(e);
 	}
 
 	@Override

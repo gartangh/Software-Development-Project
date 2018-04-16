@@ -1,6 +1,7 @@
 package server;
 
-public class ServerNewQuestionEvent extends ServerEvent{
+@SuppressWarnings("serial")
+public class ServerNewQuestionEvent extends ServerEvent {
 	protected int questionID;
 	protected String question;
 	protected String [] answers;
