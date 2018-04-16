@@ -10,19 +10,24 @@ public class ScoreboardModel {
 	/*
 	 * The data as an observable list of ScoreboardTeams
 	 */
-	private ObservableList<ScoreboardTeam> scoreboardTeams = FXCollections.observableArrayList();
-	private StringProperty winnerLoser;
+	private ObservableList<ScoreboardTeam> scoreboardTeams;
+	private StringProperty winnerLoserProperty;
 	
 	public ScoreboardModel() {
-		// Empty default constructor
+		 scoreboardTeams = FXCollections.observableArrayList();
+		 winnerLoserProperty = new SimpleStringProperty("winnerLoser");
 	}
 	
 	public ObservableList<ScoreboardTeam> getScoreboardTeams() {
 		return scoreboardTeams;
 	}
 
-	public StringProperty getWinnerLoser() {
-		return winnerLoser;
+	public StringProperty getWinnerLoserProperty() {
+		return winnerLoserProperty;
+	}
+	
+	public void updateWinnerLoser(String winnerLoser) {
+		this.winnerLoserProperty.setValue(winnerLoser);
 	}
 	
 	

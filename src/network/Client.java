@@ -20,7 +20,7 @@ import user.model.User;
 
 public class Client extends Application {
 
-	private static final boolean SHOW_SCOREBOARD = false;
+	private static final boolean SHOW_SCOREBOARD = true;
 
 	private Stage window;
 

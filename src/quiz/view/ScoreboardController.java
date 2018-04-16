@@ -4,6 +4,8 @@ import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -52,6 +54,11 @@ public class ScoreboardController extends EventPublisher {
 	private void initialize() {
 		eventHandler = new ScoreboardEventHandler();
 		EventBroker.getEventBroker().addEventListener(eventHandler);
+		
+		winnerLoser.textProperty().bind(scoreboardModel.getWinnerLoserProperty());
+		rankColumn.setCellValueFactory(cellData -> (new SimpleIntegerProperty(cellData.getValue().getRank()).asObject()));
+        teamNameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getTeamName())));
+        scoreColumn.setCellValueFactory(cellData -> (new SimpleIntegerProperty(cellData.getValue().getScore()).asObject()));
 
 		QuizzerEvent askForScoreboardDataEvent = new QuizzerEvent();
 		askForScoreboardDataEvent.setType("CLIENT_SCOREBOARDDATA");
@@ -66,9 +73,6 @@ public class ScoreboardController extends EventPublisher {
 			case "SERVER_SCOREBOARDDATA":
 				ServerScoreboardDataEvent scoreboardData = (ServerScoreboardDataEvent) e;
 
-				rankColumn.setCellValueFactory(new PropertyValueFactory<>("rank"));
-				teamNameColumn.setCellValueFactory(new PropertyValueFactory<>("teamName"));
-				scoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
 				scoreboardTable.setItems(FXCollections.observableArrayList(scoreboardData.getScoreboardTeams()));
 
 				if (scoreboardData.getScoreboardTeams().size() > 0) {
