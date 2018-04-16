@@ -8,8 +8,8 @@ public class IPQuestion extends Question {
 	// TODO: Add pictures
 	private String correctAnswer;
 
-	public IPQuestion(Difficulty difficulty, Theme theme) {
-		super(difficulty, theme);
+	public IPQuestion(Difficulty difficulty, Theme theme, int questionID) {
+		super(difficulty, theme, questionID);
 		// TODO: Get pictures (with correct difficulty and theme) and answer
 	}
 

@@ -7,10 +7,17 @@ public abstract class Question {
 
 	Difficulty difficulty;
 	Theme theme;
+	int questionID;
 
-	public Question(Difficulty difficulty, Theme theme) {
+	public Question(Difficulty difficulty, Theme theme, int questionID) {
 		this.difficulty = difficulty;
 		this.theme = theme;
+	}
+	
+	public Question(int questionID) {
+		this.difficulty = null;
+		this.theme = null;
+		this.questionID = questionID;
 	}
 
 	public Difficulty getDifficulty() {
@@ -20,5 +27,8 @@ public abstract class Question {
 	public Theme getTheme() {
 		return theme;
 	}
-
+	
+	public int getQuestionID() {
+		return questionID;
+	}
 }

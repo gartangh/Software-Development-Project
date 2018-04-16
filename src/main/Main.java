@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import chat.ChatPanel;
+import eventbroker.EventBroker;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -14,12 +16,17 @@ import javafx.stage.Stage;
 import main.view.MenuController;
 import main.view.RootLayoutController;
 import network.Network;
+import quiz.view.CreateQuizController;
+import quiz.view.JoinQuizController;
+import quiz.view.JoinTeamController;
+import quiz.view.ScoreboardController;
 import user.view.LogInController;
 import user.view.ModeSelectorController;
 
 public class Main extends Application {
 
 	public final static boolean DEBUG = true;
+	private final static int SERVERPORT = 1025;
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
@@ -28,12 +35,22 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 
-		// TODO: Set up network connection
-		Network network = new Network();
+		// TODO: Randomize port
+		Network network = new Network(1026, "CLIENT");
 		Context.getContext().setNetwork(network);
 
+		// ChatPanel (ChatModel and ChatController) are created
+		ChatPanel chatPanel = ChatPanel.createChatPanel();
+		//chatPanel.getChatModel().setName(Context.getContext().getUser().getUsername());
+
 		try {
-			network.connect(InetAddress.getLocalHost(), 1025);
+			network.connect(InetAddress.getLocalHost(), SERVERPORT);
+
+			// --> send event over network
+			EventBroker.getEventBroker().addEventListener(network);
+
+			// Start event broker
+			EventBroker.getEventBroker().start();
 
 			initRootLayout();
 
@@ -44,10 +61,6 @@ public class Main extends Application {
 	}
 
 	public static void main(String[] args) {
-		// Tests
-		if (DEBUG && false)
-			return;
-
 		launch(args);
 	}
 
@@ -107,6 +120,61 @@ public class Main extends Application {
 			MenuController menuController = menuLoader.getController();
 			menuController.setMainApp(this);
 			rootLayout.setTop(menu);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void showCreateQuizScene() {
+		try {
+			FXMLLoader createQuizLoader = new FXMLLoader();
+			createQuizLoader.setLocation(Main.class.getResource("../quiz/view/CreateQuiz.fxml"));
+			VBox createQuiz = (VBox) createQuizLoader.load();
+			CreateQuizController createQuizController = createQuizLoader.getController();
+			createQuizController.setMainApp(this);
+			rootLayout.setCenter(createQuiz);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void showJoinQuizScene() {
+		try {
+			FXMLLoader joinQuizLoader = new FXMLLoader();
+			joinQuizLoader.setLocation(Main.class.getResource("../quiz/view/JoinQuiz.fxml"));
+			VBox joinQuiz = (VBox) joinQuizLoader.load();
+			JoinQuizController joinQuizController = joinQuizLoader.getController();
+			joinQuizController.setMainApp(this);
+			rootLayout.setCenter(joinQuiz);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void showJoinTeamScene() {
+		try {
+			FXMLLoader joinTeamLoader = new FXMLLoader();
+			joinTeamLoader.setLocation(Main.class.getResource("../quiz/view/JoinTeam.fxml"));
+			VBox joinTeam = (VBox) joinTeamLoader.load();
+			JoinTeamController joinTeamController = joinTeamLoader.getController();
+			joinTeamController.setMainApp(this);
+			rootLayout.setCenter(joinTeam);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void showScoreboard() {
+		try {
+			FXMLLoader scoreboardLoader = new FXMLLoader();
+			scoreboardLoader.setLocation(Main.class.getResource("../quiz/view/Scoreboard.fxml"));
+
+			AnchorPane scoreboardRoot = (AnchorPane) scoreboardLoader.load();
+			ScoreboardController scoreboardController = scoreboardLoader.getController();
+			scoreboardController.setMainApp(this);
+			Scene scene = new Scene(scoreboardRoot);
+			primaryStage.setScene(scene);
+			primaryStage.show();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

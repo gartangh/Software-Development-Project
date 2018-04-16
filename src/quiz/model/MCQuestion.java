@@ -6,12 +6,21 @@ import quiz.util.Theme;
 public class MCQuestion extends Question {
 
 	private String question;
-	private String[] answers = new String[4];
+	private String[] answers;
 	private int correctAnswer;
-
-	public MCQuestion(Difficulty difficulty, Theme theme) {
-		super(difficulty, theme);
-		// TODO: Get a question (with correct difficulty and theme), answers and correctAnswer from database
+	
+	public MCQuestion(int questionID, String question, String[] answers) {
+		super(questionID);
+		this.question = question;
+		this.answers = answers;
+		this.correctAnswer = -1;
+	}
+	
+	public MCQuestion(Difficulty difficulty, Theme theme, int questionID, String question, String[] answers, int correctAnswer) {
+		super(difficulty, theme, questionID);
+		this.question = question;
+		this.answers = answers;
+		this.correctAnswer = correctAnswer;
 	}
 
 	public String getQuestion() {

@@ -1,37 +1,37 @@
 package quiz.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import quiz.util.Difficulty;
 import quiz.util.Theme;
-import quiz.util.Type;
+import server.ServerContext;
+import quiz.util.RoundType;
 
 public class Round {
-
-	private int amountOfQuestions;
-	private int maxAmountOfQuestions;
-	// TODO: add questions
-	private Type type;
+	
+	private Map<Integer, Question> questions;	// Map(questionID -> question)
+	private RoundType roundType;
 	private Difficulty difficulty;
 	private Theme theme;
+	private Map<Integer, Map<Integer, Integer>> answers = new HashMap<Integer, Map<Integer, Integer>>(); // Map(questionID -> Map(teamID -> answerID))
+	private int currentQuestion;
 
-	public Round(int maxAmountOfQuestions, Type type, Difficulty difficulty, Theme theme) {
-		this.maxAmountOfQuestions = maxAmountOfQuestions;
-		this.type = type;
+	public Round(RoundType roundType, Difficulty difficulty, Theme theme) {
+		this.roundType = roundType;
 		this.difficulty = difficulty;
 		this.theme = theme;
-
-		makeQuestions();
+		this.currentQuestion = -1;
 	}
 
-	// Getters
-	public int getAmountOfQuestions() {
-		return amountOfQuestions;
+	// Getters and setters
+	public Map<Integer, Question> getQuestions() {
+		return questions;
 	}
 
-	public int getMaxAmountOfQuestions() {
-		return maxAmountOfQuestions;
+	public RoundType getRoundType() {
+		return roundType;
 	}
-
-	// TODO: Add getQuestions()
 
 	public Difficulty getDifficulty() {
 		return difficulty;
@@ -41,30 +41,29 @@ public class Round {
 		return theme;
 	}
 	
-	// Setters
-	public void setMaxAmountOfQuestions(int maxAmountOfQuestions) {
-		this.maxAmountOfQuestions = maxAmountOfQuestions;
+	public int getNextQuestion() {
+		currentQuestion++;
+		return (int) answers.keySet().toArray()[currentQuestion];
 	}
 
 	// Methods
-	public void makeQuestions() {
-		Question question;
-		for (amountOfQuestions = 0; amountOfQuestions < maxAmountOfQuestions; amountOfQuestions++) {
-			switch (type) {
-			case MC:
-				question = new MCQuestion(difficulty, theme);
-				break;
-			case IP:
-				question = new IPQuestion(difficulty, theme);
-				break;
-
-			default:
-				// TODO: ERROR! No such type
-				break;
+	public void addQuestions(int numberOfQuestions) {
+		// TODO get questions out database
+		Map<Integer, MCQuestion>  questions = ServerContext.getContext().getOrderedMCQuestionMap().get(theme.ordinal()).get(difficulty.ordinal());
+		while(numberOfQuestions > 0) {
+			int i = (int) Math.floor(Math.random()*questions.size());
+			int qID = (int) questions.keySet().toArray()[i];
+			if(!answers.containsKey(qID)) {
+				answers.put(qID, new HashMap<Integer, Integer>());
+				numberOfQuestions--;
 			}
-
-			// TODO: Add question to questions
 		}
+	}
+	
+	public void addAnswer(int teamID, int questionID, int answer) {
+		Map<Integer, Integer> questionAnswers = answers.get(questionID);
+		questionAnswers.put(teamID, answer);
+		answers.put(questionID, questionAnswers);
 	}
 
 }
