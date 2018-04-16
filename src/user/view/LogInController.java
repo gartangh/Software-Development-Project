@@ -44,7 +44,7 @@ public class LogInController extends EventPublisher {
 			User user = Context.getContext().getUser();
 			ClientCreateEvent cCE = new ClientCreateEvent(user);
 			// TODO: Publish event
-			
+			publishEvent(cCE);
 			main.showModeSelectorScene();
 			break;
 		case 1:

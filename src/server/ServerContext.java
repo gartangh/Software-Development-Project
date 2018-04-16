@@ -23,6 +23,10 @@ public class ServerContext {
 		return context;
 	}
 
+	public void setNetwork(Network network) {
+		this.network = network;
+	}
+
 	public Network getNetwork() {
 		return network;
 	}

@@ -15,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import main.Context;
 import network.Client;
 import server.ServerReturnUserIDEvent;
 import server.ServerScoreboardDataEvent;
@@ -137,10 +138,10 @@ final public class ChatController extends EventPublisher {
 				
 				case "SERVER_RETURN_USERID":
 					ServerReturnUserIDEvent serverCreate = (ServerReturnUserIDEvent) e;
-					User user = Client.getUser();
+					User user = Context.getContext().getUser();
 					user.setUserID(serverCreate.getUserID());
-					Client.setUser(user);
-					Client.getNetwork().getUserIDConnectionIDMap().put(serverCreate.getUserID(), 0);
+					Context.getContext().setUser(user);
+					Context.getContext().getNetwork().getUserIDConnectionIDMap().put(serverCreate.getUserID(), 0);
 					System.out.println("Event received and handled, nailed it: " + e.getType());
 					break;
 					

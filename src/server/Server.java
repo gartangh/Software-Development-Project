@@ -28,7 +28,8 @@ public class Server extends EventPublisher {
 
 	public static void main(String[] args) {
 		Network network = new Network(1025, "SERVER");
-
+		ServerContext.getContext().setNetwork(network);
+		
 		EventBroker.getEventBroker().addEventListener(serverHandler);
 		EventBroker.getEventBroker().addEventListener(network);
 		EventBroker.getEventBroker().start();
