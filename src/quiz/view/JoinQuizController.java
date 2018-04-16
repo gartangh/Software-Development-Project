@@ -1,5 +1,6 @@
 package quiz.view;
 
+import eventbroker.EventPublisher;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -7,18 +8,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import main.Context;
 import main.Main;
 import quiz.model.Quiz;
+import quiz.util.ClientGetQuizzesEvent;
 
-public class JoinQuizController {
+public class JoinQuizController extends EventPublisher {
 
 	@FXML
 	private VBox mQuizzes;
 	@FXML
 	private Button mBack;
-
-	private ObservableList<Quiz> quizzes;
 
 	// Reference to the main application
 	private Main main;
@@ -29,8 +28,10 @@ public class JoinQuizController {
 
 	@FXML
 	private void initialize() {
-		quizzes = Quiz.getQuizzes();
+		ClientGetQuizzesEvent cGQE = new ClientGetQuizzesEvent();
+		publishEvent(cGQE);
 
+		/*
 		for (Quiz quiz : quizzes) {
 			GridPane mQuiz = new GridPane();
 
@@ -79,6 +80,7 @@ public class JoinQuizController {
 
 			mQuizzes.getChildren().add(mQuiz);
 		}
+		*/
 	}
 
 	@FXML

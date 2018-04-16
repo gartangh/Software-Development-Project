@@ -8,10 +8,9 @@ import java.net.SocketException;
 
 import eventbroker.Event;
 import eventbroker.EventBroker;
-import quiz.util.ClientCreateEvent;
+import quiz.util.ClientCreateAccountEvent;
 
 public class Connection {
-
 
 	private Socket socket;
 	private ObjectInputStream objectInputStream;
@@ -69,7 +68,7 @@ public class Connection {
 				objectOutputStream.close();
 				socket.close();
 			} catch (SocketException e) {
-				//e.printStackTrace();
+				// e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -81,7 +80,7 @@ public class Connection {
 	public int getConnectionID() {
 		return connectionID;
 	}
-	
+
 	public void setConnectionID(int connectionID) {
 		this.connectionID = connectionID;
 	}
@@ -96,22 +95,23 @@ public class Connection {
 					try {
 						// Server 4.2.2.2.1
 						Event event = (Event) objectInputStream.readObject();
-						
-						if(event.getMessage() != null) {
+
+						if (event.getMessage() != null) {
 							if (event.getMessage().equals("stop")) {
 								EventBroker.getEventBroker().stop();
 								break;
-							} 
+							}
 						}
 
-						ClientCreateEvent createEvent;
-						if(event.getType().equals("SERVER_CLIENT_CREATE")) {
-							createEvent = (ClientCreateEvent) event;
+						ClientCreateAccountEvent createEvent;
+						if (event.getType().equals("CLIENT_CREATE_ACCOUNT")) {
+							createEvent = (ClientCreateAccountEvent) event;
 							createEvent.setConnectionID(connectionID);
 							network.publishEvent(createEvent);
-						} else network.publishEvent(event);
+						} else
+							network.publishEvent(event);
 					} catch (SocketException e) {
-						//e.printStackTrace();
+						// e.printStackTrace();
 
 						break;
 					} catch (ClassNotFoundException e) {

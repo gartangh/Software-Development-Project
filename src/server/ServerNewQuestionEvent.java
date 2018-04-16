@@ -1,13 +1,13 @@
 package server;
 
 @SuppressWarnings("serial")
-public class ServerNewQuestionEvent extends ServerEvent{
+public class ServerNewQuestionEvent extends ServerEvent {
 	protected int questionID;
 	protected String questionText;
-	protected String [] answers;
+	protected String[] answers;
 	protected int[] answerPermutation;
 
-	public ServerNewQuestionEvent(int questionID, String questionText, String [] answers, int[] answerPermutation) {
+	public ServerNewQuestionEvent(int questionID, String questionText, String[] answers, int[] answerPermutation) {
 		super();
 		this.questionID = questionID;
 		this.questionText = questionText;

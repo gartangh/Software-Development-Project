@@ -14,7 +14,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import main.Context;
 import main.Main;
-import quiz.util.ClientCreateEvent;
+import quiz.util.ClientCreateAccountEvent;
 import quiz.view.ScoreboardController;
 import user.model.User;
 
@@ -57,7 +57,7 @@ public class Client extends Application {
 		EventBroker.getEventBroker().addEventListener(network);
 
 		TimeUnit.SECONDS.sleep(1);
-		ClientCreateEvent clientCreateEvent = new ClientCreateEvent(user);
+		ClientCreateAccountEvent clientCreateEvent = new ClientCreateAccountEvent(user);
 		EventBroker.getEventBroker().addEvent(network, clientCreateEvent);
 
 		// Create GUI

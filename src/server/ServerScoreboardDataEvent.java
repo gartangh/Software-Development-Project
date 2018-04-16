@@ -3,6 +3,9 @@ package server;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import javafx.collections.ObservableList;
 import quiz.model.Quiz;
 import quiz.model.ScoreboardTeam;
@@ -20,8 +23,14 @@ public class ServerScoreboardDataEvent extends ServerEvent {
 		super();
 		this.type = "SERVER_SCOREBOARDDATA";
 		Quiz quiz = ServerContext.getContext().getQuizMap().get(quizID);
-		ObservableList<Team> quizTeams = quiz.getTeams();
-		Collections.sort(quizTeams, new Comparator<Team>() {
+		Map<Integer, Team> quizTeams = quiz.getTeams();
+
+		ArrayList<Team> quizTeamsList = new ArrayList<>();
+		for (Entry<Integer, Team> team : quizTeams.entrySet()) {
+			quizTeamsList.add(team.getValue());
+		}
+
+		Collections.sort(quizTeamsList, new Comparator<Team>() {
 
 			@Override
 			public int compare(Team teamA, Team teamB) {
@@ -35,8 +44,8 @@ public class ServerScoreboardDataEvent extends ServerEvent {
 
 		});
 
-		for (int i = 0; i < quizTeams.size(); i++) {
-			Team team = quizTeams.get(i);
+		for (int i = 0; i < quizTeamsList.size(); i++) {
+			Team team = quizTeamsList.get(i);
 			ScoreboardTeam scoreboardTeam = new ScoreboardTeam(i + 1, team.getTeamname(), team.getTeamID(),
 					team.getQuizScore());
 			scoreboardTeams.add(scoreboardTeam);
