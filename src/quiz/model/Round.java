@@ -5,22 +5,51 @@ import java.util.Map;
 
 import quiz.util.Difficulty;
 import quiz.util.Theme;
-import quiz.util.Type;
+import quiz.util.RoundType;
 
 public class Round {
 
-	private Type type;
+	private int amountOfQuestions;
+	private int maxAmountOfQuestions;
+	// Map(questionID -> question)
+	private Map<Integer, Question> questions;
+	private RoundType roundType;
 	private Difficulty difficulty;
 	private Theme theme;
-	private Map<Integer, Map<Integer, Integer>> answers; // Map(questionID -> Map(teamID -> answerID))	
+	// Map(questionID -> Map(teamname -> answerID))
+	private Map<Integer, Map<String, Integer>> answers;		
 
-	public Round(Type type, Difficulty difficulty, Theme theme) {
-		this.type = type;
+	public Round(int maxAmountOfQuestions, RoundType roundType, Difficulty difficulty, Theme theme) {
+		this.maxAmountOfQuestions = maxAmountOfQuestions;
+		this.roundType = roundType;
 		this.difficulty = difficulty;
 		this.theme = theme;
 	}
 
- 	// TODO: Add getQuestions()
+	// Getters and setters
+	public int getAmountOfQuestions() {
+		return amountOfQuestions;
+	}
+
+	public void setAmountOfQuestions(int amountOfQuestions) {
+		this.amountOfQuestions = amountOfQuestions;
+	}
+
+	public int getMaxAmountOfQuestions() {
+		return maxAmountOfQuestions;
+	}
+
+	public void setMaxAmountOfQuestions(int maxAmountOfQuestions) {
+		this.maxAmountOfQuestions = maxAmountOfQuestions;
+	}
+
+	public Map<Integer, Question> getQuestions() {
+		return questions;
+	}
+
+	public RoundType getRoundType() {
+		return roundType;
+	}
 
 	public Difficulty getDifficulty() {
 		return difficulty;
@@ -30,34 +59,31 @@ public class Round {
 		return theme;
 	}
 
+	// Adders
+	public void addAnswer(String teamname, int questionID, int answer) {
+		Map<String, Integer> questionAnswers = answers.get(questionID);
+		if (questionAnswers == null)
+			questionAnswers = new HashMap<String, Integer>();
+
+		questionAnswers.put(teamname, answer);
+		answers.put(questionID, questionAnswers);
+	}
+
 	// Methods
-	/*public void makeQuestions() {
-		Question question;
+	public void makeQuestions() {
 		for (amountOfQuestions = 0; amountOfQuestions < maxAmountOfQuestions; amountOfQuestions++) {
-			switch (type) {
+			switch (roundType) {
 			case MC:
-				question = new MCQuestion(difficulty, theme);
+				
+				questions.put(amountOfQuestions, new MCQuestion(difficulty, theme));
 				break;
 			case IP:
-				question = new IPQuestion(difficulty, theme);
+				questions.put(amountOfQuestions, new IPQuestion(difficulty, theme));
 				break;
-
 			default:
-				// TODO: ERROR! No such type
-				break;
+				// TODO: Go back and show error
 			}
-
-			// TODO: Add question to questions
 		}
-	}*/
-	
-	public void addAnswer(int teamID, int questionID, int answer) {
-		Map<Integer, Integer> questionAnswers = answers.get(questionID);
-		if(questionAnswers == null) {
-			questionAnswers = new HashMap<Integer, Integer>();
-		}
-		questionAnswers.put(teamID, answer);
-		answers.put(questionID, questionAnswers);
 	}
 
 }

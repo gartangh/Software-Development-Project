@@ -27,13 +27,13 @@ public class ModeSelectorController {
 	@FXML
 	private void handleHost() {
 		Context.getContext().getUser().castToHost();
-		// TODO: Change scene
+		main.showCreateQuizScene();
 	}
 	
 	@FXML
 	private void handleGuest() {
 		Context.getContext().getUser().castToGuest();
-		// TODO: Change scene
+		main.showJoinQuizScene();
 	}
 
 }

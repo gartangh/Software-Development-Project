@@ -3,15 +3,13 @@ package server;
 import java.util.HashMap;
 import java.util.Map;
 
-import javafx.scene.paint.Color;
-
 import network.Network;
 import quiz.model.Quiz;
 import quiz.model.Team;
 import user.model.User;
 
 public class ServerContext {
-	
+
 	// Singleton
 	private static ServerContext context = new ServerContext();
 
@@ -20,34 +18,19 @@ public class ServerContext {
 
 	private Network network;
 
-	// Constructors
-	private ServerContext() {
-		// Empty default constructor
-	}
-	
+	// Getters and setters
 	public static ServerContext getContext() {
 		return context;
 	}
-	
-	public void getSimpleUsers() {
-		Map<Integer, String> res = new HashMap<Integer, String>();
-		// TODO
-	}
-    
-	public int addUser(String username, String password) {
-		int newID;
-		do {
-			newID = (int) (Math.random() * Integer.MAX_VALUE);
-		} while(userMap.containsKey(newID));
-		
-		//newID = 1; // Testing purposes
 
-		User newUser = new User(newID, username, password);
-		userMap.put(newID, newUser);
-		return newID;
+	public Map<String, User> getUserMap() {
+		return userMap;
 	}
-	
 
+	public Map<String, Quiz> getQuizMap() {
+		return quizMap;
+	}
+  
 	public int addQuiz(int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds, int maxAmountOfQuestionsPerRound, int hostID) {
 		int newID;
 		do {
@@ -81,21 +64,25 @@ public class ServerContext {
 			team.setMaxAmountOfPlayers(q.getMaxAmountOfPlayersPerTeam());
 			q.addTeam(team);
 			quizMap.put(quizID, q);			
+      
 			return newID;
 		}
+    
 		return -1;
 	}
-	
-	public Quiz getQuiz(int quizID) {
-		return quizMap.get(quizID);
-	}
-	
-	public void updateQuiz(Quiz updatedQuiz) {
-		quizMap.put(updatedQuiz.getID(), updatedQuiz);
+
+	// Adders
+	public void addUser(User user) {
+		userMap.put(user.getUsername(), user);
 	}
 
-	public Map<Integer, User> getUserMap() {
-		return userMap;
+	public void addQuiz(Quiz quiz) {
+		quizMap.put(quiz.getQuizname(), quiz);
+	}
+
+	// Methods
+	public Quiz getQuiz(String quizname) {
+		return quizMap.get(quizname);
 	}
 	
 	public Map<Integer, Quiz> getQuizMap() {
@@ -106,7 +93,15 @@ public class ServerContext {
 		return network;
 	}
 
-	public void setNetwork(Network network) {
-		this.network = network;
+	public boolean addTeam(String quizname, Team team) {
+		if (!quizMap.containsKey(quizname))
+			return false;
+
+		Quiz quiz = quizMap.get(quizname);
+		quiz.addTeam(team);
+		quizMap.replace(quizname, quiz);
+
+		return true;
 	}
+
 }

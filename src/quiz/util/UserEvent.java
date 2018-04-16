@@ -5,16 +5,17 @@ import main.Context;
 
 @SuppressWarnings("serial")
 public class UserEvent extends Event {
-	protected int userID;
-	
-	public UserEvent(){
-		super();
-		this.userID = Context.getContext().getUser().getID();
+
+	protected String username;
+
+	public UserEvent() {
+		this.username = Context.getContext().getUser().getUsername();
 		this.type = "USER";
 		this.message = "";
 	}
-	
-	public int getUserID() {
-		return userID;
+
+	public String getUsername() {
+		return username;
 	}
+
 }

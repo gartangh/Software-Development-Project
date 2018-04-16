@@ -9,18 +9,17 @@ public class QuizzerEvent extends UserEvent{
 	protected int quizID;
 	
 	public QuizzerEvent(){
-		super();
-		this.teamID = Context.getContext().getTeamID();
-		// this.quizID = Context.getContext().getQuiz().getID();
-		this.quizID = 0;	// testing purposes
+		this.teamID = Context.getContext().getTeam().getTeamID();
+		this.quizID = Context.getContext().getQuiz().getQuizID();
+
 		this.type = "QUIZZER";
 	}
-	
-	public int getTeamID() {
-		return teamID;
+
+	public String getTeamname() {
+		return teamname;
 	}
-	
-	public int getQuizID() {
-		return quizID;
+
+	public String getQuizname() {
+		return quizname;
 	}
 }

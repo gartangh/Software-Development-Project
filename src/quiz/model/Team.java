@@ -1,7 +1,6 @@
 package quiz.model;
 
 import java.io.Serializable;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
@@ -10,89 +9,35 @@ import javafx.scene.paint.Color;
 @SuppressWarnings("serial")
 public class Team implements Serializable {
 
-	private int amountOfPlayers;
-	private int maxAmountOfPlayers; // minAmountOfTeamPlayers = 1;
-	private ObservableMap<Integer,String> players=FXCollections.observableHashMap();
+	private String teamname;
 	private StringProperty name;
-	private int colorRed; //to make it seriazable
+	private int amountOfPlayers = 0;
+	private int maxAmountOfPlayers; // minAmountOfTeamPlayers = 1;
+	private ObservableMap<Integer, String> players = FXCollections.observableHashMap();
+	// To make it serializable
+	private int colorRed;
 	private int colorGreen;
 	private int colorBlue;
-	private int captainID;
-	private int roundScore;
-	private int quizScore;
-	private int teamID;
+	private int roundScore = 0;
+	private int quizScore = 0;
 
-	public Team(int teamID,StringProperty name, Color color,int captainID,String captainname,int maxamount) {
-		this.teamID=teamID;
+	// Constructors
+	public Team(String teamname, StringProperty name, Color color, String captainname) {
+		this.teamname = teamname;
 		this.name = name;
-		this.colorRed = (int) (color.getRed()*255);
-		this.colorGreen = (int) (color.getGreen()*255);
-		this.colorBlue = (int) (color.getBlue()*255);
-		this.captainID=captainID;
-		this.players.put(captainID,captainname);
-		this.roundScore = 0;
-		this.quizScore = 0;
-		this.amountOfPlayers=1;//voorlopig
-		this.maxAmountOfPlayers=maxamount;
-	}
-	
-	public Team(int teamID,String name, Color color,int captainID,String captainname) {
-		this.teamID=teamID;
-		this.name = new SimpleStringProperty(name);
-		this.colorRed = (int) (color.getRed()*255);
-		this.colorGreen = (int) (color.getGreen()*255);
-		this.colorBlue = (int) (color.getBlue()*255);
-		this.captainID=captainID;
-		this.players.put(captainID,captainname);
-		this.roundScore = 0;
-		this.quizScore = 0;
-		this.amountOfPlayers=1;//voorlopig
-		this.maxAmountOfPlayers=5;
+		this.colorRed = (int) (color.getRed() * 255);
+		this.colorGreen = (int) (color.getGreen() * 255);
+		this.colorBlue = (int) (color.getBlue() * 255);
+		this.players.put(amountOfPlayers, captainname);
 	}
 
-	public Team(int teamID,StringProperty name, Color color,int captainID,String captainname) {
-		this.teamID=teamID;
-		this.name = name;
-		this.colorRed = (int) (color.getRed()*255);
-		this.colorGreen = (int) (color.getGreen()*255);
-		this.colorBlue = (int) (color.getBlue()*255);
-		this.captainID=captainID;
-		this.players.put(captainID,captainname);
-		this.roundScore = 0;
-		this.quizScore = 0;
-		this.amountOfPlayers=1;//voorlopig
-		this.maxAmountOfPlayers=5;
+	// Getters and setters
+	public String getTeamname() {
+		return teamname;
 	}
 
-	public Team(StringProperty name, Color color,int captainID,String captainname,int maxamount) {
-		this.name = name;
-		this.colorRed = (int) (color.getRed()*255);
-		this.colorGreen = (int) (color.getGreen()*255);
-		this.colorBlue = (int) (color.getBlue()*255);
-		this.captainID=captainID;
-		this.players.put(captainID,captainname);
-		this.roundScore = 0;
-		this.quizScore = 0;
-		this.amountOfPlayers=1;//voorlopig
-		this.maxAmountOfPlayers=maxamount;
-	}
-
-
-	// Getters
-	public StringProperty getNameProperty() {
+	public StringProperty getName() {
 		return name;
-	}
-
-	public int getCaptainID(){
-		return captainID;
-	}
-
-	public String getName(){
-		return name.get();
-	}
-
-	public Color getColor() {
-		return Color.rgb(colorRed,colorGreen,colorBlue);
 	}
 
 	public int getAmountOfPlayers() {
@@ -102,8 +47,16 @@ public class Team implements Serializable {
 	public int getMaxAmountOfPlayers() {
 		return maxAmountOfPlayers;
 	}
-  
-	public ObservableMap<Integer,String> getTeamMembers(){
+
+	public void setMaxAmountOfPlayers(int maxAmountofPlayers) {
+		this.maxAmountOfPlayers = maxAmountofPlayers;
+	}
+
+	public Color getColor() {
+		return Color.rgb(colorRed, colorGreen, colorBlue);
+	}
+
+	public ObservableMap<Integer, String> getPlayers() {
 		return players;
 	}
 
@@ -114,36 +67,32 @@ public class Team implements Serializable {
 	public int getQuizScore() {
 		return quizScore;
 	}
-	
-	public int getID() {
-		return teamID;
-	}
-
-	// Setters
-	public void setMaxAmountOfPlayers(int maxAmountOfPlayers) {
-		if(maxAmountOfPlayers > amountOfPlayers) this.maxAmountOfPlayers = maxAmountOfPlayers;
-	}
 
 	// Adders
-	public void addPlayer(int playerID, String playerName) {
-		if (amountOfPlayers < maxAmountOfPlayers) {
-			players.put(playerID, playerName);
-			amountOfPlayers++;
-		}
+	public boolean addPlayer(String username) {
+		if (amountOfPlayers >= maxAmountOfPlayers)
+			// TODO: Go back and show error
+			return false;
+
+		players.put(++amountOfPlayers, username);
+
+		return true;
 	}
 
-	public void setName(String teamname){
+	public void setName(String teamname) {
 		this.name.setValue(teamname);
 	}
 
-	public void setColor(Color color){
-		this.colorRed = ((int) color.getRed()*255);
-		this.colorGreen = ((int) color.getGreen()*255);
-		this.colorBlue = ((int) color.getBlue()*255);
+	public void setColor(Color color) {
+		this.colorRed = ((int) color.getRed() * 255);
+		this.colorGreen = ((int) color.getGreen() * 255);
+		this.colorBlue = ((int) color.getBlue() * 255);
 	}
+
 	// Removers
 	public void removePlayer(int playerID) {
-		if(players.remove(playerID)!=null) amountOfPlayers--;
+		if (players.remove(playerID) != null)
+			amountOfPlayers--;
 	}
 	
 	

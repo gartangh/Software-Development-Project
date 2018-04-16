@@ -4,26 +4,26 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 @SuppressWarnings("serial")
-public class Event implements Serializable{
+public class Event implements Serializable {
 
 	private static long n = 0;
-	
-	protected String type;
 
+	protected String type;
 	protected String message;
 	private long id = n++;
+	private ArrayList<String> recipients = new ArrayList<>();
 
-	ArrayList<Integer> recipients = new ArrayList<>();
-
+	// Constructors
 	public Event() {
 		// Empty default constructor
 	}
-	
+
 	public Event(String type, String message) {
 		this.type = type;
 		this.message = message;
 	}
 
+	// Getters and setters
 	public String getMessage() {
 		return message;
 	}
@@ -32,26 +32,28 @@ public class Event implements Serializable{
 		return type;
 	}
 
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public ArrayList<String> getRecipients() {
+		return recipients;
+	}
+
+	// Methods
 	@Override
 	public String toString() {
 		return "ID" + id + "[" + type + "] : " + message;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	// Adders
+	public void addRecipient(String username) {
+		recipients.add(username);
 	}
-	
-	public ArrayList<Integer> getRecipients() {
-		return recipients;
-	}
-	
-	public void addRecipient(int userID) {
-		recipients.add(userID);
-	}
-	
-	public void addRecipients(ArrayList<Integer> userIDList) {
-		for(int userID : userIDList)
-			addRecipient(userID);
+
+	public void addRecipients(ArrayList<String> destinations) {
+		for (String username : destinations)
+			addRecipient(username);
 	}
 	
 	public void removeAllRecipients() {
