@@ -16,7 +16,7 @@ public class Team implements Serializable {
 	private int amountOfPlayers;
 	private int maxAmountOfPlayers; // minAmountOfTeamPlayers = 1;
 	private ObservableMap<Integer,String> teamMembers=FXCollections.observableHashMap();
-	private StringProperty name;
+	private String name;
 	private int colorRed; //to make it seriazable
 	private int colorGreen;
 	private int colorBlue;
@@ -25,7 +25,7 @@ public class Team implements Serializable {
 	private int quizScore;
 	private int teamID;
 
-	public Team(int teamID,StringProperty name, Color color,int captainID,String captainname,int maxamount) {
+	public Team(int teamID,String name, Color color,int captainID,String captainname,int maxamount) {
 		this.teamID=teamID;
 		this.name = name;
 		this.colorRed = (int) (color.getRed()*255);
@@ -39,7 +39,7 @@ public class Team implements Serializable {
 		this.maxAmountOfPlayers=maxamount;
 	}
 
-	public Team(int teamID,StringProperty name, Color color,int captainID,String captainname) {
+	public Team(int teamID,String name, Color color,int captainID,String captainname) {
 		this.teamID=teamID;
 		this.name = name;
 		this.colorRed = (int) (color.getRed()*255);
@@ -53,7 +53,7 @@ public class Team implements Serializable {
 		this.maxAmountOfPlayers=5;
 	}
 
-	public Team(StringProperty name, Color color,int captainID,String captainname,int maxamount) {
+	public Team(String name, Color color,int captainID,String captainname,int maxamount) {
 		this.name = name;
 		this.colorRed = (int) (color.getRed()*255);
 		this.colorGreen = (int) (color.getGreen()*255);
@@ -68,7 +68,7 @@ public class Team implements Serializable {
 
 
 	// Getters
-	public StringProperty getNameProperty() {
+	public String getNameProperty() {
 		return name;
 	}
 
@@ -81,7 +81,7 @@ public class Team implements Serializable {
 	}
 
 	public String getName(){
-		return name.get();
+		return name;
 	}
 
 	public Color getColor() {
@@ -123,7 +123,7 @@ public class Team implements Serializable {
 	}
 
 	public void setName(String teamname){
-		this.name.setValue(teamname);
+		this.name = teamname;
 	}
 
 	public void setColor(Color color){

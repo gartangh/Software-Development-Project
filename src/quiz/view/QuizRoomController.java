@@ -47,6 +47,8 @@ public class QuizRoomController extends EventPublisher{
     private MainQuizroom mainQuizRoom;
     private Main main;
     private QuizroomHandler quizroomhandler=new QuizroomHandler();
+    private Team selectedTeam;
+    private QuizRoomModel quizRoomModel=new QuizRoomModel();
 
 	public class QuizroomHandler implements EventListener{
 		public void handleEvent(Event e){
@@ -124,8 +126,12 @@ public class QuizRoomController extends EventPublisher{
         showTeamDetails(null);
 
 
+       // teamTable.getSelectionModel().selectedItemProperty().addListener(
+         //       (observable, oldValue, newValue) -> showTeamDetails(newValue));
         teamTable.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> showTeamDetails(newValue));
+                (observable, oldValue, newValue) -> setSelectedTeam(newValue));
+
+
     }
 
     public void setMain(MainQuizroom testQuizroom) {
@@ -139,6 +145,18 @@ public class QuizRoomController extends EventPublisher{
     public void setQuiz(Quiz quiz){
     	this.quiz=quiz;
     	teamTable.setItems(quiz.getTeams());
+    }
+
+    public void setQuizRoomModel(QuizRoomModel quizroommodel){
+    	this.quizRoomModel=quizroommodel;
+    }
+    public void setSelectedTeam(Team team){
+    	if (team != null){
+    		selectedTeam =team;
+    	}
+    	else {
+    		selectedTeam =new Team(-1,new SimpleStringProperty(""),Color.TRANSPARENT,-1,"");
+    	}
     }
 
     public void showTeamDetails(Team team){

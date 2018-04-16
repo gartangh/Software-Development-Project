@@ -9,11 +9,11 @@ public class Context {
 
 	// Singleton
 	private static Context context = new Context();
-	
+
 	private User user;
 	private Quiz quiz;
 	private Network network;
-	private Team team;
+	private int teamID;
 
 	// Constructors
 	private Context() {
@@ -37,13 +37,13 @@ public class Context {
 		this.quiz = quiz;
 	}
 
-	public Team getTeam() {
-		return team;
+	public int getTeamID() {
+		return teamID;
 	}
 
-	public void setTeam(Team team) {
-		this.team = team;
-}
+	public void setTeam(int teamID) {
+		this.teamID = teamID;
+	}
 
 	public Network getNetwork() {
 		return network;

@@ -52,8 +52,8 @@ public class ServerContext {
 	public void addQuizwithQuizID(int quizID){
 		Quiz quiz=new Quiz(1,5,5,5,5,20);
 		quizMap.put(quizID,quiz);
-		Team team1 = new Team(1,new SimpleStringProperty("Deborah leemans"),Color.rgb(0,0,255),2,"james",quiz.getMaxAmountOfPlayersPerTeam());
-		Team team2 = new Team(2,new SimpleStringProperty("Team2"),Color.rgb(255,0,0),4,"Precious",quiz.getMaxAmountOfPlayersPerTeam());
+		Team team1 = new Team(1,"Deborah leemans",Color.rgb(0,0,255),2,"james",quiz.getMaxAmountOfPlayersPerTeam());
+		Team team2 = new Team(2,"Team2",Color.rgb(255,0,0),4,"Precious",quiz.getMaxAmountOfPlayersPerTeam());
 		quiz.addTeam(team1);
 		quiz.addTeam(team2);
 	}
@@ -71,13 +71,13 @@ public class ServerContext {
 			do {
 				unique=true;
 				newID = (int) (Math.random() * Integer.MAX_VALUE);
-				for(Team t : q.getTeams()) {
+				for(Team t : q.getTeams().values()) {
 					if(t.getID() == newID) unique = false;
 				}
 			} while(!unique);
 
 			//Team team = new Team(newID, teamName, color, captainID, userMap.get(captainID).getUsername());
-			Team team = new Team(newID, new SimpleStringProperty(teamName), color, captainID, userMap.get(captainID).getUsername());
+			Team team = new Team(newID, teamName, color, captainID, userMap.get(captainID).getUsername());
 			team.setMaxAmountOfPlayers(q.getMaxAmountOfPlayersPerTeam());
 			q.addTeam(team);
 			quizMap.put(quizID, q);

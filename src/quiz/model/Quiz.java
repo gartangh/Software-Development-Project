@@ -1,6 +1,8 @@
 package quiz.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,7 +11,7 @@ public class Quiz {
 	private int quizID;
 	private int amountOfTeams;
 	private int maxAmountOfTeams; // minAmountOfTeams = 2;
-	private ObservableList<Team> teams=FXCollections.observableArrayList();
+	private Map<Integer,Team> teams=new HashMap<Integer,Team>();
 	private int maxAmountofPlayersPerTeam; // maxAmountofPlayersPerTeam = 1;
 	private int amountOfRounds;
 	private int maxAmountOfRounds; // minAmountOfRounds = 1;
@@ -37,7 +39,7 @@ public class Quiz {
 		return maxAmountOfTeams;
 	}
 
-	public ObservableList<Team> getTeams(){
+	public Map<Integer,Team> getTeams(){
 		return teams;
 	}
 
@@ -70,14 +72,16 @@ public class Quiz {
 }
 
 	// Adders
-	public void addTeam(Team team) {
+	public boolean addTeam(int teamID,Team team) {
 		if (amountOfTeams < maxAmountOfTeams) {
-			teams.add(team);
+			teams.put(teamID,team);
 			amountOfTeams++;
 			team.setMaxAmountOfPlayers(maxAmountofPlayersPerTeam);
+			return true;
 		}
 		else {
 			// TODO: Go back and give error
+			return false;
 		}
 	}
 
@@ -93,8 +97,9 @@ public class Quiz {
 	}
 
 	// Removers
-	public void removeTeam(Team team) {
-		if (teams.remove(team)) {
+	public void removeTeam(Integer teamID) {
+		if (teams.get(teamID) != null) {
+			teams.remove(teamID);
 			amountOfTeams--;
 		}
 		// TODO: If remove team from teams worked: amountOfTeams--;

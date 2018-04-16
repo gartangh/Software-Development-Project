@@ -13,7 +13,6 @@ public class Quizroom {
 	Quiz quizmodel;
 	QuizRoomController quizcontroller;
 
-
 	public Quizroom(Quiz quiz, Main main) throws IOException{
 		createQuizroom(quiz, main);
 	}
