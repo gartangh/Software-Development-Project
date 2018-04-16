@@ -54,8 +54,8 @@ public class ServerContext {
 		quizMap.put(quizID,quiz);
 		Team team1 = new Team(1,"Deborah leemans",Color.rgb(0,0,255),2,"james",quiz.getMaxAmountOfPlayersPerTeam());
 		Team team2 = new Team(2,"Team2",Color.rgb(255,0,0),4,"Precious",quiz.getMaxAmountOfPlayersPerTeam());
-		quiz.addTeam(team1);
-		quiz.addTeam(team2);
+		quiz.addTeam(1,team1);
+		quiz.addTeam(2,team2);
 	}
 
 	public void addUserwithUserID(int userID){
@@ -79,7 +79,7 @@ public class ServerContext {
 			//Team team = new Team(newID, teamName, color, captainID, userMap.get(captainID).getUsername());
 			Team team = new Team(newID, teamName, color, captainID, userMap.get(captainID).getUsername());
 			team.setMaxAmountOfPlayers(q.getMaxAmountOfPlayersPerTeam());
-			q.addTeam(team);
+			q.addTeam(newID,team);
 			quizMap.put(quizID, q);
 			return team;
 		}
@@ -91,18 +91,9 @@ public class ServerContext {
 			Quiz quiz=quizMap.get(quizID);
 			User user=userMap.get(userID);
 			Team team=null;
-			boolean foundTeam=false;
-			int i=0;
+			team=quiz.getTeams().get(teamID);
 
-			while (!foundTeam && i<quiz.getTeams().size()){
-				team=quiz.getTeams().get(i);
-				if (team.getID()==teamID){
-					foundTeam=true;
-				}
-				i++;
-			}
-
-			if (foundTeam){
+			if (team != null){
 				if (type=='a'){//add
 					team.addTeamMember(user.getID(),user.getUsername());
 					return user.getUsername();

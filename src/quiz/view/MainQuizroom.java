@@ -41,12 +41,14 @@ public class MainQuizroom extends Application{
 		user1=User.createUser(user1);
 		Quiz quiz=new Quiz(1,5,5,5,5,20);
 		Context.getContext().setQuiz(quiz);
+		Context.getContext().setTeamID(-1);//no team
 		Team team1 = new Team(1,"Deborah leemans",Color.rgb(0,0,255),2,"james",quiz.getMaxAmountOfPlayersPerTeam());
 		team1.addTeamMember(4,"Hendrik");
 		team1.addTeamMember(5,"Natalie");
 		Team team2 = new Team(2,"Team2",Color.rgb(255,0,0),4,"Precious",quiz.getMaxAmountOfPlayersPerTeam());
 		quiz.addTeam(1,team1);
 		quiz.addTeam(2,team2);
+
 
 
 		quizroom=new Quizroom(quiz,this);

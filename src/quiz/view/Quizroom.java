@@ -24,7 +24,6 @@ public class Quizroom {
         content = (AnchorPane) loader.load();
         quizcontroller = loader.getController();
         quizcontroller.setMain(main);
-        quizcontroller.setQuiz(quiz);
         quizcontroller.addListener();
 
 
@@ -46,7 +45,6 @@ public class Quizroom {
         content = (AnchorPane) loader.load();
         quizcontroller = loader.getController();
         quizcontroller.setMain(main);
-        quizcontroller.setQuiz(quiz);
         quizcontroller.addListener();
 
 	}

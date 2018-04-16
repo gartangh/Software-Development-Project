@@ -1,5 +1,6 @@
 package quiz.view;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
@@ -29,9 +30,9 @@ import eventbroker.*;
 
 public class QuizRoomController extends EventPublisher{
 	@FXML
-    private TableView<Team> teamTable;
+    private TableView<TeamNameID> teamTable;
     @FXML
-    private TableColumn<Team, String> NameColumn;
+    private TableColumn<TeamNameID, String> NameColumn;
     @FXML
     private Label TeamnameLabel;
     @FXML
@@ -41,13 +42,11 @@ public class QuizRoomController extends EventPublisher{
     @FXML
     private Circle circle;
 
-    private Quiz quiz;
 
     // TODO: change to real mainapp
     private MainQuizroom mainQuizRoom;
     private Main main;
     private QuizroomHandler quizroomhandler=new QuizroomHandler();
-    private Team selectedTeam;
     private QuizRoomModel quizRoomModel=new QuizRoomModel();
 
 	public class QuizroomHandler implements EventListener{
@@ -57,11 +56,13 @@ public class QuizRoomController extends EventPublisher{
 				case "SERVER_NEW_TEAM":
 					ServerNewTeamEvent newTeamEvent=(ServerNewTeamEvent) e;
 					if (newTeamEvent.getQuizID()==Context.getContext().getQuiz().getID()) {//extra controle
-						Team newTeam=new Team(newTeamEvent.getQuizID(),new SimpleStringProperty(newTeamEvent.getTeamName()),newTeamEvent.getColor(),newTeamEvent.getCaptainID(),newTeamEvent.getCaptainName(),quiz.getMaxAmountOfPlayersPerTeam());
-						quiz.addTeam(newTeam);//TAbleview vanzelf geupdatet via bindings
+						Team newTeam=new Team(newTeamEvent.getTeamID(),newTeamEvent.getTeamName(),newTeamEvent.getColor(),newTeamEvent.getCaptainID(),newTeamEvent.getCaptainName(),Context.getContext().getQuiz().getMaxAmountOfPlayersPerTeam());
+						Context.getContext().getQuiz().addTeam(newTeamEvent.getTeamID(),newTeam);//TAbleview vanzelf geupdatet via bindings
 						if (newTeam.getCaptainID()==Context.getContext().getUser().getID()){// i am the captain,change Team in context
-							Context.getContext().setTeam(newTeam);
+							Context.getContext().setTeamID(newTeam.getID());
 						}
+						quizRoomModel.updateTeams();
+						quizRoomModel.updateTeamDetail(newTeam.getID());
 					}
 				break;
 				case "SERVER_CHANGE_TEAM":
@@ -73,33 +74,20 @@ public class QuizRoomController extends EventPublisher{
 						String userName=cte.getUserName();
 						Team newteam=null;
 						Team oldteam=null;
-						for (int i=0;i<quiz.getTeams().size();i++){
-							if (quiz.getTeams().get(i).getID()==newteamID){
-								newteam=quiz.getTeams().get(i);
-							}
-							else if (quiz.getTeams().get(i).getID()==oldteamID){
-								oldteam=quiz.getTeams().get(i);
-							}
 
-						}
+						newteam=Context.getContext().getQuiz().getTeams().get(newteamID);
+						oldteam=Context.getContext().getQuiz().getTeams().get(oldteamID);
 
 						if (newteam!=null){//should always happen
 							newteam.addTeamMember(userID,userName);
 							if (Context.getContext().getUser().getID()==userID){
-									Context.getContext().setTeam(newteam);
+									Context.getContext().setTeamID(newteam.getID());
 							}
-							else if (Context.getContext().getTeam().getID()==newteam.getID()){// team already changed if you are the user
-									Context.getContext().getTeam().addTeamMember(userID,userName);
-							}
+							quizRoomModel.updateTeamDetail(newteam.getID());
 						}
 						if (oldteam!=null){
 							oldteam.removeTeamMember(userID,userName);
-							if (Context.getContext().getTeam().getID()==oldteam.getID()){// team already changed if you are the user
-								Context.getContext().getTeam().removeTeamMember(userID,userName);
-							}
 						}
-						Team selectedTeam = teamTable.getSelectionModel().getSelectedItem();
-						showTeamDetails(selectedTeam);
 					}
 					break;
 				}
@@ -112,7 +100,7 @@ public class QuizRoomController extends EventPublisher{
     }
 
     public QuizRoomController(Quiz quiz){
-    	this.quiz=quiz;
+    	//this.quiz=quiz;
     	//via serverContext rechtstreeks? wordt nu meegegeven via argument maar hoeft niet
     }
 
@@ -122,47 +110,47 @@ public class QuizRoomController extends EventPublisher{
 
     @FXML
     private void initialize() {
-        NameColumn.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
+        NameColumn.setCellValueFactory(cellData -> cellData.getValue().getTeamName());
+        teamTable.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> showTeamDetails(newValue));
         showTeamDetails(null);
 
+        CaptainLabel.textProperty().bind(quizRoomModel.getCaptainName());
+        TeamnameLabel.textProperty().bind(quizRoomModel.getTeamName());
+        teammemberslist.itemsProperty().bind(quizRoomModel.getTeamMembers());
 
-       // teamTable.getSelectionModel().selectedItemProperty().addListener(
-         //       (observable, oldValue, newValue) -> showTeamDetails(newValue));
-        teamTable.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> setSelectedTeam(newValue));
 
+        /*showTeamDetails(null);
+
+
+       teamTable.getSelectionModel().selectedItemProperty().addListener(
+               (observable, oldValue, newValue) -> showTeamDetails(newValue));*/
 
     }
 
     public void setMain(MainQuizroom testQuizroom) {
         this.mainQuizRoom = testQuizroom;
+        teamTable.setItems(quizRoomModel.getTeams());
     }
 
     public void setMain(Main main) {
         this.main=main;
     }
 
-    public void setQuiz(Quiz quiz){
-    	this.quiz=quiz;
-    	teamTable.setItems(quiz.getTeams());
-    }
-
-    public void setQuizRoomModel(QuizRoomModel quizroommodel){
-    	this.quizRoomModel=quizroommodel;
-    }
-    public void setSelectedTeam(Team team){
+    public void showTeamDetails(TeamNameID team){
     	if (team != null){
-    		selectedTeam =team;
+    		quizRoomModel.updateTeamDetail(team.getTeamID());
     	}
     	else {
-    		selectedTeam =new Team(-1,new SimpleStringProperty(""),Color.TRANSPARENT,-1,"");
+    		quizRoomModel=new QuizRoomModel();
+    		quizRoomModel.updateTeams();
     	}
     }
 
-    public void showTeamDetails(Team team){
+    /*public void showTeamDetails(Team team){
         if (team != null) {
             // Fill the labels with info from the person object.
-        	TeamnameLabel.setText(team.getName());
+        	TeamnameLabel.setText(new SimpleStringProperty(team.getName()));
             CaptainLabel.setText(team.getTeamMembers().get(team.getCaptainID()));
             circle.setFill(team.getColor());
             ObservableList<String> membernames=FXCollections.observableArrayList(team.getTeamMembers().values());
@@ -173,16 +161,18 @@ public class QuizRoomController extends EventPublisher{
             circle.setFill(Color.TRANSPARENT);
             teammemberslist.setItems(FXCollections.observableArrayList());
         }
-    }
+    }*/
 
     @FXML
     private void handleNewTeam() throws IOException{
-    	NewTeamEvent teamevent = new NewTeamEvent(Context.getContext().getQuiz().getID(),"",Color.TRANSPARENT);
-    	boolean okClicked = mainQuizRoom.showNewTeam(teamevent);
-        if (okClicked) {
-        	publishEvent(teamevent);
-        	System.out.println(teamevent.getTeamName());
-        }
+    	if (Context.getContext().getQuiz().getAmountOfTeams()<Context.getContext().getQuiz().getMaxAmountOfTeams()){
+	    	NewTeamEvent teamevent = new NewTeamEvent(Context.getContext().getQuiz().getID(),"",Color.TRANSPARENT);
+	    	boolean okClicked = mainQuizRoom.showNewTeam(teamevent);
+	        if (okClicked) {
+	        	publishEvent(teamevent);
+	        	System.out.println(teamevent.getTeamName());
+	        }
+    	}
 
     }
 
@@ -193,23 +183,21 @@ public class QuizRoomController extends EventPublisher{
 
     @FXML
     private void handleJoin(){
-    	Team selectedTeam = teamTable.getSelectionModel().getSelectedItem();
+    	TeamNameID selectedTeam = teamTable.getSelectionModel().getSelectedItem();
     	if (selectedTeam!=null){
     		User currUser=Context.getContext().getUser();
-    		int currTeamID;
+    		int currTeamID=Context.getContext().getTeamID();
     		int currCaptainID;
 
-    		if (Context.getContext().getTeam() != null){
-    			currTeamID= Context.getContext().getTeam().getID();
-    			currCaptainID = Context.getContext().getTeam().getCaptainID();
+    		if (currTeamID !=-1){
+    			currCaptainID=Context.getContext().getQuiz().getTeams().get(currTeamID).getCaptainID();
     		}
     		else {
-    			currTeamID=-1; //Standard value
-    			currCaptainID= -1;
+    			currCaptainID=-1;
     		}
 
-    		if (selectedTeam.getTeamMembers().get(currUser.getID())==null  && currCaptainID != currUser.getID()){//user nog niet in dit team en user is geen captain (userID never -1)
-    			ChangeTeamEvent changeTeamEvent=new ChangeTeamEvent(Context.getContext().getQuiz().getID(),selectedTeam.getID(),currTeamID,currUser.getID());
+    		if (selectedTeam.getTeamID()!=Context.getContext().getTeamID() && currCaptainID != currUser.getID()){//user nog niet in dit team en user is geen captain (userID never -1)
+    			ChangeTeamEvent changeTeamEvent=new ChangeTeamEvent(Context.getContext().getQuiz().getID(),selectedTeam.getTeamID(),currTeamID,currUser.getID());
     			publishEvent(changeTeamEvent);
     			/*selectedTeam.getTeamMembers().put(currUser.getID(),currUser.getUsername());
     			showTeamDetails(selectedTeam);*/

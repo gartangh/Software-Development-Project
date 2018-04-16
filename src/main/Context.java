@@ -41,7 +41,7 @@ public class Context {
 		return teamID;
 	}
 
-	public void setTeam(int teamID) {
+	public void setTeamID(int teamID) {
 		this.teamID = teamID;
 	}
 

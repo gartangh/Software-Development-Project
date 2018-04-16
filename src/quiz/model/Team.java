@@ -53,22 +53,9 @@ public class Team implements Serializable {
 		this.maxAmountOfPlayers=5;
 	}
 
-	public Team(String name, Color color,int captainID,String captainname,int maxamount) {
-		this.name = name;
-		this.colorRed = (int) (color.getRed()*255);
-		this.colorGreen = (int) (color.getGreen()*255);
-		this.colorBlue = (int) (color.getBlue()*255);
-		this.captainID=captainID;
-		this.teamMembers.put(captainID,captainname);
-		this.roundScore = 0;
-		this.quizScore = 0;
-		this.amountOfPlayers=1;//voorlopig
-		this.maxAmountOfPlayers=maxamount;
-	}
-
 
 	// Getters
-	public String getNameProperty() {
+	public String getName() {
 		return name;
 	}
 
@@ -78,10 +65,6 @@ public class Team implements Serializable {
 
 	public int getID(){
 		return this.teamID;
-	}
-
-	public String getName(){
-		return name;
 	}
 
 	public Color getColor() {
