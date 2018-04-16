@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<AnchorPane minHeight="300.0" minWidth="400.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.QuestionFormController">
+<AnchorPane minHeight="300.0" minWidth="400.0" prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.QuestionFormController">
    <children>
       <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -96,10 +96,11 @@
                   </AnchorPane>
                   <AnchorPane VBox.vgrow="ALWAYS">
                      <children>
-                        <ButtonBar layoutY="497.0" minWidth="300.0" prefHeight="40.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                        <ButtonBar layoutY="497.0" minWidth="360.0" prefHeight="40.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
                           <buttons>
                               <Button fx:id="voteButton" mnemonicParsing="false" onAction="#handleVote" text="Vote" />
-                            <Button fx:id="confirmButton" mnemonicParsing="false" onAction="#handleAnswer" text="Confirm" />
+                            <Button fx:id="confirmButton" mnemonicParsing="false" onAction="#handleAnswer" text="Confirm Answer" />
+                              <Button fx:id="nextButton" mnemonicParsing="false" onAction="#handleNext" text="Next Question" />
                           </buttons>
                            <padding>
                               <Insets right="5.0" />

@@ -24,7 +24,8 @@ public class ServerContext {
 
 	private Map<Integer, User> userMap = new HashMap<Integer, User>();
 	private Map<Integer, Quiz> quizMap = new HashMap<Integer, Quiz>();
-	private Map<Integer, MCQuestion> mcQuestionMap = new HashMap<Integer, MCQuestion>();
+	private Map<Integer, Map<Integer, Map<Integer, MCQuestion>>> orderedMCQuestionMap = new HashMap<Integer, Map<Integer, Map<Integer, MCQuestion>>>();
+	private Map<Integer, MCQuestion> allMCQuestions = new HashMap<Integer, MCQuestion>();
 	private Network network;
 
 	// Constructors
@@ -101,20 +102,29 @@ public class ServerContext {
 		quizMap.put(updatedQuiz.getID(), updatedQuiz);
 	}
 	
+	public Map<Integer, Map<Integer, Map<Integer, MCQuestion>>> getOrderedMCQuestionMap() {
+		return orderedMCQuestionMap;
+	}
+	
 	public void loadData() {
 		BufferedReader reader;
 		String locationPrefix = "D:\\Documents\\Universiteit\\Bachelor3\\Softwareontwikkeling\\project-1718-groep9\\src\\server\\";
 		String[] themeFiles = {"QUESTIONS_CULTURE.txt", "QUESTIONS_SPORTS.txt"};
 		try {
 			for(int tF = 0; tF < themeFiles.length; tF++) {
+				Map<Integer, Map<Integer, MCQuestion>> themeMap = new HashMap<Integer, Map<Integer, MCQuestion>>();
+				orderedMCQuestionMap.put(tF, themeMap);
 				reader = new BufferedReader(new FileReader(locationPrefix+themeFiles[tF]));
 				String line = reader.readLine();
 				int i = 0;
 				int diff = -1;
+				Map<Integer, MCQuestion> diffMap = null;
 				while (line != null) {
 					if(line.startsWith("-----")) { // Skip gaps between difficulties
 						i = 0;
 						diff++;
+						diffMap = new HashMap<Integer, MCQuestion>();
+						themeMap.put(diff, diffMap);
 						reader.readLine();
 						reader.readLine();
 					}
@@ -127,7 +137,8 @@ public class ServerContext {
 					int questionID = tF * (2^24) + diff * (2^22) + i; // 256 possible themes and 4 difficulties with each 2^21 questions gives unique ID
 					MCQuestion q = new MCQuestion(d, t, questionID, question, answers, correctAnswer);
 					
-					mcQuestionMap.put(questionID, q);
+					diffMap.put(questionID, q);
+					allMCQuestions.put(questionID, q);
 					
 					// read next line
 					i++;
@@ -138,5 +149,9 @@ public class ServerContext {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public Question getQuestion(int questionID){
+		return allMCQuestions.get(questionID);
 	}
 }

@@ -26,7 +26,7 @@ public class AnswerVoteModel {
 	private StringProperty percentagePropertyA, percentagePropertyB, percentagePropertyC, percentagePropertyD;
 	private StringProperty numberOfVotesProperty;
 	
-	private BooleanProperty voteVisibilityProperty, confirmVisibilityProperty; // Button properties
+	private BooleanProperty voteDisableProperty, confirmDisableProperty, nextDisableProperty; // Button properties
 	
 	public AnswerVoteModel() {
 		questionTitleProperty = new SimpleStringProperty("Question:");
@@ -51,8 +51,9 @@ public class AnswerVoteModel {
 		percentagePropertyD = new SimpleStringProperty("0%");
 		numberOfVotesProperty = new SimpleStringProperty("0 votes");
 		
-		voteVisibilityProperty = new SimpleBooleanProperty(true);	// Button properties
-		confirmVisibilityProperty = new SimpleBooleanProperty(true);
+		voteDisableProperty = new SimpleBooleanProperty(false);	// Button properties
+		confirmDisableProperty = new SimpleBooleanProperty(false);
+		nextDisableProperty = new SimpleBooleanProperty(true);
 	}
 
 	public void updateVotes(int teamID) {
@@ -138,8 +139,9 @@ public class AnswerVoteModel {
 					paintPropertyD.setValue(Color.GREEN);
 					break;
 				}
-				voteVisibilityProperty.setValue(false);
-				confirmVisibilityProperty.setValue(false);
+				voteDisableProperty.setValue(true);
+				confirmDisableProperty.setValue(true);
+				nextDisableProperty.setValue(false);
 			}
 		});
 	}
@@ -160,8 +162,9 @@ public class AnswerVoteModel {
 				paintPropertyC.setValue(Color.BLACK);
 				paintPropertyD.setValue(Color.BLACK);
 				
-				voteVisibilityProperty.setValue(true);
-				confirmVisibilityProperty.setValue(true);
+				voteDisableProperty.setValue(false);
+				confirmDisableProperty.setValue(false);
+				nextDisableProperty.setValue(true);
 			}
 		});
 	}
@@ -242,12 +245,15 @@ public class AnswerVoteModel {
 		return paintPropertyD;
 	}
 
-	public BooleanProperty getVoteVisibilityProperty() {
-		return voteVisibilityProperty;
+	public BooleanProperty getVoteDisableProperty() {
+		return voteDisableProperty;
 	}
 
-	public BooleanProperty getConfirmVisibilityProperty() {
-		return confirmVisibilityProperty;
+	public BooleanProperty getConfirmDisableProperty() {
+		return confirmDisableProperty;
 	}
 	
+	public BooleanProperty getNextDisableProperty() {
+		return nextDisableProperty;
+	}
 }

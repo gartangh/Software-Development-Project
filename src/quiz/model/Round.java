@@ -1,23 +1,28 @@
 package quiz.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import main.Context;
 import quiz.util.Difficulty;
 import quiz.util.Theme;
 import quiz.util.Type;
+import server.ServerContext;
 
 public class Round {
 
 	private Type type;
 	private Difficulty difficulty;
 	private Theme theme;
-	private Map<Integer, Map<Integer, Integer>> answers; // Map(questionID -> Map(teamID -> answerID))	
+	private Map<Integer, Map<Integer, Integer>> answers = new HashMap<Integer, Map<Integer, Integer>>(); // Map(questionID -> Map(teamID -> answerID))
+	private int currentQuestion;
 
 	public Round(Type type, Difficulty difficulty, Theme theme) {
 		this.type = type;
 		this.difficulty = difficulty;
 		this.theme = theme;
+		this.currentQuestion = -1;
 	}
 
  	// TODO: Add getQuestions()
@@ -29,33 +34,29 @@ public class Round {
 	public Theme getTheme() {
 		return theme;
 	}
+	
+	public int getNextQuestion() {
+		currentQuestion++;
+		return (int) answers.keySet().toArray()[currentQuestion];
+	}
 
 	// Methods
-	/*public void makeQuestions() {
-		Question question;
-		for (amountOfQuestions = 0; amountOfQuestions < maxAmountOfQuestions; amountOfQuestions++) {
-			switch (type) {
-			case MC:
-				question = new MCQuestion(difficulty, theme);
-				break;
-			case IP:
-				question = new IPQuestion(difficulty, theme);
-				break;
-
-			default:
-				// TODO: ERROR! No such type
-				break;
+	public void addQuestions(int numberOfQuestions) {
+		// TODO get questions out database
+		boolean ready = false;
+		Map<Integer, MCQuestion>  questions = ServerContext.getContext().getOrderedMCQuestionMap().get(theme.ordinal()).get(difficulty.ordinal());
+		while(numberOfQuestions > 0) {
+			int i = (int) Math.floor(Math.random()*questions.size());
+			int qID = (int) questions.keySet().toArray()[i];
+			if(!answers.containsKey(qID)) {
+				answers.put(qID, new HashMap<Integer, Integer>());
+				numberOfQuestions--;
 			}
-
-			// TODO: Add question to questions
 		}
-	}*/
+	}
 	
 	public void addAnswer(int teamID, int questionID, int answer) {
 		Map<Integer, Integer> questionAnswers = answers.get(questionID);
-		if(questionAnswers == null) {
-			questionAnswers = new HashMap<Integer, Integer>();
-		}
 		questionAnswers.put(teamID, answer);
 		answers.put(questionID, questionAnswers);
 	}

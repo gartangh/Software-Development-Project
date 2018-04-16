@@ -7,6 +7,9 @@ import java.util.Map;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
+import quiz.util.Difficulty;
+import quiz.util.Theme;
+import quiz.util.Type;
 
 public class Quiz {
 	private int quizID;
@@ -65,8 +68,8 @@ public class Quiz {
 		return maxAmountOfRounds;
 	}
 
-	public ArrayList<Round> getRounds(){
-		return rounds;
+	public Round getRound(){
+		return rounds.get(currentRound);
 	}
 
 	public int getMaxAmountOfQuestionsPerRound() {
@@ -93,16 +96,17 @@ public class Quiz {
 		}
 	}
 
-	/*public void addRound(Round round) {
+	public void addRound(Difficulty diff, Theme theme) {
 		if (amountOfRounds < maxAmountOfRounds) {
+			Round round = new Round(Type.MC, diff, theme);
 			rounds.add(round);
+			round.addQuestions(maxAmountofQuestionsPerRound);
 			amountOfRounds++;
-			round.setMaxAmountOfQuestions(maxAmountofQuestionsPerRound);
 		}
 		else {
 			// TODO: Go back and give error
 		}
-	}*/
+	}
 
 	// Removers
 	public void removeTeam(Team team) {

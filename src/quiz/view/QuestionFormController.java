@@ -15,6 +15,7 @@ import quiz.model.Quiz;
 import quiz.model.AnswerVoteModel;
 import quiz.model.MCQuestion;
 import quiz.util.ClientAnswerEvent;
+import quiz.util.ClientNewQuestionEvent;
 import quiz.util.ClientVoteEvent;
 import server.Server;
 import server.ServerAnswerEvent;
@@ -49,6 +50,8 @@ public class QuestionFormController extends EventPublisher {
 	@FXML
 	private Button confirmButton;
 	@FXML
+	private Button nextButton;
+	@FXML
 	private Label percentageA;
 	@FXML
 	private Label percentageB;
@@ -66,6 +69,7 @@ public class QuestionFormController extends EventPublisher {
 	private ProgressBar voteProgressC;
 	@FXML
 	private ProgressBar voteProgressD;
+	
 	private AnswerVoteModel answerVoteModel;
 	
 	public class QuestionFormEventHandler implements EventListener{ // TODO: add handling of events 
@@ -93,8 +97,8 @@ public class QuestionFormController extends EventPublisher {
 				
 			case "SERVER_NEW_QUESTION":
 				
-				ServerNewQuestionEvent sNQ = (ServerNewQuestionEvent) e;
-				MCQuestion q = new MCQuestion(sNQ.getQuestionID(), sNQ.getQuestion(), sNQ.getAnswers());
+				ServerNewQuestionEvent sNQE = (ServerNewQuestionEvent) e;
+				MCQuestion q = new MCQuestion(sNQE.getQuestionID(), sNQE.getQuestion(), sNQE.getAnswers());
 				Context.getContext().setQuestion(q);
 				answerVoteModel.updateQuestion();
 				answerVoteModel.updateVotes(Context.getContext().getTeamID());
@@ -141,8 +145,9 @@ public class QuestionFormController extends EventPublisher {
 		percentageD.textProperty().bind(answerVoteModel.getPercentagePropertyD());
 		numberOfVotes.textProperty().bind(answerVoteModel.getNumberOfVotesProperty());
 		
-		voteButton.visibleProperty().bind(answerVoteModel.getVoteVisibilityProperty());
-		confirmButton.visibleProperty().bind(answerVoteModel.getConfirmVisibilityProperty());
+		voteButton.disableProperty().bind(answerVoteModel.getVoteDisableProperty());
+		confirmButton.disableProperty().bind(answerVoteModel.getConfirmDisableProperty());
+		nextButton.disableProperty().bind(answerVoteModel.getNextDisableProperty());
 		
 		answerVoteModel.updateVotes(Context.getContext().getTeamID());
 	}
@@ -194,9 +199,15 @@ public class QuestionFormController extends EventPublisher {
 	private void handleAnswer() {
 		int answer = this.getChecked();
 		if(answer >= 0) {
-			//ClientAnswerEvent cae = new ClientAnswerEvent(Context.getContext().getQuestion().getQuestionID(), Context.getContext().getTeamID(), answer);
-			ClientAnswerEvent cae = new ClientAnswerEvent(1, 1, answer); // Testing purposes
+			ClientAnswerEvent cae = new ClientAnswerEvent(Context.getContext().getQuestion().getQuestionID(), answer);
 			this.publishEvent(cae);
+			handleCheck(-1);
 		}
 	}	
+	
+	@FXML
+	private void handleNext() {
+		ClientNewQuestionEvent cnqe = new ClientNewQuestionEvent();
+		this.publishEvent(cnqe);
+	}
 }

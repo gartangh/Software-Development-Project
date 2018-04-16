@@ -5,7 +5,7 @@ public class ClientAnswerEvent extends QuizzerEvent {
 	int answer;
 	int questionID;
 	
-	public ClientAnswerEvent(int questionID, int answer, int teamID) {
+	public ClientAnswerEvent(int questionID, int answer) {
 		super();
 		this.answer = answer;
 		this.questionID = questionID;
