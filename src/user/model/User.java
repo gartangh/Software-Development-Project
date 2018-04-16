@@ -16,7 +16,7 @@ public class User implements Serializable {
 	private int level;
 	private long xp;
 
-	private User(String username, String password) {
+	public User(String username, String password) {
 		this.username = username;
 		this.password = password;
 		this.level = 1;

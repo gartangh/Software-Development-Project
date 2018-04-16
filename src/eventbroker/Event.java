@@ -47,13 +47,13 @@ public class Event implements Serializable {
 	}
 
 	// Adders
-	public void addRecipient(Integer username) {
-		recipients.add(username);
+	public void addRecipient(Integer userID) {
+		recipients.add(userID);
 	}
 
 	public void addRecipients(ArrayList<Integer> destinations) {
-		for (Integer username : destinations)
-			addRecipient(username);
+		for (Integer userID : destinations)
+			addRecipient(userID);
 	}
 	
 	public void removeAllRecipients() {

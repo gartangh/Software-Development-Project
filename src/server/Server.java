@@ -12,6 +12,7 @@ import network.Network;
 import quiz.util.ClientCreateEvent;
 import quiz.util.ClientVoteEvent;
 import quiz.util.QuizzerEvent;
+import user.model.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
@@ -100,6 +101,7 @@ public class Server extends EventPublisher {
 
 				ServerScoreboardDataEvent scoreboardData = new ServerScoreboardDataEvent(
 						askForScoreboardData.getQuizID());
+				scoreboardData.addRecipient(askForScoreboardData.getUserID());
 				// Testing code for Scoreboard
 				/*
 				 * ArrayList<Integer> list = getTeams();
@@ -123,9 +125,9 @@ public class Server extends EventPublisher {
 	/*
 	 * TEST
 	 */
-	private static ArrayList<Integer> getTeams() {
+	/*private static ArrayList<Integer> getTeams() {
 		ArrayList<Integer> test = new ArrayList<>();
-		int userID1 = ServerContext.getContext().addUser("test1", "test1");
+		int userID1 = ServerContext.getContext().addUser("test1", "test1"));
 		int quizID = ServerContext.getContext().addQuiz(5, 2, 1, 5, userID1);
 		int userID2 = ServerContext.getContext().addUser("test2", "test2");
 		int userID3 = ServerContext.getContext().addUser("test3", "test3");
@@ -140,6 +142,6 @@ public class Server extends EventPublisher {
 		test.add(userID2);
 		test.add(userID3);
 		return test;
-	}
+	}*/
 
 }
