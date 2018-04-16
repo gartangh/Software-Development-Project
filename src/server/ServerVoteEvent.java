@@ -2,7 +2,7 @@ package server;
 
 @SuppressWarnings("serial")
 public class ServerVoteEvent extends ServerEvent {
-
+    
 	private int userID;
 	private int teamID;
 	private int quizID;
@@ -31,5 +31,4 @@ public class ServerVoteEvent extends ServerEvent {
 	public int getVote() {
 		return vote;
 	}
-
 }

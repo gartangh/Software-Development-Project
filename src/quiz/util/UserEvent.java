@@ -17,5 +17,4 @@ public class UserEvent extends Event {
 	public int getUserID() {
 		return userID;
 	}
-
 }

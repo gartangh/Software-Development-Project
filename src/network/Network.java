@@ -48,6 +48,7 @@ public class Network extends EventPublisher implements EventListener {
 
 	// Methods
 	public Connection connect(InetAddress address, int port) {
+
 		networkAddress = address;
 
 		try {
@@ -122,5 +123,13 @@ public class Network extends EventPublisher implements EventListener {
 
 		for (Map.Entry<Integer, Connection> entry : connectionMap.entrySet())
 			entry.getValue().close();
+	}
+
+	public InetAddress getNetworkAddress() {
+		return networkAddress;
+	}
+
+	public Connection getConnection() {
+		return connection;
 	}
 }

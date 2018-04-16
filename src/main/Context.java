@@ -16,6 +16,7 @@ public class Context {
 	private int teamID;
 	private Question question;
 	private Network network;
+	private int teamID;
 
 	// Getters and setters
 	public static Context getContext() {
@@ -53,6 +54,14 @@ public class Context {
 	public void setQuestion(Question question) {
 		this.question = question;
 		this.quiz.resetVotes();
+	}
+
+	public int getTeamID() {
+		return teamID;
+	}
+
+	public void setTeamID(int teamID) {
+		this.teamID = teamID;
 	}
 
 	public Network getNetwork() {

@@ -15,7 +15,8 @@ public class Event implements Serializable {
 
 	// Constructors
 	public Event() {
-		// Empty default constructor
+		this.type = ""; //no nullpointers
+		this.message = "";
 	}
 
 	public Event(String type, String message) {

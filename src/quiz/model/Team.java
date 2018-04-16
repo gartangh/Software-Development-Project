@@ -66,22 +66,23 @@ public class Team implements Serializable {
 	}
 
 	// Adders
-	public boolean addPlayer(String username) {
-		if (amountOfPlayers >= maxAmountOfPlayers)
-			// TODO: Go back and show error
-			return false;
 
-		players.put(++amountOfPlayers, username);
-
-		return true;
+	public void addPlayer(int userID,String userName){
+		if (amountOfPlayers <maxAmountOfPlayers){
+			teamMembers.put(userID,userName);
+			amountOfPlayers++;
+		}
 	}
 
-	public void setColor(Color color) {
-		this.colorRed = ((int) color.getRed() * 255);
-		this.colorGreen = ((int) color.getGreen() * 255);
-		this.colorBlue = ((int) color.getBlue() * 255);
+	public void setTeamName(String teamName){
+		this.teamName = teamName;
 	}
 
+	public void setColor(Color color){
+		this.colorRed = ((int) color.getRed()*255);
+		this.colorGreen = ((int) color.getGreen()*255);
+		this.colorBlue = ((int) color.getBlue()*255);
+	}
 	// Removers
 	public void removePlayer(int playerID) {
 		if (players.remove(playerID) != null)

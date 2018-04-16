@@ -1,5 +1,6 @@
 package server;
 
+import user.model.Host;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -23,11 +24,16 @@ public class ServerContext {
 
 	private Map<Integer, User> userMap = new HashMap<Integer, User>();
 	private Map<Integer, Quiz> quizMap = new HashMap<Integer, Quiz>();
+
 	private Map<Integer, Map<Integer, Map<Integer, MCQuestion>>> orderedMCQuestionMap = new HashMap<Integer, Map<Integer, Map<Integer, MCQuestion>>>();
 	private Map<Integer, MCQuestion> allMCQuestions = new HashMap<Integer, MCQuestion>();
 	private Network network;
 
-	// Getters and setters
+    	// Constructors
+	private ServerContext() {
+		// Empty default constructor
+	}
+    
 	public static ServerContext getContext() {
 		return context;
 	}
@@ -54,21 +60,52 @@ public class ServerContext {
 		do {
 			newID = (int) (Math.random() * Integer.MAX_VALUE);
 		} while(userMap.containsKey(newID));
-		
-		newID = 1; // Testing purposes
-		
+				
 		User newUser = new User(newID, username, password);
 		userMap.put(newID, newUser);
 		return newID;
 	}
-	
+
+	//testing code
+	public void addQuizwithQuizID(int quizID){
+		Quiz quiz=new Quiz(1,5,5,5,5,20);
+		quizMap.put(quizID,quiz);
+		Team team1 = new Team(1,"Deborah leemans",Color.rgb(0,0,255),2,"james",quiz.getMaxAmountOfPlayersPerTeam());
+		Team team2 = new Team(2,"Team2",Color.rgb(255,0,0),4,"Precious",quiz.getMaxAmountOfPlayersPerTeam());
+		quiz.addTeam(1,team1);
+		quiz.addTeam(2,team2);
+	}
+
+	public void addUserwithUserID(int userID){
+		userMap.put(userID,new User(1,"hannes","1234"));
+	}
+
+	public String changeTeam(int quizID,int teamID,int userID, char type){//returns username for serverEventHandler
+		if (quizMap.containsKey(quizID) && userMap.containsKey(userID) && teamID!=-1){//teamID==-1: nothing to delete
+			Quiz quiz=quizMap.get(quizID);
+			User user=userMap.get(userID);
+			Team team=null;
+			team=quiz.getTeams().get(teamID);
+
+			if (team != null){
+				if (type=='a'){//add
+					team.addTeamMember(user.getID(),user.getUsername());
+					return user.getUsername();
+				}
+				else if (type=='d'){//Delete
+					team.removeTeamMember(user.getID(),user.getUsername());
+					return user.getUsername();
+				}
+			}
+		} //team, quiz or user not found
+		return null;
+	}
+
 	public int addQuiz(String quizName, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds, int maxAmountOfQuestionsPerRound, int hostID) {
 		int newID;
 		do {
 			newID = (int) (Math.random() * Integer.MAX_VALUE);
 		} while(quizMap.containsKey(newID));
-		
-		newID = 1; // Testing purposes
 		
 		Quiz newQuiz = new Quiz(newID, quizName, maxAmountOfTeams, maxAmountOfPlayersPerTeam, maxAmountOfRounds, maxAmountOfQuestionsPerRound, hostID);
 		quizMap.put(newID, newQuiz);
@@ -76,29 +113,26 @@ public class ServerContext {
 	}
 	
 	public int addTeam(int quizID, String teamName, Color color, int captainID) {
-		if(quizMap.containsKey(quizID)) {
+		if(quizMap.containsKey(quizID) && userMap.containsKey(captainID)) {
 			Quiz q = quizMap.get(quizID);
-			
+
 			int newID;
 			boolean unique;
 			do {
-				unique = true;
+				unique=true;
 				newID = (int) (Math.random() * Integer.MAX_VALUE);
 				for(Team t : q.getTeams().values()) {
-					if(t.getTeamID() == newID) unique = false;
+					if(t.getID() == newID) unique = false;
 				}
 			} while(!unique);
-			
-			newID = 1; // Testing purposes
-			
+
+			//Team team = new Team(newID, teamName, color, captainID, userMap.get(captainID).getUsername());
 			Team team = new Team(newID, teamName, color, captainID, userMap.get(captainID).getUsername());
 			team.setMaxAmountOfPlayers(q.getMaxAmountOfPlayersPerTeam());
-			q.addTeam(team);
+			q.addTeam(newID,team);
 			quizMap.put(quizID, q);
-			
 			return newID;
 		}
-		return -1;
 	}
 
 	// Methods

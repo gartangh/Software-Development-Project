@@ -11,6 +11,10 @@ import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
+import javafx.scene.paint.Color;
+import quiz.util.ChangeTeamEvent;
+import quiz.util.NewTeamEvent;
+import quiz.model.Team;
 import network.Network;
 import quiz.model.MCQuestion;
 import quiz.util.ClientCreateAccountEvent;
@@ -119,6 +123,24 @@ public class Server extends EventPublisher {
 				handled = true;
 				break;
 			}
+            case "CLIENT_NEW_TEAM":
+				NewTeamEvent newteamevent=(NewTeamEvent) e;
+				Team newteam=ServerContext.getContext().addTeam(newteamevent.getQuizID(),newteamevent.getTeamName(),newteamevent.getColor(),newteamevent.getUserID());
+				if (newteam != null){
+					ServerNewTeamEvent serverNewTeamEvent=new ServerNewTeamEvent(newteamevent.getQuizID(),newteam.getID(),newteam.getName(),newteam.getColor(),newteam.getCaptainID(),newteam.getTeamMembers().get(newteam.getCaptainID()));
+					Server.getServer().publishEvent(serverNewTeamEvent);
+				}
+				break;
+			case "CLIENT_CHANGE_TEAM":
+				ChangeTeamEvent cte=(ChangeTeamEvent) e;
+				String userName=ServerContext.getContext().changeTeam(cte.getQuizID(),cte.getNewTeamID(),cte.getUserID(),'a');
+				ServerContext.getContext().changeTeam(cte.getQuizID(),cte.getOldTeamID(),cte.getUserID(),'d');
+				if (userName!=null){
+					ServerChangeTeamEvent serverChangeTeamEvent=new ServerChangeTeamEvent(cte.getQuizID(),cte.getNewTeamID(),cte.getOldTeamID(),cte.getUserID(),userName);
+					Server.getServer().publishEvent(serverChangeTeamEvent);
+				}
+				break;
+				//TODO oldteam (check for null) and newteam modifien
 			
 			if(handled) System.out.println("Event received and handled: "+e.getType());
 			else System.out.println("Event received but left unhandled: "+e.getType());
@@ -164,11 +186,19 @@ public class Server extends EventPublisher {
 		EventBroker.getEventBroker().addEventListener(serverHandler);
 		EventBroker.getEventBroker().start();
 		
-		int andreID = ServerContext.getContext().addUser("André", "");
+		int andreID = ServerContext.getContext().addUser("AndrÃ©", "");
 		int quizID = ServerContext.getContext().addQuiz("Testquiz", 8, 4, 1, 4, andreID);
-		ServerContext.getContext().addTeam(quizID, "André en de boys", Color.BLUE, andreID);
+		ServerContext.getContext().addTeam(quizID, "AndrÃ© en de boys", Color.BLUE, andreID);
 		ServerContext.getContext().loadData();
 		ServerContext.getContext().getQuiz(quizID).addRound(Difficulty.EASY, Theme.CULTURE);
+        
+        /*EventBroker.getEventBroker().start(); // Hannes Trash Test
+        System.out.println(InetAddress.getLocalHost());
+        Network network = new Network(1025);
+        EventBroker.getEventBroker().addEventListener(network);
+        EventBroker.getEventBroker().addEventListener(serverHandler);
+        ServerContext.getContext().addQuizwithQuizID(1);
+        ServerContext.getContext().addUserwithUserID(1);*/
 		
 		try {
 			TimeUnit.SECONDS.sleep(10);

@@ -112,7 +112,6 @@ public class Connection {
 							network.publishEvent(event);
 					} catch (SocketException e) {
 						// e.printStackTrace();
-
 						break;
 					} catch (ClassNotFoundException e) {
 						e.printStackTrace();

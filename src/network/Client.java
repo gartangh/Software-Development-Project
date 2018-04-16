@@ -1,9 +1,9 @@
 package network;
 
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.concurrent.TimeUnit;
-
 import chat.ChatPanel;
 import eventbroker.EventBroker;
 import javafx.application.Application;
@@ -37,14 +37,13 @@ public class Client extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		window = primaryStage;
 		
-
 		// TODO: Remove this test
 		User u = new User(0, "Arthur", "test"); // createAccount("Arthur", "test");
 		int port = Integer.parseInt("1026");
 
 		// Start event broker
 		EventBroker.getEventBroker().start();
-
+    
 		// ChatPanel (ChatModel and ChatController) are created
 		ChatPanel chatPanel = ChatPanel.createChatPanel();
 		chatPanel.getChatModel().setName(Context.getContext().getUser().getUsername());

@@ -112,6 +112,11 @@ public class Quiz implements Serializable {
 		return MAXQUESTIONS;
 	}
 
+
+	public Map<Integer,Team> getTeams(){
+		return teams;
+	}
+    
 	public static int getMaxteams() {
 		return MAXTEAMS;
 	}
@@ -197,8 +202,9 @@ public class Quiz implements Serializable {
 	}
 
 	// Removers
-	public void removeTeam(Team team) {
-		if (teams.remove(team.getTeamID()) != null)
+	public void removeTeam(int teamID) {
+		if (teams.get(teamID) != null) {
+			teams.remove(teamID);
 			amountOfTeams--;
 		else {
 			// TODO: Go back and show error
@@ -228,9 +234,4 @@ public class Quiz implements Serializable {
 
 		return true; // Temporary
 	}*/
-
-	public Map<Integer, Team> getTeams() {
-		return teams;
-	}
-
 }

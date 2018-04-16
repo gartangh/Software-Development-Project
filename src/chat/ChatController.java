@@ -1,7 +1,6 @@
 package chat;
 
 import java.util.ArrayList;
-
 import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
@@ -59,6 +58,7 @@ final public class ChatController extends EventPublisher {
 	public void handle(ActionEvent e) {
 		// Get message from chatTextField
 		String message = chatTextField.getText();
+
 		if (message != null && message.length() > 0) {
 			message = checkMessage(message);
 			sendMessage(message);
@@ -99,6 +99,7 @@ final public class ChatController extends EventPublisher {
 
 		// Update local GUI
 		Platform.runLater(new Runnable() {
+
 			@Override
 			public void run() {
 				// Clear chatTextField
