@@ -125,23 +125,25 @@ public class Server extends EventPublisher {
 	/*
 	 * TEST
 	 */
-	/*private static ArrayList<Integer> getTeams() {
-		ArrayList<Integer> test = new ArrayList<>();
-		int userID1 = ServerContext.getContext().addUser("test1", "test1"));
-		int quizID = ServerContext.getContext().addQuiz(5, 2, 1, 5, userID1);
-		int userID2 = ServerContext.getContext().addUser("test2", "test2");
-		int userID3 = ServerContext.getContext().addUser("test3", "test3");
-		int teamID1 = ServerContext.getContext().addTeam(quizID, "chill", Color.GREEN, userID2);
-		int teamID2 = ServerContext.getContext().addTeam(quizID, "whieoe", Color.BLACK, userID3);
-		ServerContext.getContext().getQuizMap().get(quizID).getTeams().get(teamID1).setQuizScore(100);
-		ServerContext.getContext().getQuizMap().get(quizID).getTeams().get(teamID2).setTeamID(0);
-		ServerContext.getContext().getQuizMap().get(quizID).getTeams().get(0).setQuizScore(200);
-
-		test.add(quizID);
-		test.add(userID1);
-		test.add(userID2);
-		test.add(userID3);
-		return test;
-	}*/
+	/*
+	 * private static ArrayList<Integer> getTeams() { ArrayList<Integer> test =
+	 * new ArrayList<>(); int userID1 =
+	 * ServerContext.getContext().addUser("test1", "test1")); int quizID =
+	 * ServerContext.getContext().addQuiz(5, 2, 1, 5, userID1); int userID2 =
+	 * ServerContext.getContext().addUser("test2", "test2"); int userID3 =
+	 * ServerContext.getContext().addUser("test3", "test3"); int teamID1 =
+	 * ServerContext.getContext().addTeam(quizID, "chill", Color.GREEN,
+	 * userID2); int teamID2 = ServerContext.getContext().addTeam(quizID,
+	 * "whieoe", Color.BLACK, userID3);
+	 * ServerContext.getContext().getQuizMap().get(quizID).getTeams().get(
+	 * teamID1).setQuizScore(100);
+	 * ServerContext.getContext().getQuizMap().get(quizID).getTeams().get(
+	 * teamID2).setTeamID(0);
+	 * ServerContext.getContext().getQuizMap().get(quizID).getTeams().get(0).
+	 * setQuizScore(200);
+	 * 
+	 * test.add(quizID); test.add(userID1); test.add(userID2);
+	 * test.add(userID3); return test; }
+	 */
 
 }

@@ -48,10 +48,6 @@ public class Main extends Application {
 	}
 
 	public static void main(String[] args) {
-		// Tests
-		if (DEBUG && false)
-			return;
-
 		launch(args);
 	}
 
@@ -141,7 +137,7 @@ public class Main extends Application {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void showJoinTeamScene() {
 		try {
 			FXMLLoader joinTeamLoader = new FXMLLoader();
@@ -154,7 +150,7 @@ public class Main extends Application {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void showScoreboard() {
 		try {
 			FXMLLoader scoreboardLoader = new FXMLLoader();
@@ -162,7 +158,7 @@ public class Main extends Application {
 
 			AnchorPane scoreboardRoot = (AnchorPane) scoreboardLoader.load();
 			ScoreboardController scoreboardController = scoreboardLoader.getController();
-			// scoreboardController.setMainApp(this);
+			scoreboardController.setMainApp(this);
 			Scene scene = new Scene(scoreboardRoot);
 			primaryStage.setScene(scene);
 			primaryStage.show();

@@ -3,9 +3,6 @@ package server;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Map.Entry;
-
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import quiz.model.Quiz;
 import quiz.model.ScoreboardTeam;
@@ -44,8 +41,6 @@ public class ServerScoreboardDataEvent extends ServerEvent {
 					team.getQuizScore());
 			scoreboardTeams.add(scoreboardTeam);
 		}
-		
-		this.addRecipient();
 	}
 
 	public ArrayList<ScoreboardTeam> getScoreboardTeams() {

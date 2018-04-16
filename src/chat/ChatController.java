@@ -176,7 +176,7 @@ final public class ChatController extends EventPublisher {
 				
 				case "SERVER_SCOREBOARDDATA":
 					ServerScoreboardDataEvent scoreboardData = (ServerScoreboardDataEvent) e;
-					// Handle data to scoreboard
+					// TODO: Handle data to scoreboard
 			}
 		}
 

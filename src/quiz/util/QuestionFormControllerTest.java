@@ -8,12 +8,9 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import main.Context;
 import network.Network;
 import quiz.model.Quiz;
-import quiz.model.Team;
 import quiz.view.QuestionFormController;
 import user.model.User;
 
@@ -21,7 +18,7 @@ public class QuestionFormControllerTest extends Application {
 
 	private Stage primaryStage;
 	private Network network;
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}

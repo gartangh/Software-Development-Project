@@ -37,7 +37,7 @@ public class Quiz implements Serializable {
 	private int maxAmountofPlayersPerTeam;
 	private Quizmaster quizmaster;
 	// Map(teamID -> Map(userID -> vote))
-	private Map<String, Map<String, Integer>> votes = new HashMap<>();
+	private Map<Integer, Map<Integer, Integer>> votes = new HashMap<>();
 
 	private Quiz(String quizname, int maxAmountOfRounds, int maxAmountOfQuestionsPerRound, int maxAmountOfTeams,
 			int maxAmountOfPlayersPerTeam) {
@@ -88,7 +88,7 @@ public class Quiz implements Serializable {
 	public String getQuizname() {
 		return quizname;
 	}
-	
+
 	public int getQuizID() {
 		return quizID;
 	}
@@ -100,12 +100,12 @@ public class Quiz implements Serializable {
 	public int getMaxAmountOfTeams() {
 		return maxAmountOfTeams;
 	}
-	
+
 	public Quizmaster getQuizmaster() {
 		return quizmaster;
 	}
 
-	public Map<String, Map<String, Integer>> getVotes() {
+	public Map<Integer, Map<Integer, Integer>> getVotes() {
 		return votes;
 	}
 
@@ -152,17 +152,17 @@ public class Quiz implements Serializable {
 		}
 	}
 
-	public void addVote(String username, String teamname, int vote) {
-		Map<String, Integer> teamVotes = votes.get(teamname);
+	public void addVote(int userID, int teamID, int vote) {
+		Map<Integer, Integer> teamVotes = votes.get(teamID);
 		if (teamVotes == null)
-			teamVotes = new HashMap<String, Integer>();
+			teamVotes = new HashMap<Integer, Integer>();
 
-		teamVotes.put(username, vote);
-		votes.put(teamname, teamVotes);
+		teamVotes.put(userID, vote);
+		votes.put(teamID, teamVotes);
 	}
 
-	public void addAnswer(String teamname, int questionID, int answer) {
-		rounds.get(currentRound).addAnswer(teamname, questionID, answer);
+	public void addAnswer(int teamID, int questionID, int answer) {
+		rounds.get(currentRound).addAnswer(teamID, questionID, answer);
 	}
 
 	public void addRound(Round round) {
@@ -181,12 +181,12 @@ public class Quiz implements Serializable {
 
 		return true; // Temporary
 	}
-	
+
 	public static ObservableList<Quiz> getQuizzes() {
 		ObservableList<Quiz> quizzes = null;
-		
+
 		// TODO: get quizzes from server
-		
+
 		return quizzes;
 	}
 

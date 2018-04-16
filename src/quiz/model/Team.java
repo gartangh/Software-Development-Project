@@ -13,7 +13,8 @@ public class Team implements Serializable {
 	private StringProperty name;
 	private int teamID;
 	private int amountOfPlayers = 0;
-	private int maxAmountOfPlayers; // minAmountOfTeamPlayers = 1;
+	// minAmountOfTeamPlayers = 1;
+	private int maxAmountOfPlayers;
 	private ObservableMap<Integer, String> players = FXCollections.observableHashMap();
 	// To make it serializable
 	private int colorRed;
@@ -95,8 +96,7 @@ public class Team implements Serializable {
 		if (players.remove(playerID) != null)
 			amountOfPlayers--;
 	}
-	
-	
+
 	// Test
 	public void setQuizScore(int quizScore) {
 		this.quizScore = quizScore;

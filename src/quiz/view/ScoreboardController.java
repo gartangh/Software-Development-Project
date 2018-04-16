@@ -12,6 +12,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import main.Context;
+import main.Main;
 import network.Client;
 import quiz.model.ScoreboardModel;
 import quiz.model.ScoreboardTeam;
@@ -35,13 +36,20 @@ public class ScoreboardController extends EventPublisher {
 	private ScoreboardModel scoreboardModel;
 	private ScoreboardEventHandler eventHandler;
 
+	// Reference to the main application
+	private Main main;
+
+	public void setMainApp(Main main) {
+		this.main = main;
+	}
+
+	// Constructor
 	public ScoreboardController() {
 		scoreboardModel = new ScoreboardModel();
 	}
 
 	@FXML
 	private void initialize() {
-
 		eventHandler = new ScoreboardEventHandler();
 		EventBroker.getEventBroker().addEventListener(eventHandler);
 
@@ -72,10 +80,11 @@ public class ScoreboardController extends EventPublisher {
 						winnerLoser.textProperty()
 								.set(scoreboardData.getScoreboardTeams().get(curTeamID).getTeamName() + ": LOSER");
 				}
-				break;
 
+				break;
 			}
 		}
+
 	}
 
 	/**
@@ -99,4 +108,5 @@ public class ScoreboardController extends EventPublisher {
 	public ScoreboardModel getScoreboardModel() {
 		return scoreboardModel;
 	}
+
 }

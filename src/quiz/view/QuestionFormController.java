@@ -94,7 +94,7 @@ public class QuestionFormController extends EventPublisher {
 		voteButton.visibleProperty().bind(answerVoteModel.getVoteVisibilityProperty());
 		confirmButton.visibleProperty().bind(answerVoteModel.getConfirmVisibilityProperty());
 
-		answerVoteModel.updateVotes(Context.getContext().getTeam().getTeamname());
+		answerVoteModel.updateVotes(Context.getContext().getTeam().getTeamID());
 	}
 
 	private void handleCheck(int answer) {
@@ -175,8 +175,8 @@ public class QuestionFormController extends EventPublisher {
 				ServerVoteEvent serverVote = (ServerVoteEvent) e;
 
 				Quiz quiz0 = Context.getContext().getQuiz();
-				quiz0.addVote(serverVote.getUsername(), serverVote.getTeamname(), serverVote.getVote());
-				answerVoteModel.updateVotes(serverVote.getTeamname());
+				quiz0.addVote(serverVote.getUserID(), serverVote.getTeamID(), serverVote.getVote());
+				answerVoteModel.updateVotes(serverVote.getTeamID());
 
 				System.out.println("Event received and handled: " + e.getType());
 				break;
@@ -184,7 +184,7 @@ public class QuestionFormController extends EventPublisher {
 				ServerAnswerEvent serverAnswer = (ServerAnswerEvent) e;
 
 				Quiz quiz1 = Context.getContext().getQuiz();
-				quiz1.addAnswer(serverAnswer.getTeamname(), serverAnswer.getQuestionID(), serverAnswer.getAnswer());
+				quiz1.addAnswer(serverAnswer.getTeamID(), serverAnswer.getQuestionID(), serverAnswer.getAnswer());
 				answerVoteModel.updateAnswer(serverAnswer.getAnswer(), serverAnswer.getCorrectAnswer());
 
 				System.out.println("Event received and handled: " + e.getType());

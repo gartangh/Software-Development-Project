@@ -3,23 +3,23 @@ package server;
 @SuppressWarnings("serial")
 public class ServerVoteEvent extends ServerEvent {
 
-	String username;
-	String teamname;
-	int vote;
+	private int userID;
+	private int teamID;
+	private int vote;
 
-	public ServerVoteEvent(String username, String teamname, int vote) {
+	public ServerVoteEvent(int userID, int teamID, int vote) {
 		this.type = "SERVER_VOTE";
-		this.username = username;
-		this.teamname = teamname;
+		this.userID = userID;
+		this.teamID = teamID;
 		this.vote = vote;
 	}
 
-	public String getTeamname() {
-		return teamname;
+	public int getTeamID() {
+		return teamID;
 	}
 
-	public String getUsername() {
-		return username;
+	public int getUserID() {
+		return userID;
 	}
 
 	public int getVote() {

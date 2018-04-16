@@ -16,8 +16,8 @@ public class Round {
 	private RoundType roundType;
 	private Difficulty difficulty;
 	private Theme theme;
-	// Map(questionID -> Map(teamname -> answerID))
-	private Map<Integer, Map<String, Integer>> answers;		
+	// Map(questionID -> Map(teamID -> answerID))
+	private Map<Integer, Map<Integer, Integer>> answers;
 
 	public Round(int maxAmountOfQuestions, RoundType roundType, Difficulty difficulty, Theme theme) {
 		this.maxAmountOfQuestions = maxAmountOfQuestions;
@@ -60,12 +60,12 @@ public class Round {
 	}
 
 	// Adders
-	public void addAnswer(String teamname, int questionID, int answer) {
-		Map<String, Integer> questionAnswers = answers.get(questionID);
+	public void addAnswer(int teamID, int questionID, int answer) {
+		Map<Integer, Integer> questionAnswers = answers.get(questionID);
 		if (questionAnswers == null)
-			questionAnswers = new HashMap<String, Integer>();
+			questionAnswers = new HashMap<Integer, Integer>();
 
-		questionAnswers.put(teamname, answer);
+		questionAnswers.put(teamID, answer);
 		answers.put(questionID, questionAnswers);
 	}
 
@@ -74,7 +74,6 @@ public class Round {
 		for (amountOfQuestions = 0; amountOfQuestions < maxAmountOfQuestions; amountOfQuestions++) {
 			switch (roundType) {
 			case MC:
-				
 				questions.put(amountOfQuestions, new MCQuestion(difficulty, theme));
 				break;
 			case IP:

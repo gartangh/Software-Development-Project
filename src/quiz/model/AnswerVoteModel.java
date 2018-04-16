@@ -149,10 +149,10 @@ public class AnswerVoteModel {
 	/*
 	 * QuestionFormController calls this every SERVER_VOTE event
 	 */
-	public void updateVotes(String teamname) {
-		Map<String, Map<String, Integer>> allVotes = Context.getContext().getQuiz().getVotes();
+	public void updateVotes(int teamID) {
+		Map<Integer, Map<Integer, Integer>> allVotes = Context.getContext().getQuiz().getVotes();
 		if (allVotes != null) {
-			Map<String, Integer> teamVotes = allVotes.get(teamname);
+			Map<Integer, Integer> teamVotes = allVotes.get(teamID);
 			if (teamVotes != null) {
 				int total = teamVotes.size();
 				int[] votes = new int[4];
