@@ -66,8 +66,8 @@ public class ServerContext {
 		return newID;
 	}
 
-	//testing code
-	public void addQuizwithQuizID(int quizID){
+	//testing code for hannes
+	/*public void addQuizwithQuizID(int quizID){
 		Quiz quiz=new Quiz(1,5,5,5,5,20);
 		quizMap.put(quizID,quiz);
 		Team team1 = new Team(1,"Deborah leemans",Color.rgb(0,0,255),2,"james",quiz.getMaxAmountOfPlayersPerTeam());
@@ -78,7 +78,7 @@ public class ServerContext {
 
 	public void addUserwithUserID(int userID){
 		userMap.put(userID,new User(1,"hannes","1234"));
-	}
+	}*/
 
 	public String changeTeam(int quizID,int teamID,int userID, char type){//returns username for serverEventHandler
 		if (quizMap.containsKey(quizID) && userMap.containsKey(userID) && teamID!=-1){//teamID==-1: nothing to delete
@@ -89,11 +89,11 @@ public class ServerContext {
 
 			if (team != null){
 				if (type=='a'){//add
-					team.addTeamMember(user.getID(),user.getUsername());
+					team.addPlayer(user.getID(),user.getUsername());
 					return user.getUsername();
 				}
 				else if (type=='d'){//Delete
-					team.removeTeamMember(user.getID(),user.getUsername());
+					team.removePlayer(user.getID());
 					return user.getUsername();
 				}
 			}
@@ -122,17 +122,18 @@ public class ServerContext {
 				unique=true;
 				newID = (int) (Math.random() * Integer.MAX_VALUE);
 				for(Team t : q.getTeams().values()) {
-					if(t.getID() == newID) unique = false;
+					if(t.getTeamID() == newID) unique = false;
 				}
 			} while(!unique);
 
 			//Team team = new Team(newID, teamName, color, captainID, userMap.get(captainID).getUsername());
 			Team team = new Team(newID, teamName, color, captainID, userMap.get(captainID).getUsername());
 			team.setMaxAmountOfPlayers(q.getMaxAmountOfPlayersPerTeam());
-			q.addTeam(newID,team);
+			q.addTeam(team);
 			quizMap.put(quizID, q);
 			return newID;
 		}
+		else return -1;
 	}
 
 	// Methods

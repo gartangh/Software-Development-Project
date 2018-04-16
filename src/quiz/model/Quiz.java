@@ -206,6 +206,7 @@ public class Quiz implements Serializable {
 		if (teams.get(teamID) != null) {
 			teams.remove(teamID);
 			amountOfTeams--;
+		}
 		else {
 			// TODO: Go back and show error
 		}

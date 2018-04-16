@@ -38,8 +38,8 @@ public class MainQuizroom extends Application{
 		//testcode
 		//User.logIn("Hannes","1234");
 		User user1=new User(1,"hannes","1234");
-		user1=User.createUser(user1);
-		Quiz quiz=new Quiz(1,5,5,5,5,20);
+		/*user1=User.createUser(user1);
+		Quiz quiz=new Quiz(1,5,5,5,5);
 		Context.getContext().setQuiz(quiz);
 		Context.getContext().setTeamID(-1);//no team
 		Team team1 = new Team(1,"Deborah leemans",Color.rgb(0,0,255),2,"james",quiz.getMaxAmountOfPlayersPerTeam());
@@ -53,7 +53,9 @@ public class MainQuizroom extends Application{
 
 		quizroom=new Quizroom(quiz,this);
 
-		network = new Network(1024); //voorlopig vast
+		network = new Network(1024); //voorlopig vast*/
+		//testing code
+		//TODO: change this
 		EventBroker.getEventBroker().addEventListener(network);
 		InetAddress a = InetAddress.getLocalHost();
 		network.connect(a,1025);

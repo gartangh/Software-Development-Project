@@ -55,19 +55,19 @@ public class QuizRoomController extends EventPublisher{
 			switch (e.getType()){
 				case "SERVER_NEW_TEAM":
 					ServerNewTeamEvent newTeamEvent=(ServerNewTeamEvent) e;
-					if (newTeamEvent.getQuizID()==Context.getContext().getQuiz().getID()) {//extra controle
-						Team newTeam=new Team(newTeamEvent.getTeamID(),newTeamEvent.getTeamName(),newTeamEvent.getColor(),newTeamEvent.getCaptainID(),newTeamEvent.getCaptainName(),Context.getContext().getQuiz().getMaxAmountOfPlayersPerTeam());
-						Context.getContext().getQuiz().addTeam(newTeamEvent.getTeamID(),newTeam);//TAbleview vanzelf geupdatet via bindings
+					if (newTeamEvent.getQuizID()==Context.getContext().getQuiz().getQuizID()) {//extra controle
+						Team newTeam=new Team(newTeamEvent.getTeamID(),newTeamEvent.getTeamName(),newTeamEvent.getColor(),newTeamEvent.getCaptainID(),newTeamEvent.getCaptainName());
+						Context.getContext().getQuiz().addTeam(newTeam);//TAbleview vanzelf geupdatet via bindings
 						if (newTeam.getCaptainID()==Context.getContext().getUser().getID()){// i am the captain,change Team in context
-							Context.getContext().setTeamID(newTeam.getID());
+							Context.getContext().setTeamID(newTeam.getTeamID());
 						}
 						quizRoomModel.updateTeams();
-						quizRoomModel.updateTeamDetail(newTeam.getID());
+						quizRoomModel.updateTeamDetail(newTeam.getTeamID());
 					}
 				break;
 				case "SERVER_CHANGE_TEAM":
 					ServerChangeTeamEvent cte=(ServerChangeTeamEvent) e;
-					if (cte.getQuizID()==Context.getContext().getQuiz().getID()){
+					if (cte.getQuizID()==Context.getContext().getQuiz().getQuizID()){
 						int newteamID=cte.getNewTeamID();
 						int oldteamID=cte.getOldTeamID();
 						int userID=cte.getUserID();
@@ -79,14 +79,14 @@ public class QuizRoomController extends EventPublisher{
 						oldteam=Context.getContext().getQuiz().getTeams().get(oldteamID);
 
 						if (newteam!=null){//should always happen
-							newteam.addTeamMember(userID,userName);
+							newteam.addPlayer(userID,userName);
 							if (Context.getContext().getUser().getID()==userID){
-									Context.getContext().setTeamID(newteam.getID());
+									Context.getContext().setTeamID(newteam.getTeamID());
 							}
-							quizRoomModel.updateTeamDetail(newteam.getID());
+							quizRoomModel.updateTeamDetail(newteam.getTeamID());
 						}
 						if (oldteam!=null){
-							oldteam.removeTeamMember(userID,userName);
+							oldteam.removePlayer(userID);
 						}
 					}
 					break;
@@ -147,26 +147,10 @@ public class QuizRoomController extends EventPublisher{
     	}
     }
 
-    /*public void showTeamDetails(Team team){
-        if (team != null) {
-            // Fill the labels with info from the person object.
-        	TeamnameLabel.setText(new SimpleStringProperty(team.getName()));
-            CaptainLabel.setText(team.getTeamMembers().get(team.getCaptainID()));
-            circle.setFill(team.getColor());
-            ObservableList<String> membernames=FXCollections.observableArrayList(team.getTeamMembers().values());
-            teammemberslist.setItems(membernames);
-        } else {
-        	TeamnameLabel.setText("");
-            CaptainLabel.setText("");
-            circle.setFill(Color.TRANSPARENT);
-            teammemberslist.setItems(FXCollections.observableArrayList());
-        }
-    }*/
-
     @FXML
     private void handleNewTeam() throws IOException{
     	if (Context.getContext().getQuiz().getAmountOfTeams()<Context.getContext().getQuiz().getMaxAmountOfTeams()){
-	    	NewTeamEvent teamevent = new NewTeamEvent(Context.getContext().getQuiz().getID(),"",Color.TRANSPARENT);
+	    	NewTeamEvent teamevent = new NewTeamEvent(Context.getContext().getQuiz().getQuizID(),"",Color.TRANSPARENT);
 	    	boolean okClicked = mainQuizRoom.showNewTeam(teamevent);
 	        if (okClicked) {
 	        	publishEvent(teamevent);
@@ -197,7 +181,7 @@ public class QuizRoomController extends EventPublisher{
     		}
 
     		if (selectedTeam.getTeamID()!=Context.getContext().getTeamID() && currCaptainID != currUser.getID()){//user nog niet in dit team en user is geen captain (userID never -1)
-    			ChangeTeamEvent changeTeamEvent=new ChangeTeamEvent(Context.getContext().getQuiz().getID(),selectedTeam.getTeamID(),currTeamID,currUser.getID());
+    			ChangeTeamEvent changeTeamEvent=new ChangeTeamEvent(Context.getContext().getQuiz().getQuizID(),selectedTeam.getTeamID(),currTeamID,currUser.getID());
     			publishEvent(changeTeamEvent);
     			/*selectedTeam.getTeamMembers().put(currUser.getID(),currUser.getUsername());
     			showTeamDetails(selectedTeam);*/

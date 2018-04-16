@@ -5,12 +5,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import chat.ChatController;
-import chat.ChatMessage;
-import network.Client;
-import network.Network;
-import network.Server;
-
 final public class EventBroker implements Runnable{
 
 	final static EventBroker broker = new EventBroker(); // Singleton

@@ -17,7 +17,6 @@ public class User implements Serializable {
 	private String password;
 	private int level;
 	private long xp;
-	private int userID;
 
 	public User(int userID, String username, String password) {
 		this.userID = userID;
@@ -33,14 +32,6 @@ public class User implements Serializable {
 		this.password = password;
 		this.level = level;
 		this.xp = xp;
-	}
-
-	public User(int userID, String username, String password) { // Changed to public for testing purposes
-		this.userID = userID;
-		this.username = username;
-		this.password = password;
-		this.level = 1;
-		this.xp = 0L;
 	}
 
 	private User(int userID, String username, String password, int level, long xp) {

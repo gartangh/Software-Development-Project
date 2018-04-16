@@ -69,7 +69,7 @@ public class Team implements Serializable {
 
 	public void addPlayer(int userID,String userName){
 		if (amountOfPlayers <maxAmountOfPlayers){
-			teamMembers.put(userID,userName);
+			players.put(userID,userName);
 			amountOfPlayers++;
 		}
 	}
@@ -100,6 +100,10 @@ public class Team implements Serializable {
 
 	public void setTeamID(int teamID) {
 		this.teamID = teamID;
+	}
+
+	public int getCaptainID() {
+		return this.getCaptainID();
 	}
 
 }

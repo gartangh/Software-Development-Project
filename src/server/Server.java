@@ -122,12 +122,12 @@ public class Server extends EventPublisher {
 				server.publishEvent(sGQE);
 				handled = true;
 				break;
-			}
             case "CLIENT_NEW_TEAM":
 				NewTeamEvent newteamevent=(NewTeamEvent) e;
-				Team newteam=ServerContext.getContext().addTeam(newteamevent.getQuizID(),newteamevent.getTeamName(),newteamevent.getColor(),newteamevent.getUserID());
-				if (newteam != null){
-					ServerNewTeamEvent serverNewTeamEvent=new ServerNewTeamEvent(newteamevent.getQuizID(),newteam.getID(),newteam.getName(),newteam.getColor(),newteam.getCaptainID(),newteam.getTeamMembers().get(newteam.getCaptainID()));
+				int newTeamID=ServerContext.getContext().addTeam(newteamevent.getQuizID(),newteamevent.getTeamName(),newteamevent.getColor(),newteamevent.getUserID());
+				if (newTeamID != -1){
+					Team newteam=ServerContext.getContext().getQuiz(newteamevent.getQuizID()).getTeams().get(newTeamID);
+					ServerNewTeamEvent serverNewTeamEvent=new ServerNewTeamEvent(newteamevent.getQuizID(),newTeamID,newteam.getTeamName(),newteam.getColor(),newteam.getCaptainID(),newteam.getPlayers().get(newteam.getCaptainID()));
 					Server.getServer().publishEvent(serverNewTeamEvent);
 				}
 				break;
@@ -141,6 +141,7 @@ public class Server extends EventPublisher {
 				}
 				break;
 				//TODO oldteam (check for null) and newteam modifien
+			}
 			
 			if(handled) System.out.println("Event received and handled: "+e.getType());
 			else System.out.println("Event received but left unhandled: "+e.getType());

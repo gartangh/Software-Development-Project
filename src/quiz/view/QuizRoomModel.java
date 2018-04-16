@@ -38,7 +38,7 @@ public class QuizRoomModel {
 		Platform.runLater(new Runnable(){
 			public void run(){
 				for (Team team:quiz.getTeams().values()){
-					TeamNameID teamNameID=new TeamNameID(new SimpleStringProperty(team.getName()),team.getID());
+					TeamNameID teamNameID=new TeamNameID(new SimpleStringProperty(team.getTeamName()),team.getTeamID());
 					if (!teams.contains(teamNameID)) teams.add(teamNameID);
 				}
 			}
@@ -50,10 +50,10 @@ public class QuizRoomModel {
 		Team team=Context.getContext().getQuiz().getTeams().get(teamID);
 		Platform.runLater(new Runnable(){
 			public void run(){
-				teamName.setValue(team.getName());
-				captainName.setValue(team.getTeamMembers().get(team.getCaptainID()));
+				teamName.setValue(team.getTeamName());
+				captainName.setValue(team.getPlayers().get(team.getCaptainID()));
 				teamColor.setValue(team.getColor());
-				Set<Entry<Integer,String>> r=team.getTeamMembers().entrySet();
+				Set<Entry<Integer,String>> r=team.getPlayers().entrySet();
 				teamMembers.clear();
 				teamMembers.set(FXCollections.observableArrayList());
 				for (Entry<Integer,String> entry:r){
@@ -72,10 +72,10 @@ public class QuizRoomModel {
 	}
 
 	public QuizRoomModel(Team team){
-		this.teamName=new SimpleStringProperty(team.getName());
-		this.captainName=new SimpleStringProperty(team.getTeamMembers().get(team.getCaptainID()));
+		this.teamName=new SimpleStringProperty(team.getTeamName());
+		this.captainName=new SimpleStringProperty(team.getPlayers().get(team.getCaptainID()));
 		this.teamColor=new SimpleObjectProperty<Paint>(team.getColor());
-		this.teamID=team.getID();
+		this.teamID=team.getTeamID();
 	}
 
 
