@@ -21,6 +21,7 @@ public class Quiz implements Serializable {
 	private final static String QUIZNAMEREGEX = "^[a-zA-Z0-9._-]{3,}$";
 
 	private String quizname;
+	private int quizID;
 	private int amountOfRounds = 0;
 	// minAmountOfRounds = 1;
 	private int maxAmountOfRounds;
@@ -86,6 +87,10 @@ public class Quiz implements Serializable {
 	// Getters
 	public String getQuizname() {
 		return quizname;
+	}
+	
+	public int getQuizID() {
+		return quizID;
 	}
 
 	public int getAmountOfTeams() {

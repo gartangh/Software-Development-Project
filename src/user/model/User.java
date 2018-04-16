@@ -11,6 +11,7 @@ public class User implements Serializable {
 	private final static String PASSWORDREGEX = "^[a-zA-Z0-9._-]{3,}$";
 
 	private String username;
+	private int userID;
 	private String password;
 	private int level;
 	private long xp;
@@ -36,6 +37,25 @@ public class User implements Serializable {
 		this.level = user.level;
 		this.xp = user.xp;
 	}
+	
+	// Factory method
+		public static int createAccount(String username, String password) {
+			if (!username.matches(USERNAMEREGEX))
+				return 1;
+			else if (!password.matches(PASSWORDREGEX))
+				return 2;
+			else if (!isUniqueUsername(username))
+				return 3;
+
+			// Everything is valid
+			User user = new User(username, password);
+
+			// TODO: Add User to database
+
+			Context.getContext().setUser(user);
+
+			return 0;
+		}
 
 	// Upcasting
 	// Factory method
@@ -55,6 +75,14 @@ public class User implements Serializable {
 	// Getters and setters
 	public String getUsername() {
 		return username;
+	}
+	
+	public int getUserID() {
+		return userID;
+	}
+	
+	public void setUserID(int userID) {
+		this.userID = userID;
 	}
 
 	public int setPassword(String password1, String password2) {
@@ -89,25 +117,6 @@ public class User implements Serializable {
 			this.level++;
 			this.xp -= level * 1000;
 		}
-	}
-
-	// Factory method
-	public static int createAccount(String username, String password) {
-		if (!username.matches(USERNAMEREGEX))
-			return 1;
-		else if (!password.matches(PASSWORDREGEX))
-			return 2;
-		else if (!isUniqueUsername(username))
-			return 3;
-
-		// Everything is valid
-		User user = new User(username, password);
-
-		// TODO: Add User to database
-
-		Context.getContext().setUser(user);
-
-		return 0;
 	}
 
 	public static int logIn(String username, String password) {

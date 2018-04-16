@@ -11,7 +11,7 @@ public class Event implements Serializable {
 	protected String type;
 	protected String message;
 	private long id = n++;
-	private ArrayList<String> recipients = new ArrayList<>();
+	private ArrayList<Integer> recipients = new ArrayList<>();
 
 	// Constructors
 	public Event() {
@@ -36,7 +36,7 @@ public class Event implements Serializable {
 		this.type = type;
 	}
 
-	public ArrayList<String> getRecipients() {
+	public ArrayList<Integer> getRecipients() {
 		return recipients;
 	}
 
@@ -47,12 +47,12 @@ public class Event implements Serializable {
 	}
 
 	// Adders
-	public void addRecipient(String username) {
+	public void addRecipient(Integer username) {
 		recipients.add(username);
 	}
 
-	public void addRecipients(ArrayList<String> destinations) {
-		for (String username : destinations)
+	public void addRecipients(ArrayList<Integer> destinations) {
+		for (Integer username : destinations)
 			addRecipient(username);
 	}
 	

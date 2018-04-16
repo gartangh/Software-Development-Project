@@ -3,18 +3,18 @@ package server;
 @SuppressWarnings("serial")
 public class ServerReturnUserIDEvent extends ServerEvent {
 
-	private String username;
+	private int userID;
 	private int connectionID;
 
-	public ServerReturnUserIDEvent(String username, int connectionID) {
+	public ServerReturnUserIDEvent(int userID, int connectionID) {
 		super();
-		this.username = username;
+		this.userID = userID;
 		this.connectionID = connectionID;
 		this.type = "SERVER_RETURN_USERID";
 	}
 
-	public String getUsername() {
-		return this.username;
+	public int getUserID() {
+		return userID;
 	}
 
 	public int getConnectionID() {

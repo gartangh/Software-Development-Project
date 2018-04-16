@@ -14,8 +14,8 @@ public class Network extends EventPublisher implements EventListener {
 	private String TYPE;
 	// Map(connectionID -> Connection)
 	private Map<Integer, Connection> connectionMap = new HashMap<>();
-	// Map(username -> ConnectionID)
-	private Map<String, Integer> UserIDConnectionIDMap = new HashMap<>();
+	// Map(userID -> ConnectionID)
+	private Map<Integer, Integer> UserIDConnectionIDMap = new HashMap<>();
 	private ConnectionListener connectionListener;
 	private InetAddress networkAddress;
 
@@ -34,7 +34,7 @@ public class Network extends EventPublisher implements EventListener {
 	}
 
 	// Getters
-	public Map<String, Integer> getUserIDConnectionIDMap() {
+	public Map<Integer, Integer> getUserIDConnectionIDMap() {
 		return UserIDConnectionIDMap;
 	}
 
@@ -108,8 +108,8 @@ public class Network extends EventPublisher implements EventListener {
 		if (TYPE == "CLIENT") {
 			connectionMap.get(0).send(e);
 		} else if (TYPE == "SERVER") {
-			for (String username : e.getRecipients()) {
-				connectionMap.get(UserIDConnectionIDMap.get(username)).send(e);
+			for (int userID : e.getRecipients()) {
+				connectionMap.get(UserIDConnectionIDMap.get(userID)).send(e);
 			}
 		}
 		System.out.println("Event received and handled: " + e.getType());

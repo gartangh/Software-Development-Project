@@ -1,10 +1,10 @@
 package user.view;
 
-import gui.AlertBox;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import main.Main;
+import main.view.AlertBox;
 import user.model.User;
 
 public class LogInController {
@@ -57,7 +57,7 @@ public class LogInController {
 	private void handleLogIn() {
 		String username = mUsername.getText();
 		String password = mPassword.getText();
-		
+
 		switch (User.logIn(username, password)) {
 		case 0:
 			main.showModeSelectorScene();

@@ -27,7 +27,6 @@ public class Server extends EventPublisher {
 
 	public static void main(String[] args) {
 		Network network = new Network(1025, "SERVER");
-		ServerContext.getContext().setNetwork(network);
 
 		EventBroker.getEventBroker().addEventListener(serverHandler);
 		EventBroker.getEventBroker().addEventListener(network);
@@ -40,14 +39,14 @@ public class Server extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event e) {
-			ArrayList<String> destinations = new ArrayList<>();
+			ArrayList<Integer> destinations = new ArrayList<>();
 
 			switch (e.getType()) {
 			case "CLIENT_VOTE":
 				ClientVoteEvent clientVote = (ClientVoteEvent) e;
-				Quiz quiz0 = ServerContext.getContext().getQuiz(clientVote.getQuizname());
-				quiz0.addVote(clientVote.getUsername(), clientVote.getTeamname(), clientVote.getVote());
-				ServerVoteEvent serverVote = new ServerVoteEvent(clientVote.getUsername(), clientVote.getTeamname(),
+				Quiz quiz0 = ServerContext.getContext().getQuiz(clientVote.getQuizID());
+				quiz0.addVote(clientVote.getUserID(), clientVote.getTeamID(), clientVote.getVote());
+				ServerVoteEvent serverVote = new ServerVoteEvent(clientVote.getUserID(), clientVote.getTeamID(),
 						clientVote.getVote());
 
 				// TODO: Add recipients for vote (teamMembers)
@@ -57,12 +56,12 @@ public class Server extends EventPublisher {
 				break;
 			case "CLIENT_ANSWER":
 				ClientAnswerEvent clientAnswer = (ClientAnswerEvent) e;
-				Quiz quiz1 = ServerContext.getContext().getQuiz(clientAnswer.getQuizname());
-				quiz1.addAnswer(clientAnswer.getTeamname(), clientAnswer.getQuestionID(), clientAnswer.getAnswer());
+				Quiz quiz1 = ServerContext.getContext().getQuiz(clientAnswer.getQuizID());
+				quiz1.addAnswer(clientAnswer.getTeamID(), clientAnswer.getQuestionID(), clientAnswer.getAnswer());
 
 				// TODO: Search correct answer for question
 
-				ServerAnswerEvent serverAnswer = new ServerAnswerEvent(clientAnswer.getTeamname(),
+				ServerAnswerEvent serverAnswer = new ServerAnswerEvent(clientAnswer.getTeamID(),
 						clientAnswer.getQuestionID(), clientAnswer.getAnswer(), 3);
 
 				// TODO: Add recipients for answer
@@ -73,11 +72,11 @@ public class Server extends EventPublisher {
 			case "SERVER_CLIENT_CREATE":
 				ClientCreateEvent clientCreate = (ClientCreateEvent) e;
 				ServerContext.getContext().addUser(clientCreate.getUser());
-				ServerContext.getContext().getNetwork().getUserIDConnectionIDMap().put(clientCreate.getUsername(),
+				ServerContext.getContext().getNetwork().getUserIDConnectionIDMap().put(clientCreate.getUserID(),
 						clientCreate.getConnectionID());
-				ServerReturnUserIDEvent returnIDEvent = new ServerReturnUserIDEvent(clientCreate.getUsername(),
+				ServerReturnUserIDEvent returnIDEvent = new ServerReturnUserIDEvent(clientCreate.getUserID(),
 						clientCreate.getConnectionID());
-				returnIDEvent.addRecipient(clientCreate.getUsername());
+				returnIDEvent.addRecipient(clientCreate.getUserID());
 				server.publishEvent(returnIDEvent);
 				System.out.println("Event received and handled: " + e.getType());
 				break;
@@ -86,9 +85,9 @@ public class Server extends EventPublisher {
 
 				// TODO: Add all usernames for the chat
 
-				for (Map.Entry<String, Integer> entry : ServerContext.getContext().getNetwork()
+				for (Map.Entry<Integer, Integer> entry : ServerContext.getContext().getNetwork()
 						.getUserIDConnectionIDMap().entrySet())
-					if (entry.getKey() != chatMessage.getUsername())
+					if (entry.getKey() != chatMessage.getUserID())
 						destinations.add(entry.getKey());
 
 				chatMessage.setType("SERVER_CHAT");
@@ -96,32 +95,31 @@ public class Server extends EventPublisher {
 				server.publishEvent(chatMessage);
 				System.out.println("Event received and handled: " + e.getType());
 				break;
+			case "CLIENT_SCOREBOARDDATA":
+				QuizzerEvent askForScoreboardData = (QuizzerEvent) e;
+
+				ServerScoreboardDataEvent scoreboardData = new ServerScoreboardDataEvent(
+						askForScoreboardData.getQuizID());
+				// Testing code for Scoreboard
+				/*
+				 * ArrayList<Integer> list = getTeams();
+				 * ServerScoreboardDataEvent scoreboardData = new
+				 * ServerScoreboardDataEvent(list.get(0));
+				 * scoreboardData.removeAllRecipients(); for(Map.Entry<Integer,
+				 * Integer> entry : ServerContext.getContext().getNetwork().
+				 * getUserIDConnectionIDMap().entrySet()) {
+				 * if(!(list.contains(entry.getKey())))
+				 * scoreboardData.addRecipient(entry.getKey()); }
+				 */
+				server.publishEvent(scoreboardData);
+				break;
 			default:
 				System.out.println("Event received but left unhandled: " + e.getType());
 				break;
-          
-          case "CLIENT_SCOREBOARDDATA":
-					QuizzerEvent askForScoreboardData = (QuizzerEvent) e;
-					
-					ServerScoreboardDataEvent scoreboardData = new ServerScoreboardDataEvent(askForScoreboardData.getQuizID());
-					// Testing code for Scoreboard
-					/*ArrayList<Integer> list = getTeams();
-					ServerScoreboardDataEvent scoreboardData = new ServerScoreboardDataEvent(list.get(0));
-					scoreboardData.removeAllRecipients();
-					for(Map.Entry<Integer, Integer> entry : ServerContext.getContext().getNetwork().getUserIDConnectionIDMap().entrySet()) {
-						if(!(list.contains(entry.getKey())))
-							scoreboardData.addRecipient(entry.getKey());
-					}*/
-					Server.getServer().publishEvent(scoreboardData);
-					break;
-					
-				default:
-					System.out.println("Event received but left unhandled: " + e.getType());
-					break;
 			}
 		}
 	}
-	
+
 	/*
 	 * TEST
 	 */
@@ -136,13 +134,12 @@ public class Server extends EventPublisher {
 		ServerContext.getContext().getQuizMap().get(quizID).getTeams().get(teamID1).setQuizScore(100);
 		ServerContext.getContext().getQuizMap().get(quizID).getTeams().get(teamID2).setTeamID(0);
 		ServerContext.getContext().getQuizMap().get(quizID).getTeams().get(0).setQuizScore(200);
-		
+
 		test.add(quizID);
 		test.add(userID1);
 		test.add(userID2);
 		test.add(userID3);
 		return test;
 	}
-
 
 }

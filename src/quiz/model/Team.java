@@ -11,6 +11,7 @@ public class Team implements Serializable {
 
 	private String teamname;
 	private StringProperty name;
+	private int teamID;
 	private int amountOfPlayers = 0;
 	private int maxAmountOfPlayers; // minAmountOfTeamPlayers = 1;
 	private ObservableMap<Integer, String> players = FXCollections.observableHashMap();

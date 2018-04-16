@@ -13,4 +13,5 @@ public class ClientVoteEvent extends QuizzerEvent {
 	public int getVote() {
 		return vote;
 	}
+
 }
