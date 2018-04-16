@@ -9,23 +9,25 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.text.TextFlow;
+import javafx.scene.text.Text;
 import main.Context;
 import quiz.model.Quiz;
 import quiz.model.AnswerVoteModel;
+import quiz.model.MCQuestion;
 import quiz.util.ClientAnswerEvent;
 import quiz.util.ClientVoteEvent;
 import server.Server;
 import server.ServerAnswerEvent;
 import server.ServerContext;
+import server.ServerNewQuestionEvent;
 import server.ServerVoteEvent;
 
 public class QuestionFormController extends EventPublisher {
 	
 	@FXML
-	private Label questionTitel;
+	private Label questionTitle;
 	@FXML
-	private TextFlow questionText;
+	private Text questionText;
 	@FXML
 	private CheckBox checkA;
 	@FXML
@@ -73,8 +75,7 @@ public class QuestionFormController extends EventPublisher {
 				
 				ServerVoteEvent serverVote = (ServerVoteEvent) e;
 				
-				Quiz quiz0 = Context.getContext().getQuiz();
-				quiz0.addVote(serverVote.getUserID(), serverVote.getTeamID(), serverVote.getVote());
+				Context.getContext().getQuiz().addVote(serverVote.getUserID(), serverVote.getTeamID(), serverVote.getVote());
 				answerVoteModel.updateVotes(serverVote.getTeamID());
 				
 				System.out.println("Event received and handled: " + e.getType());
@@ -84,12 +85,23 @@ public class QuestionFormController extends EventPublisher {
 				
 				ServerAnswerEvent serverAnswer = (ServerAnswerEvent) e;
 				
-				Quiz quiz1 = Context.getContext().getQuiz();
-				quiz1.addAnswer(serverAnswer.getTeamID(), serverAnswer.getQuestionID(), serverAnswer.getAnswer());
+				Context.getContext().getQuiz().addAnswer(serverAnswer.getTeamID(), serverAnswer.getQuestionID(), serverAnswer.getAnswer());
 				answerVoteModel.updateAnswer(serverAnswer.getAnswer(), serverAnswer.getCorrectAnswer());
 				
 				System.out.println("Event received and handled: " + e.getType());
 				break;
+				
+			case "SERVER_NEW_QUESTION":
+				
+				ServerNewQuestionEvent sNQ = (ServerNewQuestionEvent) e;
+				MCQuestion q = new MCQuestion(sNQ.getQuestionID(), sNQ.getQuestion(), sNQ.getAnswers());
+				Context.getContext().setQuestion(q);
+				answerVoteModel.updateQuestion();
+				answerVoteModel.updateVotes(Context.getContext().getTeamID());
+				
+				System.out.println("Event received and handled: " + e.getType());
+				break;
+				
 			default:
 				System.out.println("Event received but left unhandled: " + e.getType());
 				break;
@@ -107,21 +119,27 @@ public class QuestionFormController extends EventPublisher {
 		eventHandler = new QuestionFormEventHandler();
 		EventBroker.getEventBroker().addEventListener(eventHandler);
 		
+		questionTitle.textProperty().bind(answerVoteModel.getQuestionTitleProperty());
+		questionText.textProperty().bind(answerVoteModel.getQuestionTextProperty());
+		
+		answerA.textProperty().bind(answerVoteModel.getAnswerPropertyA());
+		answerB.textProperty().bind(answerVoteModel.getAnswerPropertyB());
+		answerC.textProperty().bind(answerVoteModel.getAnswerPropertyC());
+		answerD.textProperty().bind(answerVoteModel.getAnswerPropertyD());
+		answerA.textFillProperty().bind(answerVoteModel.getPaintPropertyA());
+		answerB.textFillProperty().bind(answerVoteModel.getPaintPropertyB());
+		answerC.textFillProperty().bind(answerVoteModel.getPaintPropertyC());
+		answerD.textFillProperty().bind(answerVoteModel.getPaintPropertyD());
+		
 		voteProgressA.progressProperty().bind(answerVoteModel.getProgressPropertyA());
 		voteProgressB.progressProperty().bind(answerVoteModel.getProgressPropertyB());
 		voteProgressC.progressProperty().bind(answerVoteModel.getProgressPropertyC());
 		voteProgressD.progressProperty().bind(answerVoteModel.getProgressPropertyD());
-		
 		percentageA.textProperty().bind(answerVoteModel.getPercentagePropertyA());
 		percentageB.textProperty().bind(answerVoteModel.getPercentagePropertyB());
 		percentageC.textProperty().bind(answerVoteModel.getPercentagePropertyC());
 		percentageD.textProperty().bind(answerVoteModel.getPercentagePropertyD());
 		numberOfVotes.textProperty().bind(answerVoteModel.getNumberOfVotesProperty());
-		
-		answerA.textFillProperty().bind(answerVoteModel.getPaintPropertyA());
-		answerB.textFillProperty().bind(answerVoteModel.getPaintPropertyB());
-		answerC.textFillProperty().bind(answerVoteModel.getPaintPropertyC());
-		answerD.textFillProperty().bind(answerVoteModel.getPaintPropertyD());
 		
 		voteButton.visibleProperty().bind(answerVoteModel.getVoteVisibilityProperty());
 		confirmButton.visibleProperty().bind(answerVoteModel.getConfirmVisibilityProperty());

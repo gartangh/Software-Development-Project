@@ -121,6 +121,10 @@ public class Quiz {
 		votes.put(teamID, teamVotes);
 	}
 	
+	public void resetVotes() {
+		this.votes = new HashMap<Integer, Map<Integer, Integer>>();
+	}
+	
 	public void addAnswer(int teamID, int questionID, int answer) {
 		//Round round = rounds.get(currentRound);
 		//round.addAnswer(teamID, questionID, answer);

@@ -14,6 +14,12 @@ public abstract class Question {
 		this.theme = theme;
 		this.questionID = questionID;
 	}
+	
+	public Question(int questionID) {
+		this.difficulty = null;
+		this.theme = null;
+		this.questionID = questionID;
+	}
 
 	public Difficulty getDifficulty() {
 		return difficulty;

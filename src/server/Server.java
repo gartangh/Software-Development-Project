@@ -2,6 +2,7 @@ package server;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.concurrent.TimeUnit;
 
 import eventbroker.Event;
 import eventbroker.EventBroker;
@@ -43,6 +44,20 @@ public class Server extends EventPublisher{
 				ServerAnswerEvent serverAnswer = new ServerAnswerEvent(clientAnswer.getTeamID(), clientAnswer.getQuestionID(), clientAnswer.getAnswer(), 3);
 				Server.getServer().publishEvent(serverAnswer);
 				
+				String question = "Wat is de hoofdstand van het grootste land ter wereld?";
+				String [] answers = {"Moskou", "Washington D.C.", "Brussel", "Peking"};
+				int[] permutation = {1,2,3,4};
+				ServerNewQuestionEvent sNQ = new ServerNewQuestionEvent(1, question, answers, permutation);
+				
+				try {
+					TimeUnit.SECONDS.sleep(2);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				Server.getServer().publishEvent(sNQ);
+				
 				System.out.println("Event received and handled: " + e.getType());
 				break;
 				
@@ -70,7 +85,7 @@ public class Server extends EventPublisher{
 			int andreID = ServerContext.getContext().addUser("André", "");
 			int quizID = ServerContext.getContext().addQuiz(8, 4, 1, 20, andreID);
 			ServerContext.getContext().addTeam(quizID, "André en de boys", Color.BLUE, andreID);
-			
+			ServerContext.getContext().loadData();
 			
 			
 		} catch (UnknownHostException e) {

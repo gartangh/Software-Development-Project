@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
 <AnchorPane minHeight="300.0" minWidth="400.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.QuestionFormController">
@@ -23,7 +24,7 @@
                <children>
                   <AnchorPane>
                      <children>
-                        <Label fx:id="questionTitel" text="Question X:" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <Label fx:id="questionTitle" text="Question X:" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </padding>
@@ -35,10 +36,13 @@
                   </AnchorPane>
                   <AnchorPane minHeight="90.0">
                      <children>
-                        <TextFlow fx:id="questionText" layoutY="-35.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TextFlow layoutY="-35.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <padding>
                               <Insets bottom="5.0" left="20.0" right="5.0" top="5.0" />
                            </padding>
+                           <children>
+                              <Text fx:id="questionText" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                           </children>
                         </TextFlow>
                      </children>
                   </AnchorPane>

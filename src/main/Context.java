@@ -55,6 +55,7 @@ public class Context {
 
 	public void setQuestion(Question question) {
 		this.question = question;
+		this.quiz.resetVotes();
 	}
 
 	public Network getNetwork() {

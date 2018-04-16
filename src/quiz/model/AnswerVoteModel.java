@@ -17,7 +17,7 @@ import javafx.scene.paint.Paint;
 import main.Context;
 
 public class AnswerVoteModel {
-	private StringProperty questionTitelProperty, questionTextProperty;	// Question properties
+	private StringProperty questionTitleProperty, questionTextProperty;	// Question properties
 	
 	private StringProperty answerPropertyA, answerPropertyB, answerPropertyC, answerPropertyD;	// Answer properties
 	private ObjectProperty<Paint> paintPropertyA, paintPropertyB, paintPropertyC, paintPropertyD;
@@ -29,7 +29,7 @@ public class AnswerVoteModel {
 	private BooleanProperty voteVisibilityProperty, confirmVisibilityProperty; // Button properties
 	
 	public AnswerVoteModel() {
-		questionTitelProperty = new SimpleStringProperty("Question:");
+		questionTitleProperty = new SimpleStringProperty("Question:");
 		questionTextProperty = new SimpleStringProperty("");
 		
 		answerPropertyA = new SimpleStringProperty("");	// Answer properties
@@ -85,9 +85,24 @@ public class AnswerVoteModel {
 							else numberOfVotesProperty.setValue(total+" votes");
 						}
 					});
+					
+					return;
 				}
 			}
 		}
+		Platform.runLater(new Runnable() {
+			public void run() {
+				progressPropertyA.setValue(0.0);
+				progressPropertyB.setValue(0.0);
+				progressPropertyC.setValue(0.0);
+				progressPropertyD.setValue(0.0);
+				percentagePropertyA.setValue("0%");
+				percentagePropertyB.setValue("0%");
+				percentagePropertyC.setValue("0%");
+				percentagePropertyD.setValue("0%");
+				numberOfVotesProperty.setValue("0 votes");
+			}
+		});
 	}
 	
 	public void updateAnswer(int answer, int correctAnswer) {
@@ -129,6 +144,28 @@ public class AnswerVoteModel {
 		});
 	}
 	
+	public void updateQuestion() {
+		MCQuestion q = (MCQuestion) Context.getContext().getQuestion();
+		System.out.println(q.getQuestion());
+		Platform.runLater(new Runnable() {
+			public void run() {
+				questionTextProperty.setValue(q.getQuestion());
+				
+				answerPropertyA.setValue(q.getAnswers()[0]);
+				answerPropertyB.setValue(q.getAnswers()[1]);
+				answerPropertyC.setValue(q.getAnswers()[2]);
+				answerPropertyD.setValue(q.getAnswers()[3]);
+				paintPropertyA.setValue(Color.BLACK);
+				paintPropertyB.setValue(Color.BLACK);
+				paintPropertyC.setValue(Color.BLACK);
+				paintPropertyD.setValue(Color.BLACK);
+				
+				voteVisibilityProperty.setValue(true);
+				confirmVisibilityProperty.setValue(true);
+			}
+		});
+	}
+	
 	public StringProperty getNumberOfVotesProperty() {
 		return numberOfVotesProperty;
 	}
@@ -165,8 +202,8 @@ public class AnswerVoteModel {
 		return percentagePropertyD;
 	}
 
-	public StringProperty getQuestionTitelProperty() {
-		return questionTitelProperty;
+	public StringProperty getQuestionTitleProperty() {
+		return questionTitleProperty;
 	}
 
 	public StringProperty getQuestionTextProperty() {
