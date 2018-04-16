@@ -1,13 +1,16 @@
 package user.view;
 
+import eventbroker.EventPublisher;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import main.Context;
 import main.Main;
 import main.view.AlertBox;
+import quiz.util.ClientCreateEvent;
 import user.model.User;
 
-public class LogInController {
+public class LogInController extends EventPublisher {
 
 	@FXML
 	private TextField mUsername;
@@ -37,6 +40,11 @@ public class LogInController {
 
 		switch (User.createAccount(username, password)) {
 		case 0:
+			// TODO: Add User to database
+			User user = Context.getContext().getUser();
+			ClientCreateEvent cCE = new ClientCreateEvent(user);
+			// TODO: Publish event
+			
 			main.showModeSelectorScene();
 			break;
 		case 1:

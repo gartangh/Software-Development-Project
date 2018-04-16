@@ -37,7 +37,7 @@ final public class ChatController extends EventPublisher {
 	public ChatController() {
 		this.chatEventHandler = new ChatEventHandler();
 		this.chatModel = new ChatModel();
-		try (BufferedReader br = new BufferedReader(new FileReader("./Files/swearWords.txt"))) {
+		/*try (BufferedReader br = new BufferedReader(new FileReader("./swearWords.txt"))) {
 			String line;
 			while ((line = br.readLine()) != null) {
 				prohibitedWords.add(line);
@@ -45,7 +45,7 @@ final public class ChatController extends EventPublisher {
 			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	// Getters
@@ -141,7 +141,7 @@ final public class ChatController extends EventPublisher {
 					user.setUserID(serverCreate.getUserID());
 					Client.setUser(user);
 					Client.getNetwork().getUserIDConnectionIDMap().put(serverCreate.getUserID(), 0);
-					System.out.println("Event received and handled: " + e.getType());
+					System.out.println("Event received and handled, nailed it: " + e.getType());
 					break;
 					
 				case "CLIENT_CHAT":

@@ -2,7 +2,9 @@ package user.model;
 
 import java.io.Serializable;
 
+import eventbroker.EventBroker;
 import main.Context;
+import quiz.util.ClientCreateEvent;
 
 @SuppressWarnings("serial")
 public class User implements Serializable {
@@ -37,25 +39,23 @@ public class User implements Serializable {
 		this.level = user.level;
 		this.xp = user.xp;
 	}
-	
+
 	// Factory method
-		public static int createAccount(String username, String password) {
-			if (!username.matches(USERNAMEREGEX))
-				return 1;
-			else if (!password.matches(PASSWORDREGEX))
-				return 2;
-			else if (!isUniqueUsername(username))
-				return 3;
+	public static int createAccount(String username, String password) {
+		if (!username.matches(USERNAMEREGEX))
+			return 1;
+		else if (!password.matches(PASSWORDREGEX))
+			return 2;
+		else if (!isUniqueUsername(username))
+			return 3;
 
-			// Everything is valid
-			User user = new User(username, password);
+		// Everything is valid
+		User user = new User(username, password);
+		
+		Context.getContext().setUser(user);
 
-			// TODO: Add User to database
-
-			Context.getContext().setUser(user);
-
-			return 0;
-		}
+		return 0;
+	}
 
 	// Upcasting
 	// Factory method
@@ -76,11 +76,11 @@ public class User implements Serializable {
 	public String getUsername() {
 		return username;
 	}
-	
+
 	public int getUserID() {
 		return userID;
 	}
-	
+
 	public void setUserID(int userID) {
 		this.userID = userID;
 	}

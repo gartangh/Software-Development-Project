@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import chat.ChatPanel;
+import eventbroker.EventBroker;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -33,11 +35,22 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 
-		Network network = new Network();
+		// TODO: Randomize port
+		Network network = new Network(1026, "CLIENT");
 		Context.getContext().setNetwork(network);
+
+		// ChatPanel (ChatModel and ChatController) are created
+		ChatPanel chatPanel = ChatPanel.createChatPanel();
+		//chatPanel.getChatModel().setName(Context.getContext().getUser().getUsername());
 
 		try {
 			network.connect(InetAddress.getLocalHost(), SERVERPORT);
+
+			// --> send event over network
+			EventBroker.getEventBroker().addEventListener(network);
+
+			// Start event broker
+			EventBroker.getEventBroker().start();
 
 			initRootLayout();
 
