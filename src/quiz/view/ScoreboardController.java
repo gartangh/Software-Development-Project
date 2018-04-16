@@ -11,8 +11,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import main.Context;
+import network.Client;
 import quiz.model.ScoreboardModel;
 import quiz.model.ScoreboardTeam;
+import quiz.util.QuizzerEvent;
+import quiz.util.UserEvent;
+import server.ServerScoreboardDataEvent;
 
 public class ScoreboardController extends EventPublisher {
 	
@@ -40,34 +45,55 @@ public class ScoreboardController extends EventPublisher {
 		eventHandler = new ScoreboardEventHandler();
 		EventBroker.getEventBroker().addEventListener(eventHandler);
 		
-		rankColumn.setCellValueFactory(new PropertyValueFactory<>("rank"));
-		teamNameColumn.setCellValueFactory(new PropertyValueFactory<>("teamName"));
-		scoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
-		scoreboardTable.setItems(getTeams());
-		
-		winnerLoser.textProperty().bind(scoreboardModel.getWinnerLoser());
-		
+		QuizzerEvent askForScoreboardDataEvent = new QuizzerEvent();
+		askForScoreboardDataEvent.setType("CLIENT_SCOREBOARDDATA");
+		publishEvent(askForScoreboardDataEvent);
 	}
 	
-	private ObservableList<ScoreboardTeam> getTeams() {
-		// TODO: Create Event and receive from Server, now only test-phase!
-		
-		ObservableList<ScoreboardTeam> teams = FXCollections.observableArrayList();
-		teams.add(new ScoreboardTeam(1,"TEST1", 1, 250));
-		teams.add(new ScoreboardTeam(5,"TEST2", 2, 25));
-		teams.add(new ScoreboardTeam(4,"TEST3", 3, 30));
-		teams.add(new ScoreboardTeam(3,"TEST4", 4, 125));
-		teams.add(new ScoreboardTeam(2,"TEST5", 5, 200));
-		
-		return teams;
-	}
-
 	public class ScoreboardEventHandler implements EventListener {
 
 		@Override
 		public void handleEvent(Event e) {
-			
+			switch(e.getType()) {
+				case "SERVER_SCOREBOARDDATA":
+					ServerScoreboardDataEvent scoreboardData = (ServerScoreboardDataEvent) e;
+
+					rankColumn.setCellValueFactory(new PropertyValueFactory<>("rank"));
+					teamNameColumn.setCellValueFactory(new PropertyValueFactory<>("teamName"));
+					scoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
+					scoreboardTable.setItems(FXCollections.observableArrayList(scoreboardData.getScoreboardTeams()));
+					
+					if(scoreboardData.getScoreboardTeams().size() > 0) {
+						int curTeamID = Context.getContext().getTeamID();
+						if(scoreboardData.getScoreboardTeams().get(0).getTeamID() == curTeamID) {
+							winnerLoser.textProperty().set(scoreboardData.getScoreboardTeams().get(curTeamID).getTeamName() + ": WINNER");
+						}
+						else {
+							winnerLoser.textProperty().set(scoreboardData.getScoreboardTeams().get(curTeamID).getTeamName() + ": LOSER");
+						}
+					}
+					break;
+					
+			}
 		}
+	}
+	
+	/**
+	 * Called when the user clicks on the rematch button.
+	 */
+	@FXML
+	private void handleRematchButton() {
+	    // TO DO: Clear quiz, go back to quizroom
+		System.out.println("Going back to quizroom");
+	}
+	
+	/**
+	 * Called when the user clicks on the quit button.
+	 */
+	@FXML
+	private void handleQuitButton() {
+	    // TO DO: Clear quiz, show List of Available quizzes
+		System.out.println("Quitting quiz");
 	}
 	
 	public ScoreboardModel getScoreboardModel() {

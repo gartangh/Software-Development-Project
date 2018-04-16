@@ -94,5 +94,19 @@ public class Team implements Serializable {
 		if (players.remove(playerID) != null)
 			amountOfPlayers--;
 	}
+	
+	
+	// Test
+	public void setQuizScore(int quizScore) {
+		this.quizScore = quizScore;
+	}
+
+	public int getTeamID() {
+		return teamID;
+	}
+
+	public void setTeamID(int teamID) {
+		this.teamID = teamID;
+	}
 
 }
