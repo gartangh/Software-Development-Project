@@ -3,9 +3,12 @@ package quiz.view;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import main.Context;
 import main.Main;
 import main.view.AlertBox;
 import quiz.model.Quiz;
+import user.model.Host;
+import user.model.Quizmaster;
 
 public class CreateQuizController {
 
@@ -49,7 +52,10 @@ public class CreateQuizController {
 
 			switch (Quiz.createQuiz(mName.getText(), rounds, questions, teams, players)) {
 			case 0:
-				// TODO: What if quiz is created successfully?
+				// TODO: Handle create quiz
+				((Host) Context.getContext().getUser()).castToQuizmaster();
+				Context.getContext().getQuiz().setQuizmaster((Quizmaster) Context.getContext().getUser());
+				// TODO: main.show..Scene();
 				break;
 			case 1:
 				AlertBox.display("Error", "Quizname is invalid!");
@@ -61,25 +67,25 @@ public class CreateQuizController {
 				AlertBox.display("Error", "Rounds cannot be smaller than 1!");
 				break;
 			case 4:
-				AlertBox.display("Error", "Rounds cannot be bigger than " + Quiz.MAXROUNDS + "!");
+				AlertBox.display("Error", "Rounds cannot be bigger than " + Quiz.getMaxrounds() + "!");
 				break;
 			case 5:
 				AlertBox.display("Error", "Questions cannot be smaller than 1!");
 				break;
 			case 6:
-				AlertBox.display("Error", "Questions cannot be bigger than " + Quiz.MAXQUESTIONS + "!");
+				AlertBox.display("Error", "Questions cannot be bigger than " + Quiz.getMaxquestions() + "!");
 				break;
 			case 7:
 				AlertBox.display("Error", "Teams cannot be smaller than 1!");
 				break;
 			case 8:
-				AlertBox.display("Error", "Teams cannot be bigger than " + Quiz.MAXTEAMS + "!");
+				AlertBox.display("Error", "Teams cannot be bigger than " + Quiz.getMaxteams() + "!");
 				break;
 			case 9:
 				AlertBox.display("Error", "Players cannot be smaller than 1!");
 				break;
 			case 10:
-				AlertBox.display("Error", "Players cannot be bigger than " + Quiz.MAXPLAYERS + "!");
+				AlertBox.display("Error", "Players cannot be bigger than " + Quiz.getMaxplayers() + "!");
 				break;
 			default:
 				AlertBox.display("Error", "Something went wrong!");
@@ -94,6 +100,7 @@ public class CreateQuizController {
 	@FXML
 	private void handleBack() {
 		// TODO: Handle back
+		((Host) Context.getContext().getUser()).castToUser();
 		main.showModeSelectorScene();
 	}
 

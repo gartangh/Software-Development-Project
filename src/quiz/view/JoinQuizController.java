@@ -41,7 +41,7 @@ public class JoinQuizController {
 			Button mQuizname = new Button(quiz.getQuizname());
 			// Lambda expression
 			mQuizname.setOnAction(e -> {
-				handleJoin(quiz.getQuizname());
+				handleJoin(quiz.getQuizID());
 			});
 			GridPane.setConstraints(mQuizname, 1, 0);
 
@@ -56,7 +56,7 @@ public class JoinQuizController {
 			Label questionsLabel = new Label("Questions per round");
 			GridPane.setConstraints(questionsLabel, 0, 2);
 			// Questions output
-			TextField mQuestions = new TextField(Integer.toString(quiz.getMaxAmountOfQuestionsPerRound()));
+			TextField mQuestions = new TextField(Integer.toString(quiz.getMaxAmountofQuestionsPerRound()));
 			GridPane.setConstraints(mQuestions, 1, 2);
 
 			// Teams label
@@ -70,7 +70,7 @@ public class JoinQuizController {
 			Label playersLabel = new Label("Teams");
 			GridPane.setConstraints(playersLabel, 0, 4);
 			// Players output
-			TextField mPlayers = new TextField(Integer.toString(quiz.getMaxAmountOfPlayersPerTeam()));
+			TextField mPlayers = new TextField(Integer.toString(quiz.getMaxAmountofPlayersPerTeam()));
 			GridPane.setConstraints(mPlayers, 1, 4);
 
 			// Add all constraints to mQuiz
@@ -82,7 +82,7 @@ public class JoinQuizController {
 	}
 
 	@FXML
-	private void handleJoin(String quizname) {
+	private void handleJoin(int quizID) {
 		// TODO: Handle join
 		// Context.getContext().setQuiz();
 		main.showJoinTeamScene();

@@ -8,17 +8,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import main.Context;
-import user.model.Host;
+import server.ServerContext;
 import user.model.Quizmaster;
 
 @SuppressWarnings("serial")
 public class Quiz implements Serializable {
 
-	public final static int MAXROUNDS = 10;
-	public final static int MAXQUESTIONS = 10;
-	public final static int MAXTEAMS = 10;
-	public final static int MAXPLAYERS = 10;
+	private final static int MAXROUNDS = 10;
+	private final static int MAXQUESTIONS = 10;
+	private final static int MAXTEAMS = 10;
+	private final static int MAXPLAYERS = 10;
 	private final static String QUIZNAMEREGEX = "^[a-zA-Z0-9._-]{3,}$";
+	private static int n = 0;
 
 	private String quizname;
 	private int quizID;
@@ -28,13 +29,13 @@ public class Quiz implements Serializable {
 	private ArrayList<Round> rounds = new ArrayList<>();
 	private int currentRound = 0;
 	// minAmountofQuestionsPerRound = 1;
-	private int maxAmountofQuestionsPerRound;
+	private int maxAmountOfQuestionsPerRound;
 	private int amountOfTeams = 0;
 	// minAmountOfTeams = 2;
 	private int maxAmountOfTeams;
 	private ObservableList<Team> teams = FXCollections.observableArrayList();
 	// minAmountofPlayersPerTeam = 1;
-	private int maxAmountofPlayersPerTeam;
+	private int maxAmountOfPlayersPerTeam;
 	private Quizmaster quizmaster;
 	// Map(teamID -> Map(userID -> vote))
 	private Map<Integer, Map<Integer, Integer>> votes = new HashMap<>();
@@ -43,12 +44,9 @@ public class Quiz implements Serializable {
 			int maxAmountOfPlayersPerTeam) {
 		this.quizname = quizname;
 		this.maxAmountOfRounds = maxAmountOfRounds;
-		this.maxAmountofQuestionsPerRound = maxAmountOfQuestionsPerRound;
+		this.maxAmountOfQuestionsPerRound = maxAmountOfQuestionsPerRound;
 		this.maxAmountOfTeams = maxAmountOfTeams;
-		this.maxAmountofPlayersPerTeam = maxAmountOfPlayersPerTeam;
-
-		((Host) Context.getContext().getUser()).castToQuizmaster();
-		this.quizmaster = (Quizmaster) Context.getContext().getUser();
+		this.maxAmountOfPlayersPerTeam = maxAmountOfPlayersPerTeam;
 	}
 
 	// Factory method
@@ -77,6 +75,8 @@ public class Quiz implements Serializable {
 		// Everything is valid
 		Quiz quiz = new Quiz(quizname, rounds, questions, teams, players);
 
+		quiz.quizID = n++;
+
 		// TODO: Add Quiz to database
 
 		Context.getContext().setQuiz(quiz);
@@ -84,37 +84,43 @@ public class Quiz implements Serializable {
 		return 0;
 	}
 
+	// Factory method
+	public static void createServerQuiz(String quizname, int quizID, int rounds, int questions, int teams,
+			int players) {
+		Quiz quiz = new Quiz(quizname, rounds, questions, teams, players);
+
+		quiz.quizID = quizID;
+
+		ServerContext.getContext().addQuiz(quiz);
+	}
+
 	// Getters
+	public static int getMaxrounds() {
+		return MAXROUNDS;
+	}
+
+	public static int getMaxquestions() {
+		return MAXQUESTIONS;
+	}
+
+	public static int getMaxteams() {
+		return MAXTEAMS;
+	}
+
+	public static int getMaxplayers() {
+		return MAXPLAYERS;
+	}
+
+	public static String getQuiznameregex() {
+		return QUIZNAMEREGEX;
+	}
+
 	public String getQuizname() {
 		return quizname;
 	}
 
 	public int getQuizID() {
 		return quizID;
-	}
-
-	public int getAmountOfTeams() {
-		return amountOfTeams;
-	}
-
-	public int getMaxAmountOfTeams() {
-		return maxAmountOfTeams;
-	}
-
-	public Quizmaster getQuizmaster() {
-		return quizmaster;
-	}
-
-	public Map<Integer, Map<Integer, Integer>> getVotes() {
-		return votes;
-	}
-
-	public ObservableList<Team> getTeams() {
-		return teams;
-	}
-
-	public int getMaxAmountOfPlayersPerTeam() {
-		return maxAmountofPlayersPerTeam;
 	}
 
 	public int getAmountOfRounds() {
@@ -129,8 +135,40 @@ public class Quiz implements Serializable {
 		return rounds;
 	}
 
-	public int getMaxAmountOfQuestionsPerRound() {
-		return maxAmountofQuestionsPerRound;
+	public int getCurrentRound() {
+		return currentRound;
+	}
+
+	public int getMaxAmountofQuestionsPerRound() {
+		return maxAmountOfQuestionsPerRound;
+	}
+
+	public int getAmountOfTeams() {
+		return amountOfTeams;
+	}
+
+	public int getMaxAmountOfTeams() {
+		return maxAmountOfTeams;
+	}
+
+	public ObservableList<Team> getTeams() {
+		return teams;
+	}
+
+	public int getMaxAmountofPlayersPerTeam() {
+		return maxAmountOfPlayersPerTeam;
+	}
+
+	public Quizmaster getQuizmaster() {
+		return quizmaster;
+	}
+
+	public void setQuizmaster(Quizmaster quizmaster) {
+		this.quizmaster = quizmaster;
+	}
+
+	public Map<Integer, Map<Integer, Integer>> getVotes() {
+		return votes;
 	}
 
 	// Adders and removers
@@ -138,7 +176,7 @@ public class Quiz implements Serializable {
 		if (amountOfTeams < maxAmountOfTeams) {
 			teams.add(team);
 			amountOfTeams++;
-			team.setMaxAmountOfPlayers(maxAmountofPlayersPerTeam);
+			team.setMaxAmountOfPlayers(maxAmountOfPlayersPerTeam);
 		} else {
 			// TODO: Go back and show error
 		}
@@ -169,7 +207,7 @@ public class Quiz implements Serializable {
 		if (amountOfRounds < maxAmountOfRounds) {
 			rounds.add(round);
 			amountOfRounds++;
-			round.setMaxAmountOfQuestions(maxAmountofQuestionsPerRound);
+			round.setMaxAmountOfQuestions(maxAmountOfQuestionsPerRound);
 		} else {
 			// TODO: Go back and show error
 		}

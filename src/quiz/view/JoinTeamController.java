@@ -12,7 +12,6 @@ import javafx.scene.layout.VBox;
 import main.Context;
 import main.Main;
 import quiz.model.Team;
-import user.model.Player;
 
 public class JoinTeamController {
 
@@ -44,7 +43,7 @@ public class JoinTeamController {
 			Button mTeamname = new Button(team.getTeamname());
 			// Lambda expression
 			mTeamname.setOnAction(e -> {
-				handleJoin(team.getTeamname());
+				handleJoin(team.getTeamID());
 			});
 			GridPane.setConstraints(mTeamname, 1, 0);
 
@@ -75,7 +74,7 @@ public class JoinTeamController {
 	}
 
 	@FXML
-	private void handleJoin(String teamname) {
+	private void handleJoin(int teamID) {
 		// TODO: Handle join
 		// Context.getContext().setTeam();
 		// main.show..Scene();
