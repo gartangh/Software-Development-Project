@@ -1,7 +1,10 @@
 package quiz.view;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
+import eventbroker.EventPublisher;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -13,14 +16,14 @@ import main.Context;
 import main.Main;
 import quiz.model.Team;
 
-public class JoinTeamController {
+public class JoinTeamController extends EventPublisher {
 
 	@FXML
 	private VBox mTeams;
 	@FXML
 	private Button mBack;
 
-	private ObservableList<Team> teams;
+	private Map<Integer, Team> teams;
 
 	// Reference to the main application
 	private Main main;
@@ -33,7 +36,8 @@ public class JoinTeamController {
 	private void initialize() {
 		teams = Context.getContext().getQuiz().getTeams();
 
-		for (Team team : teams) {
+		// TODO: Display teams
+		/*for (Team team : teams) {
 			GridPane mTeam = new GridPane();
 
 			// Teamname label
@@ -70,7 +74,7 @@ public class JoinTeamController {
 			mTeam.getChildren().addAll(teamnameLabel, mTeamname, colorLabel, mColor);
 
 			mTeams.getChildren().add(mTeam);
-		}
+		}*/
 	}
 
 	@FXML

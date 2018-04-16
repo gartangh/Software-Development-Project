@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import eventbroker.EventBroker;
 import main.Context;
-import quiz.util.ClientCreateEvent;
+import quiz.util.ClientCreateAccountEvent;
 
 @SuppressWarnings("serial")
 public class User implements Serializable {

@@ -7,7 +7,7 @@ import javafx.scene.control.TextField;
 import main.Context;
 import main.Main;
 import main.view.AlertBox;
-import quiz.util.ClientCreateEvent;
+import quiz.util.ClientCreateAccountEvent;
 import user.model.User;
 
 public class LogInController extends EventPublisher {
@@ -40,11 +40,10 @@ public class LogInController extends EventPublisher {
 
 		switch (User.createAccount(username, password)) {
 		case 0:
-			// TODO: Add User to database
 			User user = Context.getContext().getUser();
-			ClientCreateEvent cCE = new ClientCreateEvent(user);
-			// TODO: Publish event
-			publishEvent(cCE);
+			ClientCreateAccountEvent cCAE = new ClientCreateAccountEvent(user);
+			publishEvent(cCAE);
+
 			main.showModeSelectorScene();
 			break;
 		case 1:
@@ -68,6 +67,7 @@ public class LogInController extends EventPublisher {
 
 		switch (User.logIn(username, password)) {
 		case 0:
+			// TODO: Handle log in
 			main.showModeSelectorScene();
 			break;
 		case 1:

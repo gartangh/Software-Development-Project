@@ -9,7 +9,9 @@ import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import network.Network;
-import quiz.util.ClientCreateEvent;
+import quiz.util.ClientCreateAccountEvent;
+import quiz.util.ClientCreateQuizEvent;
+import quiz.util.ClientGetQuizzesEvent;
 import quiz.util.ClientVoteEvent;
 import quiz.util.QuizzerEvent;
 import user.model.User;
@@ -29,7 +31,7 @@ public class Server extends EventPublisher {
 	public static void main(String[] args) {
 		Network network = new Network(1025, "SERVER");
 		ServerContext.getContext().setNetwork(network);
-		
+
 		EventBroker.getEventBroker().addEventListener(serverHandler);
 		EventBroker.getEventBroker().addEventListener(network);
 		EventBroker.getEventBroker().start();
@@ -40,12 +42,31 @@ public class Server extends EventPublisher {
 	static class ServerHandler implements EventListener {
 
 		@Override
-		public void handleEvent(Event e) {
+		public void handleEvent(Event event) {
 			ArrayList<Integer> destinations = new ArrayList<>();
 
-			switch (e.getType()) {
+			String type = event.getType();
+			switch (type) {
+			case "CLIENT_CREATE_ACCOUNT":
+				ClientCreateAccountEvent cCAE = (ClientCreateAccountEvent) event;
+				ServerContext.getContext().addUser(cCAE.getUser());
+				ServerContext.getContext().getNetwork().getUserIDConnectionIDMap().put(cCAE.getUserID(),
+						cCAE.getConnectionID());
+				ServerReturnUserIDEvent sRUIDE = new ServerReturnUserIDEvent(cCAE.getUserID(), cCAE.getConnectionID());
+				sRUIDE.addRecipient(cCAE.getUserID());
+				server.publishEvent(sRUIDE);
+				System.out.println("Event received and handled: " + type);
+				break;
+
+			case "CLIENT_CREATE_QUIZ":
+				ClientCreateQuizEvent cCQE = (ClientCreateQuizEvent) event;
+				Quiz quiz = cCQE.getQuiz();
+				ServerContext.getContext().getQuizMap().put(quiz.getQuizID(), quiz);
+				System.out.println("Event received and handled: " + type);
+				break;
+
 			case "CLIENT_VOTE":
-				ClientVoteEvent clientVote = (ClientVoteEvent) e;
+				ClientVoteEvent clientVote = (ClientVoteEvent) event;
 				Quiz quiz0 = ServerContext.getContext().getQuiz(clientVote.getQuizID());
 				quiz0.addVote(clientVote.getUserID(), clientVote.getTeamID(), clientVote.getVote());
 				ServerVoteEvent serverVote = new ServerVoteEvent(clientVote.getUserID(), clientVote.getTeamID(),
@@ -54,10 +75,11 @@ public class Server extends EventPublisher {
 				// TODO: Add recipients for vote (teamMembers)
 
 				server.publishEvent(serverVote);
-				System.out.println("Event received and handled: " + e.getType());
+				System.out.println("Event received and handled: " + type);
 				break;
+
 			case "CLIENT_ANSWER":
-				ClientAnswerEvent clientAnswer = (ClientAnswerEvent) e;
+				ClientAnswerEvent clientAnswer = (ClientAnswerEvent) event;
 				Quiz quiz1 = ServerContext.getContext().getQuiz(clientAnswer.getQuizID());
 				quiz1.addAnswer(clientAnswer.getTeamID(), clientAnswer.getQuestionID(), clientAnswer.getAnswer());
 
@@ -69,21 +91,11 @@ public class Server extends EventPublisher {
 				// TODO: Add recipients for answer
 
 				server.publishEvent(serverAnswer);
-				System.out.println("Event received and handled: " + e.getType());
+				System.out.println("Event received and handled: " + event.getType());
 				break;
-			case "SERVER_CLIENT_CREATE":
-				ClientCreateEvent clientCreate = (ClientCreateEvent) e;
-				ServerContext.getContext().addUser(clientCreate.getUser());
-				ServerContext.getContext().getNetwork().getUserIDConnectionIDMap().put(clientCreate.getUserID(),
-						clientCreate.getConnectionID());
-				ServerReturnUserIDEvent returnIDEvent = new ServerReturnUserIDEvent(clientCreate.getUserID(),
-						clientCreate.getConnectionID());
-				returnIDEvent.addRecipient(clientCreate.getUserID());
-				server.publishEvent(returnIDEvent);
-				System.out.println("Event received and handled: " + e.getType());
-				break;
+
 			case "CLIENT_CHAT":
-				ChatMessage chatMessage = (ChatMessage) e;
+				ChatMessage chatMessage = (ChatMessage) event;
 
 				// TODO: Add all usernames for the chat
 
@@ -95,10 +107,10 @@ public class Server extends EventPublisher {
 				chatMessage.setType("SERVER_CHAT");
 				chatMessage.addRecipients(destinations);
 				server.publishEvent(chatMessage);
-				System.out.println("Event received and handled: " + e.getType());
+				System.out.println("Event received and handled: " + type);
 				break;
 			case "CLIENT_SCOREBOARDDATA":
-				QuizzerEvent askForScoreboardData = (QuizzerEvent) e;
+				QuizzerEvent askForScoreboardData = (QuizzerEvent) event;
 
 				ServerScoreboardDataEvent scoreboardData = new ServerScoreboardDataEvent(
 						askForScoreboardData.getQuizID());
@@ -116,9 +128,16 @@ public class Server extends EventPublisher {
 				 */
 				server.publishEvent(scoreboardData);
 				break;
-			default:
-				System.out.println("Event received but left unhandled: " + e.getType());
+
+			case "CLIENT_GET_QUIZZES":
+				ClientGetQuizzesEvent cGQE = (ClientGetQuizzesEvent) event;
+				ServerGetQuizzesEvent sGQE = new ServerGetQuizzesEvent();
+				sGQE.addRecipient(cGQE.getUserID());
+				server.publishEvent(sGQE);
 				break;
+
+			default:
+				System.out.println("Event received but left unhandled: " + type);
 			}
 		}
 	}

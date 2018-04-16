@@ -1,5 +1,6 @@
 package quiz.view;
 
+import eventbroker.EventPublisher;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -7,10 +8,12 @@ import main.Context;
 import main.Main;
 import main.view.AlertBox;
 import quiz.model.Quiz;
+import quiz.util.ClientCreateAccountEvent;
+import quiz.util.ClientCreateQuizEvent;
 import user.model.Host;
 import user.model.Quizmaster;
 
-public class CreateQuizController {
+public class CreateQuizController extends EventPublisher {
 
 	// Text fields
 	@FXML
@@ -52,9 +55,13 @@ public class CreateQuizController {
 
 			switch (Quiz.createQuiz(mName.getText(), rounds, questions, teams, players)) {
 			case 0:
-				// TODO: Handle create quiz
 				((Host) Context.getContext().getUser()).castToQuizmaster();
 				Context.getContext().getQuiz().setQuizmaster((Quizmaster) Context.getContext().getUser());
+				
+				Quiz quiz = Context.getContext().getQuiz();
+				ClientCreateQuizEvent cCQE = new ClientCreateQuizEvent(quiz);
+				publishEvent(cCQE);
+				
 				// TODO: main.show..Scene();
 				break;
 			case 1:

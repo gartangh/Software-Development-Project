@@ -108,9 +108,8 @@ public class Network extends EventPublisher implements EventListener {
 		if (TYPE == "CLIENT") {
 			connectionMap.get(0).send(e);
 		} else if (TYPE == "SERVER") {
-			for (int userID : e.getRecipients()) {
+			for (int userID : e.getRecipients())
 				connectionMap.get(UserIDConnectionIDMap.get(userID)).send(e);
-			}
 		}
 		System.out.println("Event received and handled: " + e.getType());
 	}

@@ -19,6 +19,7 @@ public class Quiz implements Serializable {
 	private final static int MAXTEAMS = 10;
 	private final static int MAXPLAYERS = 10;
 	private final static String QUIZNAMEREGEX = "^[a-zA-Z0-9._-]{3,}$";
+	private transient static ObservableList<Quiz> quizzes;
 	private static int n = 0;
 
 	private String quizname;
@@ -33,10 +34,11 @@ public class Quiz implements Serializable {
 	private int amountOfTeams = 0;
 	// minAmountOfTeams = 2;
 	private int maxAmountOfTeams;
-	private ObservableList<Team> teams = FXCollections.observableArrayList();
 	// minAmountofPlayersPerTeam = 1;
 	private int maxAmountOfPlayersPerTeam;
 	private Quizmaster quizmaster;
+	// Map(teamID -> team)
+	private Map<Integer, Team> teams = new HashMap<>();
 	// Map(teamID -> Map(userID -> vote))
 	private Map<Integer, Map<Integer, Integer>> votes = new HashMap<>();
 
@@ -76,8 +78,6 @@ public class Quiz implements Serializable {
 		Quiz quiz = new Quiz(quizname, rounds, questions, teams, players);
 
 		quiz.quizID = n++;
-
-		// TODO: Add Quiz to database
 
 		Context.getContext().setQuiz(quiz);
 
@@ -151,10 +151,6 @@ public class Quiz implements Serializable {
 		return maxAmountOfTeams;
 	}
 
-	public ObservableList<Team> getTeams() {
-		return teams;
-	}
-
 	public int getMaxAmountofPlayersPerTeam() {
 		return maxAmountOfPlayersPerTeam;
 	}
@@ -174,7 +170,7 @@ public class Quiz implements Serializable {
 	// Adders and removers
 	public void addTeam(Team team) {
 		if (amountOfTeams < maxAmountOfTeams) {
-			teams.add(team);
+			teams.put(team.getTeamID(), team);
 			amountOfTeams++;
 			team.setMaxAmountOfPlayers(maxAmountOfPlayersPerTeam);
 		} else {
@@ -183,7 +179,7 @@ public class Quiz implements Serializable {
 	}
 
 	public void removeTeam(Team team) {
-		if (teams.remove(team))
+		if (teams.remove(team.getTeamID()) != null)
 			amountOfTeams--;
 		else {
 			// TODO: Go back and show error
@@ -220,12 +216,8 @@ public class Quiz implements Serializable {
 		return true; // Temporary
 	}
 
-	public static ObservableList<Quiz> getQuizzes() {
-		ObservableList<Quiz> quizzes = null;
-
-		// TODO: get quizzes from server
-
-		return quizzes;
+	public Map<Integer, Team> getTeams() {
+		return teams;
 	}
 
 }

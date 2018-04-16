@@ -1,8 +1,5 @@
 package chat;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import eventbroker.Event;
@@ -16,7 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import main.Context;
-import network.Client;
+import server.ServerGetQuizzesEvent;
 import server.ServerReturnUserIDEvent;
 import server.ServerScoreboardDataEvent;
 import user.model.User;
@@ -38,15 +35,12 @@ final public class ChatController extends EventPublisher {
 	public ChatController() {
 		this.chatEventHandler = new ChatEventHandler();
 		this.chatModel = new ChatModel();
-		/*try (BufferedReader br = new BufferedReader(new FileReader("./swearWords.txt"))) {
-			String line;
-			while ((line = br.readLine()) != null) {
-				prohibitedWords.add(line);
-			}
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
+		/*
+		 * try (BufferedReader br = new BufferedReader(new
+		 * FileReader("./swearWords.txt"))) { String line; while ((line =
+		 * br.readLine()) != null) { prohibitedWords.add(line); } br.close(); }
+		 * catch (IOException e) { e.printStackTrace(); }
+		 */
 	}
 
 	// Getters
@@ -71,7 +65,7 @@ final public class ChatController extends EventPublisher {
 		}
 	}
 
-	// TO DO: Change: for all prohibitedWords do: if contains, loop! else next
+	// TODO: Change: for all prohibitedWords do: if contains, loop! else next
 	// word => faster!
 	private String checkMessage(String message) {
 		int lengthMessage = message.length();
@@ -90,10 +84,12 @@ final public class ChatController extends EventPublisher {
 							oldMessage = newMessage;
 						}
 		}
+
 		String tempMessage = newMessage;
 		newMessage = newMessage.substring(0, 1).toUpperCase();
 		if (tempMessage.length() > 1)
 			newMessage += tempMessage.substring(1);
+
 		return newMessage;
 	}
 
@@ -126,58 +122,65 @@ final public class ChatController extends EventPublisher {
 	private class ChatEventHandler implements EventListener {
 
 		@Override
-		public void handleEvent(Event e) {
+		public void handleEvent(Event event) {
 			ChatMessage chatMessage;
-      
-			switch(e.getType()) {
-				case "CLIENT_CREATE":
-					e.setType("SERVER_CLIENT_CREATE");
-					publishEvent(e);
-					System.out.println("Event received and handled: " + e.getType());
-					break;
-				
-				case "SERVER_RETURN_USERID":
-					ServerReturnUserIDEvent serverCreate = (ServerReturnUserIDEvent) e;
-					User user = Context.getContext().getUser();
-					user.setUserID(serverCreate.getUserID());
-					Context.getContext().setUser(user);
-					Context.getContext().getNetwork().getUserIDConnectionIDMap().put(serverCreate.getUserID(), 0);
-					System.out.println("Event received and handled, nailed it: " + e.getType());
-					break;
-					
-				case "CLIENT_CHAT":
-					chatMessage = (ChatMessage) e;
-					chatModel.addMessage(chatMessage);
-					
-					// Update local GUI
-					Platform.runLater(new Runnable() {
-						@Override
-						public void run() {
-							// Update messages in chatTextArea
-							chatModel.update();
-						}
-					});
-					System.out.println("Event received and handled: " + e.getType());
-					break;
-					
-				case "SERVER_CHAT":
-					chatMessage = (ChatMessage) e;
-					chatModel.addMessage(chatMessage);
-					
-					// Update local GUI
-					Platform.runLater(new Runnable() {
-						@Override
-						public void run() {
-							// Update messages in chatTextArea
-							chatModel.update();
-						}
-					});
-					System.out.println("Event received and handled: " + e.getType());
-					break;
-				
-				case "SERVER_SCOREBOARDDATA":
-					ServerScoreboardDataEvent scoreboardData = (ServerScoreboardDataEvent) e;
-					// TODO: Handle data to scoreboard
+
+			String type = event.getType();
+			switch (type) {
+			case "SERVER_RETURN_USERID":
+				ServerReturnUserIDEvent serverCreate = (ServerReturnUserIDEvent) event;
+				User user = Context.getContext().getUser();
+				user.setUserID(serverCreate.getUserID());
+				Context.getContext().setUser(user);
+				Context.getContext().getNetwork().getUserIDConnectionIDMap().put(serverCreate.getUserID(), 0);
+				System.out.println("Event received and handled: " + type);
+				break;
+
+			// TODO: Remove this (Should be updated locally, without the event
+			// broker)
+			case "CLIENT_CHAT":
+				chatMessage = (ChatMessage) event;
+				chatModel.addMessage(chatMessage);
+
+				// Update local GUI
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						// Update messages in chatTextArea
+						chatModel.update();
+					}
+				});
+				System.out.println("Event received and handled: " + type);
+				break;
+
+			case "SERVER_CHAT":
+				chatMessage = (ChatMessage) event;
+				chatModel.addMessage(chatMessage);
+
+				// Update local GUI
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						// Update messages in chatTextArea
+						chatModel.update();
+					}
+				});
+				System.out.println("Event received and handled: " + type);
+				break;
+
+			case "SERVER_SCOREBOARDDATA":
+				ServerScoreboardDataEvent scoreboardData = (ServerScoreboardDataEvent) event;
+				// TODO: Handle data to scoreboard
+				break;
+
+			case "SERVER_GET_QUIZZES":
+				ServerGetQuizzesEvent sGQE = (ServerGetQuizzesEvent) event;
+				sGQE.getQuizMap();
+				System.out.println("Event received and handled: " + type);
+				break;
+
+			default:
+				System.out.println("Event received but left unhandled: " + type);
 			}
 		}
 
