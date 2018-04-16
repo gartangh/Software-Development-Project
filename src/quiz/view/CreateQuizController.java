@@ -1,6 +1,5 @@
 package quiz.view;
 
-import gui.AlertBox;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -49,7 +48,7 @@ public class CreateQuizController {
 
 			switch (Quiz.createQuiz(mName.getText(), rounds, questions, teams, players)) {
 			case 0:
-				
+				// TODO: What if quiz is created successfully?
 				break;
 			case 1:
 				AlertBox.display("Error", "Quizname is invalid!");
