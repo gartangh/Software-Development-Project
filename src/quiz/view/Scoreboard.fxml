@@ -37,8 +37,8 @@
          <bottom>
             <ButtonBar prefHeight="40.0" prefWidth="30.0" BorderPane.alignment="CENTER">
               <buttons>
-                <Button mnemonicParsing="false" text="Rematch" />
-                  <Button mnemonicParsing="false" text="Quit" />
+                <Button mnemonicParsing="false" onAction="#handleRematchButton" text="Rematch" />
+                  <Button mnemonicParsing="false" onAction="#handleQuitButton" text="Quit" />
               </buttons>
                <padding>
                   <Insets bottom="15.0" right="30.0" />

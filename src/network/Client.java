@@ -1,19 +1,26 @@
 package network;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.util.concurrent.TimeUnit;
 
 import chat.ChatPanel;
 import eventbroker.EventBroker;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import main.Context;
+import main.Main;
 import quiz.util.ClientCreateEvent;
+import quiz.view.ScoreboardController;
 import user.model.User;
 
 public class Client extends Application {
+
+	private static final boolean SHOW_SCOREBOARD = false;
 
 	private Stage window;
 
@@ -30,9 +37,10 @@ public class Client extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		window = primaryStage;
 		
+
 		// TODO: Remove this test
 		User.createAccount("Arthur", "test");
-		int port = Integer.parseInt("1029");
+		int port = Integer.parseInt("1026");
 
 		// Start event broker
 		EventBroker.getEventBroker().start();
@@ -60,7 +68,19 @@ public class Client extends Application {
 		Scene chatScene = new Scene(borderPane, 600, 400);
 		window.setTitle("Chat");
 		window.setScene(chatScene);
+		
+		if(SHOW_SCOREBOARD) {
+			FXMLLoader scoreboardLoader = new FXMLLoader();
+			scoreboardLoader.setLocation(Main.class.getResource("../quiz/view/Scoreboard.fxml"));
+		
+			AnchorPane scoreboardRoot = (AnchorPane) scoreboardLoader.load();
+			ScoreboardController scoreboardController = scoreboardLoader.getController();
+			//scoreboardController.setMainApp(this);
+			Scene scene = new Scene(scoreboardRoot);
 
+			window.setScene(scene);
+		}
+    
 		window.show();
 	}
 

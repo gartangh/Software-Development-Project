@@ -17,6 +17,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import network.Client;
 import server.ServerReturnUserIDEvent;
+import server.ServerScoreboardDataEvent;
 import user.model.User;
 
 final public class ChatController extends EventPublisher {
@@ -126,50 +127,56 @@ final public class ChatController extends EventPublisher {
 		@Override
 		public void handleEvent(Event e) {
 			ChatMessage chatMessage;
-
-			switch (e.getType()) {
-			case "CLIENT_CREATE":
-				e.setType("SERVER_CLIENT_CREATE");
-				publishEvent(e);
-				System.out.println("Event received and handled: " + e.getType());
-				break;
-			case "SERVER_RETURN_USERID":
-				ServerReturnUserIDEvent serverCreate = (ServerReturnUserIDEvent) e;
-				User user = Client.getUser();
-				// TODO: What does this case? Is it trying to change the primary key of the user?
-				//user.setUserID(serverCreate.getUsername());
-				Client.setUser(user);
-				Client.getNetwork().getUserIDConnectionIDMap().put(serverCreate.getUsername(), 0);
-				System.out.println("Event received and handled: " + e.getType());
-				break;
-			case "CLIENT_CHAT":
-				chatMessage = (ChatMessage) e;
-				chatModel.addMessage(chatMessage);
-
-				// Update local GUI
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						// Update messages in chatTextArea
-						chatModel.update();
-					}
-				});
-				System.out.println("Event received and handled: " + e.getType());
-				break;
-			case "SERVER_CHAT":
-				chatMessage = (ChatMessage) e;
-				chatModel.addMessage(chatMessage);
-
-				// Update local GUI
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						// Update messages in chatTextArea
-						chatModel.update();
-					}
-				});
-				System.out.println("Event received and handled: " + e.getType());
-				break;
+      
+			switch(e.getType()) {
+				case "CLIENT_CREATE":
+					e.setType("SERVER_CLIENT_CREATE");
+					publishEvent(e);
+					System.out.println("Event received and handled: " + e.getType());
+					break;
+				
+				case "SERVER_RETURN_USERID":
+					ServerReturnUserIDEvent serverCreate = (ServerReturnUserIDEvent) e;
+					User user = Client.getUser();
+					user.setUserID(serverCreate.getUserID());
+					Client.setUser(user);
+					Client.getNetwork().getUserIDConnectionIDMap().put(serverCreate.getUserID(), 0);
+					System.out.println("Event received and handled: " + e.getType());
+					break;
+					
+				case "CLIENT_CHAT":
+					chatMessage = (ChatMessage) e;
+					chatModel.addMessage(chatMessage);
+					
+					// Update local GUI
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							// Update messages in chatTextArea
+							chatModel.update();
+						}
+					});
+					System.out.println("Event received and handled: " + e.getType());
+					break;
+					
+				case "SERVER_CHAT":
+					chatMessage = (ChatMessage) e;
+					chatModel.addMessage(chatMessage);
+					
+					// Update local GUI
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							// Update messages in chatTextArea
+							chatModel.update();
+						}
+					});
+					System.out.println("Event received and handled: " + e.getType());
+					break;
+				
+				case "SERVER_SCOREBOARDDATA":
+					ServerScoreboardDataEvent scoreboardData = (ServerScoreboardDataEvent) e;
+					// Handle data to scoreboard
 			}
 		}
 

@@ -3,14 +3,15 @@ package quiz.util;
 import main.Context;
 
 @SuppressWarnings("serial")
-public class QuizzerEvent extends UserEvent {
+public class QuizzerEvent extends UserEvent{
+	
+	protected int teamID;
+	protected int quizID;
+	
+	public QuizzerEvent(){
+		this.teamID = Context.getContext().getTeam().getTeamID();
+		this.quizID = Context.getContext().getQuiz().getQuizID();
 
-	protected String teamname;
-	protected String quizname;
-
-	public QuizzerEvent() {
-		this.teamname = Context.getContext().getTeam().getTeamname();
-		this.quizname = Context.getContext().getQuiz().getQuizname();
 		this.type = "QUIZZER";
 	}
 

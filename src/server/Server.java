@@ -11,7 +11,12 @@ import eventbroker.EventPublisher;
 import network.Network;
 import quiz.util.ClientCreateEvent;
 import quiz.util.ClientVoteEvent;
+import quiz.util.QuizzerEvent;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.paint.Color;
 import quiz.model.Quiz;
+import quiz.model.ScoreboardTeam;
 import quiz.util.ClientAnswerEvent;
 
 public class Server extends EventPublisher {
@@ -94,8 +99,50 @@ public class Server extends EventPublisher {
 			default:
 				System.out.println("Event received but left unhandled: " + e.getType());
 				break;
+          
+          case "CLIENT_SCOREBOARDDATA":
+					QuizzerEvent askForScoreboardData = (QuizzerEvent) e;
+					
+					ServerScoreboardDataEvent scoreboardData = new ServerScoreboardDataEvent(askForScoreboardData.getQuizID());
+					// Testing code for Scoreboard
+					/*ArrayList<Integer> list = getTeams();
+					ServerScoreboardDataEvent scoreboardData = new ServerScoreboardDataEvent(list.get(0));
+					scoreboardData.removeAllRecipients();
+					for(Map.Entry<Integer, Integer> entry : ServerContext.getContext().getNetwork().getUserIDConnectionIDMap().entrySet()) {
+						if(!(list.contains(entry.getKey())))
+							scoreboardData.addRecipient(entry.getKey());
+					}*/
+					Server.getServer().publishEvent(scoreboardData);
+					break;
+					
+				default:
+					System.out.println("Event received but left unhandled: " + e.getType());
+					break;
 			}
 		}
 	}
+	
+	/*
+	 * TEST
+	 */
+	private static ArrayList<Integer> getTeams() {
+		ArrayList<Integer> test = new ArrayList<>();
+		int userID1 = ServerContext.getContext().addUser("test1", "test1");
+		int quizID = ServerContext.getContext().addQuiz(5, 2, 1, 5, userID1);
+		int userID2 = ServerContext.getContext().addUser("test2", "test2");
+		int userID3 = ServerContext.getContext().addUser("test3", "test3");
+		int teamID1 = ServerContext.getContext().addTeam(quizID, "chill", Color.GREEN, userID2);
+		int teamID2 = ServerContext.getContext().addTeam(quizID, "whieoe", Color.BLACK, userID3);
+		ServerContext.getContext().getQuizMap().get(quizID).getTeams().get(teamID1).setQuizScore(100);
+		ServerContext.getContext().getQuizMap().get(quizID).getTeams().get(teamID2).setTeamID(0);
+		ServerContext.getContext().getQuizMap().get(quizID).getTeams().get(0).setQuizScore(200);
+		
+		test.add(quizID);
+		test.add(userID1);
+		test.add(userID2);
+		test.add(userID3);
+		return test;
+	}
+
 
 }
