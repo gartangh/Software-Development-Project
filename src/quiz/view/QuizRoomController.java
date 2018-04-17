@@ -109,6 +109,9 @@ public class QuizRoomController extends EventPublisher {
 					if (oldteam != null) {
 						oldteam.removePlayer(userID);
 					}
+					else {//remove player from the unassignedlist
+						Context.getContext().getQuiz().removeUnassignedPlayer(userID);
+					}
 				}
 				break;
 			default:

@@ -18,6 +18,7 @@ import quiz.model.MCQuestion;
 import quiz.util.ClientCreateAccountEvent;
 import quiz.util.ClientCreateQuizEvent;
 import quiz.util.ClientGetQuizzesEvent;
+import quiz.util.ClientJoinQuizEvent;
 import quiz.util.ClientVoteEvent;
 import quiz.util.QuizzerEvent;
 import user.model.User;
@@ -43,6 +44,9 @@ public class Server extends EventPublisher {
 			ArrayList<Integer> destinations = new ArrayList<>();
 			Boolean handled = false;
 			switch (e.getType()) {
+			case "CLIENT_JOIN_QUIZ":
+				ClientJoinQuizEvent cjte=(ClientJoinQuizEvent) e;
+				ServerContext.getContext().getQuizMap().get(cjte.getQuizID()).addUnassignedPlayer(cjte.getUserID(),cjte.getUserName());
 			case "CLIENT_CREATE_ACCOUNT":
 				ClientCreateAccountEvent cCAE = (ClientCreateAccountEvent) e;
 				int userID = ServerContext.getContext().addUser(cCAE.getUserName(), "");
@@ -138,7 +142,7 @@ public class Server extends EventPublisher {
 					serverNewTeamEvent.addRecipients(receivers);
 					server.publishEvent(serverNewTeamEvent);
 				}
-				else 
+				else
 					System.out.println("newTeamID != -1");
 				handled=true;
 				break;
@@ -147,6 +151,9 @@ public class Server extends EventPublisher {
 				String userName = ServerContext.getContext().changeTeam(cte.getQuizID(), cte.getNewTeamID(),
 						cte.getUserID(), 'a');
 				ServerContext.getContext().changeTeam(cte.getQuizID(), cte.getOldTeamID(), cte.getUserID(), 'd');
+				if (cte.getOldTeamID()==-1){//remove from unassinged list
+					ServerContext.getContext().getQuizMap().get(cte.getQuizID()).removeUnassignedPlayer(cte.getUserID());
+				}
 				if (userName != null) {
 					ServerChangeTeamEvent serverChangeTeamEvent = new ServerChangeTeamEvent(cte.getQuizID(),
 							cte.getNewTeamID(), cte.getOldTeamID(), cte.getUserID(), userName);
@@ -262,7 +269,7 @@ public class Server extends EventPublisher {
 	 * teamID2).setTeamID(0);
 	 * ServerContext.getContext().getQuizMap().get(quizID).getTeams().get(0).
 	 * setQuizScore(200);
-	 * 
+	 *
 	 * test.add(quizID); test.add(userID1); test.add(userID2);
 	 * test.add(userID3); return test; }
 	 */
