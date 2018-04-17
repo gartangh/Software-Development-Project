@@ -97,21 +97,8 @@ public class Server extends EventPublisher {
 				break;
 			case "CLIENT_SCOREBOARDDATA":
 				QuizzerEvent askForScoreboardData = (QuizzerEvent) e;
-
-				ServerScoreboardDataEvent scoreboardData = new ServerScoreboardDataEvent(
-						askForScoreboardData.getQuizID());
+				ServerScoreboardDataEvent scoreboardData = new ServerScoreboardDataEvent(askForScoreboardData.getQuizID());
 				scoreboardData.addRecipient(askForScoreboardData.getUserID());
-				// Testing code for Scoreboard
-				/*
-				 * ArrayList<Integer> list = getTeams();
-				 * ServerScoreboardDataEvent scoreboardData = new
-				 * ServerScoreboardDataEvent(list.get(0));
-				 * scoreboardData.removeAllRecipients(); for(Map.Entry<Integer,
-				 * Integer> entry : ServerContext.getContext().getNetwork().
-				 * getUserIDConnectionIDMap().entrySet()) {
-				 * if(!(list.contains(entry.getKey())))
-				 * scoreboardData.addRecipient(entry.getKey()); }
-				 */
 				server.publishEvent(scoreboardData);
 				handled = true;
 				break;
