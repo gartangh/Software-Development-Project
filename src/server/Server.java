@@ -201,6 +201,9 @@ public class Server extends EventPublisher {
 		ServerContext.getContext().loadData();
 		ServerContext.getContext().getQuiz(quizID).addRound(Difficulty.EASY, Theme.CULTURE);
 
+		User user = new User(0, "Garben is de host haha joepie", "test");
+		ServerContext.getContext().addQuiz("WORK PLZ", 5, 4, 2, 732215, 0);
+
 		/*
 		 * EventBroker.getEventBroker().start(); // Hannes Trash Test
 		 * System.out.println(InetAddress.getLocalHost()); Network network = new

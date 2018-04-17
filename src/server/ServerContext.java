@@ -151,7 +151,7 @@ public class ServerContext {
 	
 	public void loadData() {
 		BufferedReader reader;
-		String locationPrefix = "D:\\Documents\\Universiteit\\Bachelor3\\Softwareontwikkeling\\project-1718-groep9\\src\\server\\";
+		String locationPrefix = "./Files/";
 		String[] themeFiles = {"QUESTIONS_CULTURE.txt", "QUESTIONS_SPORTS.txt"};
 		try {
 			for(int tF = 0; tF < themeFiles.length; tF++) {

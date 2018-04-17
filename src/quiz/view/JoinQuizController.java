@@ -1,87 +1,94 @@
 package quiz.view;
 
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.Map.Entry;
+
+import eventbroker.Event;
+import eventbroker.EventBroker;
+import eventbroker.EventListener;
 import eventbroker.EventPublisher;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import main.Context;
 import main.Main;
 import quiz.model.Quiz;
+import quiz.model.ScoreboardTeam;
+import quiz.model.Team;
 import quiz.util.ClientGetQuizzesEvent;
+import quiz.view.ScoreboardController.ScoreboardEventHandler;
+import server.ServerGetQuizzesEvent;
 
 public class JoinQuizController extends EventPublisher {
 
 	@FXML
-	private VBox mQuizzes;
+	private TableView<Quiz> quizTable;
+	@FXML
+	private TableColumn<Quiz, String> quiznameColumn;
+	@FXML
+	private TableColumn<Quiz, String> quizmasternameColumn;
 	@FXML
 	private Button mBack;
+	@FXML
+	private Button mJoin;
+	@FXML
+	private Label mQuizname;
+	@FXML
+	private Label mRounds;
+	@FXML
+	private Label mQuestionsPerRound;
+	@FXML
+	private Label mTeams;
+	@FXML
+	private Label mPlayersPerTeam;
 
 	// Reference to the main application
 	private Main main;
-
+	private JoinQuizModel joinQuizModel = new JoinQuizModel();
+	private JoinQuizEventHandler eventHandler = new JoinQuizEventHandler();
+	
 	public void setMainApp(Main main) {
 		this.main = main;
 	}
 
 	@FXML
 	private void initialize() {
+		EventBroker.getEventBroker().addEventListener(eventHandler);
+		
+		mQuizname.textProperty().bind(joinQuizModel.getQuiznameProperty());
+		mRounds.textProperty().bind(joinQuizModel.getQuizRoundsProperty());
+		mQuestionsPerRound.textProperty().bind(joinQuizModel.getQuestionsPerRoundProperty());
+		mTeams.textProperty().bind(joinQuizModel.getTeamProperty());
+		mPlayersPerTeam.textProperty().bind(joinQuizModel.getPlayersPerTeamProperty());
+		
+		quiznameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getQuizname())));
+		quizmasternameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getQuizname())));
+		
+		quizTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showQuizDetails(newValue));
+		
 		ClientGetQuizzesEvent cGQE = new ClientGetQuizzesEvent();
 		publishEvent(cGQE);
-
-		/*
-		for (Quiz quiz : quizzes) {
-			GridPane mQuiz = new GridPane();
-
-			// Quizname label
-			Label quiznameLabel = new Label("Quiz name");
-			GridPane.setConstraints(quiznameLabel, 0, 0);
-			// Quizname output / join button
-			Button mQuizname = new Button(quiz.getQuizname());
-			// Lambda expression
-			mQuizname.setOnAction(e -> {
-				handleJoin(quiz.getQuizID());
-			});
-			GridPane.setConstraints(mQuizname, 1, 0);
-
-			// Rounds label
-			Label roundsLabel = new Label("Rounds");
-			GridPane.setConstraints(roundsLabel, 0, 1);
-			// Rounds output
-			TextField mRounds = new TextField(Integer.toString(quiz.getAmountOfRounds()));
-			GridPane.setConstraints(mRounds, 1, 1);
-
-			// Questions label
-			Label questionsLabel = new Label("Questions per round");
-			GridPane.setConstraints(questionsLabel, 0, 2);
-			// Questions output
-			TextField mQuestions = new TextField(Integer.toString(quiz.getMaxAmountofQuestionsPerRound()));
-			GridPane.setConstraints(mQuestions, 1, 2);
-
-			// Teams label
-			Label teamsLabel = new Label("Teams");
-			GridPane.setConstraints(questionsLabel, 0, 3);
-			// Teams output
-			TextField mTeams = new TextField(Integer.toString(quiz.getAmountOfTeams()));
-			GridPane.setConstraints(mTeams, 1, 3);
-
-			// Players label
-			Label playersLabel = new Label("Teams");
-			GridPane.setConstraints(playersLabel, 0, 4);
-			// Players output
-			TextField mPlayers = new TextField(Integer.toString(quiz.getMaxAmountofPlayersPerTeam()));
-			GridPane.setConstraints(mPlayers, 1, 4);
-
-			// Add all constraints to mQuiz
-			mQuiz.getChildren().addAll(quiznameLabel, mQuizname, roundsLabel, mRounds, questionsLabel, mQuestions,
-					teamsLabel, mTeams, playersLabel, mPlayers);
-
-			mQuizzes.getChildren().add(mQuiz);
-		}
-		*/
 	}
+	
+	   public void showQuizDetails(Quiz quiz){
+	    	if (quiz != null){
+	    		joinQuizModel.updateQuizDetail(quiz);
+	    	}
+	    	else {
+	    		//TO DO
+	    	}
+	    }
 
 	@FXML
 	private void handleJoin(int quizID) {
@@ -96,4 +103,23 @@ public class JoinQuizController extends EventPublisher {
 		main.showModeSelectorScene();
 	}
 
+	public class JoinQuizEventHandler implements EventListener {
+		
+		@Override
+		public void handleEvent(Event event) {
+			switch(event.getType()) {
+				case "SERVER_GET_QUIZZES":
+					ServerGetQuizzesEvent sGQE = (ServerGetQuizzesEvent) event;
+					
+					ArrayList<Quiz> quizList = new ArrayList<>();
+					for(Entry<Integer, Quiz> entry : sGQE.getQuizMap().entrySet())
+						quizList.add(entry.getValue());
+					
+					quizTable.setItems(FXCollections.observableArrayList(quizList));
+					System.out.println("Event received and handled: " + event.getType());
+					break;
+			}
+		}
+	}
+	
 }

@@ -6,6 +6,7 @@ import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -172,12 +173,6 @@ final public class ChatController extends EventPublisher {
 			case "SERVER_SCOREBOARDDATA":
 				ServerScoreboardDataEvent scoreboardData = (ServerScoreboardDataEvent) event;
 				// TODO: Handle data to scoreboard
-				break;
-
-			case "SERVER_GET_QUIZZES":
-				ServerGetQuizzesEvent sGQE = (ServerGetQuizzesEvent) event;
-				sGQE.getQuizMap();
-				System.out.println("Event received and handled: " + type);
 				break;
 
 			default:
