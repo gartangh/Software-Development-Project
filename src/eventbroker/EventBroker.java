@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-final public class EventBroker implements Runnable{
+final public class EventBroker implements Runnable {
 
 	final static EventBroker broker = new EventBroker(); // Singleton
 

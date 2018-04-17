@@ -19,6 +19,7 @@ import network.Network;
 import quiz.view.CreateQuizController;
 import quiz.view.JoinQuizController;
 import quiz.view.JoinTeamController;
+import quiz.view.Quizroom;
 import quiz.view.ScoreboardController;
 import user.view.LogInController;
 import user.view.ModeSelectorController;
@@ -30,6 +31,7 @@ public class Main extends Application {
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
+	private Quizroom quizroom;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -41,7 +43,7 @@ public class Main extends Application {
 
 		// ChatPanel (ChatModel and ChatController) are created
 		ChatPanel chatPanel = ChatPanel.createChatPanel();
-		//chatPanel.getChatModel().setName(Context.getContext().getUser().getUsername());
+		// chatPanel.getChatModel().setName(Context.getContext().getUser().getUsername());
 
 		try {
 			network.connect(InetAddress.getLocalHost(), SERVERPORT);
@@ -164,17 +166,25 @@ public class Main extends Application {
 		}
 	}
 
-	public void showScoreboard() {
+	public void showQuizroomScene() {
+		// Quizroom is created
+		try {
+			quizroom = new Quizroom(Context.getContext().getQuiz(), this);
+			rootLayout.setCenter(quizroom.getContent());
+		} catch (IOException e) {
+			// TODO: Go back and show error
+			e.printStackTrace();
+		}
+	}
+
+	public void showScoreboardScene() {
 		try {
 			FXMLLoader scoreboardLoader = new FXMLLoader();
 			scoreboardLoader.setLocation(Main.class.getResource("../quiz/view/Scoreboard.fxml"));
-
 			AnchorPane scoreboardRoot = (AnchorPane) scoreboardLoader.load();
 			ScoreboardController scoreboardController = scoreboardLoader.getController();
 			scoreboardController.setMainApp(this);
-			Scene scene = new Scene(scoreboardRoot);
-			primaryStage.setScene(scene);
-			primaryStage.show();
+			rootLayout.setCenter(scoreboardRoot);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

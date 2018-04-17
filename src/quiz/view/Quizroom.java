@@ -2,7 +2,6 @@ package quiz.view;
 
 import java.io.IOException;
 
-import eventbroker.EventBroker;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 import main.Main;
@@ -13,43 +12,36 @@ public class Quizroom {
 	Quiz quizmodel;
 	QuizRoomController quizcontroller;
 
-	public Quizroom(Quiz quiz, Main main) throws IOException{
+	public Quizroom(Quiz quiz, Main main) throws IOException {
 		createQuizroom(quiz, main);
 	}
 
-	public void createQuizroom(Quiz quiz, Main main) throws IOException{
-
+	public void createQuizroom(Quiz quiz, Main main) throws IOException {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(Quizroom.class.getResource("Quizroom.fxml"));
-        content = (AnchorPane) loader.load();
-        quizcontroller = loader.getController();
-        quizcontroller.setMain(main);
-        quizcontroller.addListener();
-
-
+		content = (AnchorPane) loader.load();
+		quizcontroller = loader.getController();
+		quizcontroller.setMain(main);
+		quizcontroller.addListener();
 	}
 
-	public AnchorPane getContent(){
+	public AnchorPane getContent() {
 		return content;
 	}
 
-//test functions
-	public Quizroom(Quiz quiz, MainQuizroom main) throws IOException{
+	// Test functions
+	public Quizroom(Quiz quiz, MainQuizroom main) throws IOException {
 		createQuizroom(quiz, main);
 	}
 
-
-	public void createQuizroom(Quiz quiz, MainQuizroom main) throws IOException{
+	public void createQuizroom(Quiz quiz, MainQuizroom main) throws IOException {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(Quizroom.class.getResource("Quizroom.fxml"));
-        content = (AnchorPane) loader.load();
-        quizcontroller = loader.getController();
-        quizcontroller.setMain(main);
-        quizcontroller.addListener();
+		content = (AnchorPane) loader.load();
+		quizcontroller = loader.getController();
+		quizcontroller.setMain(main);
+		quizcontroller.addListener();
 
 	}
-
-
-
 
 }
