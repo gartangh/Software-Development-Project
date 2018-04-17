@@ -184,12 +184,23 @@ public class Server extends EventPublisher {
 
 		public void handleClientNewQuestionEvent(ClientNewQuestionEvent cNQE) {
 			Quiz quiz = ServerContext.getContext().getQuiz(cNQE.getQuizID());
-			MCQuestion nQ = (MCQuestion) ServerContext.getContext().getQuestion(quiz.getRound().getNextQuestion());
-			int[] permutatie = { 1, 2, 3, 4 };
 
-			ServerNewQuestionEvent sNQE = new ServerNewQuestionEvent(nQ.getQuestionID(), nQ.getQuestion(),
-					nQ.getAnswers(), permutatie);
-			Server.getServer().publishEvent(sNQE);
+			if(quiz.getRound().getQuestionNumber() < quiz.getRound().getNumberOfQuestions()) {
+				MCQuestion nQ = (MCQuestion) ServerContext.getContext().getQuestion(quiz.getRound().getNextQuestion());
+				int[] permutatie = { 1, 2, 3, 4 };
+				ServerNewQuestionEvent sNQE = new ServerNewQuestionEvent(nQ.getQuestionID(), nQ.getQuestion(),
+						nQ.getAnswers(), permutatie);
+				Server.getServer().publishEvent(sNQE);
+			}
+			else {
+				if(quiz.getCurrentRound() < quiz.getMaxAmountOfRounds()) {
+					// TODO: trigger create round + players wait
+				}
+				else {
+					// TODO: trigger end quiz
+				}
+			}
+
 		}
 		
 		public void handleClientCreateRoundEvent(ClientCreateRoundEvent cCRE) {
