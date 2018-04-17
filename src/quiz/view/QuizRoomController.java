@@ -109,6 +109,9 @@ public class QuizRoomController extends EventPublisher {
 					if (oldteam != null) {
 						oldteam.removePlayer(userID);
 					}
+					else {//remove player from the unassignedlist
+						Context.getContext().getQuiz().removeUnassignedPlayer(userID);
+					}
 				}
 				break;
 			default:
@@ -140,8 +143,8 @@ public class QuizRoomController extends EventPublisher {
 
 		/*
 		 * showTeamDetails(null);
-		 * 
-		 * 
+		 *
+		 *
 		 * teamTable.getSelectionModel().selectedItemProperty().addListener(
 		 * (observable, oldValue, newValue) -> showTeamDetails(newValue));
 		 */
@@ -159,21 +162,52 @@ public class QuizRoomController extends EventPublisher {
 
 	@FXML
 	private void handleNewTeam() throws IOException {
-		if (Context.getContext().getQuiz().getAmountOfTeams() < Context.getContext().getQuiz().getMaxAmountOfTeams()) {
-			NewTeamEvent teamevent = new NewTeamEvent(Context.getContext().getQuiz().getQuizID(), "",
-					Color.TRANSPARENT);
-			boolean okClicked = main.showNewTeam(teamevent);
-			if (okClicked) {
-				publishEvent(teamevent);
-				System.out.println(teamevent.getTeamName());
-			}
-		}
+		String errorMessage="No error";
+		if (Context.getContext().getQuiz().getQuizmaster() != Context.getContext().getUser().getUserID()) {
+			if (Context.getContext().getQuiz().getAmountOfTeams() < Context.getContext().getQuiz().getMaxAmountOfTeams()) {
+				User currUser = Context.getContext().getUser();
+				int currTeamID = Context.getContext().getTeamID();
+				int currCaptainID;
 
+				if (currTeamID != -1) {
+					currCaptainID = Context.getContext().getQuiz().getTeams().get(currTeamID).getCaptainID();
+				} else {
+					currCaptainID = -1;
+				}
+
+				if (currCaptainID != currUser.getID()){
+					NewTeamEvent teamevent = new NewTeamEvent(Context.getContext().getQuiz().getQuizID(), "",
+							Color.TRANSPARENT);
+					boolean okClicked = main.showNewTeam(teamevent);
+					if (okClicked) {
+						publishEvent(teamevent);
+						System.out.println(teamevent.getTeamName());
+					}
+				}
+				else errorMessage="You can't create a new team, because you are already a captain of an existing team";
+			}
+			else errorMessage="The maximum of teams is already reached";
+		}
+		else errorMessage="You can't create a team if you are the quizmaster, click ready when you want to start the quiz";
+
+		if (errorMessage !="No error"){
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.initOwner(main.getPrimaryStage());
+			alert.setTitle("New Team error");
+			alert.setHeaderText("You can't create a new team");
+			alert.setContentText(errorMessage);
+
+			alert.showAndWait();
+		}
 	}
 
 	@FXML
 	private void handleReady() {
-
+		if(Context.getContext().getQuiz().getQuizmaster() == Context.getContext().getUser().getUserID()) {
+			// TODO: Show Round Picker
+		} else {
+			main.showWaitRound();
+		}
 	}
 
 	@FXML

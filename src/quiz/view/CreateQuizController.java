@@ -1,5 +1,8 @@
 package quiz.view;
 
+import eventbroker.Event;
+import eventbroker.EventBroker;
+import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -10,6 +13,7 @@ import main.view.AlertBox;
 import quiz.model.Quiz;
 import quiz.util.ClientCreateAccountEvent;
 import quiz.util.ClientCreateQuizEvent;
+import server.ServerReturnQuizEvent;
 import user.model.Host;
 import user.model.Quizmaster;
 
@@ -35,73 +39,22 @@ public class CreateQuizController extends EventPublisher {
 
 	// Reference to the main application
 	private Main main;
-
+	private CreateQuizHandler createQuizHandler;
+	
 	public void setMainApp(Main main) {
 		this.main = main;
 	}
 
 	@FXML
 	private void initialize() {
-		// Empty initialize
+		createQuizHandler = new CreateQuizHandler();
+		EventBroker.getEventBroker().addEventListener(createQuizHandler);
 	}
 
 	@FXML
 	private void handleCreateQuiz() {
-		/*try {
-			int rounds = Integer.parseInt(mRounds.getText());
-			int questions = Integer.parseInt(mQuestions.getText());
-			int teams = Integer.parseInt(mTeams.getText());
-			int players = Integer.parseInt(mPlayers.getText());
-
-			switch (Quiz.createQuiz(mName.getText(), rounds, questions, teams, players)) {
-			case 0:
-				((Host) Context.getContext().getUser()).castToQuizmaster();
-				Context.getContext().getQuiz().setQuizmaster((Quizmaster) Context.getContext().getUser());
-				
-				Quiz quiz = Context.getContext().getQuiz();
-				ClientCreateQuizEvent cCQE = new ClientCreateQuizEvent(quiz);
-				publishEvent(cCQE);
-				
-				// TODO: main.show..Scene();
-				break;
-			case 1:
-				AlertBox.display("Error", "Quizname is invalid!");
-				break;
-			case 2:
-				AlertBox.display("Error", "Quizname is not unique!");
-				break;
-			case 3:
-				AlertBox.display("Error", "Rounds cannot be smaller than 1!");
-				break;
-			case 4:
-				AlertBox.display("Error", "Rounds cannot be bigger than " + Quiz.getMaxrounds() + "!");
-				break;
-			case 5:
-				AlertBox.display("Error", "Questions cannot be smaller than 1!");
-				break;
-			case 6:
-				AlertBox.display("Error", "Questions cannot be bigger than " + Quiz.getMaxquestions() + "!");
-				break;
-			case 7:
-				AlertBox.display("Error", "Teams cannot be smaller than 1!");
-				break;
-			case 8:
-				AlertBox.display("Error", "Teams cannot be bigger than " + Quiz.getMaxteams() + "!");
-				break;
-			case 9:
-				AlertBox.display("Error", "Players cannot be smaller than 1!");
-				break;
-			case 10:
-				AlertBox.display("Error", "Players cannot be bigger than " + Quiz.getMaxplayers() + "!");
-				break;
-			default:
-				AlertBox.display("Error", "Something went wrong!");
-			}
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-			// TODO: Show alert (invalid input)
-		}*/
-
+		ClientCreateQuizEvent cCQE = new ClientCreateQuizEvent(mName.getText(), Integer.parseInt(mTeams.getText()), Integer.parseInt(mPlayers.getText()), Integer.parseInt(mRounds.getText()), Integer.parseInt(mQuestions.getText()));
+		publishEvent(cCQE);
 	}
 
 	@FXML
@@ -109,6 +62,22 @@ public class CreateQuizController extends EventPublisher {
 		// TODO: Handle back
 		((Host) Context.getContext().getUser()).castToUser();
 		main.showModeSelectorScene();
+	}
+	
+	public class CreateQuizHandler implements EventListener{
+
+		@Override
+		public void handleEvent(Event event) {
+			switch(event.getType()) {
+				case "SERVER_RETURN_QUIZ":
+					ServerReturnQuizEvent sRQE = (ServerReturnQuizEvent) event;
+					System.out.println("Got quiz: " + sRQE.getQuiz());
+					// Show rounds
+					
+				break;
+			}
+		}
+		
 	}
 
 }

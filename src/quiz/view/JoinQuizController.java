@@ -27,6 +27,7 @@ import quiz.model.Quiz;
 import quiz.model.ScoreboardTeam;
 import quiz.model.Team;
 import quiz.util.ClientGetQuizzesEvent;
+import quiz.util.ClientJoinQuizEvent;
 import quiz.view.ScoreboardController.ScoreboardEventHandler;
 import server.ServerGetQuizzesEvent;
 
@@ -57,7 +58,7 @@ public class JoinQuizController extends EventPublisher {
 	private Main main;
 	private JoinQuizModel joinQuizModel = new JoinQuizModel();
 	private JoinQuizEventHandler eventHandler = new JoinQuizEventHandler();
-	
+
 	public void setMainApp(Main main) {
 		this.main = main;
 	}
@@ -65,7 +66,7 @@ public class JoinQuizController extends EventPublisher {
 	@FXML
 	private void initialize() {
 		EventBroker.getEventBroker().addEventListener(eventHandler);
-		
+
 		mQuizname.textProperty().bind(joinQuizModel.getQuiznameProperty());
 		mRounds.textProperty().bind(joinQuizModel.getQuizRoundsProperty());
 		mQuestionsPerRound.textProperty().bind(joinQuizModel.getQuestionsPerRoundProperty());
@@ -74,13 +75,13 @@ public class JoinQuizController extends EventPublisher {
 		mJoin.disableProperty().bind(joinQuizModel.getJoinDisableProperty());
 		quiznameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getQuizname())));
 		quizmasternameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getQuizname())));
-		
+
 		quizTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showQuizDetails(newValue));
-		
+
 		ClientGetQuizzesEvent cGQE = new ClientGetQuizzesEvent();
 		publishEvent(cGQE);
 	}
-	
+
 	public void showQuizDetails(Quiz quiz){
 	    if (quiz != null){
 	    	Context.getContext().setQuiz(quiz);
@@ -95,6 +96,8 @@ public class JoinQuizController extends EventPublisher {
 	@FXML
 	private void handleJoin() {
 		Context.getContext().getQuiz().addUnassignedPlayer(Context.getContext().getUser().getID(), Context.getContext().getUser().getUsername());
+		ClientJoinQuizEvent cjqe=new ClientJoinQuizEvent(Context.getContext().getUser().getUserID(),Context.getContext().getQuiz().getQuizID(),Context.getContext().getUser().getUsername());
+		publishEvent(cjqe);
 		main.showQuizroomScene();
 	}
 
@@ -107,17 +110,17 @@ public class JoinQuizController extends EventPublisher {
 	}
 
 	public class JoinQuizEventHandler implements EventListener {
-		
+
 		@Override
 		public void handleEvent(Event event) {
 			switch(event.getType()) {
 				case "SERVER_GET_QUIZZES":
 					ServerGetQuizzesEvent sGQE = (ServerGetQuizzesEvent) event;
-					
+
 					ArrayList<Quiz> quizList = new ArrayList<>();
 					for(Entry<Integer, Quiz> entry : sGQE.getQuizMap().entrySet())
 						quizList.add(entry.getValue());
-					
+
 					quizTable.setItems(FXCollections.observableArrayList(quizList));
 					System.out.println("Event received and handled: " + event.getType());
 					break;
@@ -126,5 +129,5 @@ public class JoinQuizController extends EventPublisher {
 			}
 		}
 	}
-	
+
 }

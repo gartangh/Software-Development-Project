@@ -24,6 +24,7 @@ import quiz.view.JoinQuizController;
 import quiz.view.NewTeamController;
 import quiz.view.QuizRoomController;
 import quiz.view.ScoreboardController;
+import quiz.view.WaitRoundController;
 import user.view.LogInController;
 import user.view.ModeSelectorController;
 
@@ -34,8 +35,7 @@ public class Main extends Application {
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
-	
-	ChatPanel chatPanel;
+	private ChatPanel chatPanel;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -44,8 +44,9 @@ public class Main extends Application {
 		// Generate random client port
 		Random random = new Random();
 		Network network = new Network(random.nextInt(65535 - 1026 + 1) + 1026, "CLIENT");
+
 		Context.getContext().setNetwork(network);
-		
+
 		// ChatPanel (ChatModel and ChatController) are created
 		chatPanel = ChatPanel.createChatPanel();
 
@@ -137,7 +138,7 @@ public class Main extends Application {
 		try {
 			FXMLLoader createQuizLoader = new FXMLLoader();
 			createQuizLoader.setLocation(Main.class.getResource("../quiz/view/CreateQuiz.fxml"));
-			VBox createQuiz = (VBox) createQuizLoader.load();
+			BorderPane createQuiz = (BorderPane) createQuizLoader.load();
 			CreateQuizController createQuizController = createQuizLoader.getController();
 			createQuizController.setMainApp(this);
 			rootLayout.setCenter(createQuiz);
@@ -155,6 +156,7 @@ public class Main extends Application {
 			joinQuizController.setMainApp(this);
 			rootLayout.setCenter(joinQuiz);
 
+			// Chatpanel
 			rootLayout.setBottom(chatPanel.getContent());
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -215,6 +217,18 @@ public class Main extends Application {
 			e.printStackTrace();
 
 			return false;
+		}
+	}
+
+	public void showWaitRound() {
+		try {
+			FXMLLoader waitRoundLoader = new FXMLLoader();
+			waitRoundLoader.setLocation(Main.class.getResource("../quiz/view/WaitRound.fxml"));
+			BorderPane waitRoundRoot = (BorderPane) waitRoundLoader.load();
+			WaitRoundController waitRoundController = waitRoundLoader.getController();
+			waitRoundController.setMain(this);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

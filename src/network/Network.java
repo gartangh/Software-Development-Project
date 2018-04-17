@@ -9,6 +9,7 @@ import eventbroker.Event;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 
+// TODO: End ReceiverThread Connection Chat
 public class Network extends EventPublisher implements EventListener {
 
 	private String TYPE;

@@ -65,7 +65,7 @@ public class ServerContext {
 
 		User newUser = new User(newID, username, password);
 		userMap.put(newID, newUser);
-		
+
 		return newID;
 	}
 
@@ -148,8 +148,8 @@ public class ServerContext {
 	}
 
 	public void loadData() {
-		BufferedReader reader;
-		String locationPrefix = "C:\\Users\\Gebruiker\\workspace\\Quiz\\src\\server\\";
+		BufferedReader reader;// ./Files/
+		String locationPrefix = "d:\\Demuynck\\Documents\\school\\Softwareontwikkeling\\Project\\project-1718-groep9\\src\\server\\";
 		String[] themeFiles = { "QUESTIONS_CULTURE.txt", "QUESTIONS_SPORTS.txt" };
 		try {
 			for (int tF = 0; tF < themeFiles.length; tF++) {
