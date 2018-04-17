@@ -3,10 +3,12 @@ package main;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Random;
 
 import chat.ChatPanel;
 import eventbroker.EventBroker;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -20,11 +22,10 @@ import network.Network;
 import quiz.util.NewTeamEvent;
 import quiz.view.CreateQuizController;
 import quiz.view.JoinQuizController;
-import quiz.view.JoinTeamController;
-import quiz.view.MainQuizroom;
 import quiz.view.NewTeamController;
 import quiz.view.QuestionFormController;
 import quiz.view.QuizRoomController;
+import quiz.view.RoundMakerController;
 import quiz.view.ScoreboardController;
 import quiz.view.WaitRoundController;
 import user.view.LogInController;
@@ -37,23 +38,27 @@ public class Main extends Application {
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
+	private ChatPanel chatPanel;
 
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 
-		// TODO: Randomize port
-		Network network = new Network(1026, "CLIENT");
+		// Generate random client port
+		Random random = new Random();
+		Network network = new Network(random.nextInt(65535 - 1026 + 1) + 1026, "CLIENT");
+
 		Context.getContext().setNetwork(network);
 
 		// ChatPanel (ChatModel and ChatController) are created
-		ChatPanel chatPanel = ChatPanel.createChatPanel();
-		// chatPanel.getChatModel().setName(Context.getContext().getUser().getUsername());
+		chatPanel = ChatPanel.createChatPanel();
 
 		try {
 			network.connect(InetAddress.getLocalHost(), SERVERPORT);
+			System.out.println("Address: " + network.getNetworkAddress() + "\nPort: "
+					+ Integer.toString(network.getConnectionListener().getServerPort()));
 
-			// --> send event over network
+			// Send event over network
 			EventBroker.getEventBroker().addEventListener(network);
 
 			// Start event broker
@@ -153,24 +158,17 @@ public class Main extends Application {
 			JoinQuizController joinQuizController = joinQuizLoader.getController();
 			joinQuizController.setMainApp(this);
 			rootLayout.setCenter(joinQuiz);
+
+			// Chatpanel
+			rootLayout.setBottom(chatPanel.getContent());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	/*
-	 * public void showJoinTeamScene() { try { System.out.println("Quiz: " +
-	 * Context.getContext().getQuiz()); FXMLLoader joinTeamLoader = new
-	 * FXMLLoader(); joinTeamLoader.setLocation(Main.class.getResource(
-	 * "../quiz/view/JoinTeam.fxml")); VBox joinTeam = (VBox)
-	 * joinTeamLoader.load(); JoinTeamController joinTeamController =
-	 * joinTeamLoader.getController(); joinTeamController.setMainApp(this);
-	 * rootLayout.setCenter(joinTeam); } catch (IOException e) {
-	 * e.printStackTrace(); } }
-	 */
-
 	public void showQuizroomScene() {
 		// Quizroom is created
+
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(Main.class.getResource("../quiz/view/Quizroom.fxml"));
@@ -178,9 +176,12 @@ public class Main extends Application {
 			QuizRoomController quizcontroller = loader.getController();
 			quizcontroller.setMain(this);
 			quizcontroller.addListener();
-			rootLayout.setCenter(content);
+			Platform.runLater(new Runnable(){
+				public void run(){
+					rootLayout.setCenter(content);
+				}
+			});
 		} catch (IOException e) {
-			// TODO: Go back and show error
 			e.printStackTrace();
 		}
 	}
@@ -222,12 +223,12 @@ public class Main extends Application {
 			return controller.isOkClicked();
 		} catch (IOException e) {
 			e.printStackTrace();
-			
+
 			return false;
 		}
 	}
 	
-	public void showQuestionFoerm() {
+	public void showQuestionForm() {
 		try {
 			FXMLLoader questionFormLoader = new FXMLLoader();
 			questionFormLoader.setLocation(Main.class.getResource("../quiz/view/QuestionForm.fxml"));
@@ -239,8 +240,7 @@ public class Main extends Application {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
 	public void showWaitRound() {
 		try {
 			FXMLLoader waitRoundLoader = new FXMLLoader();
@@ -248,7 +248,21 @@ public class Main extends Application {
 			BorderPane waitRoundRoot = (BorderPane) waitRoundLoader.load();
 			WaitRoundController waitRoundController = waitRoundLoader.getController();
 			waitRoundController.setMain(this);
+			rootLayout.setCenter(waitRoundRoot);
 		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void showCreateRound(){
+		try{
+			FXMLLoader roundMakerLoader = new FXMLLoader();
+			roundMakerLoader.setLocation(Main.class.getResource("../quiz/view/WaitRound.fxml"));
+			AnchorPane roundMakerRoot = (AnchorPane) roundMakerLoader.load();
+			RoundMakerController roundMakerController = roundMakerLoader.getController();
+			roundMakerController.setMain(this);
+			rootLayout.setCenter(roundMakerRoot);
+		}catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

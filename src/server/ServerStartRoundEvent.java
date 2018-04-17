@@ -7,5 +7,5 @@ public class ServerStartRoundEvent extends ServerEvent {
 		super();
 		this.type = "SERVER_START_ROUND";
 	}
-	
+
 }

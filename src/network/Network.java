@@ -9,6 +9,7 @@ import eventbroker.Event;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 
+// TODO: End ReceiverThread Connection Chat
 public class Network extends EventPublisher implements EventListener {
 
 	private String TYPE;
@@ -18,10 +19,9 @@ public class Network extends EventPublisher implements EventListener {
 	private Map<Integer, Integer> UserIDConnectionIDMap = new HashMap<>();
 	private ConnectionListener connectionListener;
 	private InetAddress networkAddress;
-
-	// Constructors
+	
 	public Network() {
-		// Empty default constrcutor
+		// Empty default constructor
 	}
 
 	// A factory method would be a better solution
@@ -41,6 +41,10 @@ public class Network extends EventPublisher implements EventListener {
 	public Map<Integer, Connection> getConnectionMap() {
 		return connectionMap;
 	}
+	
+	public ConnectionListener getConnectionListener() {
+		return connectionListener;
+	}
 
 	public InetAddress getNetworkAddress() {
 		return networkAddress;
@@ -48,7 +52,6 @@ public class Network extends EventPublisher implements EventListener {
 
 	// Methods
 	public Connection connect(InetAddress address, int port) {
-
 		networkAddress = address;
 
 		try {
@@ -60,13 +63,16 @@ public class Network extends EventPublisher implements EventListener {
 
 			connection.receive();
 
-			if (TYPE == "CLIENT")
+			if (TYPE == "CLIENT") {
+				// Client always has connectionID 0
+				connection.setConnectionID(0);
 				connectionMap.put(0, connection);
-			else if (TYPE == "SERVER") {
+			} else if (TYPE == "SERVER") {
 				int newServerUserConnectionID;
 				do {
 					newServerUserConnectionID = (int) (Math.random() * Integer.MAX_VALUE);
 				} while (connectionMap.containsKey(newServerUserConnectionID));
+
 				connection.setConnectionID(newServerUserConnectionID);
 				connectionMap.put(newServerUserConnectionID, connection);
 			}
@@ -112,6 +118,7 @@ public class Network extends EventPublisher implements EventListener {
 			for (int userID : e.getRecipients())
 				connectionMap.get(UserIDConnectionIDMap.get(userID)).send(e);
 		}
+		
 		System.out.println("Event received and handled: " + e.getType());
 	}
 
