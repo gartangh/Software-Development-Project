@@ -5,7 +5,10 @@ import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import javafx.fxml.FXML;
+import main.Context;
 import main.Main;
+import quiz.model.MCQuestion;
+import server.ServerNewQuestionEvent;
 import server.ServerStartRoundEvent;
 
 public class WaitRoundController extends EventPublisher {
@@ -26,7 +29,6 @@ public class WaitRoundController extends EventPublisher {
 	}
 
 	public WaitRoundController(){
-
 	}
 
 	public class WaitRoundHandler implements EventListener {
@@ -35,7 +37,12 @@ public class WaitRoundController extends EventPublisher {
 		public void handleEvent(Event event) {
 			switch(event.getType()) {
 				case "SERVER_START_ROUND":
-					ServerStartRoundEvent server=(ServerStartRoundEvent) event;
+					main.showQuestionForm();
+					break;
+				case "SERVER_NEW_QUESTION":
+					ServerNewQuestionEvent sNQE = (ServerNewQuestionEvent) event;
+					MCQuestion q = new MCQuestion(sNQE.getQuestionID(), sNQE.getQuestion(), sNQE.getAnswers());
+					Context.getContext().setQuestion(q);
 					break;
 			}
 		}

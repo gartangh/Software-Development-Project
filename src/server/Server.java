@@ -195,7 +195,7 @@ public class Server extends EventPublisher {
 		public void handleClientVoteEvent(ClientVoteEvent cVE) {
 			Quiz quiz = ServerContext.getContext().getQuiz(cVE.getQuizID());
 			quiz.addVote(cVE.getUserID(), cVE.getTeamID(), cVE.getVote());
-			
+
 			ArrayList<Integer> receivers=(ArrayList<Integer>) ServerContext.getContext().getQuiz(cVE.getQuizID()).getTeams().get(cVE.getTeamID()).getPlayers().keySet();
 
 			ServerVoteEvent sVE = new ServerVoteEvent(cVE.getUserID(), cVE.getTeamID(), cVE.getQuizID(), cVE.getVote());
@@ -206,7 +206,7 @@ public class Server extends EventPublisher {
 			Quiz quiz = ServerContext.getContext().getQuiz(cAE.getQuizID());
 			quiz.addAnswer(cAE.getTeamID(), cAE.getQuestionID(), cAE.getAnswer());
 			quiz.addPoints(cAE.getTeamID(), cAE.getQuestionID(), cAE.getAnswer());
-			
+
 			ArrayList<Integer> receivers=(ArrayList<Integer>) ServerContext.getContext().getQuiz(cAE.getQuizID()).getTeams().get(cAE.getTeamID()).getPlayers().keySet();
 
 			MCQuestion mCQ = (MCQuestion) ServerContext.getContext().getQuestion(cAE.getQuestionID());
@@ -219,7 +219,7 @@ public class Server extends EventPublisher {
 			Quiz quiz = ServerContext.getContext().getQuiz(cNQE.getQuizID());
 			if(quiz.isAnsweredByAll()) {
 				ArrayList<Integer> receivers=ServerContext.getContext().getUsersFromQuiz(cNQE.getQuizID());
-	
+
 				if(quiz.getRound().getQuestionNumber() < quiz.getRound().getNumberOfQuestions()) {
 					MCQuestion nQ = (MCQuestion) ServerContext.getContext().getQuestion(quiz.getRound().getNextQuestion());
 					int[] permutatie = { 1, 2, 3, 4 };
@@ -243,17 +243,18 @@ public class Server extends EventPublisher {
 			Quiz quiz = ServerContext.getContext().getQuiz(cCRE.getQuizID());
 			quiz.addRound(cCRE.getDiff(), cCRE.getTheme());
 			quiz.getRound().addQuestions(cCRE.getNumberOfQuestions());
+			ArrayList<Integer> receivers=ServerContext.getContext().getUsersFromQuiz(cCRE.getQuizID());
 
 			MCQuestion nQ = (MCQuestion) ServerContext.getContext().getQuestion(quiz.getRound().getNextQuestion());
 			int[] permutatie = { 1, 2, 3, 4 };
 
 			ServerNewQuestionEvent sNQE = new ServerNewQuestionEvent(nQ.getQuestionID(), nQ.getQuestion(),
 					nQ.getAnswers(), permutatie);
-
+			sNQE.addRecipients(receivers);
 			server.publishEvent(sNQE);
 
 			ServerStartRoundEvent sSRE = new ServerStartRoundEvent();
-			// TODO: Add all players of quiz
+			sSRE.addRecipients(receivers);
 			Server.getServer().publishEvent(sSRE);
 		}
 	}

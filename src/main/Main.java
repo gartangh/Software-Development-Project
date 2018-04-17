@@ -110,8 +110,11 @@ public class Main extends Application {
 			VBox logIn = (VBox) loader.load();
 			LogInController controller = loader.getController();
 			controller.setMainApp(this);
-
-			rootLayout.setCenter(logIn);
+			Platform.runLater(new Runnable(){
+				public void run(){
+					rootLayout.setCenter(logIn);
+				}
+			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -131,7 +134,11 @@ public class Main extends Application {
 			AnchorPane menu = (AnchorPane) menuLoader.load();
 			MenuController menuController = menuLoader.getController();
 			menuController.setMainApp(this);
-			rootLayout.setTop(menu);
+			Platform.runLater(new Runnable(){
+				public void run(){
+					rootLayout.setTop(menu);
+				}
+			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -144,7 +151,11 @@ public class Main extends Application {
 			BorderPane createQuiz = (BorderPane) createQuizLoader.load();
 			CreateQuizController createQuizController = createQuizLoader.getController();
 			createQuizController.setMainApp(this);
-			rootLayout.setCenter(createQuiz);
+			Platform.runLater(new Runnable(){
+				public void run(){
+					rootLayout.setCenter(createQuiz);
+				}
+			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -157,10 +168,12 @@ public class Main extends Application {
 			BorderPane joinQuiz = (BorderPane) joinQuizLoader.load();
 			JoinQuizController joinQuizController = joinQuizLoader.getController();
 			joinQuizController.setMainApp(this);
-			rootLayout.setCenter(joinQuiz);
-
-			// Chatpanel
-			rootLayout.setBottom(chatPanel.getContent());
+			Platform.runLater(new Runnable(){
+				public void run(){
+					rootLayout.setCenter(joinQuiz);
+					rootLayout.setBottom(chatPanel.getContent());
+				}
+			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -227,7 +240,7 @@ public class Main extends Application {
 			return false;
 		}
 	}
-	
+
 	public void showQuestionForm() {
 		try {
 			FXMLLoader questionFormLoader = new FXMLLoader();
