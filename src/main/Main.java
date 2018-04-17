@@ -131,7 +131,7 @@ public class Main extends Application {
 		try {
 			FXMLLoader createQuizLoader = new FXMLLoader();
 			createQuizLoader.setLocation(Main.class.getResource("../quiz/view/CreateQuiz.fxml"));
-			VBox createQuiz = (VBox) createQuizLoader.load();
+			BorderPane createQuiz = (BorderPane) createQuizLoader.load();
 			CreateQuizController createQuizController = createQuizLoader.getController();
 			createQuizController.setMainApp(this);
 			rootLayout.setCenter(createQuiz);

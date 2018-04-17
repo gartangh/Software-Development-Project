@@ -55,8 +55,11 @@ public class Server extends EventPublisher {
 
 			case "CLIENT_CREATE_QUIZ":
 				ClientCreateQuizEvent cCQE = (ClientCreateQuizEvent) e;
-				Quiz quiz = cCQE.getQuiz();
-				ServerContext.getContext().getQuizMap().put(quiz.getQuizID(), quiz);
+				int quizID = ServerContext.getContext().addQuiz(cCQE.getQuizName(), cCQE.getMaxAmountOfTeams(), cCQE.getMaxAmountOfPlayersPerTeam(), cCQE.getMaxAmountOfRounds(), cCQE.getMaxAmountOfQuestionsPerRound(), cCQE.getUserID());
+				Quiz quiz = ServerContext.getContext().getQuizMap().get(quizID);
+				ServerReturnQuizEvent sRQE = new ServerReturnQuizEvent(quiz);
+				sRQE.addRecipient(cCQE.getUserID());
+				server.publishEvent(sRQE);
 				handled = true;
 				break;
 
