@@ -48,7 +48,7 @@ public class Server extends EventPublisher {
 			case "CLIENT_JOIN_QUIZ":
 				ClientJoinQuizEvent cjte=(ClientJoinQuizEvent) e;
 				ServerContext.getContext().getQuizMap().get(cjte.getQuizID()).addUnassignedPlayer(cjte.getUserID(),cjte.getUserName());
-			break;
+				break;
 			case "CLIENT_CREATE_ACCOUNT":
 				ClientCreateAccountEvent cCAE = (ClientCreateAccountEvent) e;
 				int userID = ServerContext.getContext().addUser(cCAE.getUserName(), "");
@@ -183,12 +183,23 @@ public class Server extends EventPublisher {
 
 		public void handleClientNewQuestionEvent(ClientNewQuestionEvent cNQE) {
 			Quiz quiz = ServerContext.getContext().getQuiz(cNQE.getQuizID());
-			MCQuestion nQ = (MCQuestion) ServerContext.getContext().getQuestion(quiz.getRound().getNextQuestion());
-			int[] permutatie = { 1, 2, 3, 4 };
 
-			ServerNewQuestionEvent sNQE = new ServerNewQuestionEvent(nQ.getQuestionID(), nQ.getQuestion(),
-					nQ.getAnswers(), permutatie);
-			Server.getServer().publishEvent(sNQE);
+			if(quiz.getRound().getQuestionNumber() < quiz.getRound().getNumberOfQuestions()) {
+				MCQuestion nQ = (MCQuestion) ServerContext.getContext().getQuestion(quiz.getRound().getNextQuestion());
+				int[] permutatie = { 1, 2, 3, 4 };
+				ServerNewQuestionEvent sNQE = new ServerNewQuestionEvent(nQ.getQuestionID(), nQ.getQuestion(),
+						nQ.getAnswers(), permutatie);
+				Server.getServer().publishEvent(sNQE);
+			}
+			else {
+				if(quiz.getCurrentRound() < quiz.getMaxAmountOfRounds()) {
+					// TODO: trigger create round + players wait
+				}
+				else {
+					// TODO: trigger end quiz
+				}
+			}
+
 		}
 
 		public void handleClientCreateRoundEvent(ClientCreateRoundEvent cCRE) {
@@ -201,7 +212,13 @@ public class Server extends EventPublisher {
 
 			ServerNewQuestionEvent sNQE = new ServerNewQuestionEvent(nQ.getQuestionID(), nQ.getQuestion(),
 					nQ.getAnswers(), permutatie);
+			// TODO: Add all players of quiz
 			Server.getServer().publishEvent(sNQE);
+
+			ServerStartRoundEvent sSRE = new ServerStartRoundEvent();
+			// TODO: Add all players of quiz
+			Server.getServer().publishEvent(sSRE);
+
 		}
 	}
 

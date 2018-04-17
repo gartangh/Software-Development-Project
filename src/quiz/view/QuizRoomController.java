@@ -203,7 +203,11 @@ public class QuizRoomController extends EventPublisher {
 
 	@FXML
 	private void handleReady() {
-
+		if(Context.getContext().getQuiz().getQuizmaster() == Context.getContext().getUser().getUserID()) {
+			// TODO: Show Round Picker
+		} else {
+			main.showWaitRound();
+		}
 	}
 
 	@FXML
