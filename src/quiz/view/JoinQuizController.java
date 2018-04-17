@@ -88,16 +88,14 @@ public class JoinQuizController extends EventPublisher {
 	    	joinQuizModel.updateQuizDetail(quiz);
 	    }
 	    else {
-	    	//TO DO
+	    	// TODO
 	    }
 	   }
 
 	@FXML
 	private void handleJoin() {
-		// TODO: gay out join button if no quiz selected
-		System.out.println("renders!");
-		main.showJoinTeamScene();
-		// main.showQuizroom();
+		Context.getContext().getQuiz().addUnassignedPlayer(Context.getContext().getUser().getID(), Context.getContext().getUser().getUsername());
+		main.showQuizroomScene();
 	}
 
 	@FXML
@@ -123,6 +121,8 @@ public class JoinQuizController extends EventPublisher {
 					quizTable.setItems(FXCollections.observableArrayList(quizList));
 					System.out.println("Event received and handled: " + event.getType());
 					break;
+				default:
+					System.out.println("Event received but left unhandled: " + event.getType());
 			}
 		}
 	}

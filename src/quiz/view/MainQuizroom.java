@@ -24,7 +24,6 @@ import network.Network;
 
 public class MainQuizroom extends Application{
 	private Stage primaryStage;
-	private Quizroom quizroom;
 	private AnchorPane testRoot;
 	private Network network;
 
@@ -65,9 +64,6 @@ public class MainQuizroom extends Application{
 
 
 	public void showQuizroom(){
-        Scene scene = new Scene(quizroom.getContent());
-        primaryStage.setScene(scene);
-        primaryStage.show();
 	}
 
 	public boolean showNewTeam(Team team) throws IOException{
@@ -99,34 +95,7 @@ public class MainQuizroom extends Application{
 
 	}
 
-	public boolean showNewTeam(NewTeamEvent teamevent) throws IOException{
-        try {
-     			FXMLLoader loader = new FXMLLoader();
-     	        loader.setLocation(MainQuizroom.class.getResource("NewTeam.fxml"));
-     	        AnchorPane newteam = (AnchorPane) loader.load();
-
-     	        Stage dialogStage = new Stage();
-     	        dialogStage.setTitle("New Team");
-     	        dialogStage.initModality(Modality.WINDOW_MODAL);
-     	        dialogStage.initOwner(primaryStage);
-     	        Scene scene = new Scene(newteam);
-     	        dialogStage.setScene(scene);
-
-                 // Set the person into the controller.
-                 NewTeamController controller = loader.getController();
-                 controller.setDialogStage(dialogStage);
-                 controller.setTeamEvent(teamevent);
-
-                 // Show the dialog and wait until the user closes it
-                 dialogStage.showAndWait();
-
-                 return controller.isOkClicked();
-             } catch (IOException e) {
-                 e.printStackTrace();
-                 return false;
-             }
-
-	}
+	
 
 	public static void main(String[] args) {
 		launch(args);
