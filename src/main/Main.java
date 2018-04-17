@@ -23,6 +23,7 @@ import quiz.view.JoinQuizController;
 import quiz.view.JoinTeamController;
 import quiz.view.MainQuizroom;
 import quiz.view.NewTeamController;
+import quiz.view.QuestionFormController;
 import quiz.view.QuizRoomController;
 import quiz.view.ScoreboardController;
 import quiz.view.WaitRoundController;
@@ -225,6 +226,20 @@ public class Main extends Application {
 			return false;
 		}
 	}
+	
+	public void showQuestionFoerm() {
+		try {
+			FXMLLoader questionFormLoader = new FXMLLoader();
+			questionFormLoader.setLocation(Main.class.getResource("../quiz/view/QuestionForm.fxml"));
+			AnchorPane questionFormRoot = (AnchorPane) questionFormLoader.load();
+			QuestionFormController questionFormController = questionFormLoader.getController();
+			questionFormController.setMain(this);
+			rootLayout.setCenter(questionFormRoot);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	public void showWaitRound() {
 		try {

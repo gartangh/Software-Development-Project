@@ -169,6 +169,12 @@ public class Quiz implements Serializable {
 	public Map<Integer, Map<Integer, Integer>> getVotes() {
 		return votes;
 	}
+	
+	public boolean isAnsweredByAll() {
+		int nOA = this.getRound().getNumberOfAnswers();
+		if(nOA == teams.size()) return true;
+		else return false;
+	}
 
 	// Adders and removers
 	public void addTeam(Team team) {
@@ -215,6 +221,13 @@ public class Quiz implements Serializable {
 
 	public void addAnswer(int teamID, int questionID, int answer) {
 		rounds.get(currentRound).addAnswer(teamID, questionID, answer);
+	}
+	
+	public void addPoints(int teamID, int questionID, int answer) {
+		MCQuestion q = (MCQuestion) ServerContext.getContext().getQuestion(questionID);
+		if(answer == q.getCorrectAnswer()) {
+			teams.get(teamID).addPoints(1);
+		}
 	}
 
 	// Methods

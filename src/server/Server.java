@@ -166,6 +166,8 @@ public class Server extends EventPublisher {
 		public void handleClientVoteEvent(ClientVoteEvent cVE) {
 			Quiz quiz = ServerContext.getContext().getQuiz(cVE.getQuizID());
 			quiz.addVote(cVE.getUserID(), cVE.getTeamID(), cVE.getVote());
+			
+			ArrayList<Integer> receivers=(ArrayList<Integer>) ServerContext.getContext().getQuiz(cVE.getQuizID()).getTeams().get(cVE.getTeamID()).getPlayers().keySet();
 
 			ServerVoteEvent sVE = new ServerVoteEvent(cVE.getUserID(), cVE.getTeamID(), cVE.getQuizID(), cVE.getVote());
 			Server.getServer().publishEvent(sVE);
@@ -174,6 +176,9 @@ public class Server extends EventPublisher {
 		public void handleClientAnswerEvent(ClientAnswerEvent cAE) {
 			Quiz quiz = ServerContext.getContext().getQuiz(cAE.getQuizID());
 			quiz.addAnswer(cAE.getTeamID(), cAE.getQuestionID(), cAE.getAnswer());
+			quiz.addPoints(cAE.getTeamID(), cAE.getQuestionID(), cAE.getAnswer());
+			
+			ArrayList<Integer> receivers=(ArrayList<Integer>) ServerContext.getContext().getQuiz(cAE.getQuizID()).getTeams().get(cAE.getTeamID()).getPlayers().keySet();
 
 			MCQuestion mCQ = (MCQuestion) ServerContext.getContext().getQuestion(cAE.getQuestionID());
 			ServerAnswerEvent serverAnswer = new ServerAnswerEvent(cAE.getTeamID(), cAE.getQuestionID(),
@@ -183,23 +188,26 @@ public class Server extends EventPublisher {
 
 		public void handleClientNewQuestionEvent(ClientNewQuestionEvent cNQE) {
 			Quiz quiz = ServerContext.getContext().getQuiz(cNQE.getQuizID());
-
-			if(quiz.getRound().getQuestionNumber() < quiz.getRound().getNumberOfQuestions()) {
-				MCQuestion nQ = (MCQuestion) ServerContext.getContext().getQuestion(quiz.getRound().getNextQuestion());
-				int[] permutatie = { 1, 2, 3, 4 };
-				ServerNewQuestionEvent sNQE = new ServerNewQuestionEvent(nQ.getQuestionID(), nQ.getQuestion(),
-						nQ.getAnswers(), permutatie);
-				Server.getServer().publishEvent(sNQE);
-			}
-			else {
-				if(quiz.getCurrentRound() < quiz.getMaxAmountOfRounds()) {
-					// TODO: trigger create round + players wait
+			if(quiz.isAnsweredByAll()) {
+				ArrayList<Integer> receivers=ServerContext.getContext().getUsersFromQuiz(cNQE.getQuizID());
+	
+				if(quiz.getRound().getQuestionNumber() < quiz.getRound().getNumberOfQuestions()) {
+					MCQuestion nQ = (MCQuestion) ServerContext.getContext().getQuestion(quiz.getRound().getNextQuestion());
+					int[] permutatie = { 1, 2, 3, 4 };
+					ServerNewQuestionEvent sNQE = new ServerNewQuestionEvent(nQ.getQuestionID(), nQ.getQuestion(),
+							nQ.getAnswers(), permutatie);
+					sNQE.addRecipients(receivers);
+					Server.getServer().publishEvent(sNQE);
 				}
 				else {
-					// TODO: trigger end quiz
+					if(quiz.getCurrentRound() < quiz.getMaxAmountOfRounds()) {
+						// TODO: trigger create round + players wait
+					}
+					else {
+						// TODO: trigger end quiz
+					}
 				}
 			}
-
 		}
 
 		public void handleClientCreateRoundEvent(ClientCreateRoundEvent cCRE) {

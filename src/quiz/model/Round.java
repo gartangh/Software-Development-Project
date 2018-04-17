@@ -50,7 +50,11 @@ public class Round {
 	public int getNumberOfQuestions() {
 		return answers.size();
 	}
-
+	
+	public int getNumberOfAnswers() {
+		int qID = (int) answers.keySet().toArray()[currentQuestion];
+		return answers.get(qID).size();
+	}
 
 	// Methods
 	public void addQuestions(int numberOfQuestions) {

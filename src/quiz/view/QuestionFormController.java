@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.text.Text;
 import main.Context;
+import main.Main;
 import quiz.model.Quiz;
 import quiz.model.AnswerVoteModel;
 import quiz.model.MCQuestion;
@@ -71,7 +72,11 @@ public class QuestionFormController extends EventPublisher {
 	
 	private AnswerVoteModel answerVoteModel;
 	private QuestionFormEventHandler eventHandler;
-
+	private Main main;
+	
+	public void setMain(Main main) {
+		this.main = main;
+	}
 	
 	public class QuestionFormEventHandler implements EventListener{ // TODO: add handling of events 
 		public void handleEvent(Event e){

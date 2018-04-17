@@ -18,7 +18,6 @@ public class Team implements Serializable {
 	private int colorRed;
 	private int colorGreen;
 	private int colorBlue;
-	private int roundScore = 0;
 	private int quizScore = 0;
 	private int captainID;
 
@@ -56,10 +55,6 @@ public class Team implements Serializable {
 
 	public ObservableMap<Integer, String> getPlayers() {
 		return players;
-	}
-
-	public int getRoundScore() {
-		return roundScore;
 	}
 
 	public int getQuizScore() {
@@ -105,6 +100,10 @@ public class Team implements Serializable {
 
 	public int getCaptainID() {
 		return captainID;
+	}
+	
+	public void addPoints(int i) {
+		this.quizScore += i;
 	}
 
 }
