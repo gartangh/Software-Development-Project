@@ -48,6 +48,8 @@ public class Server extends EventPublisher {
 			case "CLIENT_JOIN_QUIZ":
 				ClientJoinQuizEvent cjte=(ClientJoinQuizEvent) e;
 				ServerContext.getContext().getQuizMap().get(cjte.getQuizID()).addUnassignedPlayer(cjte.getUserID(),cjte.getUserName());
+				break;
+				
 			case "CLIENT_CREATE_ACCOUNT":
 				ClientCreateAccountEvent cCAE = (ClientCreateAccountEvent) e;
 				int userID = ServerContext.getContext().addUser(cCAE.getUserName(), "");
@@ -200,7 +202,13 @@ public class Server extends EventPublisher {
 
 			ServerNewQuestionEvent sNQE = new ServerNewQuestionEvent(nQ.getQuestionID(), nQ.getQuestion(),
 					nQ.getAnswers(), permutatie);
+			// TODO: Add all players of quiz
 			Server.getServer().publishEvent(sNQE);
+			
+			ServerStartRoundEvent sSRE = new ServerStartRoundEvent();
+			// TODO: Add all players of quiz
+			Server.getServer().publishEvent(sSRE);
+			
 		}
 	}
 

@@ -25,6 +25,7 @@ import quiz.view.MainQuizroom;
 import quiz.view.NewTeamController;
 import quiz.view.QuizRoomController;
 import quiz.view.ScoreboardController;
+import quiz.view.WaitRoundController;
 import user.view.LogInController;
 import user.view.ModeSelectorController;
 
@@ -222,6 +223,18 @@ public class Main extends Application {
 			e.printStackTrace();
 			
 			return false;
+		}
+	}
+	
+	public void showWaitRound() {
+		try {
+			FXMLLoader waitRoundLoader = new FXMLLoader();
+			waitRoundLoader.setLocation(Main.class.getResource("../quiz/view/WaitRound.fxml"));
+			BorderPane waitRoundRoot = (BorderPane) waitRoundLoader.load();
+			WaitRoundController waitRoundController = waitRoundLoader.getController();
+			waitRoundController.setMain(this);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
