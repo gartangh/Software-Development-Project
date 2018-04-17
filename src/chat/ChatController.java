@@ -6,14 +6,12 @@ import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import main.Context;
-import server.ServerGetQuizzesEvent;
 import server.ServerReturnUserIDEvent;
 import server.ServerScoreboardDataEvent;
 import user.model.User;
@@ -96,7 +94,7 @@ final public class ChatController extends EventPublisher {
 
 	public void sendMessage(String message) {
 		// Publish to the event broker
-		publishEvent(new ChatMessage(chatModel.getName(), message));
+		publishEvent(new ChatMessage(Context.getContext().getUser().getUsername(), message));
 
 		// Update local GUI
 		Platform.runLater(new Runnable() {

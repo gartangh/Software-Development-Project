@@ -12,12 +12,11 @@ import quiz.util.ClientCreateAccountEvent;
 
 public class Connection {
 
+	private int connectionID;
 	private Socket socket;
 	private ObjectInputStream objectInputStream;
 	private ObjectOutputStream objectOutputStream;
 	private Network network;
-
-	private int connectionID;
 
 	// Package local would be safer
 	public Connection(Socket socket, Network network) {
