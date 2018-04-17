@@ -140,8 +140,8 @@ public class QuizRoomController extends EventPublisher {
 
 		/*
 		 * showTeamDetails(null);
-		 * 
-		 * 
+		 *
+		 *
 		 * teamTable.getSelectionModel().selectedItemProperty().addListener(
 		 * (observable, oldValue, newValue) -> showTeamDetails(newValue));
 		 */
@@ -159,16 +159,17 @@ public class QuizRoomController extends EventPublisher {
 
 	@FXML
 	private void handleNewTeam() throws IOException {
-		if (Context.getContext().getQuiz().getAmountOfTeams() < Context.getContext().getQuiz().getMaxAmountOfTeams()) {
-			NewTeamEvent teamevent = new NewTeamEvent(Context.getContext().getQuiz().getQuizID(), "",
-					Color.TRANSPARENT);
-			boolean okClicked = main.showNewTeam(teamevent);
-			if (okClicked) {
-				publishEvent(teamevent);
-				System.out.println(teamevent.getTeamName());
+		if (Context.getContext().getQuiz().getQuizmaster() != Context.getContext().getUser().getUserID()) {
+			if (Context.getContext().getQuiz().getAmountOfTeams() < Context.getContext().getQuiz().getMaxAmountOfTeams()) {
+				NewTeamEvent teamevent = new NewTeamEvent(Context.getContext().getQuiz().getQuizID(), "",
+						Color.TRANSPARENT);
+				boolean okClicked = main.showNewTeam(teamevent);
+				if (okClicked) {
+					publishEvent(teamevent);
+					System.out.println(teamevent.getTeamName());
+				}
 			}
 		}
-
 	}
 
 	@FXML
