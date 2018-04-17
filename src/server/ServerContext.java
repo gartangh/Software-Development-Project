@@ -77,7 +77,7 @@ public class ServerContext {
 	 * Team(2,"Team2",Color.rgb(255,0,0),4,"Precious",quiz.
 	 * getMaxAmountOfPlayersPerTeam()); quiz.addTeam(1,team1);
 	 * quiz.addTeam(2,team2); }
-	 * 
+	 *
 	 * public void addUserwithUserID(int userID){ userMap.put(userID,new
 	 * User(1,"hannes","1234")); }
 	 */
@@ -161,8 +161,8 @@ public class ServerContext {
 	}
 
 	public void loadData() {
-		BufferedReader reader;
-		String locationPrefix = "./Files/";
+		BufferedReader reader;//./Files/
+		String locationPrefix = "d:\\Demuynck\\Documents\\school\\Softwareontwikkeling\\Project\\project-1718-groep9\\src\\server\\";
 		String[] themeFiles = { "QUESTIONS_CULTURE.txt", "QUESTIONS_SPORTS.txt" };
 		try {
 			for (int tF = 0; tF < themeFiles.length; tF++) {
