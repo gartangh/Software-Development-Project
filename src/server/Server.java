@@ -17,6 +17,7 @@ import network.Network;
 import quiz.model.MCQuestion;
 import quiz.util.ClientCreateAccountEvent;
 import quiz.util.ClientCreateQuizEvent;
+import quiz.util.ClientCreateRoundEvent;
 import quiz.util.ClientGetQuizzesEvent;
 import quiz.util.ClientJoinQuizEvent;
 import quiz.util.ClientVoteEvent;
@@ -101,21 +102,8 @@ public class Server extends EventPublisher {
 				break;
 			case "CLIENT_SCOREBOARDDATA":
 				QuizzerEvent askForScoreboardData = (QuizzerEvent) e;
-
-				ServerScoreboardDataEvent scoreboardData = new ServerScoreboardDataEvent(
-						askForScoreboardData.getQuizID());
+				ServerScoreboardDataEvent scoreboardData = new ServerScoreboardDataEvent(askForScoreboardData.getQuizID());
 				scoreboardData.addRecipient(askForScoreboardData.getUserID());
-				// Testing code for Scoreboard
-				/*
-				 * ArrayList<Integer> list = getTeams();
-				 * ServerScoreboardDataEvent scoreboardData = new
-				 * ServerScoreboardDataEvent(list.get(0));
-				 * scoreboardData.removeAllRecipients(); for(Map.Entry<Integer,
-				 * Integer> entry : ServerContext.getContext().getNetwork().
-				 * getUserIDConnectionIDMap().entrySet()) {
-				 * if(!(list.contains(entry.getKey())))
-				 * scoreboardData.addRecipient(entry.getKey()); }
-				 */
 				server.publishEvent(scoreboardData);
 				handled = true;
 				break;
@@ -162,6 +150,10 @@ public class Server extends EventPublisher {
 				handled=true;
 				break;
 			// TODO oldteam (check for null) and newteam modifien
+			case "CLIENT_CREATE_ROUND":
+				handleClientCreateRoundEvent((ClientCreateRoundEvent) e);
+				handled = true;
+				break;
 			}
 
 			if (handled)
@@ -190,6 +182,19 @@ public class Server extends EventPublisher {
 
 		public void handleClientNewQuestionEvent(ClientNewQuestionEvent cNQE) {
 			Quiz quiz = ServerContext.getContext().getQuiz(cNQE.getQuizID());
+			MCQuestion nQ = (MCQuestion) ServerContext.getContext().getQuestion(quiz.getRound().getNextQuestion());
+			int[] permutatie = { 1, 2, 3, 4 };
+
+			ServerNewQuestionEvent sNQE = new ServerNewQuestionEvent(nQ.getQuestionID(), nQ.getQuestion(),
+					nQ.getAnswers(), permutatie);
+			Server.getServer().publishEvent(sNQE);
+		}
+		
+		public void handleClientCreateRoundEvent(ClientCreateRoundEvent cCRE) {
+			Quiz quiz = ServerContext.getContext().getQuiz(cCRE.getQuizID());
+			quiz.addRound(cCRE.getDiff(), cCRE.getTheme());
+			quiz.getRound().addQuestions(cCRE.getNumberOfQuestions());
+
 			MCQuestion nQ = (MCQuestion) ServerContext.getContext().getQuestion(quiz.getRound().getNextQuestion());
 			int[] permutatie = { 1, 2, 3, 4 };
 

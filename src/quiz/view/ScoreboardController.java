@@ -78,11 +78,9 @@ public class ScoreboardController extends EventPublisher {
 				if (scoreboardData.getScoreboardTeams().size() > 0) {
 					int curTeamID = Context.getContext().getTeamID();
 					if (scoreboardData.getScoreboardTeams().get(0).getTeamID() == curTeamID)
-						winnerLoser.textProperty()
-								.set(scoreboardData.getScoreboardTeams().get(curTeamID).getTeamName() + ": WINNER");
+						scoreboardModel.updateWinnerLoser(scoreboardData.getScoreboardTeams().get(curTeamID).getTeamName() + ": WINNER");
 					else
-						winnerLoser.textProperty()
-								.set(scoreboardData.getScoreboardTeams().get(curTeamID).getTeamName() + ": LOSER");
+						scoreboardModel.updateWinnerLoser(scoreboardData.getScoreboardTeams().get(curTeamID).getTeamName() + ": LOSER");
 				}
 
 				break;
