@@ -3,6 +3,7 @@ package user.view;
 import eventbroker.EventPublisher;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import main.Context;
 import main.Main;
@@ -15,7 +16,7 @@ public class LogInController extends EventPublisher {
 	@FXML
 	private TextField mUsername;
 	@FXML
-	private TextField mPassword;
+	private PasswordField mPassword;
 	@FXML
 	private Button mLogIn;
 	@FXML

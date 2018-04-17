@@ -133,8 +133,14 @@ public class Server extends EventPublisher {
 					ServerNewTeamEvent serverNewTeamEvent = new ServerNewTeamEvent(newteamevent.getQuizID(), newTeamID,
 							newteam.getTeamName(), newteam.getColor(), newteam.getCaptainID(),
 							newteam.getPlayers().get(newteam.getCaptainID()));
-					Server.getServer().publishEvent(serverNewTeamEvent);
+					ArrayList<Integer> receivers=ServerContext.getContext().getUsersFromQuiz(newteamevent.getQuizID());
+					ServerContext.getContext().getQuizMap().get(newteamevent.getQuizID()).removeUnassignedPlayer(newteam.getCaptainID());
+					serverNewTeamEvent.addRecipients(receivers);
+					server.publishEvent(serverNewTeamEvent);
 				}
+				else 
+					System.out.println("newTeamID != -1");
+				handled=true;
 				break;
 			case "CLIENT_CHANGE_TEAM":
 				ChangeTeamEvent cte = (ChangeTeamEvent) e;
@@ -146,6 +152,7 @@ public class Server extends EventPublisher {
 							cte.getNewTeamID(), cte.getOldTeamID(), cte.getUserID(), userName);
 					Server.getServer().publishEvent(serverChangeTeamEvent);
 				}
+				handled=true;
 				break;
 			// TODO oldteam (check for null) and newteam modifien
 			}

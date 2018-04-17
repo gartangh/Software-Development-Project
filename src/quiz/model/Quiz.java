@@ -45,6 +45,7 @@ public class Quiz implements Serializable {
 	private Map<Integer, Team> teams = new HashMap<Integer, Team>();
 	// Map(teamID -> Map(userID -> vote))
 	private Map<Integer, Map<Integer, Integer>> votes = new HashMap<>();
+	private Map<Integer,String> unassingendPlayers=new HashMap<>();
 
 	public Quiz(int quizID, String quizName, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds,
 			int maxAmountOfQuestionsPerRound, int hostID) {
@@ -223,4 +224,16 @@ public class Quiz implements Serializable {
 	 * 
 	 * return true; // Temporary }
 	 */
+	
+	public void addUnassignedPlayer(int userID,String username){
+		unassingendPlayers.put(userID,username);
+	}
+	
+	public void removeUnassignedPlayer(int userID){
+		unassingendPlayers.remove(userID);
+	}
+
+	public Map<Integer, String> getUnassingendPlayers() {
+		return unassingendPlayers;
+	}
 }
