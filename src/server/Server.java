@@ -48,6 +48,7 @@ public class Server extends EventPublisher {
 			case "CLIENT_JOIN_QUIZ":
 				ClientJoinQuizEvent cjte=(ClientJoinQuizEvent) e;
 				ServerContext.getContext().getQuizMap().get(cjte.getQuizID()).addUnassignedPlayer(cjte.getUserID(),cjte.getUserName());
+			break;
 			case "CLIENT_CREATE_ACCOUNT":
 				ClientCreateAccountEvent cCAE = (ClientCreateAccountEvent) e;
 				int userID = ServerContext.getContext().addUser(cCAE.getUserName(), "");
@@ -189,7 +190,7 @@ public class Server extends EventPublisher {
 					nQ.getAnswers(), permutatie);
 			Server.getServer().publishEvent(sNQE);
 		}
-		
+
 		public void handleClientCreateRoundEvent(ClientCreateRoundEvent cCRE) {
 			Quiz quiz = ServerContext.getContext().getQuiz(cCRE.getQuizID());
 			quiz.addRound(cCRE.getDiff(), cCRE.getTheme());
@@ -219,7 +220,7 @@ public class Server extends EventPublisher {
 
 		int andreID = ServerContext.getContext().addUser("André", "");
 		int quizID = ServerContext.getContext().addQuiz("Testquiz", 8, 4, 1, 4, andreID);
-		ServerContext.getContext().addTeam(quizID, "André en de boys", Color.BLUE, andreID);
+		//ServerContext.getContext().addTeam(quizID, "André en de boys", Color.BLUE, andreID);
 		ServerContext.getContext().loadData();
 		ServerContext.getContext().getQuiz(quizID).addRound(Difficulty.EASY, Theme.CULTURE);
 
