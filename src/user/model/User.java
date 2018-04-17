@@ -26,7 +26,6 @@ public class User implements Serializable {
 		this.xp = 0L;
 	}
 
-
 	private User(String username, String password, int level, long xp) {
 		this.username = username;
 		this.password = password;
@@ -40,7 +39,7 @@ public class User implements Serializable {
 		this.password = password;
 		this.level = level;
 		this.xp = xp;
-}
+	}
 
 	User(User user) {
 		// Copy constructor
@@ -48,29 +47,26 @@ public class User implements Serializable {
 		this.password = user.password;
 		this.level = user.level;
 		this.xp = user.xp;
-		this.userID=user.userID;
+		this.userID = user.userID;
 	}
 
-	public int getID(){
+	public int getID() {
 		return this.userID;
 	}
 
 	// Factory method
-	/*public static int createAccount(String username, String password) {
-		if (!username.matches(USERNAMEREGEX))
-			return 1;
-		else if (!password.matches(PASSWORDREGEX))
-			return 2;
-		else if (!isUniqueUsername(username))
-			return 3;
-
-		// Everything is valid
-		User user = new User(username, password);
-		
-		Context.getContext().setUser(user);
-
-		return 0;
-	}*/
+	/*
+	 * public static int createAccount(String username, String password) { if
+	 * (!username.matches(USERNAMEREGEX)) return 1; else if
+	 * (!password.matches(PASSWORDREGEX)) return 2; else if
+	 * (!isUniqueUsername(username)) return 3;
+	 * 
+	 * // Everything is valid User user = new User(username, password);
+	 * 
+	 * Context.getContext().setUser(user);
+	 * 
+	 * return 0; }
+	 */
 
 	// Upcasting
 	// Factory method
@@ -78,8 +74,8 @@ public class User implements Serializable {
 		Context.getContext().setUser(new User(user));
 	}
 
-	public String toString(){
-		return username; //for tableview in quizroom
+	public String toString() {
+		return username; // for tableview in quizroom
 	}
 
 	// Downcasting
@@ -167,6 +163,5 @@ public class User implements Serializable {
 	public String getPassword() {
 		return password;
 	}
-
 
 }

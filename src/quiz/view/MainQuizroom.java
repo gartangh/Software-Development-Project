@@ -65,12 +65,9 @@ public class MainQuizroom extends Application{
 
 
 	public void showQuizroom(){
-
         Scene scene = new Scene(quizroom.getContent());
         primaryStage.setScene(scene);
         primaryStage.show();
-
-
 	}
 
 	public boolean showNewTeam(Team team) throws IOException{

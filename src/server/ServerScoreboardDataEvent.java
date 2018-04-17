@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javafx.collections.ObservableList;
 import quiz.model.Quiz;
 import quiz.model.ScoreboardTeam;
 import quiz.model.Team;

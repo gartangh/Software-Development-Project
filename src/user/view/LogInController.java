@@ -72,17 +72,12 @@ public class LogInController extends EventPublisher {
 		String username = mUsername.getText();
 		String password = mPassword.getText();
 
-		/*switch (User.logIn(username, password)) {
-		case 0:
-			// TODO: Handle log in
-			main.showModeSelectorScene();
-			break;
-		case 1:
-			AlertBox.display("Error", "The credentials are invalid");
-			break;
-		default:
-			AlertBox.display("Error", "Something went wrong!");
-		}*/
+		/*
+		 * switch (User.logIn(username, password)) { case 0: // TODO: Handle log
+		 * in main.showModeSelectorScene(); break; case 1:
+		 * AlertBox.display("Error", "The credentials are invalid"); break;
+		 * default: AlertBox.display("Error", "Something went wrong!"); }
+		 */
 	}
 
 }

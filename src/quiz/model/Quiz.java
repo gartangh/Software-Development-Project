@@ -46,8 +46,9 @@ public class Quiz implements Serializable {
 	// Map(teamID -> Map(userID -> vote))
 	private Map<Integer, Map<Integer, Integer>> votes = new HashMap<>();
 
-	public Quiz(int quizID, String quizName, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds, int maxAmountOfQuestionsPerRound, int hostID) {
-		this.quizID=quizID;
+	public Quiz(int quizID, String quizName, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds,
+			int maxAmountOfQuestionsPerRound, int hostID) {
+		this.quizID = quizID;
 		this.quizName = quizName;
 		this.amountOfTeams = 0;
 		this.maxAmountOfTeams = maxAmountOfTeams;
@@ -61,47 +62,35 @@ public class Quiz implements Serializable {
 	}
 
 	// Factory method
-	/*public static int createQuiz(String quizname, int rounds, int questions, int teams, int players) {
-		if (!quizname.matches(QUIZNAMEREGEX))
-			return 1;
-		else if (!isUniqueQuizname(quizname))
-			return 2;
-		else if (rounds < 1)
-			return 3;
-		else if (rounds > MAXROUNDS)
-			return 4;
-		else if (questions < 1)
-			return 5;
-		else if (questions > MAXQUESTIONS)
-			return 6;
-		else if (teams < 2)
-			return 7;
-		else if (teams > MAXTEAMS)
-			return 8;
-		else if (players < 1)
-			return 9;
-		else if (players > MAXPLAYERS)
-			return 10;
-
-		// Everything is valid
-		Quiz quiz = new Quiz(quizname, rounds, questions, teams, players);
-
-		quiz.quizID = n++;
-
-		Context.getContext().setQuiz(quiz);
-
-		return 0;
-	}*/
+	/*
+	 * public static int createQuiz(String quizname, int rounds, int questions,
+	 * int teams, int players) { if (!quizname.matches(QUIZNAMEREGEX)) return 1;
+	 * else if (!isUniqueQuizname(quizname)) return 2; else if (rounds < 1)
+	 * return 3; else if (rounds > MAXROUNDS) return 4; else if (questions < 1)
+	 * return 5; else if (questions > MAXQUESTIONS) return 6; else if (teams <
+	 * 2) return 7; else if (teams > MAXTEAMS) return 8; else if (players < 1)
+	 * return 9; else if (players > MAXPLAYERS) return 10;
+	 * 
+	 * // Everything is valid Quiz quiz = new Quiz(quizname, rounds, questions,
+	 * teams, players);
+	 * 
+	 * quiz.quizID = n++;
+	 * 
+	 * Context.getContext().setQuiz(quiz);
+	 * 
+	 * return 0; }
+	 */
 
 	// Factory method
-	/*public static void createServerQuiz(String quizname, int quizID, int rounds, int questions, int teams,
-			int players) {
-		Quiz quiz = new Quiz(quizname, rounds, questions, teams, players);
-
-		quiz.quizID = quizID;
-
-		ServerContext.getContext().addQuiz(quiz);
-	}*/
+	/*
+	 * public static void createServerQuiz(String quizname, int quizID, int
+	 * rounds, int questions, int teams, int players) { Quiz quiz = new
+	 * Quiz(quizname, rounds, questions, teams, players);
+	 * 
+	 * quiz.quizID = quizID;
+	 * 
+	 * ServerContext.getContext().addQuiz(quiz); }
+	 */
 
 	// Getters
 	public static int getMaxrounds() {
@@ -112,11 +101,10 @@ public class Quiz implements Serializable {
 		return MAXQUESTIONS;
 	}
 
-
-	public Map<Integer,Team> getTeams(){
+	public Map<Integer, Team> getTeams() {
 		return teams;
 	}
-    
+
 	public static int getMaxteams() {
 		return MAXTEAMS;
 	}
@@ -145,7 +133,7 @@ public class Quiz implements Serializable {
 		return maxAmountOfRounds;
 	}
 
-	public Round getRound(){
+	public Round getRound() {
 		return rounds.get(currentRound);
 	}
 
@@ -206,8 +194,7 @@ public class Quiz implements Serializable {
 		if (teams.get(teamID) != null) {
 			teams.remove(teamID);
 			amountOfTeams--;
-		}
-		else {
+		} else {
 			// TODO: Go back and show error
 		}
 	}
@@ -220,19 +207,20 @@ public class Quiz implements Serializable {
 		teamVotes.put(userID, vote);
 		votes.put(teamID, teamVotes);
 	}
-	
+
 	public void resetVotes() {
 		this.votes = new HashMap<Integer, Map<Integer, Integer>>();
 	}
-	
+
 	public void addAnswer(int teamID, int questionID, int answer) {
 		rounds.get(currentRound).addAnswer(teamID, questionID, answer);
 	}
 
 	// Methods
-	/*private static boolean isUniqueQuizname(String quizname) {
-		// TODO: Check uniqueness of quizname
-
-		return true; // Temporary
-	}*/
+	/*
+	 * private static boolean isUniqueQuizname(String quizname) { // TODO: Check
+	 * uniqueness of quizname
+	 * 
+	 * return true; // Temporary }
+	 */
 }
