@@ -96,7 +96,7 @@ final public class ChatController extends EventPublisher {
 
 	public void sendMessage(String message) {
 		// Publish to the event broker
-		publishEvent(new ChatMessage(chatModel.getName(), message));
+		publishEvent(new ChatMessage(Context.getContext().getUser().getUsername(), message));
 
 		// Update local GUI
 		Platform.runLater(new Runnable() {

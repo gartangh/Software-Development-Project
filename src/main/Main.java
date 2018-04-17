@@ -37,16 +37,18 @@ public class Main extends Application {
 	private Stage primaryStage;
 	private BorderPane rootLayout;
 
+	private ChatPanel chatPanel;
+	
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 
 		// TODO: Randomize port
-		Network network = new Network(1026, "CLIENT");
+		Network network = new Network(1027, "CLIENT");
 		Context.getContext().setNetwork(network);
 
 		// ChatPanel (ChatModel and ChatController) are created
-		ChatPanel chatPanel = ChatPanel.createChatPanel();
+		chatPanel = ChatPanel.createChatPanel();
 		// chatPanel.getChatModel().setName(Context.getContext().getUser().getUsername());
 
 		try {
@@ -152,6 +154,8 @@ public class Main extends Application {
 			JoinQuizController joinQuizController = joinQuizLoader.getController();
 			joinQuizController.setMainApp(this);
 			rootLayout.setCenter(joinQuiz);
+			
+			rootLayout.setBottom(chatPanel.getContent());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
