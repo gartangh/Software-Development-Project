@@ -12,7 +12,7 @@ public class ChatMessage extends UserEvent implements Serializable {
 
 	public ChatMessage(String sender, String message) {
 		super();
-		this.type = "TYPE_CHAT";
+		this.type = TYPE_CHAT;
 		this.message = message;
 		this.sender = sender;
 	}

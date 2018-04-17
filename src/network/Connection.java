@@ -12,12 +12,11 @@ import quiz.util.ClientCreateAccountEvent;
 
 public class Connection {
 
+	private int connectionID;
 	private Socket socket;
 	private ObjectInputStream objectInputStream;
 	private ObjectOutputStream objectOutputStream;
 	private Network network;
-
-	private int connectionID;
 
 	// Package local would be safer
 	public Connection(Socket socket, Network network) {
@@ -106,7 +105,6 @@ public class Connection {
 						ClientCreateAccountEvent createEvent;
 						if (event.getType().equals("CLIENT_CREATE_ACCOUNT")) {
 							createEvent = (ClientCreateAccountEvent) event;
-							createEvent.setConnectionID(connectionID);
 							network.publishEvent(createEvent);
 						} else
 							network.publishEvent(event);

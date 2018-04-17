@@ -19,6 +19,10 @@ public class ConnectionListener implements Runnable {
 		this.network = network;
 		this.serverPort = serverPort;
 	}
+	
+	public int getServerPort() {
+		return serverPort;
+	}
 
 	@Override
 	public void run() {

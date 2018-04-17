@@ -65,22 +65,9 @@ public class ServerContext {
 
 		User newUser = new User(newID, username, password);
 		userMap.put(newID, newUser);
+		
 		return newID;
 	}
-
-	// testing code for hannes
-	/*
-	 * public void addQuizwithQuizID(int quizID){ Quiz quiz=new
-	 * Quiz(1,5,5,5,5,20); quizMap.put(quizID,quiz); Team team1 = new
-	 * Team(1,"Deborah leemans",Color.rgb(0,0,255),2,"james",quiz.
-	 * getMaxAmountOfPlayersPerTeam()); Team team2 = new
-	 * Team(2,"Team2",Color.rgb(255,0,0),4,"Precious",quiz.
-	 * getMaxAmountOfPlayersPerTeam()); quiz.addTeam(1,team1);
-	 * quiz.addTeam(2,team2); }
-	 * 
-	 * public void addUserwithUserID(int userID){ userMap.put(userID,new
-	 * User(1,"hannes","1234")); }
-	 */
 
 	public String changeTeam(int quizID, int teamID, int userID, char type) {// returns
 																				// username

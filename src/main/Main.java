@@ -3,6 +3,7 @@ package main;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Random;
 
 import chat.ChatPanel;
 import eventbroker.EventBroker;
@@ -20,8 +21,6 @@ import network.Network;
 import quiz.util.NewTeamEvent;
 import quiz.view.CreateQuizController;
 import quiz.view.JoinQuizController;
-import quiz.view.JoinTeamController;
-import quiz.view.MainQuizroom;
 import quiz.view.NewTeamController;
 import quiz.view.QuizRoomController;
 import quiz.view.ScoreboardController;
@@ -35,23 +34,27 @@ public class Main extends Application {
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
+	
+	ChatPanel chatPanel;
 
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 
-		// TODO: Randomize port
-		Network network = new Network(1026, "CLIENT");
+		// Generate random client port
+		Random random = new Random();
+		Network network = new Network(random.nextInt(65535 - 1026 + 1) + 1026, "CLIENT");
 		Context.getContext().setNetwork(network);
-
+		
 		// ChatPanel (ChatModel and ChatController) are created
-		ChatPanel chatPanel = ChatPanel.createChatPanel();
-		// chatPanel.getChatModel().setName(Context.getContext().getUser().getUsername());
+		chatPanel = ChatPanel.createChatPanel();
 
 		try {
 			network.connect(InetAddress.getLocalHost(), SERVERPORT);
+			System.out.println("Address: " + network.getNetworkAddress() + "\nPort: "
+					+ Integer.toString(network.getConnectionListener().getServerPort()));
 
-			// --> send event over network
+			// Send event over network
 			EventBroker.getEventBroker().addEventListener(network);
 
 			// Start event broker
@@ -151,21 +154,12 @@ public class Main extends Application {
 			JoinQuizController joinQuizController = joinQuizLoader.getController();
 			joinQuizController.setMainApp(this);
 			rootLayout.setCenter(joinQuiz);
+
+			rootLayout.setBottom(chatPanel.getContent());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-
-	/*
-	 * public void showJoinTeamScene() { try { System.out.println("Quiz: " +
-	 * Context.getContext().getQuiz()); FXMLLoader joinTeamLoader = new
-	 * FXMLLoader(); joinTeamLoader.setLocation(Main.class.getResource(
-	 * "../quiz/view/JoinTeam.fxml")); VBox joinTeam = (VBox)
-	 * joinTeamLoader.load(); JoinTeamController joinTeamController =
-	 * joinTeamLoader.getController(); joinTeamController.setMainApp(this);
-	 * rootLayout.setCenter(joinTeam); } catch (IOException e) {
-	 * e.printStackTrace(); } }
-	 */
 
 	public void showQuizroomScene() {
 		// Quizroom is created
@@ -178,7 +172,6 @@ public class Main extends Application {
 			quizcontroller.addListener();
 			rootLayout.setCenter(content);
 		} catch (IOException e) {
-			// TODO: Go back and show error
 			e.printStackTrace();
 		}
 	}
@@ -220,7 +213,7 @@ public class Main extends Application {
 			return controller.isOkClicked();
 		} catch (IOException e) {
 			e.printStackTrace();
-			
+
 			return false;
 		}
 	}
