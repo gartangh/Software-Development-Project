@@ -50,7 +50,7 @@
                <children>
                   <ButtonBar layoutX="310.0" layoutY="160.0" prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0">
                     <buttons>
-                      <Button fx:id="confirmButton" mnemonicParsing="false" text="Confirm" />
+                      <Button fx:id="confirmButton" mnemonicParsing="false" onAction="#handleConfirm" text="Confirm" />
                     </buttons>
                   </ButtonBar>
                </children>
