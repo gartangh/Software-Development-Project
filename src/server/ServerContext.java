@@ -162,7 +162,7 @@ public class ServerContext {
 
 	public void loadData() {
 		BufferedReader reader;
-		String locationPrefix = "C:\\Users\\Gebruiker\\workspace\\Quiz\\src\\server\\";
+		String locationPrefix = "./Files/";
 		String[] themeFiles = { "QUESTIONS_CULTURE.txt", "QUESTIONS_SPORTS.txt" };
 		try {
 			for (int tF = 0; tF < themeFiles.length; tF++) {
