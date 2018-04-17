@@ -56,8 +56,11 @@ public class Server extends EventPublisher {
 
 			case "CLIENT_CREATE_QUIZ":
 				ClientCreateQuizEvent cCQE = (ClientCreateQuizEvent) e;
-				Quiz quiz = cCQE.getQuiz();
-				ServerContext.getContext().getQuizMap().put(quiz.getQuizID(), quiz);
+				int quizID = ServerContext.getContext().addQuiz(cCQE.getQuizName(), cCQE.getMaxAmountOfTeams(), cCQE.getMaxAmountOfPlayersPerTeam(), cCQE.getMaxAmountOfRounds(), cCQE.getMaxAmountOfQuestionsPerRound(), cCQE.getUserID());
+				Quiz quiz = ServerContext.getContext().getQuizMap().get(quizID);
+				ServerReturnQuizEvent sRQE = new ServerReturnQuizEvent(quiz);
+				sRQE.addRecipient(cCQE.getUserID());
+				server.publishEvent(sRQE);
 				handled = true;
 				break;
 
@@ -95,21 +98,8 @@ public class Server extends EventPublisher {
 				break;
 			case "CLIENT_SCOREBOARDDATA":
 				QuizzerEvent askForScoreboardData = (QuizzerEvent) e;
-
-				ServerScoreboardDataEvent scoreboardData = new ServerScoreboardDataEvent(
-						askForScoreboardData.getQuizID());
+				ServerScoreboardDataEvent scoreboardData = new ServerScoreboardDataEvent(askForScoreboardData.getQuizID());
 				scoreboardData.addRecipient(askForScoreboardData.getUserID());
-				// Testing code for Scoreboard
-				/*
-				 * ArrayList<Integer> list = getTeams();
-				 * ServerScoreboardDataEvent scoreboardData = new
-				 * ServerScoreboardDataEvent(list.get(0));
-				 * scoreboardData.removeAllRecipients(); for(Map.Entry<Integer,
-				 * Integer> entry : ServerContext.getContext().getNetwork().
-				 * getUserIDConnectionIDMap().entrySet()) {
-				 * if(!(list.contains(entry.getKey())))
-				 * scoreboardData.addRecipient(entry.getKey()); }
-				 */
 				server.publishEvent(scoreboardData);
 				handled = true;
 				break;
@@ -131,8 +121,14 @@ public class Server extends EventPublisher {
 					ServerNewTeamEvent serverNewTeamEvent = new ServerNewTeamEvent(newteamevent.getQuizID(), newTeamID,
 							newteam.getTeamName(), newteam.getColor(), newteam.getCaptainID(),
 							newteam.getPlayers().get(newteam.getCaptainID()));
-					Server.getServer().publishEvent(serverNewTeamEvent);
+					ArrayList<Integer> receivers=ServerContext.getContext().getUsersFromQuiz(newteamevent.getQuizID());
+					ServerContext.getContext().getQuizMap().get(newteamevent.getQuizID()).removeUnassignedPlayer(newteam.getCaptainID());
+					serverNewTeamEvent.addRecipients(receivers);
+					server.publishEvent(serverNewTeamEvent);
 				}
+				else 
+					System.out.println("newTeamID != -1");
+				handled=true;
 				break;
 			case "CLIENT_CHANGE_TEAM":
 				ChangeTeamEvent cte = (ChangeTeamEvent) e;
@@ -144,6 +140,7 @@ public class Server extends EventPublisher {
 							cte.getNewTeamID(), cte.getOldTeamID(), cte.getUserID(), userName);
 					Server.getServer().publishEvent(serverChangeTeamEvent);
 				}
+				handled=true;
 				break;
 			// TODO oldteam (check for null) and newteam modifien
 			case "CLIENT_CREATE_ROUND":

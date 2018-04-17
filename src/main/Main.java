@@ -12,14 +12,18 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.view.MenuController;
 import main.view.RootLayoutController;
 import network.Network;
+import quiz.util.NewTeamEvent;
 import quiz.view.CreateQuizController;
 import quiz.view.JoinQuizController;
 import quiz.view.JoinTeamController;
-import quiz.view.Quizroom;
+import quiz.view.MainQuizroom;
+import quiz.view.NewTeamController;
+import quiz.view.QuizRoomController;
 import quiz.view.ScoreboardController;
 import user.view.LogInController;
 import user.view.ModeSelectorController;
@@ -31,7 +35,6 @@ public class Main extends Application {
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
-	private Quizroom quizroom;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -131,7 +134,7 @@ public class Main extends Application {
 		try {
 			FXMLLoader createQuizLoader = new FXMLLoader();
 			createQuizLoader.setLocation(Main.class.getResource("../quiz/view/CreateQuiz.fxml"));
-			VBox createQuiz = (VBox) createQuizLoader.load();
+			BorderPane createQuiz = (BorderPane) createQuizLoader.load();
 			CreateQuizController createQuizController = createQuizLoader.getController();
 			createQuizController.setMainApp(this);
 			rootLayout.setCenter(createQuiz);
@@ -153,25 +156,27 @@ public class Main extends Application {
 		}
 	}
 
-	public void showJoinTeamScene() {
-		try {
-			System.out.println("Quiz: " + Context.getContext().getQuiz());
-			FXMLLoader joinTeamLoader = new FXMLLoader();
-			joinTeamLoader.setLocation(Main.class.getResource("../quiz/view/JoinTeam.fxml"));
-			VBox joinTeam = (VBox) joinTeamLoader.load();
-			JoinTeamController joinTeamController = joinTeamLoader.getController();
-			joinTeamController.setMainApp(this);
-			rootLayout.setCenter(joinTeam);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+	/*
+	 * public void showJoinTeamScene() { try { System.out.println("Quiz: " +
+	 * Context.getContext().getQuiz()); FXMLLoader joinTeamLoader = new
+	 * FXMLLoader(); joinTeamLoader.setLocation(Main.class.getResource(
+	 * "../quiz/view/JoinTeam.fxml")); VBox joinTeam = (VBox)
+	 * joinTeamLoader.load(); JoinTeamController joinTeamController =
+	 * joinTeamLoader.getController(); joinTeamController.setMainApp(this);
+	 * rootLayout.setCenter(joinTeam); } catch (IOException e) {
+	 * e.printStackTrace(); } }
+	 */
 
 	public void showQuizroomScene() {
 		// Quizroom is created
 		try {
-			quizroom = new Quizroom(Context.getContext().getQuiz(), this);
-			rootLayout.setCenter(quizroom.getContent());
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(Main.class.getResource("../quiz/view/Quizroom.fxml"));
+			AnchorPane content = (AnchorPane) loader.load();
+			QuizRoomController quizcontroller = loader.getController();
+			quizcontroller.setMain(this);
+			quizcontroller.addListener();
+			rootLayout.setCenter(content);
 		} catch (IOException e) {
 			// TODO: Go back and show error
 			e.printStackTrace();
@@ -188,6 +193,35 @@ public class Main extends Application {
 			rootLayout.setCenter(scoreboardRoot);
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+
+	public boolean showNewTeam(NewTeamEvent teamevent) {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(Main.class.getResource("../quiz/view/NewTeam.fxml"));
+			AnchorPane newteam = (AnchorPane) loader.load();
+
+			Stage dialogStage = new Stage();
+			dialogStage.setTitle("New Team");
+			dialogStage.initModality(Modality.WINDOW_MODAL);
+			dialogStage.initOwner(primaryStage);
+			Scene scene = new Scene(newteam);
+			dialogStage.setScene(scene);
+
+			// Set the person into the controller.
+			NewTeamController controller = loader.getController();
+			controller.setDialogStage(dialogStage);
+			controller.setTeamEvent(teamevent);
+
+			// Show the dialog and wait until the user closes it
+			dialogStage.showAndWait();
+
+			return controller.isOkClicked();
+		} catch (IOException e) {
+			e.printStackTrace();
+			
+			return false;
 		}
 	}
 

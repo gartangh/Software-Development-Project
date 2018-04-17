@@ -1,7 +1,6 @@
 package quiz.model;
 
 import java.io.Serializable;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import javafx.scene.paint.Color;
@@ -21,11 +20,13 @@ public class Team implements Serializable {
 	private int colorBlue;
 	private int roundScore = 0;
 	private int quizScore = 0;
+	private int captainID;
 
 	// Constructors
 	public Team(int teamID, String teamName, Color color, int captainID, String captainName) {
 		this.teamID = teamID;
 		this.teamName = teamName;
+		this.captainID = captainID;
 		this.colorRed = (int) (color.getRed() * 255);
 		this.colorGreen = (int) (color.getGreen() * 255);
 		this.colorBlue = (int) (color.getBlue() * 255);
@@ -66,23 +67,23 @@ public class Team implements Serializable {
 	}
 
 	// Adders
-
-	public void addPlayer(int userID,String userName){
-		if (amountOfPlayers <maxAmountOfPlayers){
-			players.put(userID,userName);
+	public void addPlayer(int userID, String userName) {
+		if (amountOfPlayers < maxAmountOfPlayers) {
+			players.put(userID, userName);
 			amountOfPlayers++;
 		}
 	}
 
-	public void setTeamName(String teamName){
+	public void setTeamName(String teamName) {
 		this.teamName = teamName;
 	}
 
-	public void setColor(Color color){
-		this.colorRed = ((int) color.getRed()*255);
-		this.colorGreen = ((int) color.getGreen()*255);
-		this.colorBlue = ((int) color.getBlue()*255);
+	public void setColor(Color color) {
+		this.colorRed = ((int) color.getRed() * 255);
+		this.colorGreen = ((int) color.getGreen() * 255);
+		this.colorBlue = ((int) color.getBlue() * 255);
 	}
+
 	// Removers
 	public void removePlayer(int playerID) {
 		if (players.remove(playerID) != null)
@@ -103,7 +104,7 @@ public class Team implements Serializable {
 	}
 
 	public int getCaptainID() {
-		return this.getCaptainID();
+		return captainID;
 	}
 
 }

@@ -170,11 +170,6 @@ final public class ChatController extends EventPublisher {
 				System.out.println("Event received and handled: " + type);
 				break;
 
-			case "SERVER_SCOREBOARDDATA":
-				ServerScoreboardDataEvent scoreboardData = (ServerScoreboardDataEvent) event;
-				// TODO: Handle data to scoreboard
-				break;
-
 			default:
 				System.out.println("Event received but left unhandled: " + type);
 			}
