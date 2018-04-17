@@ -153,6 +153,7 @@ public class Main extends Application {
 
 	public void showJoinTeamScene() {
 		try {
+			System.out.println("Quiz: " + Context.getContext().getQuiz());
 			FXMLLoader joinTeamLoader = new FXMLLoader();
 			joinTeamLoader.setLocation(Main.class.getResource("../quiz/view/JoinTeam.fxml"));
 			VBox joinTeam = (VBox) joinTeamLoader.load();

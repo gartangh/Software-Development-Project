@@ -71,7 +71,7 @@ public class JoinQuizController extends EventPublisher {
 		mQuestionsPerRound.textProperty().bind(joinQuizModel.getQuestionsPerRoundProperty());
 		mTeams.textProperty().bind(joinQuizModel.getTeamProperty());
 		mPlayersPerTeam.textProperty().bind(joinQuizModel.getPlayersPerTeamProperty());
-		
+		mJoin.disableProperty().bind(joinQuizModel.getJoinDisableProperty());
 		quiznameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getQuizname())));
 		quizmasternameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getQuizname())));
 		
@@ -81,25 +81,30 @@ public class JoinQuizController extends EventPublisher {
 		publishEvent(cGQE);
 	}
 	
-	   public void showQuizDetails(Quiz quiz){
-	    	if (quiz != null){
-	    		joinQuizModel.updateQuizDetail(quiz);
-	    	}
-	    	else {
-	    		//TO DO
-	    	}
+	public void showQuizDetails(Quiz quiz){
+	    if (quiz != null){
+	    	Context.getContext().setQuiz(quiz);
+	    	Context.getContext().setTeamID(-1);		//for Hannes
+	    	joinQuizModel.updateQuizDetail(quiz);
 	    }
+	    else {
+	    	//TO DO
+	    }
+	   }
 
 	@FXML
-	private void handleJoin(int quizID) {
-		// TODO: Handle join
-		// Context.getContext().setQuiz();
+	private void handleJoin() {
+		// TODO: gay out join button if no quiz selected
+		System.out.println("renders!");
 		main.showJoinTeamScene();
+		// main.showQuizroom();
 	}
 
 	@FXML
 	private void handleBack() {
 		// TODO: Handle back
+		// TODO: set context quiz back to null;
+		Context.getContext().setQuiz(null);
 		main.showModeSelectorScene();
 	}
 

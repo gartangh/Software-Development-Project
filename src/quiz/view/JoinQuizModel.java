@@ -4,7 +4,9 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -21,6 +23,8 @@ public class JoinQuizModel {
 	private StringProperty teamProperty;
 	private StringProperty playersPerTeamProperty;
 	
+	private BooleanProperty joinDisableProperty;
+	
 	public JoinQuizModel() {
 		quizzes = FXCollections.observableArrayList();
 		quiznameProperty = new SimpleStringProperty("");
@@ -28,6 +32,8 @@ public class JoinQuizModel {
 		questionsPerRoundProperty = new SimpleStringProperty();
 		teamProperty = new SimpleStringProperty();
 		playersPerTeamProperty = new SimpleStringProperty();
+		
+		joinDisableProperty = new SimpleBooleanProperty(true);
 	}
 	
 	public void updateQuizDetail(Quiz quiz){//for the selected team
@@ -39,6 +45,7 @@ public class JoinQuizModel {
 				questionsPerRoundProperty.setValue(Integer.toString(quiz.getMaxAmountofQuestionsPerRound()));
 				teamProperty.setValue(Integer.toString(quiz.getAmountOfTeams()));
 				playersPerTeamProperty.setValue(Integer.toString(quiz.getMaxAmountOfPlayersPerTeam()));
+				joinDisableProperty.setValue(false);
 			}
 		});
 	}
@@ -65,6 +72,10 @@ public class JoinQuizModel {
 	
 	public StringProperty getPlayersPerTeamProperty() {
 		return playersPerTeamProperty;
+	}
+
+	public BooleanProperty getJoinDisableProperty() {
+		return joinDisableProperty;
 	}
 
 }
