@@ -17,6 +17,7 @@ import network.Network;
 import quiz.model.MCQuestion;
 import quiz.util.ClientCreateAccountEvent;
 import quiz.util.ClientCreateQuizEvent;
+import quiz.util.ClientCreateRoundEvent;
 import quiz.util.ClientGetQuizzesEvent;
 import quiz.util.ClientVoteEvent;
 import quiz.util.QuizzerEvent;
@@ -145,6 +146,10 @@ public class Server extends EventPublisher {
 				}
 				break;
 			// TODO oldteam (check for null) and newteam modifien
+			case "CLIENT_CREATE_ROUND":
+				handleClientCreateRoundEvent((ClientCreateRoundEvent) e);
+				handled = true;
+				break;
 			}
 
 			if (handled)
@@ -173,6 +178,19 @@ public class Server extends EventPublisher {
 
 		public void handleClientNewQuestionEvent(ClientNewQuestionEvent cNQE) {
 			Quiz quiz = ServerContext.getContext().getQuiz(cNQE.getQuizID());
+			MCQuestion nQ = (MCQuestion) ServerContext.getContext().getQuestion(quiz.getRound().getNextQuestion());
+			int[] permutatie = { 1, 2, 3, 4 };
+
+			ServerNewQuestionEvent sNQE = new ServerNewQuestionEvent(nQ.getQuestionID(), nQ.getQuestion(),
+					nQ.getAnswers(), permutatie);
+			Server.getServer().publishEvent(sNQE);
+		}
+		
+		public void handleClientCreateRoundEvent(ClientCreateRoundEvent cCRE) {
+			Quiz quiz = ServerContext.getContext().getQuiz(cCRE.getQuizID());
+			quiz.addRound(cCRE.getDiff(), cCRE.getTheme());
+			quiz.getRound().addQuestions(cCRE.getNumberOfQuestions());
+
 			MCQuestion nQ = (MCQuestion) ServerContext.getContext().getQuestion(quiz.getRound().getNextQuestion());
 			int[] permutatie = { 1, 2, 3, 4 };
 
