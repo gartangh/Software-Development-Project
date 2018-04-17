@@ -8,6 +8,7 @@ import java.util.Random;
 import chat.ChatPanel;
 import eventbroker.EventBroker;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -165,6 +166,7 @@ public class Main extends Application {
 
 	public void showQuizroomScene() {
 		// Quizroom is created
+
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(Main.class.getResource("../quiz/view/Quizroom.fxml"));
@@ -172,7 +174,11 @@ public class Main extends Application {
 			QuizRoomController quizcontroller = loader.getController();
 			quizcontroller.setMain(this);
 			quizcontroller.addListener();
-			rootLayout.setCenter(content);
+			Platform.runLater(new Runnable(){
+				public void run(){
+					rootLayout.setCenter(content);
+				}
+			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
