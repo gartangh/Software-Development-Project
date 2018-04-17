@@ -38,6 +38,13 @@ public class LogInController extends EventPublisher {
 		String username = mUsername.getText();
 		String password = mPassword.getText();
 
+		User user = new User(0,username, password);
+		Context.getContext().setUser(user);
+		ClientCreateAccountEvent cCAE = new ClientCreateAccountEvent(user.getUsername(), user.getPassword());
+		publishEvent(cCAE);
+
+		main.showModeSelectorScene();
+		
 		/*switch (User.createAccount(username, password)) {
 		case 0:
 			User user = Context.getContext().getUser();

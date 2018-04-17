@@ -164,4 +164,9 @@ public class User implements Serializable {
 		return true;
 	}
 
+	public String getPassword() {
+		return password;
+	}
+
+
 }

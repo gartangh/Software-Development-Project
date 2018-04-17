@@ -142,7 +142,7 @@ public class Main extends Application {
 		try {
 			FXMLLoader joinQuizLoader = new FXMLLoader();
 			joinQuizLoader.setLocation(Main.class.getResource("../quiz/view/JoinQuiz.fxml"));
-			VBox joinQuiz = (VBox) joinQuizLoader.load();
+			BorderPane joinQuiz = (BorderPane) joinQuizLoader.load();
 			JoinQuizController joinQuizController = joinQuizLoader.getController();
 			joinQuizController.setMainApp(this);
 			rootLayout.setCenter(joinQuiz);

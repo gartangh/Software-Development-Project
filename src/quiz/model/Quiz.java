@@ -23,7 +23,7 @@ public class Quiz implements Serializable {
 	private final static int MAXTEAMS = 10;
 	private final static int MAXPLAYERS = 10;
 	private final static String QUIZNAMEREGEX = "^[a-zA-Z0-9._-]{3,}$";
-	private transient static ObservableList<Quiz> quizzes;
+	private static ObservableList<Quiz> quizzes;
 	private static int n = 0;
 
 	private String quizName;
@@ -31,7 +31,7 @@ public class Quiz implements Serializable {
 	private int amountOfRounds = 0;
 	// minAmountOfRounds = 1;
 	private int maxAmountOfRounds;
-	private ArrayList<Round> rounds = new ArrayList<>();
+	private transient ArrayList<Round> rounds = new ArrayList<>();
 	private int currentRound = 0;
 	// minAmountofQuestionsPerRound = 1;
 	private int maxAmountOfQuestionsPerRound;
