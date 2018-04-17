@@ -10,7 +10,6 @@ import quiz.util.RoundType;
 
 public class Round {
 	
-	private Map<Integer, Question> questions;	// Map(questionID -> question)
 	private RoundType roundType;
 	private Difficulty difficulty;
 	private Theme theme;
@@ -21,13 +20,10 @@ public class Round {
 		this.roundType = roundType;
 		this.difficulty = difficulty;
 		this.theme = theme;
-		this.currentQuestion = -1;
+		this.currentQuestion = 0;
 	}
 
 	// Getters and setters
-	public Map<Integer, Question> getQuestions() {
-		return questions;
-	}
 
 	public RoundType getRoundType() {
 		return roundType;
@@ -42,9 +38,19 @@ public class Round {
 	}
 	
 	public int getNextQuestion() {
+		int qID = (int) answers.keySet().toArray()[currentQuestion];
 		currentQuestion++;
-		return (int) answers.keySet().toArray()[currentQuestion];
+		return qID;
 	}
+	
+	public int getQuestionNumber() {
+		return currentQuestion;
+	}
+	
+	public int getNumberOfQuestions() {
+		return answers.size();
+	}
+
 
 	// Methods
 	public void addQuestions(int numberOfQuestions) {
