@@ -24,6 +24,7 @@ import quiz.view.JoinTeamController;
 import quiz.view.MainQuizroom;
 import quiz.view.NewTeamController;
 import quiz.view.QuizRoomController;
+import quiz.view.RoundMakerController;
 import quiz.view.ScoreboardController;
 import quiz.view.WaitRoundController;
 import user.view.LogInController;
@@ -221,11 +222,11 @@ public class Main extends Application {
 			return controller.isOkClicked();
 		} catch (IOException e) {
 			e.printStackTrace();
-			
+
 			return false;
 		}
 	}
-	
+
 	public void showWaitRound() {
 		try {
 			FXMLLoader waitRoundLoader = new FXMLLoader();
@@ -233,7 +234,21 @@ public class Main extends Application {
 			BorderPane waitRoundRoot = (BorderPane) waitRoundLoader.load();
 			WaitRoundController waitRoundController = waitRoundLoader.getController();
 			waitRoundController.setMain(this);
+			rootLayout.setCenter(waitRoundRoot);
 		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void showCreateRound(){
+		try{
+			FXMLLoader roundMakerLoader = new FXMLLoader();
+			roundMakerLoader.setLocation(Main.class.getResource("../quiz/view/WaitRound.fxml"));
+			AnchorPane roundMakerRoot = (AnchorPane) roundMakerLoader.load();
+			RoundMakerController roundMakerController = roundMakerLoader.getController();
+			roundMakerController.setMain(this);
+			rootLayout.setCenter(roundMakerRoot);
+		}catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

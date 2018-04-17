@@ -19,6 +19,7 @@ import quiz.util.ClientCreateAccountEvent;
 import quiz.util.ClientCreateQuizEvent;
 import quiz.util.ClientCreateRoundEvent;
 import quiz.util.ClientGetQuizzesEvent;
+import quiz.util.ClientHostReadyEvent;
 import quiz.util.ClientJoinQuizEvent;
 import quiz.util.ClientVoteEvent;
 import quiz.util.QuizzerEvent;
@@ -146,6 +147,8 @@ public class Server extends EventPublisher {
 				if (userName != null) {
 					ServerChangeTeamEvent serverChangeTeamEvent = new ServerChangeTeamEvent(cte.getQuizID(),
 							cte.getNewTeamID(), cte.getOldTeamID(), cte.getUserID(), userName);
+					ArrayList<Integer> receivers=ServerContext.getContext().getUsersFromQuiz(cte.getQuizID());
+					serverChangeTeamEvent.addRecipients(receivers);
 					Server.getServer().publishEvent(serverChangeTeamEvent);
 				}
 				handled=true;
@@ -155,7 +158,15 @@ public class Server extends EventPublisher {
 				handleClientCreateRoundEvent((ClientCreateRoundEvent) e);
 				handled = true;
 				break;
+			case "CLIENT_HOST_READY":
+				ClientHostReadyEvent chre=(ClientHostReadyEvent) e;
+				ArrayList<Integer> receivers=ServerContext.getContext().getUsersFromQuiz(chre.getQuizID());
+				ServerStartQuizEvent serverStartQuizEvent=new ServerStartQuizEvent(chre.getQuizID());
+				serverStartQuizEvent.addRecipients(receivers);
+				server.publishEvent(serverStartQuizEvent);
+				break;
 			}
+
 
 			if (handled)
 				System.out.println("Event received and handled: " + e.getType());

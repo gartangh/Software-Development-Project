@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Slider;
+import main.Main;
 import quiz.util.ClientCreateRoundEvent;
 import quiz.util.Difficulty;
 import quiz.util.Theme;
@@ -20,17 +21,23 @@ public class RoundMakerController extends EventPublisher{
 	ChoiceBox numberChoiceBox;
 	@FXML
 	Button confirmButton;
-	
+
+	Main main;
+
 	public RoundMakerController() {
 		// Empty constructor
 	}
-	
+
 	private void initialize() {
 		themeChoiceBox.setItems(FXCollections.observableArrayList("Culture","Sports"));
 		diffChoiceBox.setItems(FXCollections.observableArrayList("Easy","Average","Hard"));
 		diffChoiceBox.setItems(FXCollections.observableArrayList("1","2","3","4","5"));
 	}
-	
+
+	public void setMain(Main main){
+		this.main=main;
+	}
+
 	@FXML
 	private void handleConfirm() {
 		Theme theme = Theme.CULTURE;
@@ -42,7 +49,7 @@ public class RoundMakerController extends EventPublisher{
 			theme = Theme.SPORTS;
 			break;
 		}
-		
+
 		Difficulty diff = Difficulty.EASY;
 		switch((String) diffChoiceBox.getValue()) {
 		case "Easy":
@@ -55,7 +62,7 @@ public class RoundMakerController extends EventPublisher{
 			diff = Difficulty.HARD;
 			break;
 		}
-		
+
 		int numberOfQuestions = 3;
 		switch((String) themeChoiceBox.getValue()) {
 		case "1":

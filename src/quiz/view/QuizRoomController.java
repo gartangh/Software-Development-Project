@@ -19,6 +19,7 @@ import javafx.scene.shape.Circle;
 import javafx.util.Callback;
 import quiz.model.*;
 import quiz.util.ChangeTeamEvent;
+import quiz.util.ClientHostReadyEvent;
 import quiz.util.ClientVoteEvent;
 import quiz.util.NewTeamEvent;
 import main.*;
@@ -114,6 +115,12 @@ public class QuizRoomController extends EventPublisher {
 					}
 				}
 				break;
+			case "SERVER_START_QUIZ":
+				if (Context.getContext().getQuiz().getQuizmaster() == Context.getContext().getUser().getUserID())
+					main.showCreateRound();
+				else
+					main.showWaitRound();
+				break;
 			default:
 				System.out.println("Event received but left unhandled: " + event.getType() +"in quizroom");
 			}
@@ -204,7 +211,9 @@ public class QuizRoomController extends EventPublisher {
 	@FXML
 	private void handleReady() {
 		if(Context.getContext().getQuiz().getQuizmaster() == Context.getContext().getUser().getUserID()) {
-			// TODO: Show Round Picker
+			ClientHostReadyEvent e=new ClientHostReadyEvent(Context.getContext().getQuiz().getQuizID(),Context.getContext().getUser().getUserID());
+			publishEvent(e);
+
 		} else {
 			main.showWaitRound();
 		}
