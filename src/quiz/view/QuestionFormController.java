@@ -95,7 +95,7 @@ public class QuestionFormController extends EventPublisher {
 				
 				ServerAnswerEvent serverAnswer = (ServerAnswerEvent) e;
 				
-				Context.getContext().getQuiz().addAnswer(serverAnswer.getTeamID(), serverAnswer.getQuestionID(), serverAnswer.getAnswer());
+				//Context.getContext().getQuiz().addAnswer(serverAnswer.getTeamID(), serverAnswer.getQuestionID(), serverAnswer.getAnswer());
 				answerVoteModel.updateAnswer(serverAnswer.getAnswer(), serverAnswer.getCorrectAnswer());
 				
 				System.out.println("Event received and handled: " + e.getType());

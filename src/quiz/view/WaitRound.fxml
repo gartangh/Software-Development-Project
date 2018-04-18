@@ -1,22 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="400.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.WaitRoundController">
-   <bottom>
-      <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-        <buttons>
-          <Button mnemonicParsing="false" text="Exit" />
-        </buttons>
-         <BorderPane.margin>
-            <Insets right="5.0" />
-         </BorderPane.margin>
-      </ButtonBar>
-   </bottom>
    <center>
       <Label text="Please wait for Host to start the quiz" BorderPane.alignment="CENTER" />
    </center>
