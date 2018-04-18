@@ -2,7 +2,6 @@ package main;
 
 import network.Network;
 import quiz.model.Quiz;
-import quiz.model.Team;
 import quiz.model.Question;
 import user.model.User;
 
@@ -21,7 +20,7 @@ public class Context {
 	public static Context getContext() {
 		return context;
 	}
-	
+
 	public User getUser() {
 		return user;
 	}
@@ -37,7 +36,7 @@ public class Context {
 	public void setQuiz(Quiz quiz) {
 		this.quiz = quiz;
 	}
-	
+
 	public int getTeamID() {
 		return teamID;
 	}

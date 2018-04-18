@@ -3,6 +3,7 @@ package network;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import eventbroker.Event;
@@ -19,7 +20,7 @@ public class Network extends EventPublisher implements EventListener {
 	private Map<Integer, Integer> UserIDConnectionIDMap = new HashMap<>();
 	private ConnectionListener connectionListener;
 	private InetAddress networkAddress;
-	
+
 	public Network() {
 		// Empty default constructor
 	}
@@ -41,7 +42,7 @@ public class Network extends EventPublisher implements EventListener {
 	public Map<Integer, Connection> getConnectionMap() {
 		return connectionMap;
 	}
-	
+
 	public ConnectionListener getConnectionListener() {
 		return connectionListener;
 	}
@@ -51,7 +52,8 @@ public class Network extends EventPublisher implements EventListener {
 	}
 
 	// Methods
-	public Connection connect(InetAddress address, int port) {
+	// Local
+	public void connect(InetAddress address, int port) {
 		networkAddress = address;
 
 		try {
@@ -76,13 +78,43 @@ public class Network extends EventPublisher implements EventListener {
 				connection.setConnectionID(newServerUserConnectionID);
 				connectionMap.put(newServerUserConnectionID, connection);
 			}
-
-			return connection;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
 
-		return null;
+	// Network
+	public void connect(String address, int port) {
+		try {
+			// Parsing from String to InetAddress
+			networkAddress = InetAddress.getByName(address);
+
+			// Client 2.1
+			Socket socket = new Socket(address, port);
+			// Client 2.2
+			Connection connection = new Connection(socket, this);
+			// Client 2.3
+
+			connection.receive();
+
+			if (TYPE == "CLIENT") {
+				// Client always has connectionID 0
+				connection.setConnectionID(0);
+				connectionMap.put(0, connection);
+			} else if (TYPE == "SERVER") {
+				int newServerUserConnectionID;
+				do {
+					newServerUserConnectionID = (int) (Math.random() * Integer.MAX_VALUE);
+				} while (connectionMap.containsKey(newServerUserConnectionID));
+
+				connection.setConnectionID(newServerUserConnectionID);
+				connectionMap.put(newServerUserConnectionID, connection);
+			}
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	// Package local would be safer
@@ -118,7 +150,7 @@ public class Network extends EventPublisher implements EventListener {
 			for (int userID : e.getRecipients())
 				connectionMap.get(UserIDConnectionIDMap.get(userID)).send(e);
 		}
-		
+
 		System.out.println("Event received and handled: " + e.getType());
 	}
 
@@ -131,4 +163,5 @@ public class Network extends EventPublisher implements EventListener {
 		for (Map.Entry<Integer, Connection> entry : connectionMap.entrySet())
 			entry.getValue().close();
 	}
+
 }

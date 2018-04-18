@@ -5,7 +5,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Random;
 
-import chat.ChatPanel;
 import eventbroker.EventBroker;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -35,7 +34,9 @@ import user.view.ModeSelectorController;
 public class Main extends Application {
 
 	public final static boolean DEBUG = true;
-	private final static int SERVERPORT = 1025;
+	public final static boolean LOCAL = false;
+	public final static String SERVERADDRESS = "192.168.0.30";
+	public final static int SERVERPORT = 1025;
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
@@ -44,15 +45,23 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 
-		// Generate random client port
-		Random random = new Random();
-		Network network = new Network(random.nextInt(65535 - 1026 + 1) + 1026, "CLIENT");
+		// Connect to network with randomly generated client port between
+		// SERVERPORT + 1 and 65535 (2^16 - 1)
+		Network network = new Network(new Random().nextInt(65535 - SERVERPORT + 2) + 1026, "CLIENT");
 
 		Context.getContext().setNetwork(network);
 
 		try {
-			network.connect(InetAddress.getLocalHost(), SERVERPORT);
-			System.out.println("Address: " + network.getNetworkAddress() + "\nPort: "
+			if (Main.LOCAL) {
+				System.out.println(InetAddress.getLocalHost());
+				network.connect("LOCAL: " + InetAddress.getLocalHost(), Main.SERVERPORT);
+			} else {
+				System.out.println("NETWORK: " + InetAddress.getLocalHost().getHostAddress());
+				network.connect(InetAddress.getLocalHost().getHostAddress(), Main.SERVERPORT);
+			}
+
+			// TODO: Remove this
+			System.out.println("Address: " + network.getNetworkAddress().toString() + "\nPort: "
 					+ Integer.toString(network.getConnectionListener().getServerPort()));
 
 			// Send event over network
@@ -276,7 +285,7 @@ public class Main extends Application {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void showWaitHost() {
 		try {
 			System.out.println("made it here");

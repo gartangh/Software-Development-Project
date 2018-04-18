@@ -15,7 +15,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import main.Context;
 import main.Main;
-import network.Client;
 import quiz.model.ScoreboardModel;
 import quiz.model.ScoreboardTeam;
 import quiz.util.QuizzerEvent;
