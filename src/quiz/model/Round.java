@@ -20,7 +20,7 @@ public class Round {
 		this.roundType = roundType;
 		this.difficulty = difficulty;
 		this.theme = theme;
-		this.currentQuestion = 0;
+		this.currentQuestion = -1;
 	}
 
 	// Getters and setters
@@ -38,8 +38,8 @@ public class Round {
 	}
 	
 	public int getNextQuestion() {
-		int qID = (int) answers.keySet().toArray()[currentQuestion];
 		currentQuestion++;
+		int qID = (int) answers.keySet().toArray()[currentQuestion];
 		return qID;
 	}
 	

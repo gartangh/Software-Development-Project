@@ -12,6 +12,7 @@ public abstract class Question {
 	public Question(Difficulty difficulty, Theme theme, int questionID) {
 		this.difficulty = difficulty;
 		this.theme = theme;
+		this.questionID = questionID;
 	}
 	
 	public Question(int questionID) {
