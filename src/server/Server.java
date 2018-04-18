@@ -278,6 +278,11 @@ public class Server extends EventPublisher {
 					}
 				}
 			}
+			else {
+				ServerNotAllAnsweredEvent sNAEE = new ServerNotAllAnsweredEvent();
+				sNAEE.addRecipient(cNQE.getUserID());
+				server.publishEvent(sNAEE);
+			}
 		}
 
 		public void handleClientCreateRoundEvent(ClientCreateRoundEvent cCRE) {

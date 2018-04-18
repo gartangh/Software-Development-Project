@@ -114,6 +114,18 @@ public class QuestionFormController extends EventPublisher {
 				
 				System.out.println("Event received and handled: " + e.getType());
 				break;
+				
+			case "SERVER_NOT_ALL_ANSWERED":
+				
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.initOwner(main.getPrimaryStage());
+				alert.setTitle("QuizForm Error");
+				alert.setHeaderText("Can't proceed to the next question");
+				alert.setContentText("Not all teams have answered this question, so you can't proceed yet. Try again some time later.");
+
+				alert.showAndWait();
+				break;
+				
 			case "SERVER_NEW_ROUND":
 				
 				//ServerNewRoundEvent sNRE = (ServerNewRoundEvent) e;
@@ -253,7 +265,18 @@ public class QuestionFormController extends EventPublisher {
 	
 	@FXML
 	private void handleNext() {
-		ClientNewQuestionEvent cnqe = new ClientNewQuestionEvent();
-		this.publishEvent(cnqe);
+		if(Context.getContext().getQuiz().getTeams().get(Context.getContext().getTeamID()).getCaptainID() != Context.getContext().getUser().getID()) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.initOwner(main.getPrimaryStage());
+			alert.setTitle("QuizForm Error");
+			alert.setHeaderText("You can't go to the next question");
+			alert.setContentText("You are not a team captain, so you can't proceed to the next question.");
+
+			alert.showAndWait();
+		}
+		else {
+			ClientNewQuestionEvent cnqe = new ClientNewQuestionEvent();
+			this.publishEvent(cnqe);
+		}
 	}
 }

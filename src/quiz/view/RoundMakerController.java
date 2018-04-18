@@ -7,9 +7,11 @@ import eventbroker.EventPublisher;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Slider;
+import javafx.scene.control.Alert.AlertType;
 import main.Context;
 import main.Main;
 import quiz.model.MCQuestion;
@@ -74,6 +76,7 @@ public class RoundMakerController extends EventPublisher{
 
 	@FXML
 	private void handleConfirm() {
+		boolean blank = false;
 		Theme theme = Theme.CULTURE;
 		switch((String) themeChoiceBox.getValue()) {
 		case "Culture":
@@ -81,6 +84,9 @@ public class RoundMakerController extends EventPublisher{
 			break;
 		case "Sports":
 			theme = Theme.SPORTS;
+			break;
+		default:
+			blank = true;
 			break;
 		}
 
@@ -94,6 +100,9 @@ public class RoundMakerController extends EventPublisher{
 			break;
 		case "Hard":
 			diff = Difficulty.HARD;
+			break;
+		default:
+			blank = true;
 			break;
 		}
 
@@ -114,8 +123,22 @@ public class RoundMakerController extends EventPublisher{
 		case "5":
 			numberOfQuestions = 5;
 			break;
+		default:
+			blank = true;
+			break;
 		}
-		ClientCreateRoundEvent cCRE = new ClientCreateRoundEvent(theme, diff, numberOfQuestions);
-		this.publishEvent(cCRE);
+		if(!blank) {
+			ClientCreateRoundEvent cCRE = new ClientCreateRoundEvent(theme, diff, numberOfQuestions);
+			this.publishEvent(cCRE);
+		}
+		else {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.initOwner(main.getPrimaryStage());
+			alert.setTitle("Create Round Error");
+			alert.setHeaderText("You can't create this round");
+			alert.setContentText("Please fill in all required fields to create this round");
+
+			alert.showAndWait();
+		}
 	}
 }
