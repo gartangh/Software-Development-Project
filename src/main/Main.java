@@ -27,6 +27,7 @@ import quiz.view.QuestionFormController;
 import quiz.view.QuizRoomController;
 import quiz.view.RoundMakerController;
 import quiz.view.ScoreboardController;
+import quiz.view.WaitHostController;
 import quiz.view.WaitRoundController;
 import user.view.LogInController;
 import user.view.ModeSelectorController;
@@ -284,6 +285,23 @@ public class Main extends Application {
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(waitRoundRoot);
+				}
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void showWaitHost() {
+		try {
+			FXMLLoader waitHostLoader = new FXMLLoader();
+			waitHostLoader.setLocation(Main.class.getResource("../quiz/view/WaitHost.fxml"));
+			AnchorPane waitHostRoot = (AnchorPane) waitHostLoader.load();
+			WaitHostController waitHostController = waitHostLoader.getController();
+			waitHostController.setMain(this);
+			Platform.runLater(new Runnable() {
+				public void run() {
+					rootLayout.setCenter(waitHostRoot);
 				}
 			});
 		} catch (IOException e) {
