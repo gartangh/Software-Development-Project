@@ -26,7 +26,7 @@ public class JoinQuizModel {
 	private BooleanProperty joinDisableProperty;
 	
 	public JoinQuizModel() {
-		quizzes = FXCollections.observableArrayList();
+		//quizzes = FXCollections.observableArrayList();
 		quiznameProperty = new SimpleStringProperty("");
 		quizRoundsProperty = new SimpleStringProperty();
 		questionsPerRoundProperty = new SimpleStringProperty();

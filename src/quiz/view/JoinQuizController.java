@@ -119,15 +119,18 @@ public class JoinQuizController extends EventPublisher {
 				case "SERVER_GET_QUIZZES":
 					ServerGetQuizzesEvent sGQE = (ServerGetQuizzesEvent) event;
 
+					/*ObservableList<Quiz> quizList =FXCollections.observableArrayList();
 					ArrayList<Quiz> quizList = new ArrayList<>();
 					for(Entry<Integer, Quiz> entry : sGQE.getQuizMap().entrySet())
 						quizList.add(entry.getValue());
-					
-					joinQuizModel.setQuizzes(FXCollections.observableArrayList(quizList));
-					
+
+						joinQuizModel.setQuizzes(quizList);*/
+					for(Entry<Integer, Quiz> entry : sGQE.getQuizMap().entrySet())
+						joinQuizModel.addQuiz(entry.getValue());
+
 					System.out.println("Event received and handled: " + event.getType());
 					break;
-					
+
 				case "SERVER_SEND_QUIZ":
 					ServerSendQuizEvent sSQE = (ServerSendQuizEvent) event;
 					Quiz quiz = sSQE.getQuiz();
