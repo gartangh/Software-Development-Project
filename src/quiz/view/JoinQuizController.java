@@ -53,8 +53,6 @@ public class JoinQuizController extends EventPublisher {
 	@FXML
 	private Label mRounds;
 	@FXML
-	private Label mQuestionsPerRound;
-	@FXML
 	private Label mTeams;
 	@FXML
 	private Label mPlayersPerTeam;
@@ -77,7 +75,6 @@ public class JoinQuizController extends EventPublisher {
 
 		mQuizname.textProperty().bind(joinQuizModel.getQuiznameProperty());
 		mRounds.textProperty().bind(joinQuizModel.getQuizRoundsProperty());
-		mQuestionsPerRound.textProperty().bind(joinQuizModel.getQuestionsPerRoundProperty());
 		mTeams.textProperty().bind(joinQuizModel.getTeamProperty());
 		mPlayersPerTeam.textProperty().bind(joinQuizModel.getPlayersPerTeamProperty());
 		mJoin.disableProperty().bind(joinQuizModel.getJoinDisableProperty());

@@ -12,10 +12,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import main.view.MenuController;
 import main.view.RootLayoutController;
 import network.Network;
 import quiz.util.NewTeamEvent;
@@ -253,7 +251,7 @@ public class Main extends Application {
 		try {
 			FXMLLoader questionFormLoader = new FXMLLoader();
 			questionFormLoader.setLocation(Main.class.getResource("../quiz/view/QuestionForm.fxml"));
-			AnchorPane questionFormRoot = (AnchorPane) questionFormLoader.load();
+			BorderPane questionFormRoot = (BorderPane) questionFormLoader.load();
 			QuestionFormController questionFormController = questionFormLoader.getController();
 			questionFormController.setMain(this);
 			Platform.runLater(new Runnable() {
@@ -304,7 +302,7 @@ public class Main extends Application {
 		try {
 			FXMLLoader roundMakerLoader = new FXMLLoader();
 			roundMakerLoader.setLocation(Main.class.getResource("../quiz/view/RoundMaker.fxml"));
-			AnchorPane roundMakerRoot = (AnchorPane) roundMakerLoader.load();
+			BorderPane roundMakerRoot = (BorderPane) roundMakerLoader.load();
 			RoundMakerController roundMakerController = roundMakerLoader.getController();
 			roundMakerController.setMain(this);
 			Platform.runLater(new Runnable() {
