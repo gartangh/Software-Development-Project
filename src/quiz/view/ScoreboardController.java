@@ -88,7 +88,7 @@ public class ScoreboardController extends EventPublisher {
 						scoreboardModel.updateWinnerLoser("HOST");
 					else if(curTeam != null) {
 						if (scoreboardData.getScoreboardTeams().get(0).getTeamID() == curTeamID)
-							scoreboardModel.updateWinnerLoser(curTeam.getTeamName() + ": WINNER");
+							scoreboardModel.updateWinnerLoser("WINNER WINNER CHICKEN DINNER");
 						else {
 							scoreboardModel.updateWinnerLoser(curTeam.getTeamName() + ": LOSER");
 						}
