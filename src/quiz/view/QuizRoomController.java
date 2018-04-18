@@ -219,8 +219,11 @@ public class QuizRoomController extends EventPublisher {
 			publishEvent(e);
 
 		} else {
-			if (Context.getContext().getTeamID()!=-1)
+			if (Context.getContext().getTeamID()!=-1) {
+				EventBroker.getEventBroker().removeEventListener(quizroomhandler);
 				main.showWaitRound();
+			}
+				
 			else {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.initOwner(main.getPrimaryStage());
@@ -270,7 +273,7 @@ public class QuizRoomController extends EventPublisher {
 			alert.setTitle("Joining error");
 			alert.setHeaderText("You couldn't join a team");
 			alert.setContentText(errorMessage);
-
+			
 			alert.showAndWait();
 		}
 	}

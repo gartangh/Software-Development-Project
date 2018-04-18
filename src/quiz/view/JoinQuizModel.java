@@ -42,9 +42,9 @@ public class JoinQuizModel {
 		Platform.runLater(new Runnable(){
 			public void run(){
 				quiznameProperty.setValue(quiz.getQuizname());
-				quizRoundsProperty.setValue(Integer.toString(quiz.getAmountOfRounds()));
+				quizRoundsProperty.setValue(Integer.toString(quiz.getMaxAmountOfRounds()));
 				questionsPerRoundProperty.setValue(Integer.toString(quiz.getMaxAmountofQuestionsPerRound()));
-				teamProperty.setValue(Integer.toString(quiz.getAmountOfTeams()));
+				teamProperty.setValue(Integer.toString(quiz.getMaxAmountOfTeams()));
 				playersPerTeamProperty.setValue(Integer.toString(quiz.getMaxAmountOfPlayersPerTeam()));
 				joinDisableProperty.setValue(false);
 			}

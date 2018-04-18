@@ -21,7 +21,7 @@
                   </AnchorPane>
               </content>
             </ScrollPane>
-            <HBox prefHeight="50.0" prefWidth="366.0">
+            <HBox>
                <children>
                   <TextField fx:id="chatTextField" HBox.hgrow="ALWAYS" />
                   <Button fx:id="chatSendButton" defaultButton="true" mnemonicParsing="false" onAction="#handle" text="Send" />

@@ -35,7 +35,7 @@ public class Main extends Application {
 
 	public final static boolean DEBUG = true;
 	public final static boolean LOCAL = false;
-	public final static String SERVERADDRESS = "192.168.0.30";
+	public final static String SERVERADDRESS = "192.168.1.30";
 	public final static int SERVERPORT = 1025;
 
 	private Stage primaryStage;
@@ -53,11 +53,11 @@ public class Main extends Application {
 
 		try {
 			if (Main.LOCAL) {
-				System.out.println(InetAddress.getLocalHost());
-				network.connect("LOCAL: " + InetAddress.getLocalHost(), Main.SERVERPORT);
+				System.out.println("LOCAL: " + InetAddress.getLocalHost());
+				network.connect(InetAddress.getLocalHost(), Main.SERVERPORT);
 			} else {
 				System.out.println("NETWORK: " + InetAddress.getLocalHost().getHostAddress());
-				network.connect(InetAddress.getLocalHost().getHostAddress(), Main.SERVERPORT);
+				network.connect(SERVERADDRESS, Main.SERVERPORT);
 			}
 
 			// TODO: Remove this
@@ -91,17 +91,26 @@ public class Main extends Application {
 	private void initRootLayout() {
 		try {
 			// Load root layout from fxml file
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(Main.class.getResource("view/RootLayout.fxml"));
-			rootLayout = (BorderPane) loader.load();
+			FXMLLoader rootLayoutloader = new FXMLLoader();
+			rootLayoutloader.setLocation(Main.class.getResource("view/RootLayout.fxml"));
+			rootLayout = (BorderPane) rootLayoutloader.load();
 
 			// Show the scene containing the root layout
 			Scene scene = new Scene(rootLayout);
 			primaryStage.setScene(scene);
 
 			// Give the controller access to the main
-			RootLayoutController controller = loader.getController();
+			RootLayoutController controller = rootLayoutloader.getController();
 			controller.setMainApp(this);
+
+			FXMLLoader menuLoader = new FXMLLoader();
+			menuLoader.setLocation(Main.class.getResource("view/Menu.fxml"));
+			AnchorPane menu = (AnchorPane) menuLoader.load();
+			Platform.runLater(new Runnable() {
+				public void run() {
+					rootLayout.setTop(menu);
+				}
+			});
 
 			primaryStage.show();
 		} catch (IOException e) {
@@ -114,7 +123,7 @@ public class Main extends Application {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(Main.class.getResource("../user/view/LogIn.fxml"));
-			VBox logIn = (VBox) loader.load();
+			BorderPane logIn = (BorderPane) loader.load();
 			LogInController controller = loader.getController();
 			controller.setMainApp(this);
 			Platform.runLater(new Runnable() {
@@ -131,23 +140,12 @@ public class Main extends Application {
 		try {
 			FXMLLoader modeSelectorLoader = new FXMLLoader();
 			modeSelectorLoader.setLocation(Main.class.getResource("../user/view/ModeSelector.fxml"));
-			VBox modeSelector = (VBox) modeSelectorLoader.load();
+			BorderPane modeSelector = (BorderPane) modeSelectorLoader.load();
 			ModeSelectorController modeSelectorController = modeSelectorLoader.getController();
 			modeSelectorController.setMainApp(this);
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(modeSelector);
-				}
-			});
-
-			FXMLLoader menuLoader = new FXMLLoader();
-			menuLoader.setLocation(Main.class.getResource("view/Menu.fxml"));
-			AnchorPane menu = (AnchorPane) menuLoader.load();
-			MenuController menuController = menuLoader.getController();
-			menuController.setMainApp(this);
-			Platform.runLater(new Runnable() {
-				public void run() {
-					rootLayout.setTop(menu);
 				}
 			});
 		} catch (IOException e) {
@@ -193,7 +191,7 @@ public class Main extends Application {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(Main.class.getResource("../quiz/view/Quizroom.fxml"));
-			AnchorPane content = (AnchorPane) loader.load();
+			BorderPane content = (BorderPane) loader.load();
 			QuizRoomController quizcontroller = loader.getController();
 			quizcontroller.setMain(this);
 			Platform.runLater(new Runnable() {
@@ -210,7 +208,7 @@ public class Main extends Application {
 		try {
 			FXMLLoader scoreboardLoader = new FXMLLoader();
 			scoreboardLoader.setLocation(Main.class.getResource("../quiz/view/Scoreboard.fxml"));
-			AnchorPane scoreboardRoot = (AnchorPane) scoreboardLoader.load();
+			BorderPane scoreboardRoot = (BorderPane) scoreboardLoader.load();
 			ScoreboardController scoreboardController = scoreboardLoader.getController();
 			scoreboardController.setMainApp(this);
 			Platform.runLater(new Runnable() {
@@ -227,8 +225,7 @@ public class Main extends Application {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(Main.class.getResource("../quiz/view/NewTeam.fxml"));
-			AnchorPane newteam = (AnchorPane) loader.load();
-
+			BorderPane newteam = (BorderPane) loader.load();
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("New Team");
 			dialogStage.initModality(Modality.WINDOW_MODAL);

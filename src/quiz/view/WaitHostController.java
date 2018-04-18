@@ -34,9 +34,11 @@ public class WaitHostController extends EventPublisher  {
 		public void handleEvent(Event event) {
 			switch(event.getType()) {
 			case "SERVER_NEW_ROUND":
+				EventBroker.getEventBroker().removeEventListener(waitHostHandler);
 				main.showCreateRound();
 				break;
 			case "SERVER_END_QUIZ":
+				EventBroker.getEventBroker().removeEventListener(waitHostHandler);
 				main.showScoreboardScene();
 				break;
 			}
