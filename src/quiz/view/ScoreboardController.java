@@ -17,6 +17,7 @@ import main.Context;
 import main.Main;
 import quiz.model.ScoreboardModel;
 import quiz.model.ScoreboardTeam;
+import quiz.util.ClientScoreboardDataEvent;
 import quiz.util.QuizzerEvent;
 import quiz.util.UserEvent;
 import server.ServerScoreboardDataEvent;
@@ -47,21 +48,21 @@ public class ScoreboardController extends EventPublisher {
 	// Constructor
 	public ScoreboardController() {
 		scoreboardModel = new ScoreboardModel();
+		eventHandler = new ScoreboardEventHandler();
+		scoreboardTable.setItems(scoreboardModel.getScoreboardTeams());
 	}
 
 	@FXML
 	private void initialize() {
-		eventHandler = new ScoreboardEventHandler();
 		EventBroker.getEventBroker().addEventListener(eventHandler);
 		
 		winnerLoser.textProperty().bind(scoreboardModel.getWinnerLoserProperty());
 		rankColumn.setCellValueFactory(cellData -> (new SimpleIntegerProperty(cellData.getValue().getRank()).asObject()));
         teamNameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getTeamName())));
         scoreColumn.setCellValueFactory(cellData -> (new SimpleIntegerProperty(cellData.getValue().getScore()).asObject()));
-
-		QuizzerEvent askForScoreboardDataEvent = new QuizzerEvent();
-		askForScoreboardDataEvent.setType("CLIENT_SCOREBOARDDATA");
-		publishEvent(askForScoreboardDataEvent);
+        
+		ClientScoreboardDataEvent cSDE = new ClientScoreboardDataEvent();
+		publishEvent(cSDE);
 	}
 
 	public class ScoreboardEventHandler implements EventListener {

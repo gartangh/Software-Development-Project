@@ -27,6 +27,7 @@ import quiz.util.QuizzerEvent;
 import quiz.model.Quiz;
 import quiz.util.ClientAnswerEvent;
 import quiz.util.ClientNewQuestionEvent;
+import quiz.util.ClientScoreboardDataEvent;
 
 public class Server extends EventPublisher {
 
@@ -100,7 +101,7 @@ public class Server extends EventPublisher {
 				server.publishEvent(sRQE);
 
 				ServerSendQuizEvent sSQE = new ServerSendQuizEvent(quiz);
-				sSQE.addRecipient(ServerContext.getContext().getUserMap());
+				sSQE.addRecipients(ServerContext.getContext().getUserMap());
 				server.publishEvent(sSQE);
 				handled = true;
 				break;
@@ -137,10 +138,9 @@ public class Server extends EventPublisher {
 				break;
 
 			case "CLIENT_SCOREBOARDDATA":
-				QuizzerEvent askForScoreboardData = (QuizzerEvent) e;
-				ServerScoreboardDataEvent scoreboardData = new ServerScoreboardDataEvent(
-						askForScoreboardData.getQuizID());
-				scoreboardData.addRecipient(askForScoreboardData.getUserID());
+				ClientScoreboardDataEvent cSDE = (ClientScoreboardDataEvent) e;
+				ServerScoreboardDataEvent scoreboardData = new ServerScoreboardDataEvent(cSDE.getQuizID());
+				scoreboardData.addRecipient(cSDE.getUserID());
 				server.publishEvent(scoreboardData);
 				handled = true;
 				break;
@@ -256,11 +256,19 @@ public class Server extends EventPublisher {
 							nQ.getAnswers(), permutatie);
 					sNQE.addRecipients(receivers);
 					Server.getServer().publishEvent(sNQE);
-				} else {
-					if (quiz.getCurrentRound() < quiz.getMaxAmountOfRounds()) {
-						// TODO: trigger create round + players wait
-					} else {
+				}
+				else {
+					if ((quiz.getCurrentRound()+1) < quiz.getMaxAmountOfRounds()) {
+						ServerNewRoundEvent sNRE = new ServerNewRoundEvent(quiz.getCurrentRound()+1);
+						receivers=ServerContext.getContext().getUsersFromQuiz(cNQE.getQuizID());
+						sNRE.addRecipients(receivers);
+						Server.getServer().publishEvent(sNRE);
+					}
+					else {
 						// TODO: trigger end quiz
+						ServerEndQuizEvent sEQE = new ServerEndQuizEvent();
+						sEQE.addRecipients(ServerContext.getContext().getUsersFromQuiz(quiz.getQuizID()));
+						server.publishEvent(sEQE);
 					}
 				}
 			}
