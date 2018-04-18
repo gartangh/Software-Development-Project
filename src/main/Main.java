@@ -243,7 +243,11 @@ public class Main extends Application {
 			controller.setTeamEvent(teamevent);
 
 			// Show the dialog and wait until the user closes it
+			// Platform.runLater(new Runnable(){
+			// public void run(){
 			dialogStage.showAndWait();
+			// }
+			// });
 
 			return controller.isOkClicked();
 		} catch (IOException e) {
@@ -290,7 +294,7 @@ public class Main extends Application {
 	public void showCreateRound() {
 		try {
 			FXMLLoader roundMakerLoader = new FXMLLoader();
-			roundMakerLoader.setLocation(Main.class.getResource("../quiz/view/WaitRound.fxml"));
+			roundMakerLoader.setLocation(Main.class.getResource("../quiz/view/RoundMaker.fxml"));
 			AnchorPane roundMakerRoot = (AnchorPane) roundMakerLoader.load();
 			RoundMakerController roundMakerController = roundMakerLoader.getController();
 			roundMakerController.setMain(this);
