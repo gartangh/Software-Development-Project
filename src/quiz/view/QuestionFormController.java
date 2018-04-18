@@ -21,6 +21,7 @@ import quiz.util.ClientVoteEvent;
 import server.ServerAnswerEvent;
 import server.ServerContext;
 import server.ServerNewQuestionEvent;
+import server.ServerNewRoundEvent;
 import server.ServerVoteEvent;
 
 public class QuestionFormController extends EventPublisher {
@@ -108,6 +109,14 @@ public class QuestionFormController extends EventPublisher {
 				Context.getContext().setQuestion(q);
 				answerVoteModel.updateQuestion();
 				answerVoteModel.updateVotes(Context.getContext().getTeamID());
+				
+				System.out.println("Event received and handled: " + e.getType());
+				break;
+				
+			case "SERVER_NEW_ROUND":
+				
+				ServerNewRoundEvent sNRE = (ServerNewRoundEvent) e;
+				main.showWaitRound();
 				
 				System.out.println("Event received and handled: " + e.getType());
 				break;
