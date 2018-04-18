@@ -88,7 +88,7 @@ public class Server extends EventPublisher {
 				server.publishEvent(sRQE);
 				
 				ServerSendQuizEvent sSQE = new ServerSendQuizEvent(quiz);
-				sSQE.addRecipient(ServerContext.getContext().getUserMap());
+				sSQE.addRecipients(ServerContext.getContext().getUserMap());
 				server.publishEvent(sSQE);
 				handled = true;
 				break;
@@ -249,6 +249,9 @@ public class Server extends EventPublisher {
 					}
 					else {
 						// TODO: trigger end quiz
+						ServerEndQuizEvent sEQE = new ServerEndQuizEvent();
+						sEQE.addRecipients(ServerContext.getContext().getUsersFromQuiz(quiz.getQuizID()));
+						server.publishEvent(sEQE);
 					}
 				}
 			}
