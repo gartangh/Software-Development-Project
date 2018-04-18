@@ -38,11 +38,9 @@ public class Server extends EventPublisher {
 		Network network = new Network(Main.SERVERPORT, "SERVER");
 		ServerContext.getContext().setNetwork(network);
 
-		// TODO: Remove this
 		try {
 			System.out.println(InetAddress.getLocalHost().getHostAddress());
-			System.out.println("Address: " + network.getNetworkAddress() + "\nPort: "
-					+ Integer.toString(network.getConnectionListener().getServerPort()));
+			System.out.println(Integer.toString(network.getConnectionListener().getServerPort()));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
