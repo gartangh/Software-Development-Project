@@ -107,7 +107,8 @@ public class ScoreboardController extends EventPublisher {
 	@FXML
 	private void handleRematchButton() {
 		// TO DO: Clear quiz, go back to quizroom
-		System.out.println("Going back to quizroom");
+		EventBroker.getEventBroker().removeEventListener(eventHandler);
+		main.showQuizroomScene();
 	}
 
 	/**
@@ -116,7 +117,8 @@ public class ScoreboardController extends EventPublisher {
 	@FXML
 	private void handleQuitButton() {
 		// TO DO: Clear quiz, show List of Available quizzes
-		System.out.println("Quitting quiz");
+		EventBroker.getEventBroker().removeEventListener(eventHandler);
+		main.showModeSelectorScene();
 	}
 
 	public ScoreboardModel getScoreboardModel() {

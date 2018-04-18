@@ -106,6 +106,7 @@ public class JoinQuizController extends EventPublisher {
 	private void handleJoin() {
 		ClientJoinQuizEvent cjqe=new ClientJoinQuizEvent(Context.getContext().getUser().getUserID(),selectedQuiz.getQuizID(),Context.getContext().getUser().getUsername());
 		publishEvent(cjqe);
+		//EventBroker.getEventBroker().removeEventListener(joinQuizeventHandler);
 	}
 
 	@FXML
@@ -113,6 +114,7 @@ public class JoinQuizController extends EventPublisher {
 		// TODO: Handle back
 		// TODO: set context quiz back to null;
 		Context.getContext().setQuiz(null);
+		//EventBroker.getEventBroker().removeEventListener(joinQuizeventHandler);
 		main.showModeSelectorScene();
 	}
 

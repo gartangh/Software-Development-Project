@@ -2,7 +2,6 @@ package chat;
 
 import java.io.IOException;
 
-import eventbroker.EventBroker;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 

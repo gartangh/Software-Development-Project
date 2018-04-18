@@ -40,6 +40,7 @@ public class RoundMakerController extends EventPublisher{
 				case "SERVER_START_ROUND":
 					// This is the roundHandler for a player. You need to show a Quizmaster screen here.
 					// TODO: Make Special screen for Quizmaster. Now it is only a waiting screen until the round has finished
+					EventBroker.getEventBroker().removeEventListener(roundMakerHandler);
 					main.showWaitHost();
 					break;
 				case "SERVER_NEW_QUESTION":

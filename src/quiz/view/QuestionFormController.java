@@ -1,16 +1,18 @@
 package quiz.view;
 
+import chat.ChatPanel;
 import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import main.Context;
 import main.Main;
@@ -72,65 +74,17 @@ public class QuestionFormController extends EventPublisher {
 	private ProgressBar voteProgressC;
 	@FXML
 	private ProgressBar voteProgressD;
-	
+	@FXML
+	private AnchorPane mPlaceholder;
+
 	private AnswerVoteModel answerVoteModel;
 	private QuestionFormEventHandler eventHandler;
 	private Main main;
-	
+
 	public void setMain(Main main) {
 		this.main = main;
 	}
-	
-	public class QuestionFormEventHandler implements EventListener{ // TODO: add handling of events 
-		public void handleEvent(Event e){
-			switch(e.getType()) {
-			case "SERVER_VOTE":
-				
-				ServerVoteEvent serverVote = (ServerVoteEvent) e;
-				
-				Context.getContext().getQuiz().addVote(serverVote.getUserID(), serverVote.getTeamID(), serverVote.getVote());
-				answerVoteModel.updateVotes(serverVote.getTeamID());
-				
-				System.out.println("Event received and handled: " + e.getType());
-				break;
-				
-			case "SERVER_ANSWER":
-				
-				ServerAnswerEvent serverAnswer = (ServerAnswerEvent) e;
-				
-				//Context.getContext().getQuiz().addAnswer(serverAnswer.getTeamID(), serverAnswer.getQuestionID(), serverAnswer.getAnswer());
-				answerVoteModel.updateAnswer(serverAnswer.getAnswer(), serverAnswer.getCorrectAnswer());
-				
-				System.out.println("Event received and handled: " + e.getType());
-				break;
-				
-			case "SERVER_NEW_QUESTION":
-				
-				ServerNewQuestionEvent sNQE = (ServerNewQuestionEvent) e;
-				MCQuestion q = new MCQuestion(sNQE.getQuestionID(), sNQE.getQuestion(), sNQE.getAnswers());
-				Context.getContext().setQuestion(q);
-				answerVoteModel.updateQuestion();
-				answerVoteModel.updateVotes(Context.getContext().getTeamID());
-				
-				System.out.println("Event received and handled: " + e.getType());
-				break;
-			case "SERVER_NEW_ROUND":
-				
-				//ServerNewRoundEvent sNRE = (ServerNewRoundEvent) e;
-				main.showWaitRound();
-				
-				System.out.println("Event received and handled: " + e.getType());
-				break;
-			case "SERVER_END_QUIZ":
-				main.showScoreboardScene();
-				break;
-			default:
-				System.out.println("Event received but left unhandled: " + e.getType());
-				break;
-			}
-		}
-	}
-	
+
 	public QuestionFormController() {
 		this.answerVoteModel = new AnswerVoteModel();
 	}
@@ -138,10 +92,10 @@ public class QuestionFormController extends EventPublisher {
 	public void initialize() {
 		eventHandler = new QuestionFormEventHandler();
 		EventBroker.getEventBroker().addEventListener(eventHandler);
-		
+
 		questionTitle.textProperty().bind(answerVoteModel.getQuestionTitleProperty());
 		questionText.textProperty().bind(answerVoteModel.getQuestionTextProperty());
-		
+
 		answerA.textProperty().bind(answerVoteModel.getAnswerPropertyA());
 		answerB.textProperty().bind(answerVoteModel.getAnswerPropertyB());
 		answerC.textProperty().bind(answerVoteModel.getAnswerPropertyC());
@@ -150,7 +104,7 @@ public class QuestionFormController extends EventPublisher {
 		answerB.textFillProperty().bind(answerVoteModel.getPaintPropertyB());
 		answerC.textFillProperty().bind(answerVoteModel.getPaintPropertyC());
 		answerD.textFillProperty().bind(answerVoteModel.getPaintPropertyD());
-		
+
 		voteProgressA.progressProperty().bind(answerVoteModel.getProgressPropertyA());
 		voteProgressB.progressProperty().bind(answerVoteModel.getProgressPropertyB());
 		voteProgressC.progressProperty().bind(answerVoteModel.getProgressPropertyC());
@@ -161,13 +115,68 @@ public class QuestionFormController extends EventPublisher {
 		percentageC.textProperty().bind(answerVoteModel.getPercentagePropertyC());
 		percentageD.textProperty().bind(answerVoteModel.getPercentagePropertyD());
 		numberOfVotes.textProperty().bind(answerVoteModel.getNumberOfVotesProperty());
-		
+
 		voteButton.disableProperty().bind(answerVoteModel.getVoteDisableProperty());
 		confirmButton.disableProperty().bind(answerVoteModel.getConfirmDisableProperty());
 		nextButton.disableProperty().bind(answerVoteModel.getNextDisableProperty());
-		
+
 		answerVoteModel.updateQuestion();
 		answerVoteModel.updateVotes(Context.getContext().getTeamID());
+
+		// ChatPanel (ChatModel and ChatController) are created
+		ChatPanel chatPanel = ChatPanel.createChatPanel();
+		mPlaceholder.getChildren().add(chatPanel.getContent());
+	}
+
+	// TODO: Add handling of events
+	public class QuestionFormEventHandler implements EventListener {
+		public void handleEvent(Event e) {
+			switch (e.getType()) {
+			case "SERVER_VOTE":
+				ServerVoteEvent serverVote = (ServerVoteEvent) e;
+
+				Context.getContext().getQuiz().addVote(serverVote.getUserID(), serverVote.getTeamID(),
+						serverVote.getVote());
+				answerVoteModel.updateVotes(serverVote.getTeamID());
+
+				System.out.println("Event received and handled: " + e.getType());
+				break;
+
+			case "SERVER_ANSWER":
+				ServerAnswerEvent serverAnswer = (ServerAnswerEvent) e;
+
+				// Context.getContext().getQuiz().addAnswer(serverAnswer.getTeamID(),
+				// serverAnswer.getQuestionID(), serverAnswer.getAnswer());
+				answerVoteModel.updateAnswer(serverAnswer.getAnswer(), serverAnswer.getCorrectAnswer());
+
+				System.out.println("Event received and handled: " + e.getType());
+				break;
+
+			case "SERVER_NEW_QUESTION":
+				ServerNewQuestionEvent sNQE = (ServerNewQuestionEvent) e;
+				MCQuestion q = new MCQuestion(sNQE.getQuestionID(), sNQE.getQuestion(), sNQE.getAnswers());
+				Context.getContext().setQuestion(q);
+				answerVoteModel.updateQuestion();
+				answerVoteModel.updateVotes(Context.getContext().getTeamID());
+
+				System.out.println("Event received and handled: " + e.getType());
+				break;
+
+			case "SERVER_NEW_ROUND":
+				ServerNewRoundEvent sNRE = (ServerNewRoundEvent) e;
+				main.showWaitRound();
+
+				System.out.println("Event received and handled: " + e.getType());
+				break;
+
+			case "SERVER_END_QUIZ":
+				main.showScoreboardScene();
+				break;
+
+			default:
+				System.out.println("Event received but left unhandled: " + e.getType());
+			}
+		}
 	}
 
 	private void handleCheck(int answer) {
@@ -226,7 +235,9 @@ public class QuestionFormController extends EventPublisher {
 	@FXML
 	private void handleAnswer() {
 		int answer = this.getChecked();
-		if(Context.getContext().getQuiz().getTeams().get(Context.getContext().getTeamID()).getCaptainID() != Context.getContext().getUser().getID()) {
+
+		if (Context.getContext().getQuiz().getTeams().get(Context.getContext().getTeamID()).getCaptainID() != Context
+				.getContext().getUser().getID()) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.initOwner(main.getPrimaryStage());
 			alert.setTitle("QuizForm Error");
@@ -234,8 +245,7 @@ public class QuestionFormController extends EventPublisher {
 			alert.setContentText("You are not the captain, so you can't submit an answer.");
 
 			alert.showAndWait();
-		}
-		else if (answer < 0) { 
+		} else if (answer < 0) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.initOwner(main.getPrimaryStage());
 			alert.setTitle("QuizForm Error");
@@ -243,14 +253,13 @@ public class QuestionFormController extends EventPublisher {
 			alert.setContentText("Please select an answer to submit.");
 
 			alert.showAndWait();
-		}
-		else {
+		} else {
 			ClientAnswerEvent cae = new ClientAnswerEvent(Context.getContext().getQuestion().getQuestionID(), answer);
 			this.publishEvent(cae);
 			handleCheck(-1);
 		}
-	}	
-	
+	}
+
 	@FXML
 	private void handleNext() {
 		ClientNewQuestionEvent cnqe = new ClientNewQuestionEvent();
