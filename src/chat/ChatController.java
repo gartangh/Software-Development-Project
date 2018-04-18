@@ -12,9 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import main.Context;
-import server.ServerReturnUserIDEvent;
-import server.ServerScoreboardDataEvent;
-import user.model.User;
+import main.Main;
 
 final public class ChatController extends EventPublisher {
 
@@ -29,6 +27,13 @@ final public class ChatController extends EventPublisher {
 	private ChatModel chatModel;
 
 	ArrayList<String> prohibitedWords = new ArrayList<>();
+
+	// Reference to the main application
+	private Main main;
+
+	public void setMainApp(Main main) {
+		this.main = main;
+	}
 
 	public ChatController() {
 		this.chatEventHandler = new ChatEventHandler();
@@ -115,6 +120,8 @@ final public class ChatController extends EventPublisher {
 
 	@FXML
 	private void initialize() {
+		EventBroker.getEventBroker().addEventListener(chatEventHandler);
+		
 		chatTextArea.textProperty().bind(chatModel.chatTextProperty());
 	}
 
@@ -127,15 +134,6 @@ final public class ChatController extends EventPublisher {
 
 			String type = event.getType();
 			switch (type) {
-			case "SERVER_RETURN_USERID":
-				ServerReturnUserIDEvent serverCreate = (ServerReturnUserIDEvent) event;
-				User user = Context.getContext().getUser();
-				user.setUserID(serverCreate.getUserID());
-				Context.getContext().setUser(user);
-				Context.getContext().getNetwork().getUserIDConnectionIDMap().put(serverCreate.getUserID(), 0);
-				System.out.println("Event received and handled: " + type);
-				break;
-
 			// TODO: Remove this (Should be updated locally, without the event
 			// broker)
 			case "CLIENT_CHAT":

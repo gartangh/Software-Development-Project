@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import chat.ChatPanel;
 import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
@@ -19,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import main.Context;
@@ -59,18 +61,18 @@ public class JoinQuizController extends EventPublisher {
 	// Reference to the main application
 	private Main main;
 	private JoinQuizModel joinQuizModel = new JoinQuizModel();
-	private JoinQuizEventHandler eventHandler = new JoinQuizEventHandler();
+	private JoinQuizEventHandler joinQuizeventHandler = new JoinQuizEventHandler();
 	private Quiz selectedQuiz;
 
 	public void setMainApp(Main main) {
 		this.main = main;
 		quizTable.setItems(joinQuizModel.getQuizzes());
-		Context.getContext().setTeamID(-1);	
+		Context.getContext().setTeamID(-1);
 	}
 
 	@FXML
 	private void initialize() {
-		EventBroker.getEventBroker().addEventListener(eventHandler);
+		EventBroker.getEventBroker().addEventListener(joinQuizeventHandler);
 
 		mQuizname.textProperty().bind(joinQuizModel.getQuiznameProperty());
 		mRounds.textProperty().bind(joinQuizModel.getQuizRoundsProperty());
@@ -79,9 +81,11 @@ public class JoinQuizController extends EventPublisher {
 		mPlayersPerTeam.textProperty().bind(joinQuizModel.getPlayersPerTeamProperty());
 		mJoin.disableProperty().bind(joinQuizModel.getJoinDisableProperty());
 		quiznameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getQuizname())));
-		quizmasternameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getQuizname())));
+		quizmasternameColumn
+				.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getQuizname())));
 
-		quizTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showQuizDetails(newValue));
+		quizTable.getSelectionModel().selectedItemProperty()
+				.addListener((observable, oldValue, newValue) -> showQuizDetails(newValue));
 
 		ClientGetQuizzesEvent cGQE = new ClientGetQuizzesEvent();
 		publishEvent(cGQE);
@@ -117,31 +121,32 @@ public class JoinQuizController extends EventPublisher {
 		@Override
 		public void handleEvent(Event event) {
 			Quiz quiz;
-			switch(event.getType()) {
-				case "SERVER_GET_QUIZZES":
-					ServerGetQuizzesEvent sGQE = (ServerGetQuizzesEvent) event;
-					
-					for(Entry<Integer, Quiz> entry : sGQE.getQuizMap().entrySet())
-						joinQuizModel.addQuiz(entry.getValue());
-					
-					System.out.println("Event received and handled: " + event.getType());
-					break;
-					
-				case "SERVER_SEND_QUIZ":
-					ServerSendQuizEvent sSQE = (ServerSendQuizEvent) event;
-					quiz = sSQE.getQuiz();
-					joinQuizModel.addQuiz(quiz);
-					break;
-					
-				case "SERVER_JOIN_QUIZ":
-					ServerJoinQuizEvent sJQE = (ServerJoinQuizEvent) event;
-					quiz = sJQE.getQuiz();
-					quiz.addUnassignedPlayer(Context.getContext().getUser().getUserID(), Context.getContext().getUser().getUsername());
-					Context.getContext().setQuiz(quiz);
-					break;
-					
-				default:
-					System.out.println("Event received but left unhandled: " + event.getType());
+			switch (event.getType()) {
+			case "SERVER_GET_QUIZZES":
+				ServerGetQuizzesEvent sGQE = (ServerGetQuizzesEvent) event;
+
+				for (Entry<Integer, Quiz> entry : sGQE.getQuizMap().entrySet())
+					joinQuizModel.addQuiz(entry.getValue());
+
+				System.out.println("Event received and handled: " + event.getType());
+				break;
+
+			case "SERVER_SEND_QUIZ":
+				ServerSendQuizEvent sSQE = (ServerSendQuizEvent) event;
+				quiz = sSQE.getQuiz();
+				joinQuizModel.addQuiz(quiz);
+				break;
+
+			case "SERVER_JOIN_QUIZ":
+				ServerJoinQuizEvent sJQE = (ServerJoinQuizEvent) event;
+				quiz = sJQE.getQuiz();
+				quiz.addUnassignedPlayer(Context.getContext().getUser().getUserID(),
+						Context.getContext().getUser().getUsername());
+				Context.getContext().setQuiz(quiz);
+				break;
+
+			default:
+				System.out.println("Event received but left unhandled: " + event.getType());
 			}
 		}
 	}

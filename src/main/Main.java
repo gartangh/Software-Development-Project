@@ -39,7 +39,6 @@ public class Main extends Application {
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
-	private ChatPanel chatPanel;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -50,9 +49,6 @@ public class Main extends Application {
 		Network network = new Network(random.nextInt(65535 - 1026 + 1) + 1026, "CLIENT");
 
 		Context.getContext().setNetwork(network);
-
-		// ChatPanel (ChatModel and ChatController) are created
-		chatPanel = ChatPanel.createChatPanel();
 
 		try {
 			network.connect(InetAddress.getLocalHost(), SERVERPORT);
@@ -82,6 +78,7 @@ public class Main extends Application {
 		return primaryStage;
 	}
 
+	// Methods
 	private void initRootLayout() {
 		try {
 			// Load root layout from fxml file
@@ -144,12 +141,6 @@ public class Main extends Application {
 					rootLayout.setTop(menu);
 				}
 			});
-
-			Platform.runLater(new Runnable() {
-				public void run() {
-					rootLayout.setBottom(null);
-				}
-			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -182,7 +173,6 @@ public class Main extends Application {
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(joinQuiz);
-					rootLayout.setBottom(chatPanel.getContent());
 				}
 			});
 		} catch (IOException e) {
@@ -197,7 +187,6 @@ public class Main extends Application {
 			AnchorPane content = (AnchorPane) loader.load();
 			QuizRoomController quizcontroller = loader.getController();
 			quizcontroller.setMain(this);
-			quizcontroller.addListener();
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(content);
@@ -244,11 +233,7 @@ public class Main extends Application {
 			controller.setTeamEvent(teamevent);
 
 			// Show the dialog and wait until the user closes it
-			// Platform.runLater(new Runnable(){
-			// public void run(){
 			dialogStage.showAndWait();
-			// }
-			// });
 
 			return controller.isOkClicked();
 		} catch (IOException e) {
