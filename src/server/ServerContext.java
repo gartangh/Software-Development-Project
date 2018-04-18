@@ -216,6 +216,7 @@ public class ServerContext {
 		for (int userID : quiz.getUnassingendPlayers().keySet())
 			r.add(userID);
 
+		r.add(quiz.getQuizmaster());
 		return r;
 
 	}
