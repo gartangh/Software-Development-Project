@@ -77,6 +77,9 @@ public class Server extends EventPublisher {
 						ServerContext.getContext().getQuizMap().get(cJTE.getQuizID()));
 				sJQE.addRecipient(cJTE.getUserID());
 				server.publishEvent(sJQE);
+				ServerQuizNewPlayer sQNP=new ServerQuizNewPlayer(cJTE.getUserID(),ServerContext.getContext().getUserMap().get(cJTE.getUserID()).getUsername());
+				sQNP.addRecipients(ServerContext.getContext().getUsersFromQuiz(cJTE.getQuizID()));
+				server.publishEvent(sQNP);
 				break;
 
 			case "CLIENT_CREATE_ACCOUNT":
@@ -200,9 +203,12 @@ public class Server extends EventPublisher {
 				handled = true;
 				break;
 			case "CLIENT_HOST_READY":
-				ClientHostReadyEvent chre = (ClientHostReadyEvent) e;
-				ArrayList<Integer> receivers = ServerContext.getContext().getUsersFromQuiz(chre.getQuizID());
-				ServerStartQuizEvent serverStartQuizEvent = new ServerStartQuizEvent(chre.getQuizID());
+				ClientHostReadyEvent chre=(ClientHostReadyEvent) e;
+				ServerContext.getContext().getQuizMap().get(chre.getQuizID()).setRunning(true);
+				ServerContext.getContext().getQuizMap().get(chre.getQuizID()).clearUnassignedPlayers();
+				ServerStartQuizEvent serverStartQuizEvent=new ServerStartQuizEvent(chre.getQuizID());
+				ArrayList<Integer> receivers=new ArrayList<Integer>();
+				receivers.addAll(ServerContext.getContext().getUserMap().keySet());
 				serverStartQuizEvent.addRecipients(receivers);
 				server.publishEvent(serverStartQuizEvent);
 				break;
@@ -231,7 +237,6 @@ public class Server extends EventPublisher {
 			Quiz quiz = ServerContext.getContext().getQuiz(cAE.getQuizID());
 			quiz.addAnswer(cAE.getTeamID(), cAE.getQuestionID(), cAE.getAnswer());
 			quiz.addPoints(cAE.getTeamID(), cAE.getQuestionID(), cAE.getAnswer());
-
 			ArrayList<Integer> receivers = new ArrayList<Integer>();
 			receivers.addAll(ServerContext.getContext().getQuiz(cAE.getQuizID()).getTeams().get(cAE.getTeamID())
 					.getPlayers().keySet());

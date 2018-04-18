@@ -34,6 +34,7 @@ import quiz.view.ScoreboardController.ScoreboardEventHandler;
 import server.ServerGetQuizzesEvent;
 import server.ServerJoinQuizEvent;
 import server.ServerSendQuizEvent;
+import server.ServerStartQuizEvent;
 
 public class JoinQuizController extends EventPublisher {
 
@@ -144,7 +145,10 @@ public class JoinQuizController extends EventPublisher {
 						Context.getContext().getUser().getUsername());
 				Context.getContext().setQuiz(quiz);
 				break;
-
+			case "SERVER_START_QUIZ":
+				ServerStartQuizEvent sSTQE=(ServerStartQuizEvent) event;
+				joinQuizModel.deleteQuiz(sSTQE.getQuizID());
+				break;
 			default:
 				System.out.println("Event received but left unhandled: " + event.getType());
 			}

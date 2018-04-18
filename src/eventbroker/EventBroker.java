@@ -12,6 +12,7 @@ final public class EventBroker implements Runnable {
 	LinkedList<QueueItem> queue = new LinkedList<>();
 	Map<String, ArrayList<EventListener>> listeners = new HashMap<>();
 	Map<String, ArrayList<EventListener>> newListeners = new HashMap<>();
+	ArrayList<EventListener> toRemoveListeners = new ArrayList<>();
 
 	public LinkedList<QueueItem> getQueue() {
 		return queue;
@@ -62,10 +63,7 @@ final public class EventBroker implements Runnable {
 	}
 
 	public void removeEventListener(EventListener el) {
-		for (Map.Entry<String, ArrayList<EventListener>> entry : listeners.entrySet()) {
-			if (entry.getValue() == el)
-				listeners.get(entry.getKey()).remove(el);
-		}
+		toRemoveListeners.add(el);
 	}
 
 	public void addEvent(EventPublisher source, Event e) {
@@ -84,8 +82,15 @@ final public class EventBroker implements Runnable {
 			else 
 				listeners.get(entry.getKey()).addAll(entry.getValue());
 		}
-		
 		newListeners = new HashMap<>();
+		
+		for (EventListener el : toRemoveListeners) {
+			for (Map.Entry<String, ArrayList<EventListener>> entry : listeners.entrySet())
+				if(entry.getValue().contains(el)) {
+					entry.getValue().remove(el);
+				}
+		}
+		toRemoveListeners = new ArrayList<>();
 		
 		for (Map.Entry<String, ArrayList<EventListener>> entry : listeners.entrySet())
 			if (entry.getKey().equals(e.getType()) || entry.getKey().equals("all"))

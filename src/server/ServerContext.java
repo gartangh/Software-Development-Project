@@ -209,7 +209,7 @@ public class ServerContext {
 			for (int userID : team.getPlayers().keySet())
 				r.add(userID);
 
-		for (int userID : quiz.getUnassingendPlayers().keySet())
+		for (int userID : quiz.getUnassignedPlayers().keySet())
 			r.add(userID);
 
 		r.add(quiz.getQuizmaster());
