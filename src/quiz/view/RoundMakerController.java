@@ -21,11 +21,11 @@ import server.ServerNewQuestionEvent;
 
 public class RoundMakerController extends EventPublisher{
 	@FXML
-	ChoiceBox themeChoiceBox;
+	ChoiceBox<String> themeChoiceBox;
 	@FXML
-	ChoiceBox diffChoiceBox;
+	ChoiceBox<String> diffChoiceBox;
 	@FXML
-	ChoiceBox numberChoiceBox;
+	ChoiceBox<String> numberChoiceBox;
 	@FXML
 	Button confirmButton;
 
@@ -53,10 +53,14 @@ public class RoundMakerController extends EventPublisher{
 		// Empty constructor
 	}
 
+	@FXML
 	private void initialize() {
-		themeChoiceBox.setItems(FXCollections.observableArrayList("Culture","Sports"));
-		diffChoiceBox.setItems(FXCollections.observableArrayList("Easy","Average","Hard"));
-		diffChoiceBox.setItems(FXCollections.observableArrayList("1","2","3","4","5"));
+		ObservableList<String> themes = FXCollections.observableArrayList("Culture","Sports");
+		ObservableList<String> diffs = FXCollections.observableArrayList("Easy","Average","Hard");
+		ObservableList<String> numbers = FXCollections.observableArrayList("1","2","3","4","5");
+		themeChoiceBox.setItems(themes);
+		diffChoiceBox.setItems(diffs);
+		numberChoiceBox.setItems(numbers);
 
 		RoundMakerHandler roundMakerHandler= new RoundMakerHandler();
 		EventBroker.getEventBroker().addEventListener(roundMakerHandler);
@@ -92,7 +96,7 @@ public class RoundMakerController extends EventPublisher{
 		}
 
 		int numberOfQuestions = 3;
-		switch((String) themeChoiceBox.getValue()) {
+		switch((String) numberChoiceBox.getValue()) {
 		case "1":
 			numberOfQuestions = 1;
 			break;

@@ -206,7 +206,11 @@ public class Main extends Application {
 			AnchorPane scoreboardRoot = (AnchorPane) scoreboardLoader.load();
 			ScoreboardController scoreboardController = scoreboardLoader.getController();
 			scoreboardController.setMainApp(this);
-			rootLayout.setCenter(scoreboardRoot);
+			Platform.runLater(new Runnable(){
+				public void run(){
+					rootLayout.setCenter(scoreboardRoot);
+				}
+			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -231,7 +235,11 @@ public class Main extends Application {
 			controller.setTeamEvent(teamevent);
 
 			// Show the dialog and wait until the user closes it
-			dialogStage.showAndWait();
+			//Platform.runLater(new Runnable(){
+				//public void run(){
+					dialogStage.showAndWait();
+				//}
+			//});
 
 			return controller.isOkClicked();
 		} catch (IOException e) {
@@ -248,7 +256,11 @@ public class Main extends Application {
 			AnchorPane questionFormRoot = (AnchorPane) questionFormLoader.load();
 			QuestionFormController questionFormController = questionFormLoader.getController();
 			questionFormController.setMain(this);
-			rootLayout.setCenter(questionFormRoot);
+			Platform.runLater(new Runnable(){
+				public void run(){
+					rootLayout.setCenter(questionFormRoot);
+				}
+			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -261,7 +273,11 @@ public class Main extends Application {
 			BorderPane waitRoundRoot = (BorderPane) waitRoundLoader.load();
 			WaitRoundController waitRoundController = waitRoundLoader.getController();
 			waitRoundController.setMain(this);
-			rootLayout.setCenter(waitRoundRoot);
+			Platform.runLater(new Runnable(){
+				public void run(){
+					rootLayout.setCenter(waitRoundRoot);
+				}
+			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
