@@ -5,6 +5,7 @@ import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -126,8 +127,12 @@ public class QuestionFormController extends EventPublisher {
 				alert.setTitle("QuizForm Error");
 				alert.setHeaderText("Can't proceed to the next question");
 				alert.setContentText("Not all teams have answered this question, so you can't proceed yet. Try again some time later.");
-
-				alert.showAndWait();
+				
+				Platform.runLater(new Runnable(){
+					public void run(){
+						alert.showAndWait();
+					}
+				});
 				break;
 				
 			case "SERVER_NEW_ROUND":
