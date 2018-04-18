@@ -48,6 +48,7 @@ public class CreateQuizController extends EventPublisher {
 	@FXML
 	private void initialize() {
 		createQuizHandler = new CreateQuizHandler();
+		
 		EventBroker.getEventBroker().addEventListener(createQuizHandler);
 	}
 
