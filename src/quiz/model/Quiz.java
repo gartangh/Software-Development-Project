@@ -47,9 +47,10 @@ public class Quiz implements Serializable {
 	private Map<Integer, Map<Integer, Integer>> votes = new HashMap<>();
 	private Map<Integer,String> unassignedPlayers=new HashMap<>();
 	private boolean isRunning;
+	private String quizMasterName;
 
 	public Quiz(int quizID, String quizName, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds,
-			int maxAmountOfQuestionsPerRound, int hostID) {
+			int maxAmountOfQuestionsPerRound, int hostID,String hostName) {
 		this.quizID = quizID;
 		this.quizName = quizName;
 		this.amountOfTeams = 0;
@@ -59,6 +60,7 @@ public class Quiz implements Serializable {
 		this.amountOfRounds = 0;
 		this.maxAmountOfQuestionsPerRound = maxAmountOfQuestionsPerRound;
 		this.quizmasterID = hostID;
+		this.quizMasterName=hostName;
 		this.votes = new HashMap<Integer, Map<Integer, Integer>>();
 		this.currentRound = -1;
 		this.isRunning=false;
@@ -264,5 +266,9 @@ public class Quiz implements Serializable {
 
 	public void setRunning(boolean isRunning) {
 		this.isRunning = isRunning;
+	}
+
+	public String getQuizMasterName() {
+		return quizMasterName;
 	}
 }
