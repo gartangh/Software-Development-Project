@@ -30,7 +30,6 @@ import quiz.util.ClientGetQuizzesEvent;
 import quiz.util.ClientJoinQuizEvent;
 import quiz.view.ScoreboardController.ScoreboardEventHandler;
 import server.ServerGetQuizzesEvent;
-import server.ServerJoinQuizEvent;
 import server.ServerSendQuizEvent;
 
 public class JoinQuizController extends EventPublisher {
@@ -116,17 +115,10 @@ public class JoinQuizController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event event) {
-			Quiz quiz;
 			switch(event.getType()) {
 				case "SERVER_GET_QUIZZES":
 					ServerGetQuizzesEvent sGQE = (ServerGetQuizzesEvent) event;
 
-					/*ObservableList<Quiz> quizList =FXCollections.observableArrayList();
-					ArrayList<Quiz> quizList = new ArrayList<>();
-					for(Entry<Integer, Quiz> entry : sGQE.getQuizMap().entrySet())
-						quizList.add(entry.getValue());
-
-						joinQuizModel.setQuizzes(quizList);*/
 					for(Entry<Integer, Quiz> entry : sGQE.getQuizMap().entrySet())
 						joinQuizModel.addQuiz(entry.getValue());
 
@@ -135,17 +127,9 @@ public class JoinQuizController extends EventPublisher {
 
 				case "SERVER_SEND_QUIZ":
 					ServerSendQuizEvent sSQE = (ServerSendQuizEvent) event;
-					quiz = sSQE.getQuiz();
+					Quiz quiz = sSQE.getQuiz();
 					joinQuizModel.addQuiz(quiz);
 					break;
-					
-				case "SERVER_JOIN_QUIZ":
-					ServerJoinQuizEvent sJQE = (ServerJoinQuizEvent) event;
-					quiz = sJQE.getQuiz();
-					quiz.addUnassignedPlayer(Context.getContext().getUser().getUserID(), Context.getContext().getUser().getUsername());
-					Context.getContext().setQuiz(quiz);
-					break;
-					
 				default:
 					System.out.println("Event received but left unhandled: " + event.getType());
 			}
