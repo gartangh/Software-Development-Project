@@ -270,11 +270,15 @@ public class Main extends Application {
 	public void showCreateRound(){
 		try{
 			FXMLLoader roundMakerLoader = new FXMLLoader();
-			roundMakerLoader.setLocation(Main.class.getResource("../quiz/view/WaitRound.fxml"));
+			roundMakerLoader.setLocation(Main.class.getResource("../quiz/view/RoundMaker.fxml"));
 			AnchorPane roundMakerRoot = (AnchorPane) roundMakerLoader.load();
 			RoundMakerController roundMakerController = roundMakerLoader.getController();
 			roundMakerController.setMain(this);
-			rootLayout.setCenter(roundMakerRoot);
+			Platform.runLater(new Runnable(){
+				public void run(){
+					rootLayout.setCenter(roundMakerRoot);
+				}
+			});
 		}catch (IOException e) {
 			e.printStackTrace();
 		}
