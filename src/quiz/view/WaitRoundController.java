@@ -37,6 +37,7 @@ public class WaitRoundController extends EventPublisher {
 		public void handleEvent(Event event) {
 			switch(event.getType()) {
 				case "SERVER_START_ROUND":
+					// This is the roundHandler for a player. You need to show questions here.
 					main.showQuestionForm();
 					break;
 				case "SERVER_NEW_QUESTION":
