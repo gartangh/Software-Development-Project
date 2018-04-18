@@ -237,15 +237,9 @@ public class Server extends EventPublisher {
 			Quiz quiz = ServerContext.getContext().getQuiz(cAE.getQuizID());
 			quiz.addAnswer(cAE.getTeamID(), cAE.getQuestionID(), cAE.getAnswer());
 			quiz.addPoints(cAE.getTeamID(), cAE.getQuestionID(), cAE.getAnswer());
-
-<<<<<<< HEAD
-			ArrayList<Integer> receivers= new ArrayList<Integer>();
-			receivers.addAll(ServerContext.getContext().getQuiz(cAE.getQuizID()).getTeams().get(cAE.getTeamID()).getPlayers().keySet());
-=======
 			ArrayList<Integer> receivers = new ArrayList<Integer>();
 			receivers.addAll(ServerContext.getContext().getQuiz(cAE.getQuizID()).getTeams().get(cAE.getTeamID())
 					.getPlayers().keySet());
->>>>>>> 4066a78d6760dd91ab7cc6204e1cb48d2229784d
 
 			MCQuestion mCQ = (MCQuestion) ServerContext.getContext().getQuestion(cAE.getQuestionID());
 			ServerAnswerEvent serverAnswer = new ServerAnswerEvent(cAE.getTeamID(), cAE.getQuestionID(),
