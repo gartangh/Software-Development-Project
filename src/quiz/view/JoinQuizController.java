@@ -30,6 +30,7 @@ import quiz.util.ClientGetQuizzesEvent;
 import quiz.util.ClientJoinQuizEvent;
 import quiz.view.ScoreboardController.ScoreboardEventHandler;
 import server.ServerGetQuizzesEvent;
+import server.ServerJoinQuizEvent;
 import server.ServerSendQuizEvent;
 
 public class JoinQuizController extends EventPublisher {
@@ -115,6 +116,7 @@ public class JoinQuizController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event event) {
+			Quiz quiz;
 			switch(event.getType()) {
 				case "SERVER_GET_QUIZZES":
 					ServerGetQuizzesEvent sGQE = (ServerGetQuizzesEvent) event;
@@ -130,9 +132,17 @@ public class JoinQuizController extends EventPublisher {
 					
 				case "SERVER_SEND_QUIZ":
 					ServerSendQuizEvent sSQE = (ServerSendQuizEvent) event;
-					Quiz quiz = sSQE.getQuiz();
+					quiz = sSQE.getQuiz();
 					joinQuizModel.addQuiz(quiz);
 					break;
+					
+				case "SERVER_JOIN_QUIZ":
+					ServerJoinQuizEvent sJQE = (ServerJoinQuizEvent) event;
+					quiz = sJQE.getQuiz();
+					quiz.addUnassignedPlayer(Context.getContext().getUser().getUserID(), Context.getContext().getUser().getUsername());
+					Context.getContext().setQuiz(quiz);
+					break;
+					
 				default:
 					System.out.println("Event received but left unhandled: " + event.getType());
 			}

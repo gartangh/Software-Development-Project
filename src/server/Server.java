@@ -59,10 +59,13 @@ public class Server extends EventPublisher {
 			Boolean handled = false;
 			switch (e.getType()) {
 			case "CLIENT_JOIN_QUIZ":
-				ClientJoinQuizEvent cjte = (ClientJoinQuizEvent) e;
-				ServerContext.getContext().getQuizMap().get(cjte.getQuizID()).addUnassignedPlayer(cjte.getUserID(),
-						cjte.getUserName());
+				ClientJoinQuizEvent cJTE = (ClientJoinQuizEvent) e;
+				ServerContext.getContext().getQuizMap().get(cJTE.getQuizID()).addUnassignedPlayer(cJTE.getUserID(),cJTE.getUserName());
+				ServerJoinQuizEvent sJQE = new ServerJoinQuizEvent(ServerContext.getContext().getQuizMap().get(cJTE.getQuizID()));
+				sJQE.addRecipient(cJTE.getUserID());
+				server.publishEvent(sJQE);
 				break;
+				
 			case "CLIENT_CREATE_ACCOUNT":
 				ClientCreateAccountEvent cCAE = (ClientCreateAccountEvent) e;
 				int userID = ServerContext.getContext().addUser(cCAE.getUserName(), cCAE.getUserPassword());
