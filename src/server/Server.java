@@ -82,6 +82,7 @@ public class Server extends EventPublisher {
 						cCQE.getMaxAmountOfPlayersPerTeam(), cCQE.getMaxAmountOfRounds(),
 						cCQE.getMaxAmountOfQuestionsPerRound(), cCQE.getUserID());
 				Quiz quiz = ServerContext.getContext().getQuizMap().get(quizID);
+				
 				ServerReturnQuizEvent sRQE = new ServerReturnQuizEvent(quiz);
 				sRQE.addRecipient(cCQE.getUserID());
 				server.publishEvent(sRQE);
