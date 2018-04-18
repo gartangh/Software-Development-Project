@@ -46,21 +46,17 @@ public class Main extends Application {
 		// Connect to network with randomly generated client port between
 		// SERVERPORT + 1 and 65535 (2^16 - 1)
 		Network network = new Network(new Random().nextInt(65535 - SERVERPORT + 2) + 1026, "CLIENT");
-
 		Context.getContext().setNetwork(network);
 
 		try {
 			if (Main.LOCAL) {
-				System.out.println("LOCAL: " + InetAddress.getLocalHost());
 				network.connect(InetAddress.getLocalHost(), Main.SERVERPORT);
 			} else {
-				System.out.println("NETWORK: " + InetAddress.getLocalHost().getHostAddress());
 				network.connect(SERVERADDRESS, Main.SERVERPORT);
 			}
 
-			// TODO: Remove this
-			System.out.println("Address: " + network.getNetworkAddress().toString() + "\nPort: "
-					+ Integer.toString(network.getConnectionListener().getServerPort()));
+			System.out.println(InetAddress.getLocalHost().getHostAddress());
+			System.out.println(Integer.toString(network.getConnectionListener().getServerPort()));
 
 			// Send event over network
 			EventBroker.getEventBroker().addEventListener(network);
