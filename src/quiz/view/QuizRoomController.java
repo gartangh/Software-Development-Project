@@ -114,8 +114,10 @@ public class QuizRoomController extends EventPublisher {
 				break;
 
 			case "SERVER_START_QUIZ":
+				EventBroker.getEventBroker().removeEventListener(quizroomhandler);
 				Context.getContext().getQuiz().clearUnassignedPlayers();
 				if (Context.getContext().getQuiz().getQuizmaster() == Context.getContext().getUser().getUserID()){
+
 					main.showCreateRound();
 					Context.getContext().getQuiz().setRunning(true);
 				}

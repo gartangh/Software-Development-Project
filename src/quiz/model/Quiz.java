@@ -196,6 +196,7 @@ public class Quiz implements Serializable {
 			Round round = new Round(RoundType.MC, diff, theme);
 			rounds.add(round);
 			round.addQuestions(maxAmountOfQuestionsPerRound);
+			currentRound++;
 			amountOfRounds++;
 		}
 	}

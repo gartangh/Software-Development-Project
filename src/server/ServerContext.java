@@ -152,6 +152,9 @@ public class ServerContext {
 		//String locationPrefix = "./Files/";
 		//String locationPrefix = "D:\\Documents\\Universiteit\\Bachelor3\\Softwareontwikkeling\\project-1718-groep9\\src\\server\\";
 		String locationPrefix = "d:\\Demuynck\\Documents\\school\\Softwareontwikkeling\\Project\\project-1718-groep9\\src\\server\\";
+		//String locationPrefix = "./Files/";
+		//String locationPrefix = "D:\\Documents\\Universiteit\\Bachelor3\\Softwareontwikkeling\\project-1718-groep9\\src\\server\\";
+		// String locationPrefix = "d:\\Demuynck\\Documents\\school\\Softwareontwikkeling\\Project\\project-1718-groep9\\src\\server\\";
 		//String locationPrefix = "C:\\Users\\Gebruiker\\workspace\\Quiz\\src\\server\\";
 
 		String[] themeFiles = { "QUESTIONS_CULTURE.txt", "QUESTIONS_SPORTS.txt" };
