@@ -43,17 +43,17 @@ public class ScoreboardController extends EventPublisher {
 
 	public void setMainApp(Main main) {
 		this.main = main;
+		scoreboardTable.setItems(scoreboardModel.getScoreboardTeams());
 	}
 
 	// Constructor
 	public ScoreboardController() {
-		scoreboardModel = new ScoreboardModel();
-		eventHandler = new ScoreboardEventHandler();
-		scoreboardTable.setItems(scoreboardModel.getScoreboardTeams());
+		this.scoreboardModel = new ScoreboardModel();
 	}
 
 	@FXML
 	private void initialize() {
+		eventHandler = new ScoreboardEventHandler();
 		EventBroker.getEventBroker().addEventListener(eventHandler);
 		
 		winnerLoser.textProperty().bind(scoreboardModel.getWinnerLoserProperty());
@@ -73,14 +73,25 @@ public class ScoreboardController extends EventPublisher {
 			case "SERVER_SCOREBOARDDATA":
 				ServerScoreboardDataEvent scoreboardData = (ServerScoreboardDataEvent) e;
 
-				scoreboardTable.setItems(FXCollections.observableArrayList(scoreboardData.getScoreboardTeams()));
-
+				scoreboardModel.addScoreboardTeams(scoreboardData.getScoreboardTeams());
+				
 				if (scoreboardData.getScoreboardTeams().size() > 0) {
 					int curTeamID = Context.getContext().getTeamID();
-					if (scoreboardData.getScoreboardTeams().get(0).getTeamID() == curTeamID)
-						scoreboardModel.updateWinnerLoser(scoreboardData.getScoreboardTeams().get(curTeamID).getTeamName() + ": WINNER");
-					else
-						scoreboardModel.updateWinnerLoser(scoreboardData.getScoreboardTeams().get(curTeamID).getTeamName() + ": LOSER");
+					ScoreboardTeam curTeam = null;
+					for(ScoreboardTeam team : scoreboardData.getScoreboardTeams()) {
+						if(team.getTeamID() == curTeamID) {
+							curTeam = team;
+							break;
+						}
+					}
+					if(curTeam != null) {
+						if (scoreboardData.getScoreboardTeams().get(0).getTeamID() == curTeamID)
+							scoreboardModel.updateWinnerLoser(curTeam.getTeamName() + ": WINNER");
+						else {
+							scoreboardModel.updateWinnerLoser(curTeam.getTeamName() + ": LOSER");
+							
+						}
+					}
 				}
 
 				break;
