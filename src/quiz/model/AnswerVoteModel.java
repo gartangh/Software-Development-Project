@@ -69,10 +69,15 @@ public class AnswerVoteModel {
 					votes[vote]++;
 				}
 				if(total>0) {
-					int A = (int) Math.round(100*(votes[0]/total));
-					int B = (int) Math.round(100*(votes[1]/total));
-					int C = (int) Math.round(100*(votes[2]/total));
-					int D = (int) Math.round(100*(votes[3]/total));
+					double fA = (100.0*votes[0])/total;
+					double fB = (100.0*votes[1])/total;
+					double fC = (100.0*votes[2])/total;
+					double fD = (100.0*votes[3])/total;
+					
+					long A = Math.round(fA);
+					long B = Math.round(fB);
+					long C = Math.round(fC);
+					long D = Math.round(fD);
 									
 					Platform.runLater(new Runnable() {
 						public void run() {

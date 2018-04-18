@@ -6,7 +6,6 @@ import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import javafx.fxml.FXML;
 import main.Main;
-import quiz.view.CreateQuizController.CreateQuizHandler;
 
 public class WaitHostController extends EventPublisher  {
 
@@ -34,9 +33,14 @@ public class WaitHostController extends EventPublisher  {
 		@Override
 		public void handleEvent(Event event) {
 			switch(event.getType()) {
-				case "SERVER_END_QUIZ":
-					main.showScoreboardScene();
-					break;
+			case "SERVER_NEW_ROUND":
+				EventBroker.getEventBroker().removeEventListener(waitHostHandler);
+				main.showCreateRound();
+				break;
+			case "SERVER_END_QUIZ":
+				EventBroker.getEventBroker().removeEventListener(waitHostHandler);
+				main.showScoreboardScene();
+				break;
 			}
 			
 		}

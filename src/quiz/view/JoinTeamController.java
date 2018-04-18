@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import eventbroker.EventBroker;
 import eventbroker.EventPublisher;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

@@ -34,6 +34,7 @@ import quiz.view.ScoreboardController.ScoreboardEventHandler;
 import server.ServerGetQuizzesEvent;
 import server.ServerJoinQuizEvent;
 import server.ServerSendQuizEvent;
+import server.ServerStartQuizEvent;
 
 public class JoinQuizController extends EventPublisher {
 
@@ -82,7 +83,7 @@ public class JoinQuizController extends EventPublisher {
 		mJoin.disableProperty().bind(joinQuizModel.getJoinDisableProperty());
 		quiznameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getQuizname())));
 		quizmasternameColumn
-				.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getQuizname())));
+				.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getQuizMasterName())));
 
 		quizTable.getSelectionModel().selectedItemProperty()
 				.addListener((observable, oldValue, newValue) -> showQuizDetails(newValue));
@@ -105,7 +106,7 @@ public class JoinQuizController extends EventPublisher {
 	private void handleJoin() {
 		ClientJoinQuizEvent cjqe=new ClientJoinQuizEvent(Context.getContext().getUser().getUserID(),selectedQuiz.getQuizID(),Context.getContext().getUser().getUsername());
 		publishEvent(cjqe);
-		main.showQuizroomScene();
+		//EventBroker.getEventBroker().removeEventListener(joinQuizeventHandler);
 	}
 
 	@FXML
@@ -113,6 +114,7 @@ public class JoinQuizController extends EventPublisher {
 		// TODO: Handle back
 		// TODO: set context quiz back to null;
 		Context.getContext().setQuiz(null);
+		//EventBroker.getEventBroker().removeEventListener(joinQuizeventHandler);
 		main.showModeSelectorScene();
 	}
 
@@ -143,8 +145,12 @@ public class JoinQuizController extends EventPublisher {
 				quiz.addUnassignedPlayer(Context.getContext().getUser().getUserID(),
 						Context.getContext().getUser().getUsername());
 				Context.getContext().setQuiz(quiz);
+				main.showQuizroomScene();
 				break;
-
+			case "SERVER_START_QUIZ":
+				ServerStartQuizEvent sSTQE=(ServerStartQuizEvent) event;
+				joinQuizModel.deleteQuiz(sSTQE.getQuizID());
+				break;
 			default:
 				System.out.println("Event received but left unhandled: " + event.getType());
 			}

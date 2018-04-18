@@ -71,6 +71,7 @@ public class CreateQuizController extends EventPublisher {
 		public void handleEvent(Event event) {
 			switch(event.getType()) {
 				case "SERVER_RETURN_QUIZ":
+					EventBroker.getEventBroker().removeEventListener(createQuizHandler);
 					ServerReturnQuizEvent sRQE = (ServerReturnQuizEvent) event;
 					Context.getContext().setQuiz(sRQE.getQuiz());
 					main.showQuizroomScene();

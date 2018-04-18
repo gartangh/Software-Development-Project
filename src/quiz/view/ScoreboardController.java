@@ -55,7 +55,7 @@ public class ScoreboardController extends EventPublisher {
 	private void initialize() {
 		eventHandler = new ScoreboardEventHandler();
 		EventBroker.getEventBroker().addEventListener(eventHandler);
-		
+
 		winnerLoser.textProperty().bind(scoreboardModel.getWinnerLoserProperty());
 		rankColumn.setCellValueFactory(cellData -> (new SimpleIntegerProperty(cellData.getValue().getRank()).asObject()));
         teamNameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getTeamName())));
@@ -84,12 +84,13 @@ public class ScoreboardController extends EventPublisher {
 							break;
 						}
 					}
-					if(curTeam != null) {
+					if(Context.getContext().getQuiz().getQuizmaster() == Context.getContext().getUser().getUserID())
+						scoreboardModel.updateWinnerLoser("HOST");
+					else if(curTeam != null) {
 						if (scoreboardData.getScoreboardTeams().get(0).getTeamID() == curTeamID)
-							scoreboardModel.updateWinnerLoser(curTeam.getTeamName() + ": WINNER");
+							scoreboardModel.updateWinnerLoser("WINNER WINNER CHICKEN DINNER");
 						else {
 							scoreboardModel.updateWinnerLoser(curTeam.getTeamName() + ": LOSER");
-							
 						}
 					}
 				}
@@ -106,7 +107,8 @@ public class ScoreboardController extends EventPublisher {
 	@FXML
 	private void handleRematchButton() {
 		// TO DO: Clear quiz, go back to quizroom
-		System.out.println("Going back to quizroom");
+		EventBroker.getEventBroker().removeEventListener(eventHandler);
+		main.showQuizroomScene();
 	}
 
 	/**
@@ -115,7 +117,8 @@ public class ScoreboardController extends EventPublisher {
 	@FXML
 	private void handleQuitButton() {
 		// TO DO: Clear quiz, show List of Available quizzes
-		System.out.println("Quitting quiz");
+		EventBroker.getEventBroker().removeEventListener(eventHandler);
+		main.showModeSelectorScene();
 	}
 
 	public ScoreboardModel getScoreboardModel() {

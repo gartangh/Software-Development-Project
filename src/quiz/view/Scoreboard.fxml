@@ -7,7 +7,6 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-
 <BorderPane xmlns="http://javafx.com/javafx/8.0.141"
 	xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.ScoreboardController">
 	<center>
@@ -22,6 +21,7 @@
 							minWidth="-1.0" prefWidth="-1.0" resizable="false" text="TEAM" />
 						<TableColumn fx:id="scoreColumn" maxWidth="-1.0"
 							minWidth="-1.0" prefWidth="-1.0" resizable="false" text="SCORE" />
+
 					</columns>
 					<columnResizePolicy>
 						<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

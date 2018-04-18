@@ -4,16 +4,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
 import quiz.util.Difficulty;
 import quiz.util.Theme;
 import quiz.util.RoundType;
-
-import main.Context;
 import server.ServerContext;
-import user.model.Quizmaster;
 
 @SuppressWarnings("serial")
 public class Quiz implements Serializable {
@@ -45,10 +40,12 @@ public class Quiz implements Serializable {
 	private Map<Integer, Team> teams = new HashMap<Integer, Team>();
 	// Map(teamID -> Map(userID -> vote))
 	private Map<Integer, Map<Integer, Integer>> votes = new HashMap<>();
-	private Map<Integer,String> unassingendPlayers=new HashMap<>();
+	private Map<Integer, String> unassignedPlayers = new HashMap<>();
+	private boolean isRunning;
+	private String quizMasterName;
 
 	public Quiz(int quizID, String quizName, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds,
-			int maxAmountOfQuestionsPerRound, int hostID) {
+			int maxAmountOfQuestionsPerRound, int hostID, String hostName) {
 		this.quizID = quizID;
 		this.quizName = quizName;
 		this.amountOfTeams = 0;
@@ -58,8 +55,10 @@ public class Quiz implements Serializable {
 		this.amountOfRounds = 0;
 		this.maxAmountOfQuestionsPerRound = maxAmountOfQuestionsPerRound;
 		this.quizmasterID = hostID;
+		this.quizMasterName = hostName;
 		this.votes = new HashMap<Integer, Map<Integer, Integer>>();
-		this.currentRound = 0;
+		this.currentRound = -1;
+		this.isRunning = false;
 	}
 
 	// Factory method
@@ -71,14 +70,14 @@ public class Quiz implements Serializable {
 	 * return 5; else if (questions > MAXQUESTIONS) return 6; else if (teams <
 	 * 2) return 7; else if (teams > MAXTEAMS) return 8; else if (players < 1)
 	 * return 9; else if (players > MAXPLAYERS) return 10;
-	 * 
+	 *
 	 * // Everything is valid Quiz quiz = new Quiz(quizname, rounds, questions,
 	 * teams, players);
-	 * 
+	 *
 	 * quiz.quizID = n++;
-	 * 
+	 *
 	 * Context.getContext().setQuiz(quiz);
-	 * 
+	 *
 	 * return 0; }
 	 */
 
@@ -87,9 +86,9 @@ public class Quiz implements Serializable {
 	 * public static void createServerQuiz(String quizname, int quizID, int
 	 * rounds, int questions, int teams, int players) { Quiz quiz = new
 	 * Quiz(quizname, rounds, questions, teams, players);
-	 * 
+	 *
 	 * quiz.quizID = quizID;
-	 * 
+	 *
 	 * ServerContext.getContext().addQuiz(quiz); }
 	 */
 
@@ -169,11 +168,13 @@ public class Quiz implements Serializable {
 	public Map<Integer, Map<Integer, Integer>> getVotes() {
 		return votes;
 	}
-	
+
 	public boolean isAnsweredByAll() {
 		int nOA = this.getRound().getNumberOfAnswers();
-		if(nOA == teams.size()) return true;
-		else return false;
+		if (nOA == teams.size())
+			return true;
+		else
+			return false;
 	}
 
 	// Adders and removers
@@ -192,6 +193,7 @@ public class Quiz implements Serializable {
 			Round round = new Round(RoundType.MC, diff, theme);
 			rounds.add(round);
 			round.addQuestions(maxAmountOfQuestionsPerRound);
+			currentRound++;
 			amountOfRounds++;
 		}
 	}
@@ -222,10 +224,10 @@ public class Quiz implements Serializable {
 	public void addAnswer(int teamID, int questionID, int answer) {
 		rounds.get(currentRound).addAnswer(teamID, questionID, answer);
 	}
-	
+
 	public void addPoints(int teamID, int questionID, int answer) {
 		MCQuestion q = (MCQuestion) ServerContext.getContext().getQuestion(questionID);
-		if(answer == q.getCorrectAnswer()) {
+		if (answer == q.getCorrectAnswer()) {
 			teams.get(teamID).addPoints(1);
 		}
 	}
@@ -234,19 +236,35 @@ public class Quiz implements Serializable {
 	/*
 	 * private static boolean isUniqueQuizname(String quizname) { // TODO: Check
 	 * uniqueness of quizname
-	 * 
+	 *
 	 * return true; // Temporary }
 	 */
-	
-	public void addUnassignedPlayer(int userID,String username){
-		unassingendPlayers.put(userID,username);
-	}
-	
-	public void removeUnassignedPlayer(int userID){
-		unassingendPlayers.remove(userID);
+
+	public void addUnassignedPlayer(int userID, String username) {
+		unassignedPlayers.put(userID, username);
 	}
 
-	public Map<Integer, String> getUnassingendPlayers() {
-		return unassingendPlayers;
+	public void removeUnassignedPlayer(int userID) {
+		unassignedPlayers.remove(userID);
+	}
+
+	public Map<Integer, String> getUnassignedPlayers() {
+		return unassignedPlayers;
+	}
+
+	public void clearUnassignedPlayers() {
+		unassignedPlayers.clear();
+	}
+
+	public boolean isRunning() {
+		return isRunning;
+	}
+
+	public void setRunning(boolean isRunning) {
+		this.isRunning = isRunning;
+	}
+
+	public String getQuizMasterName() {
+		return quizMasterName;
 	}
 }
