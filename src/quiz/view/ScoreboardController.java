@@ -87,6 +87,8 @@ public class ScoreboardController extends EventPublisher {
 					if(curTeam != null) {
 						if (scoreboardData.getScoreboardTeams().get(0).getTeamID() == curTeamID)
 							scoreboardModel.updateWinnerLoser(curTeam.getTeamName() + ": WINNER");
+						else if(Context.getContext().getQuiz().getQuizmaster() == Context.getContext().getUser().getUserID())
+							scoreboardModel.updateWinnerLoser("HOST");
 						else {
 							scoreboardModel.updateWinnerLoser(curTeam.getTeamName() + ": LOSER");
 							

@@ -248,7 +248,7 @@ public class Server extends EventPublisher {
 			if (quiz.isAnsweredByAll()) {
 				ArrayList<Integer> receivers = ServerContext.getContext().getUsersFromQuiz(cNQE.getQuizID());
 
-				if (quiz.getRound().getQuestionNumber() < quiz.getRound().getNumberOfQuestions()) {
+				if ((quiz.getRound().getQuestionNumber()+1) < quiz.getRound().getNumberOfQuestions()) {
 					MCQuestion nQ = (MCQuestion) ServerContext.getContext()
 							.getQuestion(quiz.getRound().getNextQuestion());
 					int[] permutatie = { 1, 2, 3, 4 };
