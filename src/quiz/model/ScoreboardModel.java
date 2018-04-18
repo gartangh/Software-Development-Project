@@ -1,5 +1,8 @@
 package quiz.model;
 
+import java.util.ArrayList;
+
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -27,7 +30,24 @@ public class ScoreboardModel {
 	}
 	
 	public void updateWinnerLoser(String winnerLoser) {
-		this.winnerLoserProperty.setValue(winnerLoser);
+		Platform.runLater(new Runnable(){
+			public void run(){
+				winnerLoserProperty.setValue(winnerLoser);
+			}
+		});
+	}
+	
+	public void addScoreboardTeam(ScoreboardTeam scoreboardTeam) {
+		Platform.runLater(new Runnable(){
+			public void run(){
+				scoreboardTeams.add(scoreboardTeam);
+			}
+		});
+	}
+
+	public void addScoreboardTeams(ArrayList<ScoreboardTeam> scoreboardTeamList) {
+		for(ScoreboardTeam scoreboardTeam : scoreboardTeamList)
+			addScoreboardTeam(scoreboardTeam);
 	}
 	
 	

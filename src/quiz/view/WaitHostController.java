@@ -1,17 +1,18 @@
 package quiz.view;
 
 import eventbroker.Event;
+import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
+import javafx.fxml.FXML;
 import main.Main;
-import quiz.view.CreateQuizController.CreateQuizHandler;
 
 public class WaitHostController extends EventPublisher  {
 
 	
 	// Reference to the main application
 		private Main main;
-		private CreateQuizHandler createQuizHandler;
+		private WaitHostHandler waitHostHandler;
 		
 		public void setMain(Main main) {
 			this.main = main;
@@ -19,6 +20,12 @@ public class WaitHostController extends EventPublisher  {
 	
 	public WaitHostController() {
 		
+	}
+	
+	@FXML
+	private void initialize() {
+		waitHostHandler = new WaitHostHandler();
+		EventBroker.getEventBroker().addEventListener(waitHostHandler);
 	}
 	
 	public class WaitHostHandler implements EventListener {

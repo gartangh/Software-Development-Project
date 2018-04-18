@@ -1,13 +1,11 @@
 package server;
 
-import user.model.Host;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javafx.scene.paint.Color;
 import network.Network;
@@ -36,16 +34,17 @@ public class ServerContext {
 		// Empty default constructor
 	}
 
+	// Getters and setters
 	public static ServerContext getContext() {
 		return context;
 	}
 
-	public void setNetwork(Network network) {
-		this.network = network;
-	}
-
 	public Network getNetwork() {
 		return network;
+	}
+
+	public void setNetwork(Network network) {
+		this.network = network;
 	}
 
 	public Map<Integer, User> getUserMap() {
@@ -69,14 +68,11 @@ public class ServerContext {
 		return newID;
 	}
 
-	public String changeTeam(int quizID, int teamID, int userID, char type) {// returns
-																				// username
-																				// for
-																				// serverEventHandler
-		if (quizMap.containsKey(quizID) && userMap.containsKey(userID) && teamID != -1) {// teamID==-1:
-																							// nothing
-																							// to
-																							// delete
+	// Methods
+	// Return username for serverEventHandler
+	public String changeTeam(int quizID, int teamID, int userID, char type) {
+		// Nothing to delete if teamID == -1
+		if (quizMap.containsKey(quizID) && userMap.containsKey(userID) && teamID != -1) {
 			Quiz quiz = quizMap.get(quizID);
 			User user = userMap.get(userID);
 			Team team = null;
@@ -91,7 +87,8 @@ public class ServerContext {
 					return user.getUsername();
 				}
 			}
-		} // team, quiz or user not found
+		}
+
 		return null;
 	}
 
@@ -105,6 +102,7 @@ public class ServerContext {
 		Quiz newQuiz = new Quiz(newID, quizName, maxAmountOfTeams, maxAmountOfPlayersPerTeam, maxAmountOfRounds,
 				maxAmountOfQuestionsPerRound, hostID);
 		quizMap.put(newID, newQuiz);
+
 		return newID;
 	}
 
@@ -123,15 +121,15 @@ public class ServerContext {
 				}
 			} while (!unique);
 
-			// Team team = new Team(newID, teamName, color, captainID,
-			// userMap.get(captainID).getUsername());
 			Team team = new Team(newID, teamName, color, captainID, userMap.get(captainID).getUsername());
 			team.setMaxAmountOfPlayers(q.getMaxAmountOfPlayersPerTeam());
 			q.addTeam(team);
 			quizMap.put(quizID, q);
+
 			return newID;
-		} else
-			return -1;
+		}
+
+		return -1;
 	}
 
 	// Methods
@@ -149,8 +147,8 @@ public class ServerContext {
 
 	public void loadData() {
 		BufferedReader reader;
-		 //String locationPrefix = "./Files/";
-		 String locationPrefix = "D:\\Documents\\Universiteit\\Bachelor3\\Softwareontwikkeling\\project-1718-groep9\\src\\server\\";
+		//String locationPrefix = "./Files/";
+		String locationPrefix = "D:\\Documents\\Universiteit\\Bachelor3\\Softwareontwikkeling\\project-1718-groep9\\src\\server\\";
 		// String locationPrefix = "d:\\Demuynck\\Documents\\school\\Softwareontwikkeling\\Project\\project-1718-groep9\\src\\server\\";
 		//String locationPrefix = "C:\\Users\\Gebruiker\\workspace\\Quiz\\src\\server\\";
 
@@ -174,26 +172,18 @@ public class ServerContext {
 						reader.readLine();
 						reader.readLine();
 					}
+
 					String question = reader.readLine();
 					if (question == null)
 						break;
+
 					String answers[] = { reader.readLine(), reader.readLine(), reader.readLine(), reader.readLine() };
 					int correctAnswer = Integer.parseInt(reader.readLine());
 					Theme t = Theme.values()[tF];
 					Difficulty d = Difficulty.values()[diff];
-					int questionID = tF * (2 ^ 24) + diff * (2 ^ 22) + i; // 256
-																			// possible
-																			// themes
-																			// and
-																			// 4
-																			// difficulties
-																			// with
-																			// each
-																			// 2^21
-																			// questions
-																			// gives
-																			// unique
-																			// ID
+					// 256 possible themes and 4 difficulties with each 2^21
+					// questions gives unique ID
+					int questionID = tF * (2 ^ 24) + diff * (2 ^ 22) + i;
 					MCQuestion q = new MCQuestion(d, t, questionID, question, answers, correctAnswer);
 
 					diffMap.put(questionID, q);
@@ -203,6 +193,7 @@ public class ServerContext {
 					i++;
 					line = reader.readLine();
 				}
+
 				reader.close();
 			}
 		} catch (IOException e) {
@@ -213,15 +204,17 @@ public class ServerContext {
 	public ArrayList<Integer> getUsersFromQuiz(int quizID) {
 		ArrayList<Integer> r = new ArrayList<>();
 		Quiz quiz = quizMap.get(quizID);
+
 		for (Team team : quiz.getTeams().values())
 			for (int userID : team.getPlayers().keySet())
 				r.add(userID);
 
 		for (int userID : quiz.getUnassingendPlayers().keySet())
 			r.add(userID);
-		r.add(quiz.getQuizmaster());
-		return r;
 
+		r.add(quiz.getQuizmaster());
+
+		return r;
 	}
 
 	public Question getQuestion(int questionID) {
