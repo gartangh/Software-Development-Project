@@ -11,6 +11,7 @@ final public class EventBroker implements Runnable {
 
 	LinkedList<QueueItem> queue = new LinkedList<>();
 	Map<String, ArrayList<EventListener>> listeners = new HashMap<>();
+	Map<String, ArrayList<EventListener>> newListeners = new HashMap<>();
 
 	public LinkedList<QueueItem> getQueue() {
 		return queue;
@@ -43,21 +44,21 @@ final public class EventBroker implements Runnable {
 	}
 
 	public void addEventListener(EventListener el) {
-		if (listeners.get("all") == null) {
+		if (newListeners.get("all") == null) {
 			ArrayList<EventListener> al = new ArrayList<>();
-			listeners.put("all", al);
+			newListeners.put("all", al);
 		}
 
-		listeners.get("all").add(el);
+		newListeners.get("all").add(el);
 	}
 
 	public void addEventListener(String type, EventListener el) {
-		if (listeners.get(type) == null) {
+		if (newListeners.get(type) == null) {
 			ArrayList<EventListener> al = new ArrayList<>();
-			listeners.put(type, al);
+			newListeners.put(type, al);
 		}
 
-		listeners.get(type).add(el);
+		newListeners.get(type).add(el);
 	}
 
 	public void removeEventListener(EventListener el) {
@@ -77,6 +78,15 @@ final public class EventBroker implements Runnable {
 	}
 
 	private void process(EventPublisher source, Event e) {
+		for(Map.Entry<String, ArrayList<EventListener>> entry : newListeners.entrySet()) {
+			if(!listeners.containsKey(entry.getKey()))
+				listeners.put(entry.getKey(), entry.getValue());
+			else 
+				listeners.get(entry.getKey()).addAll(entry.getValue());
+		}
+		
+		newListeners = new HashMap<>();
+		
 		for (Map.Entry<String, ArrayList<EventListener>> entry : listeners.entrySet())
 			if (entry.getKey().equals(e.getType()) || entry.getKey().equals("all"))
 				for (EventListener el : entry.getValue())
