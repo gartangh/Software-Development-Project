@@ -17,6 +17,7 @@ import main.Context;
 import main.Main;
 import quiz.model.ScoreboardModel;
 import quiz.model.ScoreboardTeam;
+import quiz.util.ClientScoreboardDataEvent;
 import quiz.util.QuizzerEvent;
 import quiz.util.UserEvent;
 import server.ServerScoreboardDataEvent;
@@ -42,11 +43,12 @@ public class ScoreboardController extends EventPublisher {
 
 	public void setMainApp(Main main) {
 		this.main = main;
+		scoreboardTable.setItems(scoreboardModel.getScoreboardTeams());
 	}
 
 	// Constructor
 	public ScoreboardController() {
-		scoreboardModel = new ScoreboardModel();
+		this.scoreboardModel = new ScoreboardModel();
 	}
 
 	@FXML
@@ -58,10 +60,9 @@ public class ScoreboardController extends EventPublisher {
 		rankColumn.setCellValueFactory(cellData -> (new SimpleIntegerProperty(cellData.getValue().getRank()).asObject()));
         teamNameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getTeamName())));
         scoreColumn.setCellValueFactory(cellData -> (new SimpleIntegerProperty(cellData.getValue().getScore()).asObject()));
-
-		QuizzerEvent askForScoreboardDataEvent = new QuizzerEvent();
-		askForScoreboardDataEvent.setType("CLIENT_SCOREBOARDDATA");
-		publishEvent(askForScoreboardDataEvent);
+        
+		ClientScoreboardDataEvent cSDE = new ClientScoreboardDataEvent();
+		publishEvent(cSDE);
 	}
 
 	public class ScoreboardEventHandler implements EventListener {
@@ -72,14 +73,27 @@ public class ScoreboardController extends EventPublisher {
 			case "SERVER_SCOREBOARDDATA":
 				ServerScoreboardDataEvent scoreboardData = (ServerScoreboardDataEvent) e;
 
-				scoreboardTable.setItems(FXCollections.observableArrayList(scoreboardData.getScoreboardTeams()));
-
+				scoreboardModel.addScoreboardTeams(scoreboardData.getScoreboardTeams());
+				
 				if (scoreboardData.getScoreboardTeams().size() > 0) {
 					int curTeamID = Context.getContext().getTeamID();
-					if (scoreboardData.getScoreboardTeams().get(0).getTeamID() == curTeamID)
-						scoreboardModel.updateWinnerLoser(scoreboardData.getScoreboardTeams().get(curTeamID).getTeamName() + ": WINNER");
-					else
-						scoreboardModel.updateWinnerLoser(scoreboardData.getScoreboardTeams().get(curTeamID).getTeamName() + ": LOSER");
+					ScoreboardTeam curTeam = null;
+					for(ScoreboardTeam team : scoreboardData.getScoreboardTeams()) {
+						if(team.getTeamID() == curTeamID) {
+							curTeam = team;
+							break;
+						}
+					}
+					if(curTeam != null) {
+						if (scoreboardData.getScoreboardTeams().get(0).getTeamID() == curTeamID)
+							scoreboardModel.updateWinnerLoser(curTeam.getTeamName() + ": WINNER");
+						else if(Context.getContext().getQuiz().getQuizmaster() == Context.getContext().getUser().getUserID())
+							scoreboardModel.updateWinnerLoser("HOST");
+						else {
+							scoreboardModel.updateWinnerLoser(curTeam.getTeamName() + ": LOSER");
+							
+						}
+					}
 				}
 
 				break;

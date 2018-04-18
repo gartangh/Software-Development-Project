@@ -5,10 +5,12 @@ import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.text.Text;
 import main.Context;
 import main.Main;
@@ -21,6 +23,7 @@ import quiz.util.ClientVoteEvent;
 import server.ServerAnswerEvent;
 import server.ServerContext;
 import server.ServerNewQuestionEvent;
+import server.ServerNewRoundEvent;
 import server.ServerVoteEvent;
 
 public class QuestionFormController extends EventPublisher {
@@ -111,7 +114,16 @@ public class QuestionFormController extends EventPublisher {
 				
 				System.out.println("Event received and handled: " + e.getType());
 				break;
+			case "SERVER_NEW_ROUND":
 				
+				//ServerNewRoundEvent sNRE = (ServerNewRoundEvent) e;
+				main.showWaitRound();
+				
+				System.out.println("Event received and handled: " + e.getType());
+				break;
+			case "SERVER_END_QUIZ":
+				main.showScoreboardScene();
+				break;
 			default:
 				System.out.println("Event received but left unhandled: " + e.getType());
 				break;
@@ -214,7 +226,25 @@ public class QuestionFormController extends EventPublisher {
 	@FXML
 	private void handleAnswer() {
 		int answer = this.getChecked();
-		if(answer >= 0) {
+		if(Context.getContext().getQuiz().getTeams().get(Context.getContext().getTeamID()).getCaptainID() == Context.getContext().getUser().getID()) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.initOwner(main.getPrimaryStage());
+			alert.setTitle("QuizForm Error");
+			alert.setHeaderText("You can't submit an answer");
+			alert.setContentText("You are not the captain, so you can't submit an answer.");
+
+			alert.showAndWait();
+		}
+		else if (answer < 0) { 
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.initOwner(main.getPrimaryStage());
+			alert.setTitle("QuizForm Error");
+			alert.setHeaderText("You can't submit an empty answer");
+			alert.setContentText("Please select an answer to submit.");
+
+			alert.showAndWait();
+		}
+		else {
 			ClientAnswerEvent cae = new ClientAnswerEvent(Context.getContext().getQuestion().getQuestionID(), answer);
 			this.publishEvent(cae);
 			handleCheck(-1);
