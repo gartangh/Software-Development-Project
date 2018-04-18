@@ -147,6 +147,7 @@ public class QuizRoomController extends EventPublisher {
 
 		CaptainLabel.textProperty().bind(quizRoomModel.getCaptainName());
 		TeamnameLabel.textProperty().bind(quizRoomModel.getTeamName());
+		circle.fillProperty().bind(quizRoomModel.getTeamColor());
 		teammemberslist.itemsProperty().bind(quizRoomModel.getTeamMembers());
 
 		/*
