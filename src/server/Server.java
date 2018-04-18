@@ -249,6 +249,7 @@ public class Server extends EventPublisher {
 					if((quiz.getCurrentRound()+1) < quiz.getMaxAmountOfRounds()) {
 						ServerNewRoundEvent sNRE = new ServerNewRoundEvent(quiz.getCurrentRound()+1);
 						receivers=ServerContext.getContext().getUsersFromQuiz(cNQE.getQuizID());
+						receivers.add(ServerContext.getContext().getQuiz(cNQE.getQuizID()).getQuizmaster());
 						sNRE.addRecipients(receivers);
 						Server.getServer().publishEvent(sNRE);
 					}

@@ -149,7 +149,8 @@ public class ServerContext {
 
 	public void loadData() {
 		BufferedReader reader;
-		 String locationPrefix = "./Files/";
+		 //String locationPrefix = "./Files/";
+		 String locationPrefix = "D:\\Documents\\Universiteit\\Bachelor3\\Softwareontwikkeling\\project-1718-groep9\\src\\server\\";
 		// String locationPrefix = "d:\\Demuynck\\Documents\\school\\Softwareontwikkeling\\Project\\project-1718-groep9\\src\\server\\";
 		//String locationPrefix = "C:\\Users\\Gebruiker\\workspace\\Quiz\\src\\server\\";
 

@@ -26,8 +26,12 @@ public class WaitHostController extends EventPublisher  {
 		@Override
 		public void handleEvent(Event event) {
 			switch(event.getType()) {
-				case "SERVER_END_QUIZ":
-					main.showScoreboardScene();
+			case "SERVER_NEW_ROUND":
+				main.showCreateRound();
+				break;
+			case "SERVER_END_QUIZ":
+				main.showScoreboardScene();
+				break;
 			}
 			
 		}
