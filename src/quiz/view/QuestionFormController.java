@@ -154,6 +154,7 @@ public class QuestionFormController extends EventPublisher {
 		confirmButton.disableProperty().bind(answerVoteModel.getConfirmDisableProperty());
 		nextButton.disableProperty().bind(answerVoteModel.getNextDisableProperty());
 		
+		answerVoteModel.updateQuestion();
 		answerVoteModel.updateVotes(Context.getContext().getTeamID());
 	}
 

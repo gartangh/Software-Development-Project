@@ -110,8 +110,8 @@ public class Main extends Application {
 			VBox logIn = (VBox) loader.load();
 			LogInController controller = loader.getController();
 			controller.setMainApp(this);
-			Platform.runLater(new Runnable(){
-				public void run(){
+			Platform.runLater(new Runnable() {
+				public void run() {
 					rootLayout.setCenter(logIn);
 				}
 			});
@@ -127,16 +127,26 @@ public class Main extends Application {
 			VBox modeSelector = (VBox) modeSelectorLoader.load();
 			ModeSelectorController modeSelectorController = modeSelectorLoader.getController();
 			modeSelectorController.setMainApp(this);
-			rootLayout.setCenter(modeSelector);
+			Platform.runLater(new Runnable() {
+				public void run() {
+					rootLayout.setCenter(modeSelector);
+				}
+			});
 
 			FXMLLoader menuLoader = new FXMLLoader();
 			menuLoader.setLocation(Main.class.getResource("view/Menu.fxml"));
 			AnchorPane menu = (AnchorPane) menuLoader.load();
 			MenuController menuController = menuLoader.getController();
 			menuController.setMainApp(this);
-			Platform.runLater(new Runnable(){
-				public void run(){
+			Platform.runLater(new Runnable() {
+				public void run() {
 					rootLayout.setTop(menu);
+				}
+			});
+
+			Platform.runLater(new Runnable() {
+				public void run() {
+					rootLayout.setBottom(null);
 				}
 			});
 		} catch (IOException e) {
@@ -151,8 +161,8 @@ public class Main extends Application {
 			BorderPane createQuiz = (BorderPane) createQuizLoader.load();
 			CreateQuizController createQuizController = createQuizLoader.getController();
 			createQuizController.setMainApp(this);
-			Platform.runLater(new Runnable(){
-				public void run(){
+			Platform.runLater(new Runnable() {
+				public void run() {
 					rootLayout.setCenter(createQuiz);
 				}
 			});
@@ -168,8 +178,8 @@ public class Main extends Application {
 			BorderPane joinQuiz = (BorderPane) joinQuizLoader.load();
 			JoinQuizController joinQuizController = joinQuizLoader.getController();
 			joinQuizController.setMainApp(this);
-			Platform.runLater(new Runnable(){
-				public void run(){
+			Platform.runLater(new Runnable() {
+				public void run() {
 					rootLayout.setCenter(joinQuiz);
 					rootLayout.setBottom(chatPanel.getContent());
 				}
@@ -180,8 +190,6 @@ public class Main extends Application {
 	}
 
 	public void showQuizroomScene() {
-		// Quizroom is created
-
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(Main.class.getResource("../quiz/view/Quizroom.fxml"));
@@ -189,8 +197,8 @@ public class Main extends Application {
 			QuizRoomController quizcontroller = loader.getController();
 			quizcontroller.setMain(this);
 			quizcontroller.addListener();
-			Platform.runLater(new Runnable(){
-				public void run(){
+			Platform.runLater(new Runnable() {
+				public void run() {
 					rootLayout.setCenter(content);
 				}
 			});
@@ -206,7 +214,11 @@ public class Main extends Application {
 			AnchorPane scoreboardRoot = (AnchorPane) scoreboardLoader.load();
 			ScoreboardController scoreboardController = scoreboardLoader.getController();
 			scoreboardController.setMainApp(this);
-			rootLayout.setCenter(scoreboardRoot);
+			Platform.runLater(new Runnable() {
+				public void run() {
+					rootLayout.setCenter(scoreboardRoot);
+				}
+			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -231,7 +243,11 @@ public class Main extends Application {
 			controller.setTeamEvent(teamevent);
 
 			// Show the dialog and wait until the user closes it
+			// Platform.runLater(new Runnable(){
+			// public void run(){
 			dialogStage.showAndWait();
+			// }
+			// });
 
 			return controller.isOkClicked();
 		} catch (IOException e) {
@@ -248,7 +264,11 @@ public class Main extends Application {
 			AnchorPane questionFormRoot = (AnchorPane) questionFormLoader.load();
 			QuestionFormController questionFormController = questionFormLoader.getController();
 			questionFormController.setMain(this);
-			rootLayout.setCenter(questionFormRoot);
+			Platform.runLater(new Runnable() {
+				public void run() {
+					rootLayout.setCenter(questionFormRoot);
+				}
+			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -261,25 +281,29 @@ public class Main extends Application {
 			BorderPane waitRoundRoot = (BorderPane) waitRoundLoader.load();
 			WaitRoundController waitRoundController = waitRoundLoader.getController();
 			waitRoundController.setMain(this);
-			rootLayout.setCenter(waitRoundRoot);
+			Platform.runLater(new Runnable() {
+				public void run() {
+					rootLayout.setCenter(waitRoundRoot);
+				}
+			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void showCreateRound(){
-		try{
+	public void showCreateRound() {
+		try {
 			FXMLLoader roundMakerLoader = new FXMLLoader();
 			roundMakerLoader.setLocation(Main.class.getResource("../quiz/view/RoundMaker.fxml"));
 			AnchorPane roundMakerRoot = (AnchorPane) roundMakerLoader.load();
 			RoundMakerController roundMakerController = roundMakerLoader.getController();
 			roundMakerController.setMain(this);
-			Platform.runLater(new Runnable(){
-				public void run(){
+			Platform.runLater(new Runnable() {
+				public void run() {
 					rootLayout.setCenter(roundMakerRoot);
 				}
 			});
-		}catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

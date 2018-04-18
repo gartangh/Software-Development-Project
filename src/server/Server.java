@@ -35,6 +35,7 @@ public class Server extends EventPublisher {
 	public static void main(String[] args) {
 		Network network = new Network(SERVERPORT, "SERVER");
 		ServerContext.getContext().setNetwork(network);
+		ServerContext.getContext().loadData();
 
 		EventBroker.getEventBroker().addEventListener(network);
 		EventBroker.getEventBroker().addEventListener(serverHandler);
@@ -242,7 +243,7 @@ public class Server extends EventPublisher {
 		public void handleClientCreateRoundEvent(ClientCreateRoundEvent cCRE) {
 			Quiz quiz = ServerContext.getContext().getQuiz(cCRE.getQuizID());
 			quiz.addRound(cCRE.getDiff(), cCRE.getTheme());
-			quiz.getRound().addQuestions(cCRE.getNumberOfQuestions());
+			//quiz.getRound().addQuestions(cCRE.getNumberOfQuestions());
 			ArrayList<Integer> receivers=ServerContext.getContext().getUsersFromQuiz(cCRE.getQuizID());
 
 			MCQuestion nQ = (MCQuestion) ServerContext.getContext().getQuestion(quiz.getRound().getNextQuestion());
