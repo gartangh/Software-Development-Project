@@ -59,7 +59,7 @@ public class Quiz implements Serializable {
 		this.maxAmountOfQuestionsPerRound = maxAmountOfQuestionsPerRound;
 		this.quizmasterID = hostID;
 		this.votes = new HashMap<Integer, Map<Integer, Integer>>();
-		this.currentRound = 0;
+		this.currentRound = -1;
 	}
 
 	// Factory method
@@ -192,6 +192,7 @@ public class Quiz implements Serializable {
 			Round round = new Round(RoundType.MC, diff, theme);
 			rounds.add(round);
 			round.addQuestions(maxAmountOfQuestionsPerRound);
+			currentRound++;
 			amountOfRounds++;
 		}
 	}
