@@ -270,7 +270,7 @@ public class QuizRoomController extends EventPublisher {
 			alert.setTitle("Joining error");
 			alert.setHeaderText("You couldn't join a team");
 			alert.setContentText(errorMessage);
-
+			
 			alert.showAndWait();
 		}
 	}

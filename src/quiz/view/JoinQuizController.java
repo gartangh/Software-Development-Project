@@ -106,7 +106,6 @@ public class JoinQuizController extends EventPublisher {
 	private void handleJoin() {
 		ClientJoinQuizEvent cjqe=new ClientJoinQuizEvent(Context.getContext().getUser().getUserID(),selectedQuiz.getQuizID(),Context.getContext().getUser().getUsername());
 		publishEvent(cjqe);
-		main.showQuizroomScene();
 	}
 
 	@FXML
@@ -144,6 +143,7 @@ public class JoinQuizController extends EventPublisher {
 				quiz.addUnassignedPlayer(Context.getContext().getUser().getUserID(),
 						Context.getContext().getUser().getUsername());
 				Context.getContext().setQuiz(quiz);
+				main.showQuizroomScene();
 				break;
 			case "SERVER_START_QUIZ":
 				ServerStartQuizEvent sSTQE=(ServerStartQuizEvent) event;

@@ -35,7 +35,7 @@ public class Main extends Application {
 
 	public final static boolean DEBUG = true;
 	public final static boolean LOCAL = false;
-	public final static String SERVERADDRESS = "192.168.0.30";
+	public final static String SERVERADDRESS = "192.168.1.30";
 	public final static int SERVERPORT = 1025;
 
 	private Stage primaryStage;
@@ -53,11 +53,11 @@ public class Main extends Application {
 
 		try {
 			if (Main.LOCAL) {
-				System.out.println(InetAddress.getLocalHost());
-				network.connect("LOCAL: " + InetAddress.getLocalHost(), Main.SERVERPORT);
+				System.out.println("LOCAL: " + InetAddress.getLocalHost());
+				network.connect(InetAddress.getLocalHost(), Main.SERVERPORT);
 			} else {
 				System.out.println("NETWORK: " + InetAddress.getLocalHost().getHostAddress());
-				network.connect(InetAddress.getLocalHost().getHostAddress(), Main.SERVERPORT);
+				network.connect(SERVERADDRESS, Main.SERVERPORT);
 			}
 
 			// TODO: Remove this
