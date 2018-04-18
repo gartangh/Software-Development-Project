@@ -19,19 +19,16 @@ public class ChatPanel {
 	public static ChatPanel createChatPanel() {
 		ChatPanel chatPanel = new ChatPanel();
 
-		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(ChatPanel.class.getResource("ChatPane.fxml"));
-
 		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(ChatPanel.class.getResource("ChatPane.fxml"));
 			chatPanel.content = (AnchorPane) loader.load();
+			chatPanel.chatController = loader.getController();
+			chatPanel.chatModel = chatPanel.chatController.getChatModel();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		chatPanel.chatController = loader.getController();
-		chatPanel.chatModel = chatPanel.chatController.getChatModel();
-
-		EventBroker.getEventBroker().addEventListener(chatPanel.chatController.getChatEventHandler());
+		
 		return chatPanel;
 	}
 

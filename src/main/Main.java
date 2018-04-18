@@ -186,7 +186,6 @@ public class Main extends Application {
 			AnchorPane content = (AnchorPane) loader.load();
 			QuizRoomController quizcontroller = loader.getController();
 			quizcontroller.setMain(this);
-			quizcontroller.addListener();
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(content);
@@ -233,11 +232,7 @@ public class Main extends Application {
 			controller.setTeamEvent(teamevent);
 
 			// Show the dialog and wait until the user closes it
-			// Platform.runLater(new Runnable(){
-			// public void run(){
 			dialogStage.showAndWait();
-			// }
-			// });
 
 			return controller.isOkClicked();
 		} catch (IOException e) {

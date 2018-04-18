@@ -61,7 +61,7 @@ public class JoinQuizController extends EventPublisher {
 	// Reference to the main application
 	private Main main;
 	private JoinQuizModel joinQuizModel = new JoinQuizModel();
-	private JoinQuizEventHandler eventHandler = new JoinQuizEventHandler();
+	private JoinQuizEventHandler joinQuizeventHandler = new JoinQuizEventHandler();
 	private Quiz selectedQuiz;
 
 	public void setMainApp(Main main) {
@@ -72,7 +72,7 @@ public class JoinQuizController extends EventPublisher {
 
 	@FXML
 	private void initialize() {
-		EventBroker.getEventBroker().addEventListener(eventHandler);
+		EventBroker.getEventBroker().addEventListener(joinQuizeventHandler);
 
 		mQuizname.textProperty().bind(joinQuizModel.getQuiznameProperty());
 		mRounds.textProperty().bind(joinQuizModel.getQuizRoundsProperty());

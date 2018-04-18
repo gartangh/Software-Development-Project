@@ -55,6 +55,7 @@ public class QuizRoomController extends EventPublisher {
 		// Empty default constructor
 	}
 
+	// Inner class
 	public class QuizroomHandler implements EventListener {
 		public void handleEvent(Event event) {
 			switch (event.getType()) {
@@ -125,18 +126,10 @@ public class QuizRoomController extends EventPublisher {
 		}
 	}
 
-	public QuizRoomController(Quiz quiz) {
-		// this.quiz=quiz;
-		// via serverContext rechtstreeks? wordt nu meegegeven via argument maar
-		// hoeft niet
-	}
-
-	public void addListener() {
-		EventBroker.getEventBroker().addEventListener(quizroomhandler);
-	}
-
 	@FXML
 	private void initialize() {
+		EventBroker.getEventBroker().addEventListener(quizroomhandler);
+		
 		NameColumn.setCellValueFactory(cellData -> cellData.getValue().getTeamName());
 		teamTable.getSelectionModel().selectedItemProperty()
 				.addListener((observable, oldValue, newValue) -> showTeamDetails(newValue));
