@@ -61,7 +61,7 @@ public class Event implements Serializable {
 			addRecipient(userID);
 	}
 	
-	public void addRecipient(Map<Integer, User> userMap) {
+	public void addRecipients(Map<Integer, User> userMap) {
 		for(Entry<Integer, User> entry : userMap.entrySet())
 			addRecipient(entry.getValue().getUserID());
 	}

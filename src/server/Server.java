@@ -26,6 +26,7 @@ import user.model.User;
 import quiz.model.Quiz;
 import quiz.util.ClientAnswerEvent;
 import quiz.util.ClientNewQuestionEvent;
+import quiz.util.ClientScoreboardDataEvent;
 
 public class Server extends EventPublisher {
 
@@ -88,7 +89,7 @@ public class Server extends EventPublisher {
 				server.publishEvent(sRQE);
 				
 				ServerSendQuizEvent sSQE = new ServerSendQuizEvent(quiz);
-				sSQE.addRecipient(ServerContext.getContext().getUserMap());
+				sSQE.addRecipients(ServerContext.getContext().getUserMap());
 				server.publishEvent(sSQE);
 				handled = true;
 				break;
@@ -125,10 +126,10 @@ public class Server extends EventPublisher {
 				break;
 
 			case "CLIENT_SCOREBOARDDATA":
-				QuizzerEvent askForScoreboardData = (QuizzerEvent) e;
+				ClientScoreboardDataEvent cSDE = (ClientScoreboardDataEvent) e;
 				ServerScoreboardDataEvent scoreboardData = new ServerScoreboardDataEvent(
-						askForScoreboardData.getQuizID());
-				scoreboardData.addRecipient(askForScoreboardData.getUserID());
+						cSDE.getQuizID());
+				scoreboardData.addRecipient(cSDE.getUserID());
 				server.publishEvent(scoreboardData);
 				handled = true;
 				break;
@@ -236,7 +237,7 @@ public class Server extends EventPublisher {
 			if(quiz.isAnsweredByAll()) {
 				receivers=ServerContext.getContext().getUsersFromQuiz(cNQE.getQuizID());
 
-				if(quiz.getRound().getQuestionNumber()+1 < quiz.getRound().getNumberOfQuestions()) {
+				if((quiz.getRound().getQuestionNumber()+1) < quiz.getRound().getNumberOfQuestions()) {
 					MCQuestion nQ = (MCQuestion) ServerContext.getContext().getQuestion(quiz.getRound().getNextQuestion());
 					int[] permutatie = { 1, 2, 3, 4 };
 					ServerNewQuestionEvent sNQE = new ServerNewQuestionEvent(nQ.getQuestionID(), nQ.getQuestion(),
@@ -245,7 +246,7 @@ public class Server extends EventPublisher {
 					Server.getServer().publishEvent(sNQE);
 				}
 				else {
-					if(quiz.getCurrentRound()+1 < quiz.getMaxAmountOfRounds()) {
+					if((quiz.getCurrentRound()+1) < quiz.getMaxAmountOfRounds()) {
 						ServerNewRoundEvent sNRE = new ServerNewRoundEvent(quiz.getCurrentRound()+1);
 						receivers=ServerContext.getContext().getUsersFromQuiz(cNQE.getQuizID());
 						sNRE.addRecipients(receivers);
@@ -253,6 +254,9 @@ public class Server extends EventPublisher {
 					}
 					else {
 						// TODO: trigger end quiz
+						ServerEndQuizEvent sEQE = new ServerEndQuizEvent();
+						sEQE.addRecipients(ServerContext.getContext().getUsersFromQuiz(quiz.getQuizID()));
+						server.publishEvent(sEQE);
 					}
 				}
 			}

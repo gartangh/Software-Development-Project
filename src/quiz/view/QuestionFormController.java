@@ -112,7 +112,6 @@ public class QuestionFormController extends EventPublisher {
 				
 				System.out.println("Event received and handled: " + e.getType());
 				break;
-				
 			case "SERVER_NEW_ROUND":
 				
 				ServerNewRoundEvent sNRE = (ServerNewRoundEvent) e;
@@ -120,7 +119,9 @@ public class QuestionFormController extends EventPublisher {
 				
 				System.out.println("Event received and handled: " + e.getType());
 				break;
-				
+			case "SERVER_END_QUIZ":
+				main.showScoreboardScene();
+				break;
 			default:
 				System.out.println("Event received but left unhandled: " + e.getType());
 				break;
