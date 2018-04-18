@@ -117,6 +117,7 @@ public class QuestionFormController extends EventPublisher {
 			case "SERVER_NEW_ROUND":
 				
 				//ServerNewRoundEvent sNRE = (ServerNewRoundEvent) e;
+				EventBroker.getEventBroker().removeEventListener(eventHandler);
 				main.showWaitRound();
 				
 				System.out.println("Event received and handled: " + e.getType());

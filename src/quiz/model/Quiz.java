@@ -60,7 +60,7 @@ public class Quiz implements Serializable {
 		this.maxAmountOfQuestionsPerRound = maxAmountOfQuestionsPerRound;
 		this.quizmasterID = hostID;
 		this.votes = new HashMap<Integer, Map<Integer, Integer>>();
-		this.currentRound = 0;
+		this.currentRound = -1;
 		this.isRunning=false;
 	}
 
