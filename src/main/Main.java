@@ -80,7 +80,12 @@ public class Main extends Application {
 	public Stage getPrimaryStage() {
 		return primaryStage;
 	}
+	
+	public ChatPanel getChatPanel() {
+		return chatPanel;
+	}
 
+	// Methods
 	private void initRootLayout() {
 		try {
 			// Load root layout from fxml file
@@ -143,12 +148,6 @@ public class Main extends Application {
 					rootLayout.setTop(menu);
 				}
 			});
-
-			Platform.runLater(new Runnable() {
-				public void run() {
-					rootLayout.setBottom(null);
-				}
-			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -181,7 +180,6 @@ public class Main extends Application {
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(joinQuiz);
-					rootLayout.setBottom(chatPanel.getContent());
 				}
 			});
 		} catch (IOException e) {

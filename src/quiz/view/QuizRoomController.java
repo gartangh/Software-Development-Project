@@ -1,26 +1,18 @@
 package quiz.view;
 
-import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.util.Callback;
 import quiz.model.*;
 import quiz.util.ChangeTeamEvent;
 import quiz.util.ClientHostReadyEvent;
-import quiz.util.ClientVoteEvent;
 import quiz.util.NewTeamEvent;
 import main.*;
 import user.model.*;
@@ -43,6 +35,8 @@ public class QuizRoomController extends EventPublisher {
 	private ListView<String> teammemberslist;
 	@FXML
 	private Circle circle;
+	@FXML
+	private AnchorPane mPlaceholder;
 
 	private QuizroomHandler quizroomhandler = new QuizroomHandler();
 	private QuizRoomModel quizRoomModel = new QuizRoomModel();
@@ -88,6 +82,7 @@ public class QuizRoomController extends EventPublisher {
 					quizRoomModel.updateTeamDetail(newTeam.getTeamID());
 				}
 				break;
+
 			case "SERVER_CHANGE_TEAM":
 				ServerChangeTeamEvent cte = (ServerChangeTeamEvent) event;
 				if (cte.getQuizID() == Context.getContext().getQuiz().getQuizID()) {
@@ -110,20 +105,21 @@ public class QuizRoomController extends EventPublisher {
 					}
 					if (oldteam != null) {
 						oldteam.removePlayer(userID);
-					}
-					else {//remove player from the unassignedlist
+					} else {// remove player from the unassignedlist
 						Context.getContext().getQuiz().removeUnassignedPlayer(userID);
 					}
 				}
 				break;
+
 			case "SERVER_START_QUIZ":
 				if (Context.getContext().getQuiz().getQuizmaster() == Context.getContext().getUser().getUserID())
 					main.showCreateRound();
 				else
 					main.showWaitRound();
 				break;
+
 			default:
-				System.out.println("Event received but left unhandled: " + event.getType() +"in quizroom");
+				System.out.println("Event received but left unhandled: " + event.getType() + "in quizroom");
 			}
 		}
 	}
@@ -149,13 +145,7 @@ public class QuizRoomController extends EventPublisher {
 		TeamnameLabel.textProperty().bind(quizRoomModel.getTeamName());
 		teammemberslist.itemsProperty().bind(quizRoomModel.getTeamMembers());
 
-		/*
-		 * showTeamDetails(null);
-		 *
-		 *
-		 * teamTable.getSelectionModel().selectedItemProperty().addListener(
-		 * (observable, oldValue, newValue) -> showTeamDetails(newValue));
-		 */
+		mPlaceholder.getChildren().add(main.getChatPanel().getContent());
 
 	}
 
@@ -170,9 +160,10 @@ public class QuizRoomController extends EventPublisher {
 
 	@FXML
 	private void handleNewTeam() throws IOException {
-		String errorMessage="No error";
+		String errorMessage = "No error";
 		if (Context.getContext().getQuiz().getQuizmaster() != Context.getContext().getUser().getUserID()) {
-			if (Context.getContext().getQuiz().getAmountOfTeams() < Context.getContext().getQuiz().getMaxAmountOfTeams()) {
+			if (Context.getContext().getQuiz().getAmountOfTeams() < Context.getContext().getQuiz()
+					.getMaxAmountOfTeams()) {
 				User currUser = Context.getContext().getUser();
 				int currTeamID = Context.getContext().getTeamID();
 				int currCaptainID;
@@ -183,7 +174,7 @@ public class QuizRoomController extends EventPublisher {
 					currCaptainID = -1;
 				}
 
-				if (currCaptainID != currUser.getID()){
+				if (currCaptainID != currUser.getID()) {
 					NewTeamEvent teamevent = new NewTeamEvent(Context.getContext().getQuiz().getQuizID(), "",
 							Color.TRANSPARENT);
 					boolean okClicked = main.showNewTeam(teamevent);
@@ -191,14 +182,14 @@ public class QuizRoomController extends EventPublisher {
 						publishEvent(teamevent);
 						System.out.println(teamevent.getTeamName());
 					}
-				}
-				else errorMessage="You can't create a new team, because you are already a captain of an existing team";
-			}
-			else errorMessage="The maximum of teams is already reached";
-		}
-		else errorMessage="You can't create a team if you are the quizmaster, click ready when you want to start the quiz";
+				} else
+					errorMessage = "You can't create a new team, because you are already a captain of an existing team";
+			} else
+				errorMessage = "The maximum of teams is already reached";
+		} else
+			errorMessage = "You can't create a team if you are the quizmaster, click ready when you want to start the quiz";
 
-		if (errorMessage !="No error"){
+		if (errorMessage != "No error") {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.initOwner(main.getPrimaryStage());
 			alert.setTitle("New Team error");
@@ -211,8 +202,9 @@ public class QuizRoomController extends EventPublisher {
 
 	@FXML
 	private void handleReady() {
-		if(Context.getContext().getQuiz().getQuizmaster() == Context.getContext().getUser().getUserID()) {
-			ClientHostReadyEvent e=new ClientHostReadyEvent(Context.getContext().getQuiz().getQuizID(),Context.getContext().getUser().getUserID());
+		if (Context.getContext().getQuiz().getQuizmaster() == Context.getContext().getUser().getUserID()) {
+			ClientHostReadyEvent e = new ClientHostReadyEvent(Context.getContext().getQuiz().getQuizID(),
+					Context.getContext().getUser().getUserID());
 			publishEvent(e);
 
 		} else {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import chat.ChatPanel;
 import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
@@ -19,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import main.Context;
@@ -74,29 +76,32 @@ public class JoinQuizController extends EventPublisher {
 		mPlayersPerTeam.textProperty().bind(joinQuizModel.getPlayersPerTeamProperty());
 		mJoin.disableProperty().bind(joinQuizModel.getJoinDisableProperty());
 		quiznameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getQuizname())));
-		quizmasternameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getQuizname())));
+		quizmasternameColumn
+				.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getQuizname())));
 
-		quizTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showQuizDetails(newValue));
+		quizTable.getSelectionModel().selectedItemProperty()
+				.addListener((observable, oldValue, newValue) -> showQuizDetails(newValue));
 
 		ClientGetQuizzesEvent cGQE = new ClientGetQuizzesEvent();
 		publishEvent(cGQE);
 	}
 
-	public void showQuizDetails(Quiz quiz){
-	    if (quiz != null){
-	    	Context.getContext().setQuiz(quiz);
-	    	Context.getContext().setTeamID(-1);		//for Hannes
-	    	joinQuizModel.updateQuizDetail(quiz);
-	    }
-	    else {
-	    	// TODO
-	    }
-	   }
+	public void showQuizDetails(Quiz quiz) {
+		if (quiz != null) {
+			Context.getContext().setQuiz(quiz);
+			Context.getContext().setTeamID(-1);
+			joinQuizModel.updateQuizDetail(quiz);
+		} else {
+			// TODO
+		}
+	}
 
 	@FXML
 	private void handleJoin() {
-		Context.getContext().getQuiz().addUnassignedPlayer(Context.getContext().getUser().getID(), Context.getContext().getUser().getUsername());
-		ClientJoinQuizEvent cjqe=new ClientJoinQuizEvent(Context.getContext().getUser().getUserID(),Context.getContext().getQuiz().getQuizID(),Context.getContext().getUser().getUsername());
+		Context.getContext().getQuiz().addUnassignedPlayer(Context.getContext().getUser().getID(),
+				Context.getContext().getUser().getUsername());
+		ClientJoinQuizEvent cjqe = new ClientJoinQuizEvent(Context.getContext().getUser().getUserID(),
+				Context.getContext().getQuiz().getQuizID(), Context.getContext().getUser().getUsername());
 		publishEvent(cjqe);
 		main.showQuizroomScene();
 	}
@@ -113,19 +118,19 @@ public class JoinQuizController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event event) {
-			switch(event.getType()) {
-				case "SERVER_GET_QUIZZES":
-					ServerGetQuizzesEvent sGQE = (ServerGetQuizzesEvent) event;
+			switch (event.getType()) {
+			case "SERVER_GET_QUIZZES":
+				ServerGetQuizzesEvent sGQE = (ServerGetQuizzesEvent) event;
 
-					ArrayList<Quiz> quizList = new ArrayList<>();
-					for(Entry<Integer, Quiz> entry : sGQE.getQuizMap().entrySet())
-						quizList.add(entry.getValue());
+				ArrayList<Quiz> quizList = new ArrayList<>();
+				for (Entry<Integer, Quiz> entry : sGQE.getQuizMap().entrySet())
+					quizList.add(entry.getValue());
 
-					quizTable.setItems(FXCollections.observableArrayList(quizList));
-					System.out.println("Event received and handled: " + event.getType());
-					break;
-				default:
-					System.out.println("Event received but left unhandled: " + event.getType());
+				quizTable.setItems(FXCollections.observableArrayList(quizList));
+				System.out.println("Event received and handled: " + event.getType());
+				break;
+			default:
+				System.out.println("Event received but left unhandled: " + event.getType());
 			}
 		}
 	}
