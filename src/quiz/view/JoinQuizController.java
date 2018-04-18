@@ -30,6 +30,7 @@ import quiz.util.ClientGetQuizzesEvent;
 import quiz.util.ClientJoinQuizEvent;
 import quiz.view.ScoreboardController.ScoreboardEventHandler;
 import server.ServerGetQuizzesEvent;
+import server.ServerSendQuizEvent;
 
 public class JoinQuizController extends EventPublisher {
 
@@ -61,6 +62,7 @@ public class JoinQuizController extends EventPublisher {
 
 	public void setMainApp(Main main) {
 		this.main = main;
+		quizTable.setItems(joinQuizModel.getQuizzes());
 	}
 
 	@FXML
@@ -120,9 +122,16 @@ public class JoinQuizController extends EventPublisher {
 					ArrayList<Quiz> quizList = new ArrayList<>();
 					for(Entry<Integer, Quiz> entry : sGQE.getQuizMap().entrySet())
 						quizList.add(entry.getValue());
-
-					quizTable.setItems(FXCollections.observableArrayList(quizList));
+					
+					joinQuizModel.setQuizzes(FXCollections.observableArrayList(quizList));
+					
 					System.out.println("Event received and handled: " + event.getType());
+					break;
+					
+				case "SERVER_SEND_QUIZ":
+					ServerSendQuizEvent sSQE = (ServerSendQuizEvent) event;
+					Quiz quiz = sSQE.getQuiz();
+					joinQuizModel.addQuiz(quiz);
 					break;
 				default:
 					System.out.println("Event received but left unhandled: " + event.getType());

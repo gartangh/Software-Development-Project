@@ -2,6 +2,7 @@ package server;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import chat.ChatMessage;
 import eventbroker.Event;
@@ -21,6 +22,7 @@ import quiz.util.ClientHostReadyEvent;
 import quiz.util.ClientJoinQuizEvent;
 import quiz.util.ClientVoteEvent;
 import quiz.util.QuizzerEvent;
+import user.model.User;
 import quiz.model.Quiz;
 import quiz.util.ClientAnswerEvent;
 import quiz.util.ClientNewQuestionEvent;
@@ -80,6 +82,10 @@ public class Server extends EventPublisher {
 				ServerReturnQuizEvent sRQE = new ServerReturnQuizEvent(quiz);
 				sRQE.addRecipient(cCQE.getUserID());
 				server.publishEvent(sRQE);
+				
+				ServerSendQuizEvent sSQE = new ServerSendQuizEvent(quiz);
+				sSQE.addRecipient(ServerContext.getContext().getUserMap());
+				server.publishEvent(sSQE);
 				handled = true;
 				break;
 

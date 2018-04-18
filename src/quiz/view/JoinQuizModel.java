@@ -16,7 +16,7 @@ import quiz.model.Quiz;
 
 public class JoinQuizModel {
 	
-	private ObservableList<Quiz> quizzes;
+	private ObservableList<Quiz> quizzes = FXCollections.observableArrayList();
 	private StringProperty quiznameProperty;
 	private StringProperty quizRoundsProperty;
 	private StringProperty questionsPerRoundProperty;
@@ -54,6 +54,14 @@ public class JoinQuizModel {
 		return quizzes;
 	}
 
+	public void setQuizzes(ObservableList<Quiz> quizzes) {
+		this.quizzes = quizzes;
+	}
+
+	public void addQuiz(Quiz quiz) {
+		quizzes.add(quiz);
+	}
+	
 	public StringProperty getQuiznameProperty() {
 		return quiznameProperty;
 	}
