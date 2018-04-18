@@ -83,7 +83,7 @@ public class JoinQuizController extends EventPublisher {
 		mJoin.disableProperty().bind(joinQuizModel.getJoinDisableProperty());
 		quiznameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getQuizname())));
 		quizmasternameColumn
-				.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getQuizname())));
+				.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getQuizMasterName())));
 
 		quizTable.getSelectionModel().selectedItemProperty()
 				.addListener((observable, oldValue, newValue) -> showQuizDetails(newValue));

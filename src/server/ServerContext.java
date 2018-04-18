@@ -100,7 +100,7 @@ public class ServerContext {
 		} while (quizMap.containsKey(newID));
 
 		Quiz newQuiz = new Quiz(newID, quizName, maxAmountOfTeams, maxAmountOfPlayersPerTeam, maxAmountOfRounds,
-				maxAmountOfQuestionsPerRound, hostID);
+				maxAmountOfQuestionsPerRound, hostID,userMap.get(hostID).getUsername());
 		quizMap.put(newID, newQuiz);
 
 		return newID;
@@ -149,9 +149,9 @@ public class ServerContext {
 		BufferedReader reader;
 		// String locationPrefix = "./Files/";
 		// String locationPrefix = "d:\\Demuynck\\Documents\\school\\Softwareontwikkeling\\Project\\project-1718-groep9\\src\\server\\";
-		String locationPrefix = "./Files/";
+		//String locationPrefix = "./Files/";
 		//String locationPrefix = "D:\\Documents\\Universiteit\\Bachelor3\\Softwareontwikkeling\\project-1718-groep9\\src\\server\\";
-		// String locationPrefix = "d:\\Demuynck\\Documents\\school\\Softwareontwikkeling\\Project\\project-1718-groep9\\src\\server\\";
+		String locationPrefix = "d:\\Demuynck\\Documents\\school\\Softwareontwikkeling\\Project\\project-1718-groep9\\src\\server\\";
 		//String locationPrefix = "C:\\Users\\Gebruiker\\workspace\\Quiz\\src\\server\\";
 
 		String[] themeFiles = { "QUESTIONS_CULTURE.txt", "QUESTIONS_SPORTS.txt" };
