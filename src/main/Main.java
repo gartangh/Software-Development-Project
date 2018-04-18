@@ -285,7 +285,7 @@ public class Main extends Application {
 		try {
 			FXMLLoader waitHostLoader = new FXMLLoader();
 			waitHostLoader.setLocation(Main.class.getResource("../quiz/view/WaitHost.fxml"));
-			AnchorPane waitHostRoot = (AnchorPane) waitHostLoader.load();
+			BorderPane waitHostRoot = (BorderPane) waitHostLoader.load();
 			WaitHostController waitHostController = waitHostLoader.getController();
 			waitHostController.setMain(this);
 			Platform.runLater(new Runnable() {
