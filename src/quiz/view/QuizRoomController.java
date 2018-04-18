@@ -52,6 +52,7 @@ public class QuizRoomController extends EventPublisher {
 
 	public void setMain(Main main) {
 		this.main = main;
+		quizRoomModel.updateTeams();
 		teamTable.setItems(quizRoomModel.getTeams());
 	}
 

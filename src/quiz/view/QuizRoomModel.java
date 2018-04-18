@@ -45,9 +45,10 @@ public class QuizRoomModel {
 
 	public void updateTeamDetail(int teamID){//for the selected team
 		this.teamID=teamID;
-		Team team=Context.getContext().getQuiz().getTeams().get(teamID);
+		//Team team=Context.getContext().getQuiz().getTeams().get(teamID);
 		Platform.runLater(new Runnable(){
 			public void run(){
+				Team team=Context.getContext().getQuiz().getTeams().get(teamID);
 				teamName.setValue(team.getTeamName());
 				captainName.setValue(team.getPlayers().get(team.getCaptainID()));
 				teamColor.setValue(team.getColor());
