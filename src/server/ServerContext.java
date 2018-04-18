@@ -148,8 +148,10 @@ public class ServerContext {
 	}
 
 	public void loadData() {
-		BufferedReader reader;// ./Files/ //"d:\Demuynck\Documents\school\Softwareontwikkeling\Project\project-1718-groep9\src\server"
-		String locationPrefix = "d:\\Demuynck\\Documents\\school\\Softwareontwikkeling\\Project\\project-1718-groep9\\src\\server\\";
+		BufferedReader reader;
+		String locationPrefix = "./Files/";
+		//String locationPrefix = "d:\\Demuynck\\Documents\\school\\Softwareontwikkeling\\Project\\project-1718-groep9\\src\\server\\";
+
 		String[] themeFiles = { "QUESTIONS_CULTURE.txt", "QUESTIONS_SPORTS.txt" };
 		try {
 			for (int tF = 0; tF < themeFiles.length; tF++) {
