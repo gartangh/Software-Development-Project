@@ -38,7 +38,6 @@ public class Main extends Application {
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
-	private ChatPanel chatPanel;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -49,9 +48,6 @@ public class Main extends Application {
 		Network network = new Network(random.nextInt(65535 - 1026 + 1) + 1026, "CLIENT");
 
 		Context.getContext().setNetwork(network);
-
-		// ChatPanel (ChatModel and ChatController) are created
-		chatPanel = ChatPanel.createChatPanel();
 
 		try {
 			network.connect(InetAddress.getLocalHost(), SERVERPORT);
@@ -79,10 +75,6 @@ public class Main extends Application {
 	// Getters
 	public Stage getPrimaryStage() {
 		return primaryStage;
-	}
-	
-	public ChatPanel getChatPanel() {
-		return chatPanel;
 	}
 
 	// Methods

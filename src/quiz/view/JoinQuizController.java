@@ -32,6 +32,8 @@ import quiz.util.ClientGetQuizzesEvent;
 import quiz.util.ClientJoinQuizEvent;
 import quiz.view.ScoreboardController.ScoreboardEventHandler;
 import server.ServerGetQuizzesEvent;
+import server.ServerJoinQuizEvent;
+import server.ServerSendQuizEvent;
 
 public class JoinQuizController extends EventPublisher {
 
@@ -63,6 +65,8 @@ public class JoinQuizController extends EventPublisher {
 
 	public void setMainApp(Main main) {
 		this.main = main;
+		quizTable.setItems(joinQuizModel.getQuizzes());
+		Context.getContext().setTeamID(-1);
 	}
 
 	@FXML
@@ -88,8 +92,6 @@ public class JoinQuizController extends EventPublisher {
 
 	public void showQuizDetails(Quiz quiz) {
 		if (quiz != null) {
-			Context.getContext().setQuiz(quiz);
-			Context.getContext().setTeamID(-1);
 			joinQuizModel.updateQuizDetail(quiz);
 		} else {
 			// TODO
@@ -118,21 +120,34 @@ public class JoinQuizController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event event) {
+			Quiz quiz;
 			switch (event.getType()) {
 			case "SERVER_GET_QUIZZES":
 				ServerGetQuizzesEvent sGQE = (ServerGetQuizzesEvent) event;
 
-				ArrayList<Quiz> quizList = new ArrayList<>();
 				for (Entry<Integer, Quiz> entry : sGQE.getQuizMap().entrySet())
-					quizList.add(entry.getValue());
+					joinQuizModel.addQuiz(entry.getValue());
 
-				quizTable.setItems(FXCollections.observableArrayList(quizList));
 				System.out.println("Event received and handled: " + event.getType());
 				break;
+
+			case "SERVER_SEND_QUIZ":
+				ServerSendQuizEvent sSQE = (ServerSendQuizEvent) event;
+				quiz = sSQE.getQuiz();
+				joinQuizModel.addQuiz(quiz);
+				break;
+
+			case "SERVER_JOIN_QUIZ":
+				ServerJoinQuizEvent sJQE = (ServerJoinQuizEvent) event;
+				quiz = sJQE.getQuiz();
+				quiz.addUnassignedPlayer(Context.getContext().getUser().getUserID(),
+						Context.getContext().getUser().getUsername());
+				Context.getContext().setQuiz(quiz);
+				break;
+
 			default:
 				System.out.println("Event received but left unhandled: " + event.getType());
 			}
 		}
 	}
-
 }

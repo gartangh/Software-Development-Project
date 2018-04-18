@@ -20,6 +20,7 @@ import server.*;
 
 import java.io.IOException;
 
+import chat.ChatPanel;
 import eventbroker.*;
 
 public class QuizRoomController extends EventPublisher {
@@ -145,8 +146,9 @@ public class QuizRoomController extends EventPublisher {
 		TeamnameLabel.textProperty().bind(quizRoomModel.getTeamName());
 		teammemberslist.itemsProperty().bind(quizRoomModel.getTeamMembers());
 
-		mPlaceholder.getChildren().add(main.getChatPanel().getContent());
-
+		// ChatPanel (ChatModel and ChatController) are created
+		ChatPanel chatPanel = ChatPanel.createChatPanel();
+		mPlaceholder.getChildren().add(chatPanel.getContent());
 	}
 
 	public void showTeamDetails(TeamNameID team) {
