@@ -2,6 +2,7 @@ package server;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import chat.ChatMessage;
 import eventbroker.Event;
@@ -21,6 +22,7 @@ import quiz.util.ClientHostReadyEvent;
 import quiz.util.ClientJoinQuizEvent;
 import quiz.util.ClientVoteEvent;
 import quiz.util.QuizzerEvent;
+import user.model.User;
 import quiz.model.Quiz;
 import quiz.util.ClientAnswerEvent;
 import quiz.util.ClientNewQuestionEvent;
@@ -57,10 +59,13 @@ public class Server extends EventPublisher {
 			Boolean handled = false;
 			switch (e.getType()) {
 			case "CLIENT_JOIN_QUIZ":
-				ClientJoinQuizEvent cjte = (ClientJoinQuizEvent) e;
-				ServerContext.getContext().getQuizMap().get(cjte.getQuizID()).addUnassignedPlayer(cjte.getUserID(),
-						cjte.getUserName());
+				ClientJoinQuizEvent cJTE = (ClientJoinQuizEvent) e;
+				ServerContext.getContext().getQuizMap().get(cJTE.getQuizID()).addUnassignedPlayer(cJTE.getUserID(),cJTE.getUserName());
+				ServerJoinQuizEvent sJQE = new ServerJoinQuizEvent(ServerContext.getContext().getQuizMap().get(cJTE.getQuizID()));
+				sJQE.addRecipient(cJTE.getUserID());
+				server.publishEvent(sJQE);
 				break;
+				
 			case "CLIENT_CREATE_ACCOUNT":
 				ClientCreateAccountEvent cCAE = (ClientCreateAccountEvent) e;
 				int userID = ServerContext.getContext().addUser(cCAE.getUserName(), cCAE.getUserPassword());
@@ -77,9 +82,14 @@ public class Server extends EventPublisher {
 						cCQE.getMaxAmountOfPlayersPerTeam(), cCQE.getMaxAmountOfRounds(),
 						cCQE.getMaxAmountOfQuestionsPerRound(), cCQE.getUserID());
 				Quiz quiz = ServerContext.getContext().getQuizMap().get(quizID);
+				
 				ServerReturnQuizEvent sRQE = new ServerReturnQuizEvent(quiz);
 				sRQE.addRecipient(cCQE.getUserID());
 				server.publishEvent(sRQE);
+				
+				ServerSendQuizEvent sSQE = new ServerSendQuizEvent(quiz);
+				sSQE.addRecipient(ServerContext.getContext().getUserMap());
+				server.publishEvent(sSQE);
 				handled = true;
 				break;
 

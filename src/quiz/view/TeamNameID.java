@@ -23,7 +23,7 @@ public class TeamNameID {
 		return teamID;
 	}
 
-	public void setTeamID(int teamID) {
+	public void setTeamID(int teamID){
 		this.teamID = teamID;
 	}
 

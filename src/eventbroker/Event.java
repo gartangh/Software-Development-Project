@@ -2,6 +2,10 @@ package eventbroker;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import user.model.User;
 
 @SuppressWarnings("serial")
 public class Event implements Serializable {
@@ -55,6 +59,11 @@ public class Event implements Serializable {
 	public void addRecipients(ArrayList<Integer> destinations) {
 		for (Integer userID : destinations)
 			addRecipient(userID);
+	}
+	
+	public void addRecipient(Map<Integer, User> userMap) {
+		for(Entry<Integer, User> entry : userMap.entrySet())
+			addRecipient(entry.getValue().getUserID());
 	}
 
 	public void removeAllRecipients() {
