@@ -147,6 +147,8 @@ public class ServerContext {
 
 	public void loadData() {
 		BufferedReader reader;
+		// String locationPrefix = "./Files/";
+		// String locationPrefix = "d:\\Demuynck\\Documents\\school\\Softwareontwikkeling\\Project\\project-1718-groep9\\src\\server\\";
 		String locationPrefix = "./Files/";
 		//String locationPrefix = "D:\\Documents\\Universiteit\\Bachelor3\\Softwareontwikkeling\\project-1718-groep9\\src\\server\\";
 		// String locationPrefix = "d:\\Demuynck\\Documents\\school\\Softwareontwikkeling\\Project\\project-1718-groep9\\src\\server\\";
@@ -209,7 +211,7 @@ public class ServerContext {
 			for (int userID : team.getPlayers().keySet())
 				r.add(userID);
 
-		for (int userID : quiz.getUnassingendPlayers().keySet())
+		for (int userID : quiz.getUnassignedPlayers().keySet())
 			r.add(userID);
 
 		r.add(quiz.getQuizmaster());

@@ -115,11 +115,25 @@ public class QuizRoomController extends EventPublisher {
 
 			case "SERVER_START_QUIZ":
 				EventBroker.getEventBroker().removeEventListener(quizroomhandler);
-				if (Context.getContext().getQuiz().getQuizmaster() == Context.getContext().getUser().getUserID())
+				Context.getContext().getQuiz().clearUnassignedPlayers();
+				if (Context.getContext().getQuiz().getQuizmaster() == Context.getContext().getUser().getUserID()){
+
 					main.showCreateRound();
-				else
+					Context.getContext().getQuiz().setRunning(true);
+				}
+				else if(Context.getContext().getTeamID()!=-1){
 					main.showWaitRound();
+					Context.getContext().getQuiz().setRunning(true);
+				}
+				else {
+					Context.getContext().setQuiz(null);
+					main.showModeSelectorScene();
+				}
 				break;
+			case "SERVER_QUIZ_NEW_PLAYER":
+				ServerQuizNewPlayer sQNP=(ServerQuizNewPlayer) event;
+				Context.getContext().getQuiz().addUnassignedPlayer(sQNP.getUserID(),sQNP.getUserName());
+
 
 			default:
 				System.out.println("Event received but left unhandled: " + event.getType() + "in quizroom");
@@ -130,7 +144,7 @@ public class QuizRoomController extends EventPublisher {
 	@FXML
 	private void initialize() {
 		EventBroker.getEventBroker().addEventListener(quizroomhandler);
-		
+
 		NameColumn.setCellValueFactory(cellData -> cellData.getValue().getTeamName());
 		teamTable.getSelectionModel().selectedItemProperty()
 				.addListener((observable, oldValue, newValue) -> showTeamDetails(newValue));
@@ -205,7 +219,16 @@ public class QuizRoomController extends EventPublisher {
 			publishEvent(e);
 
 		} else {
-			main.showWaitRound();
+			if (Context.getContext().getTeamID()!=-1)
+				main.showWaitRound();
+			else {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.initOwner(main.getPrimaryStage());
+				alert.setTitle("No team Error");
+				alert.setHeaderText("You can't be ready");
+				alert.setContentText("First join or create a team, then click ready");
+				alert.showAndWait();
+			}
 		}
 	}
 

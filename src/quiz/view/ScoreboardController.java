@@ -55,7 +55,7 @@ public class ScoreboardController extends EventPublisher {
 	private void initialize() {
 		eventHandler = new ScoreboardEventHandler();
 		EventBroker.getEventBroker().addEventListener(eventHandler);
-		
+
 		winnerLoser.textProperty().bind(scoreboardModel.getWinnerLoserProperty());
 		rankColumn.setCellValueFactory(cellData -> (new SimpleIntegerProperty(cellData.getValue().getRank()).asObject()));
         teamNameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getTeamName())));
