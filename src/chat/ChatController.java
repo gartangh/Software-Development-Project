@@ -1,5 +1,8 @@
 package chat;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import eventbroker.Event;
 import eventbroker.EventBroker;
@@ -38,12 +41,12 @@ final public class ChatController extends EventPublisher {
 	public ChatController() {
 		this.chatEventHandler = new ChatEventHandler();
 		this.chatModel = new ChatModel();
-		/*
-		 * try (BufferedReader br = new BufferedReader(new
-		 * FileReader("./swearWords.txt"))) { String line; while ((line =
-		 * br.readLine()) != null) { prohibitedWords.add(line); } br.close(); }
-		 * catch (IOException e) { e.printStackTrace(); }
-		 */
+		
+		try (BufferedReader br = new BufferedReader(new
+		FileReader("D:\\Documents\\Universiteit\\Bachelor3\\Softwareontwikkeling\\project-1718-groep9\\src\\chat\\swearWords.txt"))) { String line; while ((line =
+		br.readLine()) != null) { prohibitedWords.add(line); } br.close(); }
+		catch (IOException e) { e.printStackTrace(); }
+		 
 	}
 
 	// Getters

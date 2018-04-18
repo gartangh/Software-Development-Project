@@ -122,18 +122,7 @@ public class QuestionFormController extends EventPublisher {
 				
 			case "SERVER_NOT_ALL_ANSWERED":
 				
-				Alert alert = new Alert(AlertType.ERROR);
-				alert.initOwner(main.getPrimaryStage());
-				alert.setTitle("QuizForm Error");
-				alert.setHeaderText("Can't proceed to the next question");
-				alert.setContentText("Not all teams have answered this question, so you can't proceed yet. Try again some time later.");
-				
-				Platform.runLater(new Runnable(){
-					public void run(){
-						alert.showAndWait();
-					}
-				});
-				break;
+				// TODO: alert
 				
 			case "SERVER_NEW_ROUND":
 				
