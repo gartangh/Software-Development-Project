@@ -60,6 +60,7 @@ public class JoinQuizController extends EventPublisher {
 	private Main main;
 	private JoinQuizModel joinQuizModel = new JoinQuizModel();
 	private JoinQuizEventHandler eventHandler = new JoinQuizEventHandler();
+	private Quiz selectedQuiz;
 
 	public void setMainApp(Main main) {
 		this.main = main;
@@ -88,6 +89,7 @@ public class JoinQuizController extends EventPublisher {
 
 	public void showQuizDetails(Quiz quiz){
 	    if (quiz != null) {
+	    	selectedQuiz=quiz;
 	    	joinQuizModel.updateQuizDetail(quiz);
 	    }
 	    else {
@@ -97,8 +99,7 @@ public class JoinQuizController extends EventPublisher {
 
 	@FXML
 	private void handleJoin() {
-		Context.getContext().getQuiz().addUnassignedPlayer(Context.getContext().getUser().getID(), Context.getContext().getUser().getUsername());
-		ClientJoinQuizEvent cjqe=new ClientJoinQuizEvent(Context.getContext().getUser().getUserID(),Context.getContext().getQuiz().getQuizID(),Context.getContext().getUser().getUsername());
+		ClientJoinQuizEvent cjqe=new ClientJoinQuizEvent(Context.getContext().getUser().getUserID(),selectedQuiz.getQuizID(),Context.getContext().getUser().getUsername());
 		publishEvent(cjqe);
 		main.showQuizroomScene();
 	}
