@@ -150,8 +150,8 @@ public class ServerContext {
 	public void loadData() {
 		BufferedReader reader;
 		// String locationPrefix = "./Files/";
-		// String locationPrefix = "d:\\Demuynck\\Documents\\school\\Softwareontwikkeling\\Project\\project-1718-groep9\\src\\server\\";
-		String locationPrefix = "C:\\Users\\Gebruiker\\workspace\\Quiz\\src\\server\\";
+		 String locationPrefix = "d:\\Demuynck\\Documents\\school\\Softwareontwikkeling\\Project\\project-1718-groep9\\src\\server\\";
+		//String locationPrefix = "C:\\Users\\Gebruiker\\workspace\\Quiz\\src\\server\\";
 
 		String[] themeFiles = { "QUESTIONS_CULTURE.txt", "QUESTIONS_SPORTS.txt" };
 		try {
@@ -216,7 +216,7 @@ public class ServerContext {
 			for (int userID : team.getPlayers().keySet())
 				r.add(userID);
 
-		for (int userID : quiz.getUnassingendPlayers().keySet())
+		for (int userID : quiz.getUnassignedPlayers().keySet())
 			r.add(userID);
 		r.add(quiz.getQuizmaster());
 		return r;

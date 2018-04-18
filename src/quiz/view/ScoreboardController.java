@@ -15,7 +15,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import main.Context;
 import main.Main;
-import network.Client;
 import quiz.model.ScoreboardModel;
 import quiz.model.ScoreboardTeam;
 import quiz.util.QuizzerEvent;
@@ -54,7 +53,7 @@ public class ScoreboardController extends EventPublisher {
 	private void initialize() {
 		eventHandler = new ScoreboardEventHandler();
 		EventBroker.getEventBroker().addEventListener(eventHandler);
-		
+
 		winnerLoser.textProperty().bind(scoreboardModel.getWinnerLoserProperty());
 		rankColumn.setCellValueFactory(cellData -> (new SimpleIntegerProperty(cellData.getValue().getRank()).asObject()));
         teamNameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getTeamName())));
