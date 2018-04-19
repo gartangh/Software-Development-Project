@@ -2,9 +2,7 @@ package user.model;
 
 import java.io.Serializable;
 
-import eventbroker.EventBroker;
 import main.Context;
-import quiz.util.ClientCreateAccountEvent;
 
 @SuppressWarnings("serial")
 public class User implements Serializable {
@@ -12,25 +10,19 @@ public class User implements Serializable {
 	private final static String USERNAMEREGEX = "^[a-zA-Z0-9._-]{3,}$";
 	private final static String PASSWORDREGEX = "^[a-zA-Z0-9._-]{3,}$";
 
-	private String username;
 	private int userID;
+	private String username;
 	private String password;
 	private int level;
 	private long xp;
 
+	// Constructors
 	public User(int userID, String username, String password) {
 		this.userID = userID;
 		this.username = username;
 		this.password = password;
 		this.level = 1;
 		this.xp = 0L;
-	}
-
-	private User(String username, String password, int level, long xp) {
-		this.username = username;
-		this.password = password;
-		this.level = level;
-		this.xp = xp;
 	}
 
 	private User(int userID, String username, String password, int level, long xp) {
@@ -50,32 +42,27 @@ public class User implements Serializable {
 		this.userID = user.userID;
 	}
 
-	public int getID() {
-		return this.userID;
-	}
-
 	// Factory method
-	/*
-	 * public static int createAccount(String username, String password) { if
-	 * (!username.matches(USERNAMEREGEX)) return 1; else if
-	 * (!password.matches(PASSWORDREGEX)) return 2; else if
-	 * (!isUniqueUsername(username)) return 3;
-	 * 
-	 * // Everything is valid User user = new User(username, password);
-	 * 
-	 * Context.getContext().setUser(user);
-	 * 
-	 * return 0; }
-	 */
+	public static int createAccount(String username, String password) {
+		if (!username.matches(USERNAMEREGEX))
+			return 1;
+		else if (!password.matches(PASSWORDREGEX))
+			return 2;
+		else if (!isUniqueUsername(username))
+			return 3;
+
+		// Everything is valid
+		User user = new User(0, username, password);
+
+		Context.getContext().setUser(user);
+
+		return 0;
+	}
 
 	// Upcasting
 	// Factory method
 	public static void createUser(User user) {
 		Context.getContext().setUser(new User(user));
-	}
-
-	public String toString() {
-		return username; // for tableview in quizroom
 	}
 
 	// Downcasting
@@ -88,16 +75,20 @@ public class User implements Serializable {
 	}
 
 	// Getters and setters
-	public String getUsername() {
-		return username;
-	}
-
 	public int getUserID() {
 		return userID;
 	}
 
 	public void setUserID(int userID) {
 		this.userID = userID;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public String getPassword() {
+		return password;
 	}
 
 	public int setPassword(String password1, String password2) {
@@ -140,7 +131,7 @@ public class User implements Serializable {
 			int level = 0;
 			int xp = 0;
 
-			Context.getContext().setUser(new User(username, password, level, xp));
+			Context.getContext().setUser(new User(0, username, password, level, xp));
 
 			return 0;
 		}
@@ -160,8 +151,8 @@ public class User implements Serializable {
 		return true;
 	}
 
-	public String getPassword() {
-		return password;
+	public String toString() {
+		return username; // for tableview in quizroom
 	}
 
 }

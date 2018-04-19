@@ -242,7 +242,7 @@ public class QuestionFormController extends EventPublisher {
 		int answer = this.getChecked();
 
 		if (Context.getContext().getQuiz().getTeams().get(Context.getContext().getTeamID()).getCaptainID() != Context
-				.getContext().getUser().getID()) {
+				.getContext().getUser().getUserID()) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.initOwner(main.getPrimaryStage());
 			alert.setTitle("QuizForm Error");
@@ -267,7 +267,7 @@ public class QuestionFormController extends EventPublisher {
 
 	@FXML
 	private void handleNext() {
-		if(Context.getContext().getQuiz().getTeams().get(Context.getContext().getTeamID()).getCaptainID() != Context.getContext().getUser().getID()) {
+		if(Context.getContext().getQuiz().getTeams().get(Context.getContext().getTeamID()).getCaptainID() != Context.getContext().getUser().getUserID()) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.initOwner(main.getPrimaryStage());
 			alert.setTitle("QuizForm Error");

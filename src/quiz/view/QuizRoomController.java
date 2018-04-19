@@ -65,19 +65,12 @@ public class QuizRoomController extends EventPublisher {
 																								// controle
 					Team newTeam = new Team(newTeamEvent.getTeamID(), newTeamEvent.getTeamName(),
 							newTeamEvent.getColor(), newTeamEvent.getCaptainID(), newTeamEvent.getCaptainName());
-					Context.getContext().getQuiz().addTeam(newTeam);// TAbleview
-																	// vanzelf
-																	// geupdatet
-																	// via
-																	// bindings
+					// TableView vanzelf geupdatet via bindings
+					Context.getContext().getQuiz().addTeam(newTeam);
 					Context.getContext().getQuiz().removeUnassignedPlayer(newTeam.getCaptainID());
-					if (newTeam.getCaptainID() == Context.getContext().getUser().getID()) {// i
-																							// am
-																							// the
-																							// captain,change
-																							// Team
-																							// in
-																							// context
+					
+					// I am the captain, change Team in context
+					if (newTeam.getCaptainID() == Context.getContext().getUser().getUserID()) {
 						Context.getContext().setTeamID(newTeam.getTeamID());
 					}
 					quizRoomModel.updateTeams();
@@ -99,7 +92,7 @@ public class QuizRoomController extends EventPublisher {
 
 					if (newteam != null) {// should always happen
 						newteam.addPlayer(userID, userName);
-						if (Context.getContext().getUser().getID() == userID) {
+						if (Context.getContext().getUser().getUserID() == userID) {
 							Context.getContext().setTeamID(newteam.getTeamID());
 						}
 						quizRoomModel.updateTeamDetail(newteam.getTeamID());
@@ -183,7 +176,7 @@ public class QuizRoomController extends EventPublisher {
 					currCaptainID = -1;
 				}
 
-				if (currCaptainID != currUser.getID()) {
+				if (currCaptainID != currUser.getUserID()) {
 					NewTeamEvent teamevent = new NewTeamEvent(Context.getContext().getQuiz().getQuizID(), "",
 							Color.TRANSPARENT);
 					boolean okClicked = main.showNewTeam(teamevent);
@@ -250,12 +243,12 @@ public class QuizRoomController extends EventPublisher {
 				}
 
 				if (selectedTeam.getTeamID() != Context.getContext().getTeamID()) {
-					if (currCaptainID != currUser.getID()) {
+					if (currCaptainID != currUser.getUserID()) {
 						ChangeTeamEvent changeTeamEvent = new ChangeTeamEvent(
 								Context.getContext().getQuiz().getQuizID(), selectedTeam.getTeamID(), currTeamID,
-								currUser.getID());
+								currUser.getUserID());
 						publishEvent(changeTeamEvent);
-						// TODO error handling,
+						// TODO: Error handling
 					} else
 						errorMessage = "You are a captain, you can't join another team";
 				} else
