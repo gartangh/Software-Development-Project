@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javafx.scene.paint.Color;
+import main.Main;
 import network.Network;
 import quiz.model.MCQuestion;
 import quiz.model.Question;
@@ -148,17 +149,20 @@ public class ServerContext {
 	public void loadData() {
 		BufferedReader reader;
 
+		// TODO: Remove location prefixes
 		//String locationPrefix = "./Files/";
-		String locationPrefix = "D:\\Documents\\Universiteit\\Bachelor3\\Softwareontwikkeling\\project-1718-groep9\\src\\server\\";
+		//String locationPrefix = "D:\\Documents\\Universiteit\\Bachelor3\\Softwareontwikkeling\\project-1718-groep9\\src\\server\\";
 		// String locationPrefix = "d:\\Demuynck\\Documents\\school\\Softwareontwikkeling\\Project\\project-1718-groep9\\src\\server\\";
-		//String locationPrefix = "C:\\Users\\Gebruiker\\workspace\\Quiz\\src\\server\\";
+		String locationPrefix = "C:\\Users\\Gebruiker\\workspace\\Quiz\\src\\server\\";
 
 		String[] themeFiles = { "QUESTIONS_CULTURE.txt", "QUESTIONS_SPORTS.txt" };
 		try {
 			for (int tF = 0; tF < themeFiles.length; tF++) {
 				Map<Integer, Map<Integer, MCQuestion>> themeMap = new HashMap<Integer, Map<Integer, MCQuestion>>();
 				orderedMCQuestionMap.put(tF, themeMap);
+				
 				reader = new BufferedReader(new FileReader(locationPrefix + themeFiles[tF]));
+				//reader = new BufferedReader(new FileReader(Main.class.getResource("../server/" + themeFiles[tF]).toString()));
 				String line = reader.readLine();
 				int i = 0;
 				int diff = -1;

@@ -88,7 +88,14 @@ public class JoinQuizController extends EventPublisher {
 		ClientGetQuizzesEvent cGQE = new ClientGetQuizzesEvent();
 		publishEvent(cGQE);
 	}
+	
+	@FXML
+	public void handleCreateQuiz() {
+		Context.getContext().getUser().castToHost();
+		main.showCreateQuizScene();
+	}
 
+	@FXML
 	public void showQuizDetails(Quiz quiz){
 	    if (quiz != null) {
 	    	selectedQuiz=quiz;
@@ -101,6 +108,7 @@ public class JoinQuizController extends EventPublisher {
 
 	@FXML
 	private void handleJoin() {
+		Context.getContext().getUser().castToGuest();
 		ClientJoinQuizEvent cjqe=new ClientJoinQuizEvent(Context.getContext().getUser().getUserID(),selectedQuiz.getQuizID(),Context.getContext().getUser().getUsername());
 		publishEvent(cjqe);
 		//EventBroker.getEventBroker().removeEventListener(joinQuizeventHandler);
@@ -112,7 +120,7 @@ public class JoinQuizController extends EventPublisher {
 		// TODO: set context quiz back to null;
 		Context.getContext().setQuiz(null);
 		//EventBroker.getEventBroker().removeEventListener(joinQuizeventHandler);
-		main.showModeSelectorScene();
+		main.showLogInScene();
 	}
 
 	public class JoinQuizEventHandler implements EventListener {

@@ -12,23 +12,9 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.JoinQuizController">
-	<bottom>
-		<ButtonBar BorderPane.alignment="CENTER">
-			<buttons>
-				<Button fx:id="mJoin" defaultButton="true" mnemonicParsing="false" onAction="#handleJoin" text="Join" />
-				<Button fx:id="mBack" mnemonicParsing="false" onAction="#handleBack" text="Back" />
-			</buttons>
-			<opaqueInsets>
-				<Insets />
-			</opaqueInsets>
-			<padding>
-				<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-			</padding>
-		</ButtonBar>
-	</bottom>
+<BorderPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.JoinQuizController">
 	<right>
-		<VBox prefHeight="360.0" prefWidth="254.0" spacing="5.0" BorderPane.alignment="CENTER">
+		<VBox spacing="5.0" BorderPane.alignment="CENTER">
 			<children>
 				<GridPane>
 					<columnConstraints>
@@ -55,6 +41,18 @@
 						<Insets left="5.0" />
 					</padding>
 				</GridPane>
+      		<ButtonBar>
+      			<buttons>
+      				<Button fx:id="mJoin" defaultButton="true" mnemonicParsing="false" onAction="#handleJoin" text="Join" />
+      				<Button fx:id="mBack" mnemonicParsing="false" onAction="#handleBack" text="Back" />
+      			</buttons>
+      			<opaqueInsets>
+      				<Insets />
+      			</opaqueInsets>
+      			<padding>
+      				<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+      			</padding>
+      		</ButtonBar>
 			</children>
 			<BorderPane.margin>
 				<Insets />
@@ -65,17 +63,26 @@
 		</VBox>
 	</right>
    <left>
-		<TableView fx:id="quizTable" prefHeight="400.0" prefWidth="263.0" BorderPane.alignment="CENTER">
-			<columnResizePolicy>
-				<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-			</columnResizePolicy>
-			<padding>
-				<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-			</padding>
-         <columns>
-            <TableColumn fx:id="quiznameColumn" prefWidth="75.0" text="Quiz" />
-            <TableColumn fx:id="quizmasternameColumn" prefWidth="75.0" text="Quizmaster" />
-         </columns>
-		</TableView>
+      <VBox spacing="5.0" BorderPane.alignment="CENTER">
+         <children>
+      		<TableView fx:id="quizTable">
+      			<columnResizePolicy>
+      				<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+      			</columnResizePolicy>
+               <columns>
+                  <TableColumn fx:id="quiznameColumn" maxWidth="-1.0" prefWidth="-1.0" text="Quiz" />
+                  <TableColumn fx:id="quizmasternameColumn" maxWidth="-1.0" prefWidth="-1.0" text="Quizmaster" />
+               </columns>
+      		</TableView>
+            <ButtonBar>
+              <buttons>
+                <Button mnemonicParsing="false" onAction="#handleCreateTeam" text="New quiz" />
+              </buttons>
+            </ButtonBar>
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </VBox>
    </left>
 </BorderPane>

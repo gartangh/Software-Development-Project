@@ -27,7 +27,6 @@ import quiz.view.ScoreboardController;
 import quiz.view.WaitHostController;
 import quiz.view.WaitRoundController;
 import user.view.LogInController;
-import user.view.ModeSelectorController;
 
 public class Main extends Application {
 
@@ -123,23 +122,6 @@ public class Main extends Application {
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(logIn);
-				}
-			});
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void showModeSelectorScene() {
-		try {
-			FXMLLoader modeSelectorLoader = new FXMLLoader();
-			modeSelectorLoader.setLocation(Main.class.getResource("../user/view/ModeSelector.fxml"));
-			BorderPane modeSelector = (BorderPane) modeSelectorLoader.load();
-			ModeSelectorController modeSelectorController = modeSelectorLoader.getController();
-			modeSelectorController.setMainApp(this);
-			Platform.runLater(new Runnable() {
-				public void run() {
-					rootLayout.setCenter(modeSelector);
 				}
 			});
 		} catch (IOException e) {
