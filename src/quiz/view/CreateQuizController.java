@@ -62,7 +62,7 @@ public class CreateQuizController extends EventPublisher {
 	private void handleBack() {
 		// TODO: Handle back
 		((Host) Context.getContext().getUser()).castToUser();
-		main.showModeSelectorScene();
+		main.showJoinQuizScene();
 	}
 	
 	public class CreateQuizHandler implements EventListener{

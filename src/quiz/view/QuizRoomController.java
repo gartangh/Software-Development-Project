@@ -126,13 +126,12 @@ public class QuizRoomController extends EventPublisher {
 				}
 				else {
 					Context.getContext().setQuiz(null);
-					main.showModeSelectorScene();
+					main.showJoinQuizScene();
 				}
 				break;
 			case "SERVER_QUIZ_NEW_PLAYER":
 				ServerQuizNewPlayer sQNP=(ServerQuizNewPlayer) event;
 				Context.getContext().getQuiz().addUnassignedPlayer(sQNP.getUserID(),sQNP.getUserName());
-
 
 			default:
 				System.out.println("Event received but left unhandled: " + event.getType() + "in quizroom");

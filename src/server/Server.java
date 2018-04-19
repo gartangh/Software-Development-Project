@@ -39,7 +39,11 @@ public class Server extends EventPublisher {
 		ServerContext.getContext().setNetwork(network);
 
 		try {
-			System.out.println(InetAddress.getLocalHost().getHostAddress());
+			if (Main.LOCAL)
+				System.out.println(InetAddress.getLocalHost());
+			else
+				System.out.println(InetAddress.getLocalHost().getHostAddress());
+			
 			System.out.println(Integer.toString(network.getConnectionListener().getServerPort()));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -273,8 +277,7 @@ public class Server extends EventPublisher {
 						server.publishEvent(sEQE);
 					}
 				}
-			}
-			else {
+			} else {
 				ServerNotAllAnsweredEvent sNAEE = new ServerNotAllAnsweredEvent();
 				sNAEE.addRecipient(cNQE.getUserID());
 				server.publishEvent(sNAEE);

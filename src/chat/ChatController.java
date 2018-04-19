@@ -41,12 +41,20 @@ final public class ChatController extends EventPublisher {
 	public ChatController() {
 		this.chatEventHandler = new ChatEventHandler();
 		this.chatModel = new ChatModel();
-		
-		/*try (BufferedReader br = new BufferedReader(new
-		FileReader("D:\\Documents\\Universiteit\\Bachelor3\\Softwareontwikkeling\\project-1718-groep9\\src\\chat\\swearWords.txt"))) { String line; while ((line =
-		br.readLine()) != null) { prohibitedWords.add(line); } br.close(); }
-		catch (IOException e) { e.printStackTrace(); }*/
-		 
+
+		try {
+			// Substring is to remove file:/ before resource
+			BufferedReader bufferedReader = new BufferedReader(new FileReader(Main.class.getResource("../chat/swearWords.txt").toString().substring(6)));
+			
+			String line;
+			while ((line = bufferedReader.readLine()) != null) {
+				prohibitedWords.add(line);
+			}
+			
+			bufferedReader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	// Getters
@@ -124,7 +132,7 @@ final public class ChatController extends EventPublisher {
 	@FXML
 	private void initialize() {
 		EventBroker.getEventBroker().addEventListener(chatEventHandler);
-		
+
 		chatTextArea.textProperty().bind(chatModel.chatTextProperty());
 	}
 

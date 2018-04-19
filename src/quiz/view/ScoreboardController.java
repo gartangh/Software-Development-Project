@@ -6,20 +6,15 @@ import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import main.Context;
 import main.Main;
 import quiz.model.ScoreboardModel;
 import quiz.model.ScoreboardTeam;
 import quiz.util.ClientScoreboardDataEvent;
-import quiz.util.QuizzerEvent;
-import quiz.util.UserEvent;
 import server.ServerScoreboardDataEvent;
 
 public class ScoreboardController extends EventPublisher {
@@ -118,7 +113,7 @@ public class ScoreboardController extends EventPublisher {
 	private void handleQuitButton() {
 		// TO DO: Clear quiz, show List of Available quizzes
 		EventBroker.getEventBroker().removeEventListener(eventHandler);
-		main.showModeSelectorScene();
+		main.showJoinQuizScene();
 	}
 
 	public ScoreboardModel getScoreboardModel() {
