@@ -27,12 +27,11 @@ import quiz.view.ScoreboardController;
 import quiz.view.WaitHostController;
 import quiz.view.WaitRoundController;
 import user.view.LogInController;
-import user.view.ModeSelectorController;
 
 public class Main extends Application {
 
 	public final static boolean DEBUG = true;
-	public final static boolean LOCAL = false;
+	public final static boolean LOCAL = true;
 	public final static String SERVERADDRESS = "192.168.1.13";
 	public final static int SERVERPORT = 1025;
 
@@ -50,12 +49,13 @@ public class Main extends Application {
 
 		try {
 			if (Main.LOCAL) {
+				System.out.println(InetAddress.getLocalHost());
 				network.connect(InetAddress.getLocalHost(), Main.SERVERPORT);
 			} else {
+				System.out.println(InetAddress.getLocalHost().getHostAddress());
 				network.connect(SERVERADDRESS, Main.SERVERPORT);
 			}
 
-			System.out.println(InetAddress.getLocalHost().getHostAddress());
 			System.out.println(Integer.toString(network.getConnectionListener().getServerPort()));
 
 			// Send event over network
@@ -123,23 +123,6 @@ public class Main extends Application {
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(logIn);
-				}
-			});
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void showModeSelectorScene() {
-		try {
-			FXMLLoader modeSelectorLoader = new FXMLLoader();
-			modeSelectorLoader.setLocation(Main.class.getResource("../user/view/ModeSelector.fxml"));
-			BorderPane modeSelector = (BorderPane) modeSelectorLoader.load();
-			ModeSelectorController modeSelectorController = modeSelectorLoader.getController();
-			modeSelectorController.setMainApp(this);
-			Platform.runLater(new Runnable() {
-				public void run() {
-					rootLayout.setCenter(modeSelector);
 				}
 			});
 		} catch (IOException e) {

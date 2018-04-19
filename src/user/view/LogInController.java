@@ -62,14 +62,14 @@ public class LogInController extends EventPublisher {
 		ClientCreateAccountEvent cCAE = new ClientCreateAccountEvent(user.getUsername(), user.getPassword());
 		publishEvent(cCAE);
 
-		main.showModeSelectorScene();
+		main.showJoinQuizScene();
 
 		/*
 		 * switch (User.createAccount(username, password)) { case 0: User user =
 		 * Context.getContext().getUser(); ClientCreateAccountEvent cCAE = new
 		 * ClientCreateAccountEvent(user); publishEvent(cCAE);
 		 * 
-		 * main.showModeSelectorScene(); break; case 1:
+		 * main.showJoinQuizScene(); break; case 1:
 		 * AlertBox.display("Error", "Username is invalid!"); break; case 2:
 		 * AlertBox.display("Error", "Password is invalid!"); break; case 3:
 		 * AlertBox.display("Error", "Username is not unique!"); break; default:
