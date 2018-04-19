@@ -31,7 +31,7 @@ import user.view.LogInController;
 public class Main extends Application {
 
 	public final static boolean DEBUG = true;
-	public final static boolean LOCAL = false;
+	public final static boolean LOCAL = true;
 	public final static String SERVERADDRESS = "192.168.1.13";
 	public final static int SERVERPORT = 1025;
 
@@ -49,12 +49,13 @@ public class Main extends Application {
 
 		try {
 			if (Main.LOCAL) {
+				System.out.println(InetAddress.getLocalHost());
 				network.connect(InetAddress.getLocalHost(), Main.SERVERPORT);
 			} else {
+				System.out.println(InetAddress.getLocalHost().getHostAddress());
 				network.connect(SERVERADDRESS, Main.SERVERPORT);
 			}
 
-			System.out.println(InetAddress.getLocalHost().getHostAddress());
 			System.out.println(Integer.toString(network.getConnectionListener().getServerPort()));
 
 			// Send event over network

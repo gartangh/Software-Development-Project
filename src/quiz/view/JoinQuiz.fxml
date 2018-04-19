@@ -65,18 +65,15 @@
    <left>
       <VBox spacing="5.0" BorderPane.alignment="CENTER">
          <children>
-      		<TableView fx:id="quizTable">
-      			<columnResizePolicy>
-      				<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-      			</columnResizePolicy>
-               <columns>
-                  <TableColumn fx:id="quiznameColumn" maxWidth="-1.0" prefWidth="-1.0" text="Quiz" />
-                  <TableColumn fx:id="quizmasternameColumn" maxWidth="-1.0" prefWidth="-1.0" text="Quizmaster" />
-               </columns>
-      		</TableView>
+            <TableView fx:id="quizTable">
+              <columns>
+                <TableColumn fx:id="quiznameColumn" maxWidth="-1.0" minWidth="70.0" prefWidth="-1.0" text="Quiz" />
+                <TableColumn fx:id="quizmasternameColumn" maxWidth="-1.0" minWidth="70.0" prefWidth="-1.0" text="Quizmaster" />
+              </columns>
+            </TableView>
             <ButtonBar>
               <buttons>
-                <Button mnemonicParsing="false" onAction="#handleCreateTeam" text="New quiz" />
+                <Button mnemonicParsing="false" onAction="#handleCreateQuiz" text="New quiz" />
               </buttons>
             </ButtonBar>
          </children>

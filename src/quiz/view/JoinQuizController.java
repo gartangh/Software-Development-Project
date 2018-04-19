@@ -1,36 +1,22 @@
 package quiz.view;
 
-import java.util.ArrayList;
-import java.util.Set;
 import java.util.Map.Entry;
 
-import chat.ChatPanel;
 import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
-import javafx.application.Platform;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
 import main.Context;
 import main.Main;
 import quiz.model.Quiz;
-import quiz.model.ScoreboardTeam;
-import quiz.model.Team;
 import quiz.util.ClientGetQuizzesEvent;
 import quiz.util.ClientJoinQuizEvent;
-import quiz.view.ScoreboardController.ScoreboardEventHandler;
 import server.ServerGetQuizzesEvent;
 import server.ServerJoinQuizEvent;
 import server.ServerSendQuizEvent;
@@ -44,8 +30,6 @@ public class JoinQuizController extends EventPublisher {
 	private TableColumn<Quiz, String> quiznameColumn;
 	@FXML
 	private TableColumn<Quiz, String> quizmasternameColumn;
-	@FXML
-	private Button mBack;
 	@FXML
 	private Button mJoin;
 	@FXML
@@ -88,30 +72,29 @@ public class JoinQuizController extends EventPublisher {
 		ClientGetQuizzesEvent cGQE = new ClientGetQuizzesEvent();
 		publishEvent(cGQE);
 	}
-	
+
 	@FXML
 	public void handleCreateQuiz() {
 		Context.getContext().getUser().castToHost();
 		main.showCreateQuizScene();
 	}
 
-	@FXML
-	public void showQuizDetails(Quiz quiz){
-	    if (quiz != null) {
-	    	selectedQuiz=quiz;
-	    	joinQuizModel.updateQuizDetail(quiz);
-	    }
-	    else {
-	    	// TODO
-	    }
-	   }
+	public void showQuizDetails(Quiz quiz) {
+		if (quiz != null) {
+			selectedQuiz = quiz;
+			joinQuizModel.updateQuizDetail(quiz);
+		} else {
+			// TODO
+		}
+	}
 
 	@FXML
 	private void handleJoin() {
 		Context.getContext().getUser().castToGuest();
-		ClientJoinQuizEvent cjqe=new ClientJoinQuizEvent(Context.getContext().getUser().getUserID(),selectedQuiz.getQuizID(),Context.getContext().getUser().getUsername());
+		ClientJoinQuizEvent cjqe = new ClientJoinQuizEvent(Context.getContext().getUser().getUserID(),
+				selectedQuiz.getQuizID(), Context.getContext().getUser().getUsername());
 		publishEvent(cjqe);
-		//EventBroker.getEventBroker().removeEventListener(joinQuizeventHandler);
+		// EventBroker.getEventBroker().removeEventListener(joinQuizeventHandler);
 	}
 
 	@FXML
@@ -119,7 +102,7 @@ public class JoinQuizController extends EventPublisher {
 		// TODO: Handle back
 		// TODO: set context quiz back to null;
 		Context.getContext().setQuiz(null);
-		//EventBroker.getEventBroker().removeEventListener(joinQuizeventHandler);
+		// EventBroker.getEventBroker().removeEventListener(joinQuizeventHandler);
 		main.showLogInScene();
 	}
 
@@ -153,7 +136,7 @@ public class JoinQuizController extends EventPublisher {
 				main.showQuizroomScene();
 				break;
 			case "SERVER_START_QUIZ":
-				ServerStartQuizEvent sSTQE=(ServerStartQuizEvent) event;
+				ServerStartQuizEvent sSTQE = (ServerStartQuizEvent) event;
 				joinQuizModel.deleteQuiz(sSTQE.getQuizID());
 				break;
 			default:
@@ -161,4 +144,5 @@ public class JoinQuizController extends EventPublisher {
 			}
 		}
 	}
+
 }

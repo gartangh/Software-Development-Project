@@ -101,7 +101,7 @@ public class ServerContext {
 		} while (quizMap.containsKey(newID));
 
 		Quiz newQuiz = new Quiz(newID, quizName, maxAmountOfTeams, maxAmountOfPlayersPerTeam, maxAmountOfRounds,
-				maxAmountOfQuestionsPerRound, hostID,userMap.get(hostID).getUsername());
+				maxAmountOfQuestionsPerRound, hostID, userMap.get(hostID).getUsername());
 		quizMap.put(newID, newQuiz);
 
 		return newID;
@@ -147,43 +147,38 @@ public class ServerContext {
 	}
 
 	public void loadData() {
-		BufferedReader reader;
-
-		// TODO: Remove location prefixes
-		//String locationPrefix = "./Files/";
-		//String locationPrefix = "D:\\Documents\\Universiteit\\Bachelor3\\Softwareontwikkeling\\project-1718-groep9\\src\\server\\";
-		// String locationPrefix = "d:\\Demuynck\\Documents\\school\\Softwareontwikkeling\\Project\\project-1718-groep9\\src\\server\\";
-		String locationPrefix = "C:\\Users\\Gebruiker\\workspace\\Quiz\\src\\server\\";
-
 		String[] themeFiles = { "QUESTIONS_CULTURE.txt", "QUESTIONS_SPORTS.txt" };
 		try {
 			for (int tF = 0; tF < themeFiles.length; tF++) {
 				Map<Integer, Map<Integer, MCQuestion>> themeMap = new HashMap<Integer, Map<Integer, MCQuestion>>();
 				orderedMCQuestionMap.put(tF, themeMap);
-				
-				reader = new BufferedReader(new FileReader(locationPrefix + themeFiles[tF]));
-				//reader = new BufferedReader(new FileReader(Main.class.getResource("../server/" + themeFiles[tF]).toString()));
-				String line = reader.readLine();
+
+				// Substring is to remove file:/ before resource
+				BufferedReader bufferedReader = new BufferedReader(
+						new FileReader(Main.class.getResource("../server/" + themeFiles[tF]).toString().substring(6)));
+				String line = bufferedReader.readLine();
 				int i = 0;
 				int diff = -1;
 				Map<Integer, MCQuestion> diffMap = null;
 				while (line != null) {
-					if (line.startsWith("-----")) { // Skip gaps between
-													// difficulties
+					// Skip gaps between difficulties
+					if (line.startsWith("-----")) {
 						i = 0;
 						diff++;
 						diffMap = new HashMap<Integer, MCQuestion>();
 						themeMap.put(diff, diffMap);
-						reader.readLine();
-						reader.readLine();
+						bufferedReader.readLine();
+						bufferedReader.readLine();
 					}
 
-					String question = reader.readLine();
+					String question = bufferedReader.readLine();
 					if (question == null)
 						break;
 
-					String answers[] = { reader.readLine(), reader.readLine(), reader.readLine(), reader.readLine() };
-					int correctAnswer = Integer.parseInt(reader.readLine());
+					String answers[] = { bufferedReader.readLine(), bufferedReader.readLine(),
+							bufferedReader.readLine(), bufferedReader.readLine() };
+					int correctAnswer = Integer.parseInt(bufferedReader.readLine());
+					
 					Theme t = Theme.values()[tF];
 					Difficulty d = Difficulty.values()[diff];
 					// 256 possible themes and 4 difficulties with each 2^21
@@ -196,10 +191,10 @@ public class ServerContext {
 
 					// read next line
 					i++;
-					line = reader.readLine();
+					line = bufferedReader.readLine();
 				}
 
-				reader.close();
+				bufferedReader.close();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
