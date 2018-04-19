@@ -76,22 +76,23 @@ final public class EventBroker implements Runnable {
 	}
 
 	private void process(EventPublisher source, Event e) {
-		for(Map.Entry<String, ArrayList<EventListener>> entry : newListeners.entrySet()) {
-			if(!listeners.containsKey(entry.getKey()))
+		for (Map.Entry<String, ArrayList<EventListener>> entry : newListeners.entrySet()) {
+			if (!listeners.containsKey(entry.getKey()))
 				listeners.put(entry.getKey(), entry.getValue());
-			else 
+			else
 				listeners.get(entry.getKey()).addAll(entry.getValue());
 		}
-		newListeners = new HashMap<>();
 		
+		newListeners = new HashMap<>();
+
 		for (EventListener el : toRemoveListeners) {
 			for (Map.Entry<String, ArrayList<EventListener>> entry : listeners.entrySet())
-				if(entry.getValue().contains(el)) {
+				if (entry.getValue().contains(el))
 					entry.getValue().remove(el);
-				}
 		}
-		toRemoveListeners = new ArrayList<>();
 		
+		toRemoveListeners = new ArrayList<>();
+
 		for (Map.Entry<String, ArrayList<EventListener>> entry : listeners.entrySet())
 			if (entry.getKey().equals(e.getType()) || entry.getKey().equals("all"))
 				for (EventListener el : entry.getValue())

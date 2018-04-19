@@ -4,22 +4,16 @@ import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
+import eventbroker.clientevent.ClientCreateQuizEvent;
+import eventbroker.serverevent.ServerReturnQuizEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import main.Context;
 import main.Main;
-import main.view.AlertBox;
-import quiz.model.Quiz;
-import quiz.util.ClientCreateAccountEvent;
-import quiz.util.ClientCreateQuizEvent;
-import server.ServerReturnQuizEvent;
 import user.model.Host;
-import user.model.Quizmaster;
 
 public class CreateQuizController extends EventPublisher {
 
-	// Text fields
 	@FXML
 	private TextField mName;
 	@FXML
@@ -31,30 +25,30 @@ public class CreateQuizController extends EventPublisher {
 	@FXML
 	private TextField mPlayers;
 
-	// Buttons
-	@FXML
-	private Button mCreateQuiz;
-	@FXML
-	private Button mBack;
+	private CreateQuizEventHandler createQuizHandler;
 
 	// Reference to the main application
 	private Main main;
-	private CreateQuizHandler createQuizHandler;
-	
+
 	public void setMainApp(Main main) {
 		this.main = main;
 	}
 
 	@FXML
 	private void initialize() {
-		createQuizHandler = new CreateQuizHandler();
-		
+		createQuizHandler = new CreateQuizEventHandler();
 		EventBroker.getEventBroker().addEventListener(createQuizHandler);
 	}
 
 	@FXML
 	private void handleCreateQuiz() {
-		ClientCreateQuizEvent cCQE = new ClientCreateQuizEvent(mName.getText(), Integer.parseInt(mTeams.getText()), Integer.parseInt(mPlayers.getText()), Integer.parseInt(mRounds.getText()), Integer.parseInt(mQuestions.getText()));
+		String name = mName.getText();
+		int teams = Integer.parseInt(mTeams.getText());
+		int players = Integer.parseInt(mPlayers.getText());
+		int rounds = Integer.parseInt(mRounds.getText());
+		int questions = Integer.parseInt(mRounds.getText());
+
+		ClientCreateQuizEvent cCQE = new ClientCreateQuizEvent(name, teams, players, rounds, questions);
 		publishEvent(cCQE);
 	}
 
@@ -64,21 +58,28 @@ public class CreateQuizController extends EventPublisher {
 		((Host) Context.getContext().getUser()).castToUser();
 		main.showJoinQuizScene();
 	}
-	
-	public class CreateQuizHandler implements EventListener{
+
+	// Inner class
+	public class CreateQuizEventHandler implements EventListener {
 
 		@Override
 		public void handleEvent(Event event) {
-			switch(event.getType()) {
-				case "SERVER_RETURN_QUIZ":
-					EventBroker.getEventBroker().removeEventListener(createQuizHandler);
-					ServerReturnQuizEvent sRQE = (ServerReturnQuizEvent) event;
-					Context.getContext().setQuiz(sRQE.getQuiz());
-					main.showQuizroomScene();
+			String type = event.getType();
+			System.out.println("Event with type " + type + " received");
+			switch (type) {
+			case "SERVER_RETURN_QUIZ":
+				ServerReturnQuizEvent sRQE = (ServerReturnQuizEvent) event;
+				Context.getContext().setQuiz(sRQE.getQuiz());
+				EventBroker.getEventBroker().removeEventListener(createQuizHandler);
+				
+				main.showQuizroomScene();
 				break;
+				
+			default:
+				System.out.println("Event with type " + type + " was left unhandled");
 			}
 		}
-		
+
 	}
 
 }

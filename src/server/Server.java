@@ -4,37 +4,64 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import chat.ChatMessage;
 import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
+import eventbroker.clientevent.ClientChangeTeamEvent;
+import eventbroker.clientevent.ClientAnswerEvent;
+import eventbroker.clientevent.ClientCreateAccountEvent;
+import eventbroker.clientevent.ClientCreateQuizEvent;
+import eventbroker.clientevent.ClientCreateRoundEvent;
+import eventbroker.clientevent.ClientGetQuizzesEvent;
+import eventbroker.clientevent.ClientHostReadyEvent;
+import eventbroker.clientevent.ClientJoinQuizEvent;
+import eventbroker.clientevent.ClientLogInEvent;
+import eventbroker.clientevent.ClientNewQuestionEvent;
+import eventbroker.clientevent.ClientScoreboardDataEvent;
+import eventbroker.clientevent.ClientVoteEvent;
+import eventbroker.clientevent.ClientNewTeamEvent;
+import eventbroker.serverevent.ServerAnswerEvent;
+import eventbroker.serverevent.ServerChangeTeamEvent;
+import eventbroker.serverevent.ServerCreateAccountFailEvent;
+import eventbroker.serverevent.ServerCreateAccountSuccesEvent;
+import eventbroker.serverevent.ServerEndQuizEvent;
+import eventbroker.serverevent.ServerGetQuizzesEvent;
+import eventbroker.serverevent.ServerJoinQuizEvent;
+import eventbroker.serverevent.ServerLogInFailEvent;
+import eventbroker.serverevent.ServerLogInSuccesEvent;
+import eventbroker.serverevent.ServerNewQuestionEvent;
+import eventbroker.serverevent.ServerNewRoundEvent;
+import eventbroker.serverevent.ServerNewTeamEvent;
+import eventbroker.serverevent.ServerNotAllAnsweredEvent;
+import eventbroker.serverevent.ServerQuizNewPlayer;
+import eventbroker.serverevent.ServerReturnQuizEvent;
+import eventbroker.serverevent.ServerScoreboardDataEvent;
+import eventbroker.serverevent.ServerSendQuizEvent;
+import eventbroker.serverevent.ServerStartQuizEvent;
+import eventbroker.serverevent.ServerStartRoundEvent;
+import eventbroker.serverevent.ServerVoteEvent;
 import main.Main;
-import quiz.util.ChangeTeamEvent;
-import quiz.util.NewTeamEvent;
+import user.model.User;
 import quiz.model.Team;
 import network.Network;
 import quiz.model.MCQuestion;
-import quiz.util.ClientCreateAccountEvent;
-import quiz.util.ClientCreateQuizEvent;
-import quiz.util.ClientCreateRoundEvent;
-import quiz.util.ClientGetQuizzesEvent;
-import quiz.util.ClientHostReadyEvent;
-import quiz.util.ClientJoinQuizEvent;
-import quiz.util.ClientVoteEvent;
 import quiz.model.Quiz;
-import quiz.util.ClientAnswerEvent;
-import quiz.util.ClientNewQuestionEvent;
-import quiz.util.ClientScoreboardDataEvent;
 
 public class Server extends EventPublisher {
 
 	// Singleton
 	private final static Server server = new Server();
+	// TODO: Add handlers
 	private static ServerHandler serverHandler = new ServerHandler();
+	private static CreateAccountHandler createAccountHandler = new CreateAccountHandler();
+	private static LogInHandler logInHandler = new LogInHandler();
 
 	public static void main(String[] args) {
+		// Create a network on port Main.SERVERPORT and type SERVER
 		Network network = new Network(Main.SERVERPORT, "SERVER");
 		ServerContext.getContext().setNetwork(network);
 
@@ -43,16 +70,24 @@ public class Server extends EventPublisher {
 				System.out.println(InetAddress.getLocalHost());
 			else
 				System.out.println(InetAddress.getLocalHost().getHostAddress());
-			
+
 			System.out.println(Integer.toString(network.getConnectionListener().getServerPort()));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
 
+		// Load Data
 		ServerContext.getContext().loadData();
 
+		// Add EventListeners
 		EventBroker.getEventBroker().addEventListener(network);
+
+		// TODO: Add handlers
 		EventBroker.getEventBroker().addEventListener(serverHandler);
+		EventBroker.getEventBroker().addEventListener(ClientCreateAccountEvent.EVENTTYPE, createAccountHandler);
+		EventBroker.getEventBroker().addEventListener(ClientLogInEvent.EVENTTYPE, logInHandler);
+
+		// Start the EventBroker
 		EventBroker.getEventBroker().start();
 
 		System.out.println("Server running ...");
@@ -62,16 +97,17 @@ public class Server extends EventPublisher {
 		return server;
 	}
 
-	// Inner class
-	static class ServerHandler implements EventListener {
+	// Inner classes
+	private static class ServerHandler implements EventListener {
 
 		@Override
-		public void handleEvent(Event e) {
+		public void handleEvent(Event event) {
 			ArrayList<Integer> destinations = new ArrayList<>();
 			Boolean handled = false;
-			switch (e.getType()) {
+			switch (event.getType()) {
 			case "CLIENT_JOIN_QUIZ":
-				ClientJoinQuizEvent cJTE = (ClientJoinQuizEvent) e;
+				ClientJoinQuizEvent cJTE = (ClientJoinQuizEvent) event;
+
 				ServerContext.getContext().getQuizMap().get(cJTE.getQuizID()).addUnassignedPlayer(cJTE.getUserID(),
 						cJTE.getUserName());
 				ServerJoinQuizEvent sJQE = new ServerJoinQuizEvent(
@@ -84,18 +120,8 @@ public class Server extends EventPublisher {
 				server.publishEvent(sQNP);
 				break;
 
-			case "CLIENT_CREATE_ACCOUNT":
-				ClientCreateAccountEvent cCAE = (ClientCreateAccountEvent) e;
-				int userID = ServerContext.getContext().addUser(cCAE.getUserName(), cCAE.getUserPassword());
-				ServerContext.getContext().getNetwork().getUserIDConnectionIDMap().put(userID, cCAE.getConnectionID());
-				ServerReturnUserIDEvent sRUIDE = new ServerReturnUserIDEvent(userID, cCAE.getConnectionID());
-				sRUIDE.addRecipient(userID);
-				server.publishEvent(sRUIDE);
-				handled = true;
-				break;
-
 			case "CLIENT_CREATE_QUIZ":
-				ClientCreateQuizEvent cCQE = (ClientCreateQuizEvent) e;
+				ClientCreateQuizEvent cCQE = (ClientCreateQuizEvent) event;
 				int quizID = ServerContext.getContext().addQuiz(cCQE.getQuizName(), cCQE.getMaxAmountOfTeams(),
 						cCQE.getMaxAmountOfPlayersPerTeam(), cCQE.getMaxAmountOfRounds(),
 						cCQE.getMaxAmountOfQuestionsPerRound(), cCQE.getUserID());
@@ -112,22 +138,22 @@ public class Server extends EventPublisher {
 				break;
 
 			case "CLIENT_VOTE":
-				handleClientVoteEvent((ClientVoteEvent) e);
+				handleClientVoteEvent((ClientVoteEvent) event);
 				handled = true;
 				break;
 
 			case "CLIENT_ANSWER":
-				handleClientAnswerEvent((ClientAnswerEvent) e);
+				handleClientAnswerEvent((ClientAnswerEvent) event);
 				handled = true;
 				break;
 
 			case "CLIENT_NEW_QUESTION":
-				handleClientNewQuestionEvent((ClientNewQuestionEvent) e);
+				handleClientNewQuestionEvent((ClientNewQuestionEvent) event);
 				handled = true;
 				break;
 
 			case "CLIENT_CHAT":
-				ChatMessage chatMessage = (ChatMessage) e;
+				ChatMessage chatMessage = (ChatMessage) event;
 
 				// TODO: Add all usernames for the chat
 
@@ -143,7 +169,7 @@ public class Server extends EventPublisher {
 				break;
 
 			case "CLIENT_SCOREBOARDDATA":
-				ClientScoreboardDataEvent cSDE = (ClientScoreboardDataEvent) e;
+				ClientScoreboardDataEvent cSDE = (ClientScoreboardDataEvent) event;
 				ServerScoreboardDataEvent scoreboardData = new ServerScoreboardDataEvent(cSDE.getQuizID());
 				scoreboardData.addRecipient(cSDE.getUserID());
 				server.publishEvent(scoreboardData);
@@ -151,7 +177,7 @@ public class Server extends EventPublisher {
 				break;
 
 			case "CLIENT_GET_QUIZZES":
-				ClientGetQuizzesEvent cGQE = (ClientGetQuizzesEvent) e;
+				ClientGetQuizzesEvent cGQE = (ClientGetQuizzesEvent) event;
 				ServerGetQuizzesEvent sGQE = new ServerGetQuizzesEvent();
 				sGQE.addRecipient(cGQE.getUserID());
 				server.publishEvent(sGQE);
@@ -159,7 +185,7 @@ public class Server extends EventPublisher {
 				break;
 
 			case "CLIENT_NEW_TEAM":
-				NewTeamEvent newteamevent = (NewTeamEvent) e;
+				ClientNewTeamEvent newteamevent = (ClientNewTeamEvent) event;
 				int newTeamID = ServerContext.getContext().addTeam(newteamevent.getQuizID(), newteamevent.getTeamName(),
 						newteamevent.getColor(), newteamevent.getUserID());
 				if (newTeamID != -1) {
@@ -181,7 +207,7 @@ public class Server extends EventPublisher {
 				break;
 
 			case "CLIENT_CHANGE_TEAM":
-				ChangeTeamEvent cte = (ChangeTeamEvent) e;
+				ClientChangeTeamEvent cte = (ClientChangeTeamEvent) event;
 				String userName = ServerContext.getContext().changeTeam(cte.getQuizID(), cte.getNewTeamID(),
 						cte.getUserID(), 'a');
 				ServerContext.getContext().changeTeam(cte.getQuizID(), cte.getOldTeamID(), cte.getUserID(), 'd');
@@ -201,11 +227,11 @@ public class Server extends EventPublisher {
 
 			case "CLIENT_CREATE_ROUND":
 				// TODO: Old team (check for null) and newteam modifier
-				handleClientCreateRoundEvent((ClientCreateRoundEvent) e);
+				handleClientCreateRoundEvent((ClientCreateRoundEvent) event);
 				handled = true;
 				break;
 			case "CLIENT_HOST_READY":
-				ClientHostReadyEvent chre = (ClientHostReadyEvent) e;
+				ClientHostReadyEvent chre = (ClientHostReadyEvent) event;
 				ServerContext.getContext().getQuizMap().get(chre.getQuizID()).setRunning(true);
 				ServerContext.getContext().getQuizMap().get(chre.getQuizID()).clearUnassignedPlayers();
 				ServerStartQuizEvent serverStartQuizEvent = new ServerStartQuizEvent(chre.getQuizID());
@@ -217,9 +243,9 @@ public class Server extends EventPublisher {
 			}
 
 			if (handled)
-				System.out.println("Event received and handled: " + e.getType());
+				System.out.println("Event received and handled: " + event.getType());
 			else
-				System.out.println("Event received but left unhandled: " + e.getType());
+				System.out.println("Event received but left unhandled: " + event.getType());
 		}
 
 		public void handleClientVoteEvent(ClientVoteEvent cVE) {
@@ -302,6 +328,83 @@ public class Server extends EventPublisher {
 			sSRE.addRecipients(receivers);
 			Server.getServer().publishEvent(sSRE);
 		}
+	}
+
+	private static class CreateAccountHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ClientCreateAccountEvent cCAE = (ClientCreateAccountEvent) event;
+
+			String username = cCAE.getUsername();
+			int connectionID = cCAE.getConnectionID();
+
+			boolean exists = false;
+			for (Entry<Integer, User> user : ServerContext.getContext().getUserMap().entrySet()) {
+				if (user.getValue().getUsername().equals(username)) {
+					exists = true;
+					break;
+				}
+			}
+
+			if (exists) {
+				// Username is already in use
+				ServerCreateAccountFailEvent sCAFE = new ServerCreateAccountFailEvent(connectionID);
+				server.publishEvent(sCAFE);
+			} else {
+				// Username is not yet in use
+				String password = cCAE.getPassword();
+
+				int userID = User.createUser(username, password, connectionID);
+
+				ServerCreateAccountSuccesEvent sCASE = new ServerCreateAccountSuccesEvent(userID, username, password,
+						connectionID);
+				sCASE.addRecipient(userID);
+				server.publishEvent(sCASE);
+			}
+		}
+
+	}
+
+	private static class LogInHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ClientLogInEvent cLIE = (ClientLogInEvent) event;
+
+			// cLIE.getConnectionID();
+
+			String username = cLIE.getUsername();
+			String password = cLIE.getPassword();
+
+			int userID = -1;
+			int level = 0;
+			long xp = 0L;
+			for (Entry<Integer, User> user : ServerContext.getContext().getUserMap().entrySet()) {
+				if (user.getValue().getUsername().equals(username) && user.getValue().getPassword().equals(password)) {
+					userID = user.getKey();
+					level = user.getValue().getLevel();
+					xp = user.getValue().getXp();
+					break;
+				}
+			}
+
+			if (userID == -1) {
+				// Username and / or password are incorrect
+				ServerLogInFailEvent sLIFE = new ServerLogInFailEvent();
+				sLIFE.addRecipient(userID);
+				server.publishEvent(sLIFE);
+			} else {
+				// Username and password are correct
+				// TODO: connectionID = 0 in stead of the correct connectionID?
+				ServerContext.getContext().getNetwork().getUserIDConnectionIDMap().put(userID, cLIE.getConnectionID());
+
+				ServerLogInSuccesEvent sLISE = new ServerLogInSuccesEvent(userID, username, password, level, xp);
+				sLISE.addRecipient(userID);
+				server.publishEvent(sLISE);
+			}
+		}
+
 	}
 
 }

@@ -4,6 +4,8 @@ import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
+import eventbroker.clientevent.ClientCreateRoundEvent;
+import eventbroker.serverevent.ServerNewQuestionEvent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,11 +17,9 @@ import javafx.scene.control.Alert.AlertType;
 import main.Context;
 import main.Main;
 import quiz.model.MCQuestion;
-import quiz.util.ClientCreateRoundEvent;
 import quiz.util.Difficulty;
 import quiz.util.Theme;
 import quiz.view.WaitRoundController.WaitRoundHandler;
-import server.ServerNewQuestionEvent;
 
 public class RoundMakerController extends EventPublisher{
 	@FXML

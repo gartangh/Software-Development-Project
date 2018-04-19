@@ -6,6 +6,12 @@ import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
+import eventbroker.clientevent.ClientGetQuizzesEvent;
+import eventbroker.clientevent.ClientJoinQuizEvent;
+import eventbroker.serverevent.ServerGetQuizzesEvent;
+import eventbroker.serverevent.ServerJoinQuizEvent;
+import eventbroker.serverevent.ServerSendQuizEvent;
+import eventbroker.serverevent.ServerStartQuizEvent;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -15,12 +21,6 @@ import javafx.scene.control.TableView;
 import main.Context;
 import main.Main;
 import quiz.model.Quiz;
-import quiz.util.ClientGetQuizzesEvent;
-import quiz.util.ClientJoinQuizEvent;
-import server.ServerGetQuizzesEvent;
-import server.ServerJoinQuizEvent;
-import server.ServerSendQuizEvent;
-import server.ServerStartQuizEvent;
 
 public class JoinQuizController extends EventPublisher {
 

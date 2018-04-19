@@ -28,12 +28,4 @@ public class Guest extends User {
 		return player;
 	}
 
-	public Spectator castToSpectator() {
-		Spectator spectator = new Spectator(this);
-
-		Context.getContext().setUser(spectator);
-
-		return spectator;
-	}
-
 }

@@ -8,7 +8,8 @@ import java.net.SocketException;
 
 import eventbroker.Event;
 import eventbroker.EventBroker;
-import quiz.util.ClientCreateAccountEvent;
+import eventbroker.clientevent.ClientCreateAccountEvent;
+import eventbroker.clientevent.ClientLogInEvent;
 
 public class Connection {
 
@@ -37,11 +38,11 @@ public class Connection {
 	}
 
 	// Package local would be safer
-	public void send(Event e) {
+	public void send(Event event) {
 		try {
 			synchronized (this) {
 				// Client 7.1
-				objectOutputStream.writeObject(e);
+				objectOutputStream.writeObject(event);
 				// Client 7.2
 				objectOutputStream.flush();
 			}
@@ -102,11 +103,14 @@ public class Connection {
 							}
 						}
 
-						ClientCreateAccountEvent createEvent;
-						if (event.getType().equals("CLIENT_CREATE_ACCOUNT")) {
-							createEvent = (ClientCreateAccountEvent) event;
-							createEvent.setConnectionID(connectionID);
-							network.publishEvent(createEvent);
+						if (event.getType().equals(ClientCreateAccountEvent.EVENTTYPE)) {
+							ClientCreateAccountEvent cCAE = (ClientCreateAccountEvent) event;
+							cCAE.setConnectionID(connectionID);
+							network.publishEvent(cCAE);
+						} else if (event.getType().equals(ClientLogInEvent.EVENTTYPE)) {
+							ClientLogInEvent cLIE = (ClientLogInEvent) event;
+							cLIE.setConnectionID(connectionID);
+							network.publishEvent(cLIE);
 						} else
 							network.publishEvent(event);
 					} catch (SocketException e) {

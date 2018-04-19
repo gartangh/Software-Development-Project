@@ -5,6 +5,13 @@ import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
+import eventbroker.clientevent.ClientAnswerEvent;
+import eventbroker.clientevent.ClientNewQuestionEvent;
+import eventbroker.clientevent.ClientVoteEvent;
+import eventbroker.serverevent.ServerAnswerEvent;
+import eventbroker.serverevent.ServerNewQuestionEvent;
+import eventbroker.serverevent.ServerNewRoundEvent;
+import eventbroker.serverevent.ServerVoteEvent;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -20,14 +27,7 @@ import main.Main;
 import quiz.model.Quiz;
 import quiz.model.AnswerVoteModel;
 import quiz.model.MCQuestion;
-import quiz.util.ClientAnswerEvent;
-import quiz.util.ClientNewQuestionEvent;
-import quiz.util.ClientVoteEvent;
-import server.ServerAnswerEvent;
 import server.ServerContext;
-import server.ServerNewQuestionEvent;
-import server.ServerNewRoundEvent;
-import server.ServerVoteEvent;
 
 public class QuestionFormController extends EventPublisher {
 

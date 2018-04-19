@@ -1,10 +1,11 @@
 package chat;
 
 import java.io.Serializable;
-import quiz.util.UserEvent;
+
+import eventbroker.clientevent.ClientEvent;
 
 @SuppressWarnings("serial")
-public class ChatMessage extends UserEvent implements Serializable {
+public class ChatMessage extends ClientEvent implements Serializable {
 
 	private String sender;
 

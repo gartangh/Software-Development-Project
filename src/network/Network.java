@@ -6,10 +6,12 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import eventbroker.Event;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
+import eventbroker.serverevent.ServerCreateAccountFailEvent;
 
 // TODO: End ReceiverThread Connection Chat
 public class Network extends EventPublisher implements EventListener {
@@ -144,15 +146,24 @@ public class Network extends EventPublisher implements EventListener {
 	 * 0 (the server) Server needs recipients inside (serverEvent) event
 	 */
 	@Override
-	public void handleEvent(Event e) {
+	public void handleEvent(Event event) {
 		if (TYPE == "CLIENT") {
-			connectionMap.get(0).send(e);
+			connectionMap.get(0).send(event);
 		} else if (TYPE == "SERVER") {
-			for (int userID : e.getRecipients())
-				connectionMap.get(UserIDConnectionIDMap.get(userID)).send(e);
-		}
+			if (event.getType().equals("SERVER_CREATE_ACCOUNT_FAIL_EVENT")) {
+				ServerCreateAccountFailEvent sCAFE = (ServerCreateAccountFailEvent) event;
 
-		System.out.println("Event received and handled: " + e.getType());
+				for (Entry<Integer, Connection> connection : connectionMap.entrySet()) {
+					if (connection.getValue().getConnectionID() == sCAFE.getConnectionID()) {
+						connection.getValue().send(event);
+						break;
+					}
+				}
+			} else {
+				for (int userID : event.getRecipients())
+					connectionMap.get(UserIDConnectionIDMap.get(userID)).send(event);
+			}
+		}
 	}
 
 	public void terminate() {

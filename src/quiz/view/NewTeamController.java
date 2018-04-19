@@ -1,5 +1,6 @@
 package quiz.view;
 
+import eventbroker.clientevent.ClientNewTeamEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -7,7 +8,6 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import quiz.model.Team;
-import quiz.util.NewTeamEvent;
 
 public class NewTeamController {
 	@FXML
@@ -16,7 +16,7 @@ public class NewTeamController {
     private ColorPicker colorpicker;
 
     private Team team;
-    private NewTeamEvent teamevent;
+    private ClientNewTeamEvent teamevent;
 
 
     private Stage dialogStage;
@@ -39,7 +39,7 @@ public class NewTeamController {
     	this.team=team;
     }
 
-    public void setTeamEvent(NewTeamEvent teamevent){
+    public void setTeamEvent(ClientNewTeamEvent teamevent){
     	this.teamevent=teamevent;
     }
 

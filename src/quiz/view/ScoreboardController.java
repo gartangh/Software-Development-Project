@@ -4,6 +4,8 @@ import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
+import eventbroker.clientevent.ClientScoreboardDataEvent;
+import eventbroker.serverevent.ServerScoreboardDataEvent;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
@@ -14,8 +16,6 @@ import main.Context;
 import main.Main;
 import quiz.model.ScoreboardModel;
 import quiz.model.ScoreboardTeam;
-import quiz.util.ClientScoreboardDataEvent;
-import server.ServerScoreboardDataEvent;
 
 public class ScoreboardController extends EventPublisher {
 

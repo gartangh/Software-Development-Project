@@ -3,26 +3,25 @@ package user.model;
 import java.io.Serializable;
 
 import main.Context;
+import server.ServerContext;
 
 @SuppressWarnings("serial")
 public class User implements Serializable {
 
-	private final static String USERNAMEREGEX = "^[a-zA-Z0-9._-]{3,}$";
-	private final static String PASSWORDREGEX = "^[a-zA-Z0-9._-]{3,}$";
+	public final static String USERNAMEREGEX = "^[a-zA-Z0-9._-]{3,}$";
+	public final static String PASSWORDREGEX = "^[a-zA-Z0-9._-]{3,}$";
 
 	private int userID;
 	private String username;
 	private String password;
-	private int level;
-	private long xp;
+	private int level = 1;
+	private long xp = 0L;
 
 	// Constructors
 	public User(int userID, String username, String password) {
 		this.userID = userID;
 		this.username = username;
 		this.password = password;
-		this.level = 1;
-		this.xp = 0L;
 	}
 
 	private User(int userID, String username, String password, int level, long xp) {
@@ -42,21 +41,28 @@ public class User implements Serializable {
 		this.userID = user.userID;
 	}
 
-	// Factory method
-	public static int createAccount(String username, String password) {
-		if (!username.matches(USERNAMEREGEX))
-			return 1;
-		else if (!password.matches(PASSWORDREGEX))
-			return 2;
-		else if (!isUniqueUsername(username))
-			return 3;
+	// Factory methods
+	public static int createUser(String username, String password, int connectionID) {
+		// Generate random userID
+		int userID;
+		do {
+			userID = (int) (Math.random() * Integer.MAX_VALUE);
+		} while (ServerContext.getContext().getUserMap().containsKey(userID));
 
-		// Everything is valid
-		User user = new User(0, username, password);
-
-		Context.getContext().setUser(user);
-
-		return 0;
+		ServerContext.getContext().getUserMap().put(userID, new User(userID, username, password));
+		ServerContext.getContext().getNetwork().getUserIDConnectionIDMap().put(userID, connectionID);
+		
+		return userID;
+	}
+	
+	public static void createAccount(int userID, String username, String password) {
+		Context.getContext().setUser(new User(userID, username, password));
+		Context.getContext().getNetwork().getUserIDConnectionIDMap().put(userID, 0);
+	}
+	
+	public static void logIn(int userID, String username, String password, int level, long xp) {
+		Context.getContext().setUser(new User(userID, username, password, level, xp));
+		Context.getContext().getNetwork().getUserIDConnectionIDMap().put(userID, 0);
 	}
 
 	// Upcasting
@@ -91,7 +97,8 @@ public class User implements Serializable {
 		return password;
 	}
 
-	public int setPassword(String password1, String password2) {
+	// Password cannot be changed for the moment
+	/*public int setPassword(String password1, String password2) {
 		if (!password1.equals(password2)) {
 			// TODO: Go back and show error
 
@@ -105,7 +112,7 @@ public class User implements Serializable {
 		this.password = password1;
 
 		return 0;
-	}
+	}*/
 
 	public int getLevel() {
 		return level;
@@ -125,34 +132,10 @@ public class User implements Serializable {
 		}
 	}
 
-	public static int logIn(String username, String password) {
-		if (exists(username, password)) {
-			// TODO: Get level and xp from database
-			int level = 0;
-			int xp = 0;
-
-			Context.getContext().setUser(new User(0, username, password, level, xp));
-
-			return 0;
-		}
-
-		return -1;
-	}
-
-	private static boolean isUniqueUsername(String username) {
-		// TODO: Check uniqueness of username
-
-		return true; // Temporary
-	}
-
-	private static boolean exists(String username, String password) {
-		// TODO: Check if username and password exist for a certain user
-
-		return true;
-	}
-
+	@Override
 	public String toString() {
-		return username; // for tableview in quizroom
+		// For tableview in Quizroom
+		return username;
 	}
 
 }

@@ -55,18 +55,9 @@ public class ServerContext {
 	public Map<Integer, Quiz> getQuizMap() {
 		return quizMap;
 	}
-
-	// Adders
-	public int addUser(String username, String password) {
-		int newID;
-		do {
-			newID = (int) (Math.random() * Integer.MAX_VALUE);
-		} while (userMap.containsKey(newID));
-
-		User newUser = new User(newID, username, password);
-		userMap.put(newID, newUser);
-
-		return newID;
+	
+	public Map<Integer, Map<Integer, Map<Integer, MCQuestion>>> getOrderedMCQuestionMap() {
+		return orderedMCQuestionMap;
 	}
 
 	// Methods
@@ -76,15 +67,16 @@ public class ServerContext {
 		if (quizMap.containsKey(quizID) && userMap.containsKey(userID) && teamID != -1) {
 			Quiz quiz = quizMap.get(quizID);
 			User user = userMap.get(userID);
-			Team team = null;
-			team = quiz.getTeams().get(teamID);
+			Team team = quiz.getTeams().get(teamID);
 
 			if (team != null) {
 				if (type == 'a') {// add
-					team.addPlayer(user.getID(), user.getUsername());
+					team.addPlayer(user.getUserID(), user.getUsername());
+					
 					return user.getUsername();
 				} else if (type == 'd') {// Delete
-					team.removePlayer(user.getID());
+					team.removePlayer(user.getUserID());
+					
 					return user.getUsername();
 				}
 			}
@@ -142,13 +134,9 @@ public class ServerContext {
 		return quizMap.get(quizID);
 	}
 
-	public Map<Integer, Map<Integer, Map<Integer, MCQuestion>>> getOrderedMCQuestionMap() {
-		return orderedMCQuestionMap;
-	}
-
 	public void loadData() {
 		String[] themeFiles = { "QUESTIONS_CULTURE.txt", "QUESTIONS_SPORTS.txt" };
-		
+
 		try {
 			for (int tF = 0; tF < themeFiles.length; tF++) {
 				Map<Integer, Map<Integer, MCQuestion>> themeMap = new HashMap<Integer, Map<Integer, MCQuestion>>();
@@ -179,7 +167,7 @@ public class ServerContext {
 					String answers[] = { bufferedReader.readLine(), bufferedReader.readLine(),
 							bufferedReader.readLine(), bufferedReader.readLine() };
 					int correctAnswer = Integer.parseInt(bufferedReader.readLine());
-					
+
 					Theme t = Theme.values()[tF];
 					Difficulty d = Difficulty.values()[diff];
 					// 256 possible themes and 4 difficulties with each 2^21

@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import javafx.collections.ObservableList;
 import quiz.util.Difficulty;
 import quiz.util.Theme;
 import quiz.util.RoundType;
@@ -18,8 +17,6 @@ public class Quiz implements Serializable {
 	private final static int MAXTEAMS = 10;
 	private final static int MAXPLAYERS = 10;
 	private final static String QUIZNAMEREGEX = "^[a-zA-Z0-9._-]{3,}$";
-	private static ObservableList<Quiz> quizzes;
-	private static int n = 0;
 
 	private String quizName;
 	private int quizID;

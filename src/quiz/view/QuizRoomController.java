@@ -11,9 +11,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import quiz.model.*;
-import quiz.util.ChangeTeamEvent;
-import quiz.util.ClientHostReadyEvent;
-import quiz.util.NewTeamEvent;
 import main.*;
 import user.model.*;
 import server.*;
@@ -22,6 +19,12 @@ import java.io.IOException;
 
 import chat.ChatPanel;
 import eventbroker.*;
+import eventbroker.clientevent.ClientChangeTeamEvent;
+import eventbroker.clientevent.ClientHostReadyEvent;
+import eventbroker.clientevent.ClientNewTeamEvent;
+import eventbroker.serverevent.ServerChangeTeamEvent;
+import eventbroker.serverevent.ServerNewTeamEvent;
+import eventbroker.serverevent.ServerQuizNewPlayer;
 
 public class QuizRoomController extends EventPublisher {
 	@FXML
@@ -124,7 +127,7 @@ public class QuizRoomController extends EventPublisher {
 				break;
 			case "SERVER_QUIZ_NEW_PLAYER":
 				ServerQuizNewPlayer sQNP=(ServerQuizNewPlayer) event;
-				Context.getContext().getQuiz().addUnassignedPlayer(sQNP.getUserID(),sQNP.getUserName());
+				Context.getContext().getQuiz().addUnassignedPlayer(sQNP.getUserID(),sQNP.getUsername());
 
 			default:
 				System.out.println("Event received but left unhandled: " + event.getType() + "in quizroom");
@@ -177,7 +180,7 @@ public class QuizRoomController extends EventPublisher {
 				}
 
 				if (currCaptainID != currUser.getUserID()) {
-					NewTeamEvent teamevent = new NewTeamEvent(Context.getContext().getQuiz().getQuizID(), "",
+					ClientNewTeamEvent teamevent = new ClientNewTeamEvent(Context.getContext().getQuiz().getQuizID(), "",
 							Color.TRANSPARENT);
 					boolean okClicked = main.showNewTeam(teamevent);
 					if (okClicked) {
@@ -244,7 +247,7 @@ public class QuizRoomController extends EventPublisher {
 
 				if (selectedTeam.getTeamID() != Context.getContext().getTeamID()) {
 					if (currCaptainID != currUser.getUserID()) {
-						ChangeTeamEvent changeTeamEvent = new ChangeTeamEvent(
+						ClientChangeTeamEvent changeTeamEvent = new ClientChangeTeamEvent(
 								Context.getContext().getQuiz().getQuizID(), selectedTeam.getTeamID(), currTeamID,
 								currUser.getUserID());
 						publishEvent(changeTeamEvent);
