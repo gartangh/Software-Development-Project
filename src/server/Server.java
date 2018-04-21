@@ -13,6 +13,7 @@ import eventbroker.EventPublisher;
 import main.Main;
 import quiz.util.ChangeTeamEvent;
 import quiz.util.NewTeamEvent;
+import user.model.Player;
 import quiz.model.Team;
 import network.Network;
 import quiz.model.MCQuestion;
@@ -129,13 +130,20 @@ public class Server extends EventPublisher {
 			case "CLIENT_CHAT":
 				ChatMessage chatMessage = (ChatMessage) e;
 
-				// TODO: Add all usernames for the chat
-
-				for (Map.Entry<Integer, Integer> entry : ServerContext.getContext().getNetwork()
-						.getUserIDConnectionIDMap().entrySet())
-					if (entry.getKey() != chatMessage.getUserID())
-						destinations.add(entry.getKey());
-
+				if(chatMessage.getReceiverType().equals("TEAM")) {
+					// TODO: Add all usernames of the team of the sender, excluding the sender
+					Map<Integer, Team> listOfTeams = ServerContext.getContext().getQuiz(chatMessage.getQuizID()).getTeams();
+					for (Map.Entry<Integer, Team> teamEntry : listOfTeams.entrySet())
+						if(teamEntry.getValue().getPlayers().containsKey(chatMessage.getUserID()))
+							for (Map.Entry<Integer, String> playerEntry : teamEntry.getValue().getPlayers().entrySet())
+								if(playerEntry.getKey() != chatMessage.getUserID())
+									destinations.add(playerEntry.getKey());
+				}
+				else if(chatMessage.getReceiverType().equals("ALL")) {
+					for (Map.Entry<Integer, Integer> entry : ServerContext.getContext().getNetwork().getUserIDConnectionIDMap().entrySet())
+						if (entry.getKey() != chatMessage.getUserID())
+							destinations.add(entry.getKey());
+				}
 				chatMessage.setType("SERVER_CHAT");
 				chatMessage.addRecipients(destinations);
 				server.publishEvent(chatMessage);

@@ -75,6 +75,23 @@ final public class ChatController extends EventPublisher {
 	public void handle(ActionEvent e) {
 		// Get message from chatTextField
 		String message = chatTextField.getText();
+		
+		boolean team = true;
+		
+		if(message.length() > 1) {
+			if(message.charAt(0) == '*') {
+				message = message.substring(1);
+					team = false;
+			}
+		} else if(message.length() == 1) {
+			if(message.charAt(0) == '*')
+				message = null;
+		}
+
+
+		if((Context.getContext().getTeamID() == -1))
+			team = false;
+		
 
 		if (message != null && message.length() > 0) {
 			message = checkMessage(message);
@@ -90,8 +107,8 @@ final public class ChatController extends EventPublisher {
 				}
 			}
 			if(finalMessage != null)
-				sendMessage(finalMessage);
-			else sendMessage(message);
+				sendMessage(finalMessage, team);
+			else sendMessage(message, team);
 		}
 	}
 
@@ -123,9 +140,12 @@ final public class ChatController extends EventPublisher {
 		return newMessage;
 	}
 
-	public void sendMessage(String message) {
+	public void sendMessage(String message, boolean team) {
 		// Publish to the event broker
-		publishEvent(new ChatMessage(Context.getContext().getUser().getUsername(), message));
+		if(team)
+			publishEvent(new ChatMessage(Context.getContext().getUser().getUsername(), message, "TEAM", Context.getContext().getQuiz().getQuizID()));
+		else
+			publishEvent(new ChatMessage(Context.getContext().getUser().getUsername(), message, "ALL", Context.getContext().getQuiz().getQuizID()));
 
 		// Update local GUI
 		Platform.runLater(new Runnable() {
@@ -150,7 +170,7 @@ final public class ChatController extends EventPublisher {
 
 		chatTextArea.textProperty().bind(chatModel.chatTextProperty());
 
-		chatTextArea.setFont(Font.loadFont("file:"+Paths.get(".").toAbsolutePath().normalize().toString() + "\\Files\\OpenSansEmoji.ttf", 15));
+		//chatTextArea.setFont(Font.loadFont(Paths.get(".").toAbsolutePath().normalize().toString() + "\\Files\\OpenSansEmoji.ttf", 15));
 	}
 
 	// Inner class
