@@ -31,7 +31,7 @@ import user.view.LogInController;
 public class Main extends Application {
 
 	public final static boolean DEBUG = true;
-	public final static boolean LOCAL = false;
+	public final static boolean LOCAL = true;
 	//public final static String SERVERADDRESS = "10.10.131.52";
 	public final static String SERVERADDRESS = "192.168.1.30";
 	public final static int SERVERPORT = 1025;

@@ -3,6 +3,7 @@ package chat;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import eventbroker.Event;
 import eventbroker.EventBroker;
@@ -14,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Font;
 import main.Context;
 import main.Main;
 
@@ -76,7 +78,20 @@ final public class ChatController extends EventPublisher {
 
 		if (message != null && message.length() > 0) {
 			message = checkMessage(message);
-			sendMessage(message);
+			String finalMessage = null;
+			if(message.contains(":)")) {
+				for(int i=0;i<message.length()-1;i++) {
+					if(message.charAt(i)==':' && message.charAt(i+1) == ')') {
+						finalMessage = message.substring(0, i);
+						finalMessage += '\u263A';
+						if(i+2 < message.length())
+							finalMessage += message.substring(i+2);
+					}
+				}
+			}
+			if(finalMessage != null)
+				sendMessage(finalMessage);
+			else sendMessage(message);
 		}
 	}
 
@@ -134,6 +149,8 @@ final public class ChatController extends EventPublisher {
 		EventBroker.getEventBroker().addEventListener(chatEventHandler);
 
 		chatTextArea.textProperty().bind(chatModel.chatTextProperty());
+
+		chatTextArea.setFont(Font.loadFont("file:"+Paths.get(".").toAbsolutePath().normalize().toString() + "\\Files\\OpenSansEmoji.ttf", 15));
 	}
 
 	// Inner class
