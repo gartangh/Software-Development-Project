@@ -398,17 +398,14 @@ public class Server extends EventPublisher {
 		@Override
 		public void handleEvent(Event event) {
 			ChatMessage chatMessage = (ChatMessage) event;
+			chatMessage.setType(ChatMessage.EVENTTYPESERVER);
 
 			ArrayList<Integer> destinations = new ArrayList<>();
-
 			// TODO: Add all usernames for the chat
 			for (Map.Entry<Integer, Integer> entry : ServerContext.getContext().getNetwork().getUserIDConnectionIDMap()
 					.entrySet())
-				if (entry.getKey() != chatMessage.getUserID())
-					destinations.add(entry.getKey());
+				destinations.add(entry.getKey());
 
-			// TODO: Change to ChatMessage.EVENTTYPESERVER
-			chatMessage.setType(ChatMessage.EVENTTYPESERVER);
 			chatMessage.addRecipients(destinations);
 
 			server.publishEvent(chatMessage);

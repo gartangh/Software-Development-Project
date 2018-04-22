@@ -27,39 +27,17 @@ final public class ChatController extends EventPublisher {
 	@FXML
 	private Button chatSendButton;
 
-	private ChatModel chatModel;
+	private ChatModel chatModel = new ChatModel();
 	private ChatHandler chatHandler;
 
 	ArrayList<String> prohibitedWords = new ArrayList<>();
-
-	public ChatController() {
-		this.chatModel = new ChatModel();
-		this.chatHandler = new ChatHandler();
-
-		// TODO: Check if this works correctly
-		EventBroker.getEventBroker().addEventListener(ChatMessage.EVENTTYPESERVER, chatHandler);
-
-		try {
-			// Substring is to remove file:/ before resource
-			BufferedReader bufferedReader = new BufferedReader(
-					new FileReader(Main.class.getResource("../chat/swearWords.txt").toString().substring(6)));
-
-			String line;
-			while ((line = bufferedReader.readLine()) != null) {
-				prohibitedWords.add(line);
-			}
-
-			bufferedReader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 
 	// Getters
 	public ChatModel getChatModel() {
 		return chatModel;
 	}
 
+	// Methods
 	/**
 	 * Called when the user clicks on the send button.
 	 */
@@ -68,18 +46,18 @@ final public class ChatController extends EventPublisher {
 		// Get message from chatTextField
 		String message = chatTextField.getText();
 
-		if (message != null && message.length() > 0) {
-			message = checkMessage(message);
-			sendMessage(message);
-		}
+		if (message != null && message.length() > 0)
+			sendMessage(checkMessage(message));
 	}
 
 	// TODO: Change: for all prohibitedWords do: if contains, loop! else next
 	// word => faster!
 	private String checkMessage(String message) {
 		int lengthMessage = message.length();
+		
 		String oldMessage = message;
 		String newMessage = message.toLowerCase();
+		
 		for (int k = 0; k < prohibitedWords.size(); k++) {
 			if (newMessage.contains(prohibitedWords.get(k)))
 				for (int i = 0; i < lengthMessage - 1; i++)
@@ -88,8 +66,10 @@ final public class ChatController extends EventPublisher {
 							newMessage = oldMessage.substring(0, i);
 							for (int l = 0; l < j - i; l++)
 								newMessage += "*";
+							
 							if (j < lengthMessage)
 								newMessage += oldMessage.substring(j);
+							
 							oldMessage = newMessage;
 						}
 		}
@@ -125,10 +105,25 @@ final public class ChatController extends EventPublisher {
 
 	@FXML
 	private void initialize() {
-		EventBroker.getEventBroker().addEventListener(ChatMessage.EVENTTYPE, chatHandler);
+		this.chatHandler = new ChatHandler();
+		
 		EventBroker.getEventBroker().addEventListener(ChatMessage.EVENTTYPESERVER, chatHandler);
 
 		chatTextArea.textProperty().bind(chatModel.chatTextProperty());
+		
+		try {
+			// Substring is to remove file:/ before resource
+			BufferedReader bufferedReader = new BufferedReader(
+					new FileReader(Main.class.getResource("../chat/swearWords.txt").toString().substring(6)));
+
+			String line;
+			while ((line = bufferedReader.readLine()) != null)
+				prohibitedWords.add(line);
+			
+			bufferedReader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	// Inner class
