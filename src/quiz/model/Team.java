@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableMap;
 import javafx.scene.paint.Color;
 
 @SuppressWarnings("serial")
@@ -16,8 +14,9 @@ public class Team implements Serializable {
 	private int amountOfPlayers = 0;
 	// minAmountOfTeamPlayers = 1;
 	private int maxAmountOfPlayers;
-	//private transient ObservableMap<Integer, String> players = FXCollections.observableHashMap();
-	private Map<Integer,String> players=new HashMap<Integer,String>();
+	// private transient ObservableMap<Integer, String> players =
+	// FXCollections.observableHashMap();
+	private Map<Integer, String> players = new HashMap<Integer, String>();
 	// To make it serializable
 	private int colorRed;
 	private int colorGreen;
@@ -58,9 +57,9 @@ public class Team implements Serializable {
 		return Color.rgb(colorRed, colorGreen, colorBlue);
 	}
 
-	/*public ObservableMap<Integer, String> getPlayers() {
-		return players;
-	}*/
+	/*
+	 * public ObservableMap<Integer, String> getPlayers() { return players; }
+	 */
 
 	public Map<Integer, String> getPlayers() {
 		return players;

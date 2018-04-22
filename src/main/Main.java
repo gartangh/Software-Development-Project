@@ -15,7 +15,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import main.view.RootLayoutController;
 import network.Network;
 import quiz.view.CreateQuizController;
 import quiz.view.JoinQuizController;
@@ -32,7 +31,7 @@ public class Main extends Application {
 
 	public final static boolean DEBUG = true;
 	public final static boolean LOCAL = true;
-	//public final static String SERVERADDRESS = "10.10.131.52";
+	// public final static String SERVERADDRESS = "10.10.131.52";
 	public final static String SERVERADDRESS = "192.168.1.30";
 	public final static int SERVERPORT = 1025;
 
@@ -47,6 +46,12 @@ public class Main extends Application {
 		// SERVERPORT + 1 and 65535 (2^16 - 1)
 		Network network = new Network(new Random().nextInt(65535 - SERVERPORT + 2) + 1026, "CLIENT");
 		Context.getContext().setNetwork(network);
+
+		// Close button
+		this.primaryStage.setOnCloseRequest(e -> {
+			EventBroker.getEventBroker().stop();
+			network.terminate();
+		});
 
 		try {
 			if (Main.LOCAL) {
@@ -93,10 +98,6 @@ public class Main extends Application {
 			// Show the scene containing the root layout
 			Scene scene = new Scene(rootLayout);
 			primaryStage.setScene(scene);
-
-			// Give the controller access to the main
-			RootLayoutController controller = rootLayoutloader.getController();
-			controller.setMainApp(this);
 
 			FXMLLoader menuLoader = new FXMLLoader();
 			menuLoader.setLocation(Main.class.getResource("view/Menu.fxml"));

@@ -1,19 +1,13 @@
 package quiz.view;
 
-import java.util.Set;
-import java.util.Map.Entry;
-
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import quiz.model.Quiz;
-import quiz.model.Team;
 
 public class JoinQuizModel {
 
@@ -27,7 +21,7 @@ public class JoinQuizModel {
 	private BooleanProperty joinDisableProperty;
 
 	public JoinQuizModel() {
-		//quizzes = FXCollections.observableArrayList();
+		// quizzes = FXCollections.observableArrayList();
 		quiznameProperty = new SimpleStringProperty("");
 		quizRoundsProperty = new SimpleStringProperty();
 		questionsPerRoundProperty = new SimpleStringProperty();
@@ -37,10 +31,10 @@ public class JoinQuizModel {
 		joinDisableProperty = new SimpleBooleanProperty(true);
 	}
 
-	public void updateQuizDetail(Quiz quiz){//for the selected team
+	public void updateQuizDetail(Quiz quiz) {// for the selected team
 
-		Platform.runLater(new Runnable(){
-			public void run(){
+		Platform.runLater(new Runnable() {
+			public void run() {
 				quiznameProperty.setValue(quiz.getQuizname());
 				quizRoundsProperty.setValue(Integer.toString(quiz.getMaxAmountOfRounds()));
 				questionsPerRoundProperty.setValue(Integer.toString(quiz.getMaxAmountofQuestionsPerRound()));
@@ -56,21 +50,21 @@ public class JoinQuizModel {
 	}
 
 	public void addQuiz(Quiz quiz) {
-		Platform.runLater(new Runnable(){
-			public void run(){
+		Platform.runLater(new Runnable() {
+			public void run() {
 				quizzes.add(quiz);
 			}
 		});
 	}
 
-	public void deleteQuiz(int quizID){
-		Platform.runLater(new Runnable(){
-			public void run(){
-				for (int i=0;i<quizzes.size();i++){
-					if (quizzes.get(i).getQuizID()==quizID){
-								quizzes.remove(i);
+	public void deleteQuiz(int quizID) {
+		Platform.runLater(new Runnable() {
+			public void run() {
+				for (int i = 0; i < quizzes.size(); i++) {
+					if (quizzes.get(i).getQuizID() == quizID) {
+						quizzes.remove(i);
+						break;
 					}
-					break;
 				}
 			}
 		});

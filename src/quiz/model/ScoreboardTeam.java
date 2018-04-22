@@ -2,20 +2,16 @@ package quiz.model;
 
 import java.io.Serializable;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-
 @SuppressWarnings("serial")
-public class ScoreboardTeam implements Serializable{
+public class ScoreboardTeam implements Serializable {
 
 	private final int rank;
-	
-	// You can also send the entire teamClass to all users so you can view all teamMembers in scoreboard
+
+	// You can also send the entire teamClass to all users so you can view all
+	// teamMembers in scoreboard
 	private final String teamName;
 	private final int teamID;
-	
+
 	private final int score;
 
 	public ScoreboardTeam(int rank, String teamName, int teamID, int score) {
@@ -24,7 +20,7 @@ public class ScoreboardTeam implements Serializable{
 		this.teamID = teamID;
 		this.score = score;
 	}
-	
+
 	public int getRank() {
 		return rank;
 	}

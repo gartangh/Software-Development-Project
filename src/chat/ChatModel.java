@@ -39,12 +39,13 @@ public class ChatModel {
 
 	public void update() {
 		// Add the latest message to chatTextArea
-		
+
 		ChatMessage chatMessage = messages.poll();
 		if (chatTextProperty.getValue() == null)
 			chatTextProperty.setValue(chatMessage.getSender() + ": " + chatMessage.getMessage() + "\n");
 		else
-			chatTextProperty.setValue(chatTextProperty.getValue() + chatMessage.getSender() + ": " + chatMessage.getMessage() + "\n");
+			chatTextProperty.setValue(
+					chatTextProperty.getValue() + chatMessage.getSender() + ": " + chatMessage.getMessage() + "\n");
 	}
 
 }

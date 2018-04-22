@@ -372,8 +372,6 @@ public class Server extends EventPublisher {
 		public void handleEvent(Event event) {
 			ClientLogInEvent cLIE = (ClientLogInEvent) event;
 
-			// cLIE.getConnectionID();
-
 			String username = cLIE.getUsername();
 			String password = cLIE.getPassword();
 

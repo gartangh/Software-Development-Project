@@ -12,14 +12,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Slider;
 import javafx.scene.control.Alert.AlertType;
 import main.Context;
 import main.Main;
 import quiz.model.MCQuestion;
 import quiz.util.Difficulty;
 import quiz.util.Theme;
-import quiz.view.WaitRoundController.WaitRoundHandler;
 
 public class RoundMakerController extends EventPublisher{
 	@FXML

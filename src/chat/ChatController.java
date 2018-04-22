@@ -32,26 +32,20 @@ final public class ChatController extends EventPublisher {
 
 	ArrayList<String> prohibitedWords = new ArrayList<>();
 
-	// Reference to the main application
-	private Main main;
-
-	public void setMainApp(Main main) {
-		this.main = main;
-	}
-
 	public ChatController() {
 		this.chatEventHandler = new ChatEventHandler();
 		this.chatModel = new ChatModel();
 
 		try {
 			// Substring is to remove file:/ before resource
-			BufferedReader bufferedReader = new BufferedReader(new FileReader(Main.class.getResource("../chat/swearWords.txt").toString().substring(6)));
-			
+			BufferedReader bufferedReader = new BufferedReader(
+					new FileReader(Main.class.getResource("../chat/swearWords.txt").toString().substring(6)));
+
 			String line;
 			while ((line = bufferedReader.readLine()) != null) {
 				prohibitedWords.add(line);
 			}
-			
+
 			bufferedReader.close();
 		} catch (IOException e) {
 			e.printStackTrace();

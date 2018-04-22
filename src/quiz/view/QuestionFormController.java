@@ -10,9 +10,7 @@ import eventbroker.clientevent.ClientNewQuestionEvent;
 import eventbroker.clientevent.ClientVoteEvent;
 import eventbroker.serverevent.ServerAnswerEvent;
 import eventbroker.serverevent.ServerNewQuestionEvent;
-import eventbroker.serverevent.ServerNewRoundEvent;
 import eventbroker.serverevent.ServerVoteEvent;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -24,10 +22,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import main.Context;
 import main.Main;
-import quiz.model.Quiz;
 import quiz.model.AnswerVoteModel;
 import quiz.model.MCQuestion;
-import server.ServerContext;
 
 public class QuestionFormController extends EventPublisher {
 
@@ -85,50 +81,56 @@ public class QuestionFormController extends EventPublisher {
 	public void setMain(Main main) {
 		this.main = main;
 	}
-	
-	public class QuestionFormEventHandler implements EventListener{ // TODO: add handling of events 
-		public void handleEvent(Event e){
-			switch(e.getType()) {
+
+	public class QuestionFormEventHandler implements EventListener { // TODO:
+																		// add
+																		// handling
+																		// of
+																		// events
+		public void handleEvent(Event e) {
+			switch (e.getType()) {
 			case "SERVER_VOTE":
-				
+
 				ServerVoteEvent serverVote = (ServerVoteEvent) e;
-				
-				Context.getContext().getQuiz().addVote(serverVote.getUserID(), serverVote.getTeamID(), serverVote.getVote());
+
+				Context.getContext().getQuiz().addVote(serverVote.getUserID(), serverVote.getTeamID(),
+						serverVote.getVote());
 				answerVoteModel.updateVotes(serverVote.getTeamID());
-				
+
 				System.out.println("Event received and handled: " + e.getType());
 				break;
-				
+
 			case "SERVER_ANSWER":
-				
+
 				ServerAnswerEvent serverAnswer = (ServerAnswerEvent) e;
-				
-				//Context.getContext().getQuiz().addAnswer(serverAnswer.getTeamID(), serverAnswer.getQuestionID(), serverAnswer.getAnswer());
+
+				// Context.getContext().getQuiz().addAnswer(serverAnswer.getTeamID(),
+				// serverAnswer.getQuestionID(), serverAnswer.getAnswer());
 				answerVoteModel.updateAnswer(serverAnswer.getAnswer(), serverAnswer.getCorrectAnswer());
-				
+
 				System.out.println("Event received and handled: " + e.getType());
 				break;
-				
+
 			case "SERVER_NEW_QUESTION":
-				
+
 				ServerNewQuestionEvent sNQE = (ServerNewQuestionEvent) e;
 				MCQuestion q = new MCQuestion(sNQE.getQuestionID(), sNQE.getQuestion(), sNQE.getAnswers());
 				Context.getContext().setQuestion(q);
 				answerVoteModel.updateQuestion();
 				answerVoteModel.updateVotes(Context.getContext().getTeamID());
-				
+
 				System.out.println("Event received and handled: " + e.getType());
 				break;
-				
+
 			case "SERVER_NOT_ALL_ANSWERED":
-				
+
 				// TODO: alert
-				
+
 			case "SERVER_NEW_ROUND":
-				
-				//ServerNewRoundEvent sNRE = (ServerNewRoundEvent) e;
+
+				// ServerNewRoundEvent sNRE = (ServerNewRoundEvent) e;
 				main.showWaitRound();
-				
+
 				System.out.println("Event received and handled: " + e.getType());
 				break;
 			case "SERVER_END_QUIZ":
@@ -267,7 +269,8 @@ public class QuestionFormController extends EventPublisher {
 
 	@FXML
 	private void handleNext() {
-		if(Context.getContext().getQuiz().getTeams().get(Context.getContext().getTeamID()).getCaptainID() != Context.getContext().getUser().getUserID()) {
+		if (Context.getContext().getQuiz().getTeams().get(Context.getContext().getTeamID()).getCaptainID() != Context
+				.getContext().getUser().getUserID()) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.initOwner(main.getPrimaryStage());
 			alert.setTitle("QuizForm Error");
@@ -275,8 +278,7 @@ public class QuestionFormController extends EventPublisher {
 			alert.setContentText("You are not a team captain, so you can't proceed to the next question.");
 
 			alert.showAndWait();
-		}
-		else {
+		} else {
 			ClientNewQuestionEvent cnqe = new ClientNewQuestionEvent();
 			this.publishEvent(cnqe);
 		}

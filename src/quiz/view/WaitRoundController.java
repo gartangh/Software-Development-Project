@@ -5,7 +5,6 @@ import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import eventbroker.serverevent.ServerNewQuestionEvent;
-import eventbroker.serverevent.ServerStartRoundEvent;
 import javafx.fxml.FXML;
 import main.Context;
 import main.Main;

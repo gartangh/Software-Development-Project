@@ -19,64 +19,62 @@ import quiz.model.Quiz;
 import quiz.model.Team;
 
 public class QuizRoomModel {
-	private ObservableList<TeamNameID> teams=FXCollections.observableArrayList();
+	private ObservableList<TeamNameID> teams = FXCollections.observableArrayList();
 	private StringProperty teamName;
 	private StringProperty captainName;
 	private int teamID;
 	private ObjectProperty<Paint> teamColor;
-	private ListProperty<String> teamMembers=new SimpleListProperty<String>();
+	private ListProperty<String> teamMembers = new SimpleListProperty<>();
 
-
-	public ObservableList<TeamNameID> getTeams(){
+	public ObservableList<TeamNameID> getTeams() {
 		return teams;
 	}
 
-	public void updateTeams(){
-		Quiz quiz=Context.getContext().getQuiz();
-		Platform.runLater(new Runnable(){
-			public void run(){
-				for (Team team:quiz.getTeams().values()){
-					TeamNameID teamNameID=new TeamNameID(new SimpleStringProperty(team.getTeamName()),team.getTeamID());
-					if (!teams.contains(teamNameID)) teams.add(teamNameID);
+	public void updateTeams() {
+		Quiz quiz = Context.getContext().getQuiz();
+		Platform.runLater(new Runnable() {
+			public void run() {
+				for (Team team : quiz.getTeams().values()) {
+					TeamNameID teamNameID = new TeamNameID(new SimpleStringProperty(team.getTeamName()),
+							team.getTeamID());
+					if (!teams.contains(teamNameID))
+						teams.add(teamNameID);
 				}
 			}
 		});
 	}
 
-	public void updateTeamDetail(int teamID){//for the selected team
-		this.teamID=teamID;
-		//Team team=Context.getContext().getQuiz().getTeams().get(teamID);
-		Platform.runLater(new Runnable(){
-			public void run(){
-				Team team=Context.getContext().getQuiz().getTeams().get(teamID);
+	public void updateTeamDetail(int teamID) {
+		this.teamID = teamID;
+
+		Platform.runLater(new Runnable() {
+			public void run() {
+				Team team = Context.getContext().getQuiz().getTeams().get(teamID);
 				teamName.setValue(team.getTeamName());
 				captainName.setValue(team.getPlayers().get(team.getCaptainID()));
 				teamColor.setValue(team.getColor());
-				Set<Entry<Integer,String>> r=team.getPlayers().entrySet();
+				Set<Entry<Integer, String>> r = team.getPlayers().entrySet();
 				teamMembers.clear();
 				teamMembers.set(FXCollections.observableArrayList());
-				for (Entry<Integer,String> entry:r){
+				for (Entry<Integer, String> entry : r)
 					teamMembers.add(entry.getValue());
-				}
 			}
 		});
 	}
 
-
-	public QuizRoomModel(){
-		this.teamName=new SimpleStringProperty("");
-		this.captainName=new SimpleStringProperty("");
-		this.teamColor=new SimpleObjectProperty<Paint>(Color.TRANSPARENT);
-		this.teamID=-1;
+	public QuizRoomModel() {
+		this.teamName = new SimpleStringProperty("");
+		this.captainName = new SimpleStringProperty("");
+		this.teamColor = new SimpleObjectProperty<Paint>(Color.TRANSPARENT);
+		this.teamID = -1;
 	}
 
-	public QuizRoomModel(Team team){
-		this.teamName=new SimpleStringProperty(team.getTeamName());
-		this.captainName=new SimpleStringProperty(team.getPlayers().get(team.getCaptainID()));
-		this.teamColor=new SimpleObjectProperty<Paint>(team.getColor());
-		this.teamID=team.getTeamID();
+	public QuizRoomModel(Team team) {
+		this.teamName = new SimpleStringProperty(team.getTeamName());
+		this.captainName = new SimpleStringProperty(team.getPlayers().get(team.getCaptainID()));
+		this.teamColor = new SimpleObjectProperty<Paint>(team.getColor());
+		this.teamID = team.getTeamID();
 	}
-
 
 	public int getTeamID() {
 		return teamID;

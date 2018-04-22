@@ -10,15 +10,18 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import quiz.model.*;
-import main.*;
-import user.model.*;
-import server.*;
+import main.Context;
+import main.Main;
+import quiz.model.Team;
+import user.model.User;
 
 import java.io.IOException;
 
 import chat.ChatPanel;
-import eventbroker.*;
+import eventbroker.Event;
+import eventbroker.EventBroker;
+import eventbroker.EventListener;
+import eventbroker.EventPublisher;
 import eventbroker.clientevent.ClientChangeTeamEvent;
 import eventbroker.clientevent.ClientHostReadyEvent;
 import eventbroker.clientevent.ClientNewTeamEvent;
@@ -68,10 +71,10 @@ public class QuizRoomController extends EventPublisher {
 																								// controle
 					Team newTeam = new Team(newTeamEvent.getTeamID(), newTeamEvent.getTeamName(),
 							newTeamEvent.getColor(), newTeamEvent.getCaptainID(), newTeamEvent.getCaptainName());
-					// TableView vanzelf geupdatet via bindings
+					// TableView gets updated by itself by bindings
 					Context.getContext().getQuiz().addTeam(newTeam);
 					Context.getContext().getQuiz().removeUnassignedPlayer(newTeam.getCaptainID());
-					
+
 					// I am the captain, change Team in context
 					if (newTeam.getCaptainID() == Context.getContext().getUser().getUserID()) {
 						Context.getContext().setTeamID(newTeam.getTeamID());
@@ -111,23 +114,21 @@ public class QuizRoomController extends EventPublisher {
 			case "SERVER_START_QUIZ":
 				EventBroker.getEventBroker().removeEventListener(quizroomhandler);
 				Context.getContext().getQuiz().clearUnassignedPlayers();
-				if (Context.getContext().getQuiz().getQuizmaster() == Context.getContext().getUser().getUserID()){
+				if (Context.getContext().getQuiz().getQuizmaster() == Context.getContext().getUser().getUserID()) {
 
 					main.showCreateRound();
 					Context.getContext().getQuiz().setRunning(true);
-				}
-				else if(Context.getContext().getTeamID()!=-1){
+				} else if (Context.getContext().getTeamID() != -1) {
 					main.showWaitRound();
 					Context.getContext().getQuiz().setRunning(true);
-				}
-				else {
+				} else {
 					Context.getContext().setQuiz(null);
 					main.showJoinQuizScene();
 				}
 				break;
 			case "SERVER_QUIZ_NEW_PLAYER":
-				ServerQuizNewPlayer sQNP=(ServerQuizNewPlayer) event;
-				Context.getContext().getQuiz().addUnassignedPlayer(sQNP.getUserID(),sQNP.getUsername());
+				ServerQuizNewPlayer sQNP = (ServerQuizNewPlayer) event;
+				Context.getContext().getQuiz().addUnassignedPlayer(sQNP.getUserID(), sQNP.getUsername());
 
 			default:
 				System.out.println("Event received but left unhandled: " + event.getType() + "in quizroom");
@@ -180,8 +181,8 @@ public class QuizRoomController extends EventPublisher {
 				}
 
 				if (currCaptainID != currUser.getUserID()) {
-					ClientNewTeamEvent teamevent = new ClientNewTeamEvent(Context.getContext().getQuiz().getQuizID(), "",
-							Color.TRANSPARENT);
+					ClientNewTeamEvent teamevent = new ClientNewTeamEvent(Context.getContext().getQuiz().getQuizID(),
+							"", Color.TRANSPARENT);
 					boolean okClicked = main.showNewTeam(teamevent);
 					if (okClicked) {
 						publishEvent(teamevent);
@@ -213,7 +214,7 @@ public class QuizRoomController extends EventPublisher {
 			publishEvent(e);
 
 		} else {
-			if (Context.getContext().getTeamID()!=-1) {
+			if (Context.getContext().getTeamID() != -1) {
 				EventBroker.getEventBroker().removeEventListener(quizroomhandler);
 				main.showWaitRound();
 			}
