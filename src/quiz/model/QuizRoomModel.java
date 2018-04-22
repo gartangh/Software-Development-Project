@@ -1,4 +1,4 @@
-package quiz.view;
+package quiz.model;
 
 import java.util.Map.Entry;
 import java.util.Set;
@@ -15,8 +15,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import main.Context;
-import quiz.model.Quiz;
-import quiz.model.Team;
 
 public class QuizRoomModel {
 	private ObservableList<TeamNameID> teams = FXCollections.observableArrayList();

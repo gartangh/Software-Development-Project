@@ -1,4 +1,4 @@
-package quiz.view;
+package quiz.model;
 
 import javafx.beans.property.StringProperty;
 

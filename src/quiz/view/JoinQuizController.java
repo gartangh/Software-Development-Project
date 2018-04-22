@@ -20,6 +20,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import main.Context;
 import main.Main;
+import quiz.model.JoinQuizModel;
 import quiz.model.Quiz;
 
 public class JoinQuizController extends EventPublisher {

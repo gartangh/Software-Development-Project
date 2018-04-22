@@ -29,6 +29,7 @@ import user.view.LogInController;
 
 public class Main extends Application {
 
+	public final static String QUIZNAME = "Quiz";
 	public final static boolean DEBUG = true;
 	public final static boolean LOCAL = true;
 	// public final static String SERVERADDRESS = "10.10.131.52";
