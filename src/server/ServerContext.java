@@ -16,7 +16,7 @@ import quiz.model.Quiz;
 import quiz.model.Team;
 import quiz.util.Difficulty;
 import quiz.util.Theme;
-import user.model.User;
+import user.User;
 
 public class ServerContext {
 
@@ -55,7 +55,7 @@ public class ServerContext {
 	public Map<Integer, Quiz> getQuizMap() {
 		return quizMap;
 	}
-	
+
 	public Map<Integer, Map<Integer, Map<Integer, MCQuestion>>> getOrderedMCQuestionMap() {
 		return orderedMCQuestionMap;
 	}
@@ -72,11 +72,11 @@ public class ServerContext {
 			if (team != null) {
 				if (type == 'a') {// add
 					team.addPlayer(user.getUserID(), user.getUsername());
-					
+
 					return user.getUsername();
 				} else if (type == 'd') {// Delete
 					team.removePlayer(user.getUserID());
-					
+
 					return user.getUsername();
 				}
 			}
@@ -138,13 +138,13 @@ public class ServerContext {
 		String[] themeFiles = { "QUESTIONS_CULTURE.txt", "QUESTIONS_SPORTS.txt" };
 
 		try {
-			for (int tF = 0; tF < themeFiles.length; tF++) {
-				Map<Integer, Map<Integer, MCQuestion>> themeMap = new HashMap<Integer, Map<Integer, MCQuestion>>();
-				orderedMCQuestionMap.put(tF, themeMap);
+			for (int themeFile = 0; themeFile < themeFiles.length; themeFile++) {
+				Map<Integer, Map<Integer, MCQuestion>> themeMap = new HashMap<>();
+				orderedMCQuestionMap.put(themeFile, themeMap);
 
 				// Substring is to remove file:/ before resource
-				BufferedReader bufferedReader = new BufferedReader(
-						new FileReader(Main.class.getResource("../server/" + themeFiles[tF]).toString().substring(6)));
+				BufferedReader bufferedReader = new BufferedReader(new FileReader(
+						Main.class.getResource("../server/" + themeFiles[themeFile]).toString().substring(6)));
 				String line = bufferedReader.readLine();
 				int i = 0;
 				int diff = -1;
@@ -168,11 +168,11 @@ public class ServerContext {
 							bufferedReader.readLine(), bufferedReader.readLine() };
 					int correctAnswer = Integer.parseInt(bufferedReader.readLine());
 
-					Theme t = Theme.values()[tF];
+					Theme t = Theme.values()[themeFile];
 					Difficulty d = Difficulty.values()[diff];
 					// 256 possible themes and 4 difficulties with each 2^21
 					// questions gives unique ID
-					int questionID = tF * (2 ^ 24) + diff * (2 ^ 22) + i;
+					int questionID = themeFile * (2 ^ 24) + diff * (2 ^ 22) + i;
 					MCQuestion q = new MCQuestion(d, t, questionID, question, answers, correctAnswer);
 
 					diffMap.put(questionID, q);
@@ -201,7 +201,7 @@ public class ServerContext {
 		for (int userID : quiz.getUnassignedPlayers().keySet())
 			r.add(userID);
 
-		r.add(quiz.getQuizmaster());
+		r.add(quiz.getQuizmasterID());
 
 		return r;
 	}
@@ -209,4 +209,5 @@ public class ServerContext {
 	public Question getQuestion(int questionID) {
 		return allMCQuestions.get(questionID);
 	}
+
 }

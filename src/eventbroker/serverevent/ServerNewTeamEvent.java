@@ -46,7 +46,7 @@ public class ServerNewTeamEvent extends ServerEvent {
 		this.teamID = teamID;
 	}
 
-	public String getTeamName() {
+	public String getTeamname() {
 		return teamName;
 	}
 
@@ -62,7 +62,7 @@ public class ServerNewTeamEvent extends ServerEvent {
 		this.captainID = captainID;
 	}
 
-	public String getCaptainName() {
+	public String getCaptainname() {
 		return captainName;
 	}
 

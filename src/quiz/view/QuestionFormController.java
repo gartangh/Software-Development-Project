@@ -8,8 +8,11 @@ import eventbroker.EventPublisher;
 import eventbroker.clientevent.ClientAnswerEvent;
 import eventbroker.clientevent.ClientNewQuestionEvent;
 import eventbroker.clientevent.ClientVoteEvent;
-import eventbroker.serverevent.ServerAnswerEvent;
+import eventbroker.serverevent.ServerVoteAnswerEvent;
+import eventbroker.serverevent.ServerEndQuizEvent;
 import eventbroker.serverevent.ServerNewQuestionEvent;
+import eventbroker.serverevent.ServerNewRoundEvent;
+import eventbroker.serverevent.ServerNotAllAnsweredEvent;
 import eventbroker.serverevent.ServerVoteEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -74,82 +77,38 @@ public class QuestionFormController extends EventPublisher {
 	@FXML
 	private AnchorPane mPlaceholder;
 
-	private AnswerVoteModel answerVoteModel;
-	private QuestionFormEventHandler eventHandler;
+	private AnswerVoteModel answerVoteModel = new AnswerVoteModel();
+	private VoteHandler voteHandler;
+	private VoteAnwserHandler voteAnwserHandler;
+	private NewQuestionHandler newQuestionHandler;
+	private NotAllAnsweredHandler notAllAnsweredHandler;
+	private NewRoundHandler newRoundHandler;
+	private EndQuizHandler endQuizHandler;
+
+	// Reference to the main application
 	private Main main;
 
-	public void setMain(Main main) {
+	public void setMainApp(Main main) {
 		this.main = main;
 	}
 
-	public class QuestionFormEventHandler implements EventListener { // TODO:
-																		// add
-																		// handling
-																		// of
-																		// events
-		public void handleEvent(Event e) {
-			switch (e.getType()) {
-			case "SERVER_VOTE":
-
-				ServerVoteEvent serverVote = (ServerVoteEvent) e;
-
-				Context.getContext().getQuiz().addVote(serverVote.getUserID(), serverVote.getTeamID(),
-						serverVote.getVote());
-				answerVoteModel.updateVotes(serverVote.getTeamID());
-
-				System.out.println("Event received and handled: " + e.getType());
-				break;
-
-			case "SERVER_ANSWER":
-
-				ServerAnswerEvent serverAnswer = (ServerAnswerEvent) e;
-
-				// Context.getContext().getQuiz().addAnswer(serverAnswer.getTeamID(),
-				// serverAnswer.getQuestionID(), serverAnswer.getAnswer());
-				answerVoteModel.updateAnswer(serverAnswer.getAnswer(), serverAnswer.getCorrectAnswer());
-
-				System.out.println("Event received and handled: " + e.getType());
-				break;
-
-			case "SERVER_NEW_QUESTION":
-
-				ServerNewQuestionEvent sNQE = (ServerNewQuestionEvent) e;
-				MCQuestion q = new MCQuestion(sNQE.getQuestionID(), sNQE.getQuestion(), sNQE.getAnswers());
-				Context.getContext().setQuestion(q);
-				answerVoteModel.updateQuestion();
-				answerVoteModel.updateVotes(Context.getContext().getTeamID());
-
-				System.out.println("Event received and handled: " + e.getType());
-				break;
-
-			case "SERVER_NOT_ALL_ANSWERED":
-
-				// TODO: alert
-
-			case "SERVER_NEW_ROUND":
-
-				// ServerNewRoundEvent sNRE = (ServerNewRoundEvent) e;
-				main.showWaitRound();
-
-				System.out.println("Event received and handled: " + e.getType());
-				break;
-			case "SERVER_END_QUIZ":
-				main.showScoreboardScene();
-				break;
-			default:
-				System.out.println("Event received but left unhandled: " + e.getType());
-				break;
-			}
-		}
-	}
-
-	public QuestionFormController() {
-		this.answerVoteModel = new AnswerVoteModel();
-	}
-
+	// Methods
+	@FXML
 	public void initialize() {
-		eventHandler = new QuestionFormEventHandler();
-		EventBroker.getEventBroker().addEventListener(eventHandler);
+		voteHandler = new VoteHandler();
+		voteAnwserHandler = new VoteAnwserHandler();
+		newQuestionHandler = new NewQuestionHandler();
+		notAllAnsweredHandler = new NotAllAnsweredHandler();
+		newRoundHandler = new NewRoundHandler();
+		endQuizHandler = new EndQuizHandler();
+
+		EventBroker eventBroker = EventBroker.getEventBroker();
+		eventBroker.addEventListener(ServerVoteEvent.EVENTTYPE, voteHandler);
+		eventBroker.addEventListener(ServerVoteAnswerEvent.EVENTTYPE, voteAnwserHandler);
+		eventBroker.addEventListener(ServerNewQuestionEvent.EVENTTYPE, newQuestionHandler);
+		eventBroker.addEventListener(ServerNotAllAnsweredEvent.EVENTTYPE, notAllAnsweredHandler);
+		eventBroker.addEventListener(ServerNewRoundEvent.EVENTTYPE, newRoundHandler);
+		eventBroker.addEventListener(ServerEndQuizEvent.EVENTTYPE, endQuizHandler);
 
 		questionTitle.textProperty().bind(answerVoteModel.getQuestionTitleProperty());
 		questionText.textProperty().bind(answerVoteModel.getQuestionTextProperty());
@@ -234,17 +193,17 @@ public class QuestionFormController extends EventPublisher {
 	private void handleVote() {
 		int vote = this.getChecked();
 		if (vote >= 0) {
-			ClientVoteEvent cve = new ClientVoteEvent(vote);
-			this.publishEvent(cve);
+			ClientVoteEvent cVE = new ClientVoteEvent(vote);
+			publishEvent(cVE);
 		}
 	}
 
 	@FXML
 	private void handleAnswer() {
+		Context context = Context.getContext();
 		int answer = this.getChecked();
-
-		if (Context.getContext().getQuiz().getTeams().get(Context.getContext().getTeamID()).getCaptainID() != Context
-				.getContext().getUser().getUserID()) {
+		if (context.getQuiz().getTeams().get(context.getTeamID()).getCaptainID() != Context.getContext().getUser()
+				.getUserID()) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.initOwner(main.getPrimaryStage());
 			alert.setTitle("QuizForm Error");
@@ -261,8 +220,8 @@ public class QuestionFormController extends EventPublisher {
 
 			alert.showAndWait();
 		} else {
-			ClientAnswerEvent cae = new ClientAnswerEvent(Context.getContext().getQuestion().getQuestionID(), answer);
-			this.publishEvent(cae);
+			ClientAnswerEvent cAE = new ClientAnswerEvent(Context.getContext().getQuestion().getQuestionID(), answer);
+			publishEvent(cAE);
 			handleCheck(-1);
 		}
 	}
@@ -283,4 +242,102 @@ public class QuestionFormController extends EventPublisher {
 			this.publishEvent(cnqe);
 		}
 	}
+
+	// Inner classes
+	private class VoteHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ServerVoteEvent sVE = (ServerVoteEvent) event;
+
+			int userID = sVE.getUserID();
+			int teamID = sVE.getTeamID();
+			int vote = sVE.getVote();
+
+			Context.getContext().getQuiz().addVote(userID, teamID, vote);
+			answerVoteModel.updateVotes(teamID);
+		}
+
+	}
+
+	private class VoteAnwserHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ServerVoteAnswerEvent sVAE = (ServerVoteAnswerEvent) event;
+
+			// Context.getContext().getQuiz().addAnswer(serverAnswer.getTeamID(),
+			// serverAnswer.getQuestionID(), serverAnswer.getAnswer());
+			answerVoteModel.updateAnswer(sVAE.getAnswer(), sVAE.getCorrectAnswer());
+		}
+
+	}
+
+	private class NewQuestionHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ServerNewQuestionEvent sNQE = (ServerNewQuestionEvent) event;
+
+			int questionID = sNQE.getQuestionID();
+			String question = sNQE.getQuestion();
+			String[] answers = sNQE.getAnswers();
+
+			MCQuestion q = new MCQuestion(questionID, question, answers);
+			Context.getContext().setQuestion(q);
+			answerVoteModel.updateQuestion();
+			answerVoteModel.updateVotes(Context.getContext().getTeamID());
+		}
+
+	}
+
+	private class NotAllAnsweredHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			// TODO: Alert
+		}
+
+	}
+
+	private class NewRoundHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			@SuppressWarnings("unused")
+			ServerNewRoundEvent sNRE = (ServerNewRoundEvent) event;
+
+			EventBroker eventBroker = EventBroker.getEventBroker();
+			eventBroker.removeEventListener(voteHandler);
+			eventBroker.removeEventListener(voteAnwserHandler);
+			eventBroker.removeEventListener(newQuestionHandler);
+			eventBroker.removeEventListener(notAllAnsweredHandler);
+			eventBroker.removeEventListener(newRoundHandler);
+			eventBroker.removeEventListener(endQuizHandler);
+
+			main.showWaitRound();
+		}
+
+	}
+
+	private class EndQuizHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			@SuppressWarnings("unused")
+			ServerEndQuizEvent sEQE = (ServerEndQuizEvent) event;
+
+			EventBroker eventBroker = EventBroker.getEventBroker();
+			eventBroker.removeEventListener(voteHandler);
+			eventBroker.removeEventListener(voteAnwserHandler);
+			eventBroker.removeEventListener(newQuestionHandler);
+			eventBroker.removeEventListener(notAllAnsweredHandler);
+			eventBroker.removeEventListener(newRoundHandler);
+			eventBroker.removeEventListener(endQuizHandler);
+
+			main.showScoreboardScene();
+		}
+
+	}
+
 }

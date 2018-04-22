@@ -28,7 +28,7 @@ public class ClientNewTeamEvent extends ClientEvent {
 		return quizID;
 	}
 
-	public String getTeamName() {
+	public String getTeamname() {
 		return teamname;
 	}
 

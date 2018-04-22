@@ -154,11 +154,11 @@ public class Quiz implements Serializable {
 		return maxAmountOfPlayersPerTeam;
 	}
 
-	public int getQuizmaster() {
+	public int getQuizmasterID() {
 		return quizmasterID;
 	}
 
-	public void setQuizmaster(int quizmasterID) {
+	public void setQuizmasterID(int quizmasterID) {
 		this.quizmasterID = quizmasterID;
 	}
 

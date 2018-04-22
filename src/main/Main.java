@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import network.Network;
 import quiz.view.CreateQuizController;
 import quiz.view.JoinQuizController;
+import quiz.view.LogInController;
 import quiz.view.NewTeamController;
 import quiz.view.QuestionFormController;
 import quiz.view.QuizRoomController;
@@ -25,7 +26,6 @@ import quiz.view.RoundMakerController;
 import quiz.view.ScoreboardController;
 import quiz.view.WaitHostController;
 import quiz.view.WaitRoundController;
-import user.view.LogInController;
 
 public class Main extends Application {
 
@@ -39,9 +39,15 @@ public class Main extends Application {
 	private Stage primaryStage;
 	private BorderPane rootLayout;
 
+	
+	public static void main(String[] args) {
+		launch(args);
+	}
+	
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
+		this.primaryStage.setTitle(QUIZNAME);
 
 		// Connect to network with randomly generated client port between
 		// SERVERPORT + 1 and 65535 (2^16 - 1)
@@ -79,9 +85,6 @@ public class Main extends Application {
 		}
 	}
 
-	public static void main(String[] args) {
-		launch(args);
-	}
 
 	// Getters
 	public Stage getPrimaryStage() {
@@ -119,10 +122,11 @@ public class Main extends Application {
 	public void showLogInScene() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(Main.class.getResource("../user/view/LogIn.fxml"));
+			loader.setLocation(Main.class.getResource("../quiz/view/LogIn.fxml"));
 			BorderPane logIn = (BorderPane) loader.load();
 			LogInController controller = loader.getController();
 			controller.setMainApp(this);
+
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(logIn);
@@ -140,6 +144,7 @@ public class Main extends Application {
 			BorderPane createQuiz = (BorderPane) createQuizLoader.load();
 			CreateQuizController createQuizController = createQuizLoader.getController();
 			createQuizController.setMainApp(this);
+
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(createQuiz);
@@ -157,6 +162,7 @@ public class Main extends Application {
 			BorderPane joinQuiz = (BorderPane) joinQuizLoader.load();
 			JoinQuizController joinQuizController = joinQuizLoader.getController();
 			joinQuizController.setMainApp(this);
+
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(joinQuiz);
@@ -174,6 +180,7 @@ public class Main extends Application {
 			BorderPane content = (BorderPane) loader.load();
 			QuizRoomController quizcontroller = loader.getController();
 			quizcontroller.setMain(this);
+
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(content);
@@ -191,6 +198,7 @@ public class Main extends Application {
 			BorderPane scoreboardRoot = (BorderPane) scoreboardLoader.load();
 			ScoreboardController scoreboardController = scoreboardLoader.getController();
 			scoreboardController.setMainApp(this);
+
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(scoreboardRoot);
@@ -235,7 +243,8 @@ public class Main extends Application {
 			questionFormLoader.setLocation(Main.class.getResource("../quiz/view/QuestionForm.fxml"));
 			BorderPane questionFormRoot = (BorderPane) questionFormLoader.load();
 			QuestionFormController questionFormController = questionFormLoader.getController();
-			questionFormController.setMain(this);
+			questionFormController.setMainApp(this);
+
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(questionFormRoot);
@@ -253,6 +262,7 @@ public class Main extends Application {
 			BorderPane waitRoundRoot = (BorderPane) waitRoundLoader.load();
 			WaitRoundController waitRoundController = waitRoundLoader.getController();
 			waitRoundController.setMain(this);
+
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(waitRoundRoot);
@@ -270,6 +280,7 @@ public class Main extends Application {
 			BorderPane waitHostRoot = (BorderPane) waitHostLoader.load();
 			WaitHostController waitHostController = waitHostLoader.getController();
 			waitHostController.setMain(this);
+
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(waitHostRoot);
@@ -287,6 +298,7 @@ public class Main extends Application {
 			BorderPane roundMakerRoot = (BorderPane) roundMakerLoader.load();
 			RoundMakerController roundMakerController = roundMakerLoader.getController();
 			roundMakerController.setMain(this);
+
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(roundMakerRoot);

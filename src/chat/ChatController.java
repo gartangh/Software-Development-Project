@@ -27,14 +27,17 @@ final public class ChatController extends EventPublisher {
 	@FXML
 	private Button chatSendButton;
 
-	private ChatEventHandler chatEventHandler;
 	private ChatModel chatModel;
+	private ChatHandler chatHandler;
 
 	ArrayList<String> prohibitedWords = new ArrayList<>();
 
 	public ChatController() {
-		this.chatEventHandler = new ChatEventHandler();
 		this.chatModel = new ChatModel();
+		this.chatHandler = new ChatHandler();
+
+		// TODO: Check if this works correctly
+		EventBroker.getEventBroker().addEventListener(ChatMessage.EVENTTYPESERVER, chatHandler);
 
 		try {
 			// Substring is to remove file:/ before resource
@@ -53,10 +56,6 @@ final public class ChatController extends EventPublisher {
 	}
 
 	// Getters
-	public ChatEventHandler getChatEventHandler() {
-		return chatEventHandler;
-	}
-
 	public ChatModel getChatModel() {
 		return chatModel;
 	}
@@ -126,55 +125,28 @@ final public class ChatController extends EventPublisher {
 
 	@FXML
 	private void initialize() {
-		EventBroker.getEventBroker().addEventListener(chatEventHandler);
+		EventBroker.getEventBroker().addEventListener(ChatMessage.EVENTTYPE, chatHandler);
+		EventBroker.getEventBroker().addEventListener(ChatMessage.EVENTTYPESERVER, chatHandler);
 
 		chatTextArea.textProperty().bind(chatModel.chatTextProperty());
 	}
 
 	// Inner class
-	private class ChatEventHandler implements EventListener {
+	private class ChatHandler implements EventListener {
 
 		@Override
 		public void handleEvent(Event event) {
-			ChatMessage chatMessage;
+			ChatMessage chatMessage = (ChatMessage) event;
+			chatModel.addMessage(chatMessage);
 
-			String type = event.getType();
-			switch (type) {
-			// TODO: Remove this (Should be updated locally, without the event
-			// broker)
-			case "CLIENT_CHAT":
-				chatMessage = (ChatMessage) event;
-				chatModel.addMessage(chatMessage);
-
-				// Update local GUI
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						// Update messages in chatTextArea
-						chatModel.update();
-					}
-				});
-				System.out.println("Event received and handled: " + type);
-				break;
-
-			case "SERVER_CHAT":
-				chatMessage = (ChatMessage) event;
-				chatModel.addMessage(chatMessage);
-
-				// Update local GUI
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						// Update messages in chatTextArea
-						chatModel.update();
-					}
-				});
-				System.out.println("Event received and handled: " + type);
-				break;
-
-			default:
-				System.out.println("Event received but left unhandled: " + type);
-			}
+			// Update local GUI
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					// Update messages in chatTextArea
+					chatModel.update();
+				}
+			});
 		}
 
 	}

@@ -2,8 +2,8 @@ package main;
 
 import network.Network;
 import quiz.model.Quiz;
+import user.User;
 import quiz.model.Question;
-import user.model.User;
 
 public class Context {
 

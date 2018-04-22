@@ -3,14 +3,14 @@ package eventbroker.serverevent;
 import quiz.model.Quiz;
 
 @SuppressWarnings("serial")
-public class ServerReturnQuizEvent extends ServerEvent {
+public class ServerCreateQuizEvent extends ServerEvent {
 
-	public final static String EVENTTYPE = "SERVER_RETURN_QUIZ";
+	public final static String EVENTTYPE = "SERVER_CREATE_QUIZ";
 
 	private Quiz quiz;
 
 	// Constructor
-	public ServerReturnQuizEvent(Quiz quiz) {
+	public ServerCreateQuizEvent(Quiz quiz) {
 		super.type = EVENTTYPE;
 		this.quiz = quiz;
 	}

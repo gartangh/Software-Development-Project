@@ -1,7 +1,7 @@
 package eventbroker.serverevent;
 
 @SuppressWarnings("serial")
-public class ServerQuizNewPlayer extends ServerEvent {
+public class ServerQuizNewPlayerEvent extends ServerEvent {
 
 	public final static String EVENTTYPE = "SERVER_QUIZ_NEW_PLAYER";
 
@@ -9,7 +9,7 @@ public class ServerQuizNewPlayer extends ServerEvent {
 	private String username;
 
 	// Constructor
-	public ServerQuizNewPlayer(int userID, String userName) {
+	public ServerQuizNewPlayerEvent(int userID, String userName) {
 		super.type = EVENTTYPE;
 		this.userID = userID;
 		this.username = userName;

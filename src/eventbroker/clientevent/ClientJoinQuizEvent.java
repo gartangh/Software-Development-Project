@@ -18,7 +18,7 @@ public class ClientJoinQuizEvent extends ClientEvent {
 	}
 
 	// Getters
-	public String getUserName() {
+	public String getUsername() {
 		return userName;
 	}
 

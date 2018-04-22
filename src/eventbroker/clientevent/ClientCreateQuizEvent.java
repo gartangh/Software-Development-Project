@@ -25,7 +25,7 @@ public class ClientCreateQuizEvent extends ClientEvent implements Serializable {
 	}
 
 	// Getters
-	public String getQuizName() {
+	public String getQuizname() {
 		return quizName;
 	}
 

@@ -25,7 +25,7 @@ public class ClientCreateRoundEvent extends ClientQuizzerEvent {
 		return theme;
 	}
 
-	public Difficulty getDiff() {
+	public Difficulty getDifficulty() {
 		return diff;
 	}
 

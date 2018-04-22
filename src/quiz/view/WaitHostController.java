@@ -4,46 +4,56 @@ import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
+import eventbroker.serverevent.ServerEndQuizEvent;
+import eventbroker.serverevent.ServerNewRoundEvent;
 import javafx.fxml.FXML;
 import main.Main;
 
-public class WaitHostController extends EventPublisher  {
+public class WaitHostController extends EventPublisher {
 
-	
+	private NewRoundHandler newRoundHandler;
+	private EndQuizHandler endQuizHandler;
+
 	// Reference to the main application
-		private Main main;
-		private WaitHostHandler waitHostHandler;
-		
-		public void setMain(Main main) {
-			this.main = main;
-		}
-	
-	public WaitHostController() {
-		
+	private Main main;
+
+	public void setMain(Main main) {
+		this.main = main;
 	}
-	
+
+	// Method
 	@FXML
 	private void initialize() {
-		waitHostHandler = new WaitHostHandler();
-		EventBroker.getEventBroker().addEventListener(waitHostHandler);
+		newRoundHandler = new NewRoundHandler();
+		endQuizHandler = new EndQuizHandler();
+
+		EventBroker.getEventBroker().addEventListener(ServerNewRoundEvent.EVENTTYPE, newRoundHandler);
+		EventBroker.getEventBroker().addEventListener(ServerEndQuizEvent.EVENTTYPE, endQuizHandler);
 	}
-	
-	public class WaitHostHandler implements EventListener {
+
+	// Inner classes
+	private class NewRoundHandler implements EventListener {
 
 		@Override
 		public void handleEvent(Event event) {
-			switch(event.getType()) {
-			case "SERVER_NEW_ROUND":
-				EventBroker.getEventBroker().removeEventListener(waitHostHandler);
-				main.showCreateRound();
-				break;
-			case "SERVER_END_QUIZ":
-				EventBroker.getEventBroker().removeEventListener(waitHostHandler);
-				main.showScoreboardScene();
-				break;
-			}
-			
+			EventBroker.getEventBroker().removeEventListener(newRoundHandler);
+			EventBroker.getEventBroker().removeEventListener(endQuizHandler);
+
+			main.showCreateRound();
 		}
-		
+
 	}
+
+	private class EndQuizHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			EventBroker.getEventBroker().removeEventListener(newRoundHandler);
+			EventBroker.getEventBroker().removeEventListener(endQuizHandler);
+
+			main.showScoreboardScene();
+		}
+
+	}
+
 }

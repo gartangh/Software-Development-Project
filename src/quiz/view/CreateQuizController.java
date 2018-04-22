@@ -5,12 +5,13 @@ import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import eventbroker.clientevent.ClientCreateQuizEvent;
-import eventbroker.serverevent.ServerReturnQuizEvent;
+import eventbroker.serverevent.ServerCreateQuizEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import main.Context;
 import main.Main;
-import user.model.Host;
+import quiz.model.Quiz;
+import user.Host;
 
 public class CreateQuizController extends EventPublisher {
 
@@ -25,7 +26,7 @@ public class CreateQuizController extends EventPublisher {
 	@FXML
 	private TextField mPlayers;
 
-	private CreateQuizEventHandler createQuizHandler;
+	private CreateQuizHandler createQuizHandler;
 
 	// Reference to the main application
 	private Main main;
@@ -34,10 +35,17 @@ public class CreateQuizController extends EventPublisher {
 		this.main = main;
 	}
 
+	// Getter
+	public CreateQuizHandler getCreateQuizHandler() {
+		return createQuizHandler;
+	}
+
+	// Methods
 	@FXML
 	private void initialize() {
-		createQuizHandler = new CreateQuizEventHandler();
-		EventBroker.getEventBroker().addEventListener(createQuizHandler);
+		createQuizHandler = new CreateQuizHandler();
+
+		EventBroker.getEventBroker().addEventListener(ServerCreateQuizEvent.EVENTTYPE, createQuizHandler);
 	}
 
 	@FXML
@@ -60,24 +68,19 @@ public class CreateQuizController extends EventPublisher {
 	}
 
 	// Inner class
-	public class CreateQuizEventHandler implements EventListener {
+	public class CreateQuizHandler implements EventListener {
 
 		@Override
 		public void handleEvent(Event event) {
-			String type = event.getType();
-			System.out.println("Event with type " + type + " received");
-			switch (type) {
-			case "SERVER_RETURN_QUIZ":
-				ServerReturnQuizEvent sRQE = (ServerReturnQuizEvent) event;
-				Context.getContext().setQuiz(sRQE.getQuiz());
-				EventBroker.getEventBroker().removeEventListener(createQuizHandler);
-				
-				main.showQuizroomScene();
-				break;
-				
-			default:
-				System.out.println("Event with type " + type + " was left unhandled");
-			}
+			ServerCreateQuizEvent sRQE = (ServerCreateQuizEvent) event;
+
+			Quiz quiz = sRQE.getQuiz();
+
+			Context.getContext().setQuiz(quiz);
+
+			EventBroker.getEventBroker().removeEventListener(createQuizHandler);
+
+			main.showQuizroomScene();
 		}
 
 	}

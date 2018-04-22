@@ -24,7 +24,7 @@ import eventbroker.clientevent.ClientNewQuestionEvent;
 import eventbroker.clientevent.ClientScoreboardDataEvent;
 import eventbroker.clientevent.ClientVoteEvent;
 import eventbroker.clientevent.ClientNewTeamEvent;
-import eventbroker.serverevent.ServerAnswerEvent;
+import eventbroker.serverevent.ServerVoteAnswerEvent;
 import eventbroker.serverevent.ServerChangeTeamEvent;
 import eventbroker.serverevent.ServerCreateAccountFailEvent;
 import eventbroker.serverevent.ServerCreateAccountSuccesEvent;
@@ -37,16 +37,19 @@ import eventbroker.serverevent.ServerNewQuestionEvent;
 import eventbroker.serverevent.ServerNewRoundEvent;
 import eventbroker.serverevent.ServerNewTeamEvent;
 import eventbroker.serverevent.ServerNotAllAnsweredEvent;
-import eventbroker.serverevent.ServerQuizNewPlayer;
-import eventbroker.serverevent.ServerReturnQuizEvent;
+import eventbroker.serverevent.ServerQuizNewPlayerEvent;
+import eventbroker.serverevent.ServerCreateQuizEvent;
 import eventbroker.serverevent.ServerScoreboardDataEvent;
 import eventbroker.serverevent.ServerSendQuizEvent;
 import eventbroker.serverevent.ServerStartQuizEvent;
 import eventbroker.serverevent.ServerStartRoundEvent;
 import eventbroker.serverevent.ServerVoteEvent;
+import javafx.scene.paint.Color;
 import main.Main;
-import user.model.User;
 import quiz.model.Team;
+import quiz.util.Difficulty;
+import quiz.util.Theme;
+import user.User;
 import network.Network;
 import quiz.model.MCQuestion;
 import quiz.model.Quiz;
@@ -55,10 +58,20 @@ public class Server extends EventPublisher {
 
 	// Singleton
 	private final static Server server = new Server();
-	// TODO: Add handlers
-	private static ServerHandler serverHandler = new ServerHandler();
 	private static CreateAccountHandler createAccountHandler = new CreateAccountHandler();
 	private static LogInHandler logInHandler = new LogInHandler();
+	private static JoinQuizHandler joinQuizHandler = new JoinQuizHandler();
+	private static CreateQuizHandler createQuizHandler = new CreateQuizHandler();
+	private static VoteHandler voteHandler = new VoteHandler();
+	private static AnswerHandler answerHandler = new AnswerHandler();
+	private static NewQuestionHandler newQuestionHandler = new NewQuestionHandler();
+	private static CreateRoundHandler createRoundHandler = new CreateRoundHandler();
+	private static ChatHandler chatHandler = new ChatHandler();
+	private static ScoreboardDataHandler scoreboardDataHandler = new ScoreboardDataHandler();
+	private static GetQuizzesHandler getQuizzesHandler = new GetQuizzesHandler();
+	private static NewTeamHandler newTeamHandler = new NewTeamHandler();
+	private static ChangeTeamHandler changeTeamHandler = new ChangeTeamHandler();
+	private static HostReadyHandler hostReadyHandler = new HostReadyHandler();
 
 	public static void main(String[] args) {
 		// Create a network on port Main.SERVERPORT and type SERVER
@@ -80,256 +93,37 @@ public class Server extends EventPublisher {
 		ServerContext.getContext().loadData();
 
 		// Add EventListeners
+		// TODO: Does the network listens to a certain type?
 		EventBroker.getEventBroker().addEventListener(network);
 
-		// TODO: Add handlers
-		EventBroker.getEventBroker().addEventListener(serverHandler);
-		EventBroker.getEventBroker().addEventListener(ClientCreateAccountEvent.EVENTTYPE, createAccountHandler);
-		EventBroker.getEventBroker().addEventListener(ClientLogInEvent.EVENTTYPE, logInHandler);
+		EventBroker eventBroker = EventBroker.getEventBroker();
+		eventBroker.addEventListener(ClientCreateAccountEvent.EVENTTYPE, createAccountHandler);
+		eventBroker.addEventListener(ClientLogInEvent.EVENTTYPE, logInHandler);
+		eventBroker.addEventListener(ClientJoinQuizEvent.EVENTTYPE, joinQuizHandler);
+		eventBroker.addEventListener(ClientCreateQuizEvent.EVENTTYPE, createQuizHandler);
+		eventBroker.addEventListener(ClientVoteEvent.EVENTTYPE, voteHandler);
+		eventBroker.addEventListener(ClientAnswerEvent.EVENTTYPE, answerHandler);
+		eventBroker.addEventListener(ClientNewQuestionEvent.EVENTTYPE, newQuestionHandler);
+		eventBroker.addEventListener(ClientCreateRoundEvent.EVENTTYPE, createRoundHandler);
+		eventBroker.addEventListener(ChatMessage.EVENTTYPE, chatHandler);
+		eventBroker.addEventListener(ClientScoreboardDataEvent.EVENTTYPE, scoreboardDataHandler);
+		eventBroker.addEventListener(ClientGetQuizzesEvent.EVENTTYPE, getQuizzesHandler);
+		eventBroker.addEventListener(ClientNewTeamEvent.EVENTTYPE, newTeamHandler);
+		eventBroker.addEventListener(ClientChangeTeamEvent.EVENTTYPE, changeTeamHandler);
+		eventBroker.addEventListener(ClientHostReadyEvent.EVENTTYPE, hostReadyHandler);
 
 		// Start the EventBroker
-		EventBroker.getEventBroker().start();
+		eventBroker.start();
 
 		System.out.println("Server running ...");
 	}
 
+	// Getter
 	public static Server getServer() {
 		return server;
 	}
 
 	// Inner classes
-	private static class ServerHandler implements EventListener {
-
-		@Override
-		public void handleEvent(Event event) {
-			ArrayList<Integer> destinations = new ArrayList<>();
-			Boolean handled = false;
-			switch (event.getType()) {
-			case "CLIENT_JOIN_QUIZ":
-				ClientJoinQuizEvent cJTE = (ClientJoinQuizEvent) event;
-
-				ServerContext.getContext().getQuizMap().get(cJTE.getQuizID()).addUnassignedPlayer(cJTE.getUserID(),
-						cJTE.getUserName());
-				ServerJoinQuizEvent sJQE = new ServerJoinQuizEvent(
-						ServerContext.getContext().getQuizMap().get(cJTE.getQuizID()));
-				sJQE.addRecipient(cJTE.getUserID());
-				server.publishEvent(sJQE);
-				ServerQuizNewPlayer sQNP = new ServerQuizNewPlayer(cJTE.getUserID(),
-						ServerContext.getContext().getUserMap().get(cJTE.getUserID()).getUsername());
-				sQNP.addRecipients(ServerContext.getContext().getUsersFromQuiz(cJTE.getQuizID()));
-				server.publishEvent(sQNP);
-				break;
-
-			case "CLIENT_CREATE_QUIZ":
-				ClientCreateQuizEvent cCQE = (ClientCreateQuizEvent) event;
-				int quizID = ServerContext.getContext().addQuiz(cCQE.getQuizName(), cCQE.getMaxAmountOfTeams(),
-						cCQE.getMaxAmountOfPlayersPerTeam(), cCQE.getMaxAmountOfRounds(),
-						cCQE.getMaxAmountOfQuestionsPerRound(), cCQE.getUserID());
-				Quiz quiz = ServerContext.getContext().getQuizMap().get(quizID);
-
-				ServerReturnQuizEvent sRQE = new ServerReturnQuizEvent(quiz);
-				sRQE.addRecipient(cCQE.getUserID());
-				server.publishEvent(sRQE);
-
-				ServerSendQuizEvent sSQE = new ServerSendQuizEvent(quiz);
-				sSQE.addRecipients(ServerContext.getContext().getUserMap());
-				server.publishEvent(sSQE);
-				handled = true;
-				break;
-
-			case "CLIENT_VOTE":
-				handleClientVoteEvent((ClientVoteEvent) event);
-				handled = true;
-				break;
-
-			case "CLIENT_ANSWER":
-				handleClientAnswerEvent((ClientAnswerEvent) event);
-				handled = true;
-				break;
-
-			case "CLIENT_NEW_QUESTION":
-				handleClientNewQuestionEvent((ClientNewQuestionEvent) event);
-				handled = true;
-				break;
-
-			case "CLIENT_CHAT":
-				ChatMessage chatMessage = (ChatMessage) event;
-
-				// TODO: Add all usernames for the chat
-
-				for (Map.Entry<Integer, Integer> entry : ServerContext.getContext().getNetwork()
-						.getUserIDConnectionIDMap().entrySet())
-					if (entry.getKey() != chatMessage.getUserID())
-						destinations.add(entry.getKey());
-
-				chatMessage.setType("SERVER_CHAT");
-				chatMessage.addRecipients(destinations);
-				server.publishEvent(chatMessage);
-				handled = true;
-				break;
-
-			case "CLIENT_SCOREBOARDDATA":
-				ClientScoreboardDataEvent cSDE = (ClientScoreboardDataEvent) event;
-				ServerScoreboardDataEvent scoreboardData = new ServerScoreboardDataEvent(cSDE.getQuizID());
-				scoreboardData.addRecipient(cSDE.getUserID());
-				server.publishEvent(scoreboardData);
-				handled = true;
-				break;
-
-			case "CLIENT_GET_QUIZZES":
-				ClientGetQuizzesEvent cGQE = (ClientGetQuizzesEvent) event;
-				ServerGetQuizzesEvent sGQE = new ServerGetQuizzesEvent();
-				sGQE.addRecipient(cGQE.getUserID());
-				server.publishEvent(sGQE);
-				handled = true;
-				break;
-
-			case "CLIENT_NEW_TEAM":
-				ClientNewTeamEvent newteamevent = (ClientNewTeamEvent) event;
-				int newTeamID = ServerContext.getContext().addTeam(newteamevent.getQuizID(), newteamevent.getTeamName(),
-						newteamevent.getColor(), newteamevent.getUserID());
-				if (newTeamID != -1) {
-					Team newteam = ServerContext.getContext().getQuiz(newteamevent.getQuizID()).getTeams()
-							.get(newTeamID);
-					ServerNewTeamEvent serverNewTeamEvent = new ServerNewTeamEvent(newteamevent.getQuizID(), newTeamID,
-							newteam.getTeamName(), newteam.getColor(), newteam.getCaptainID(),
-							newteam.getPlayers().get(newteam.getCaptainID()));
-					ArrayList<Integer> receivers = ServerContext.getContext()
-							.getUsersFromQuiz(newteamevent.getQuizID());
-					ServerContext.getContext().getQuizMap().get(newteamevent.getQuizID())
-							.removeUnassignedPlayer(newteam.getCaptainID());
-					serverNewTeamEvent.addRecipients(receivers);
-					server.publishEvent(serverNewTeamEvent);
-				} else
-					System.out.println("newTeamID != -1");
-
-				handled = true;
-				break;
-
-			case "CLIENT_CHANGE_TEAM":
-				ClientChangeTeamEvent cte = (ClientChangeTeamEvent) event;
-				String userName = ServerContext.getContext().changeTeam(cte.getQuizID(), cte.getNewTeamID(),
-						cte.getUserID(), 'a');
-				ServerContext.getContext().changeTeam(cte.getQuizID(), cte.getOldTeamID(), cte.getUserID(), 'd');
-				if (cte.getOldTeamID() == -1) {// remove from unassinged list
-					ServerContext.getContext().getQuizMap().get(cte.getQuizID())
-							.removeUnassignedPlayer(cte.getUserID());
-				}
-				if (userName != null) {
-					ServerChangeTeamEvent serverChangeTeamEvent = new ServerChangeTeamEvent(cte.getQuizID(),
-							cte.getNewTeamID(), cte.getOldTeamID(), cte.getUserID(), userName);
-					ArrayList<Integer> receivers = ServerContext.getContext().getUsersFromQuiz(cte.getQuizID());
-					serverChangeTeamEvent.addRecipients(receivers);
-					server.publishEvent(serverChangeTeamEvent);
-				}
-				handled = true;
-				break;
-
-			case "CLIENT_CREATE_ROUND":
-				// TODO: Old team (check for null) and newteam modifier
-				handleClientCreateRoundEvent((ClientCreateRoundEvent) event);
-				handled = true;
-				break;
-			case "CLIENT_HOST_READY":
-				ClientHostReadyEvent chre = (ClientHostReadyEvent) event;
-				ServerContext.getContext().getQuizMap().get(chre.getQuizID()).setRunning(true);
-				ServerContext.getContext().getQuizMap().get(chre.getQuizID()).clearUnassignedPlayers();
-				ServerStartQuizEvent serverStartQuizEvent = new ServerStartQuizEvent(chre.getQuizID());
-				ArrayList<Integer> receivers = new ArrayList<Integer>();
-				receivers.addAll(ServerContext.getContext().getUserMap().keySet());
-				serverStartQuizEvent.addRecipients(receivers);
-				server.publishEvent(serverStartQuizEvent);
-				break;
-			}
-
-			if (handled)
-				System.out.println("Event received and handled: " + event.getType());
-			else
-				System.out.println("Event received but left unhandled: " + event.getType());
-		}
-
-		public void handleClientVoteEvent(ClientVoteEvent cVE) {
-			Quiz quiz = ServerContext.getContext().getQuiz(cVE.getQuizID());
-			quiz.addVote(cVE.getUserID(), cVE.getTeamID(), cVE.getVote());
-
-			ArrayList<Integer> receivers = new ArrayList<Integer>();
-			receivers.addAll(ServerContext.getContext().getQuiz(cVE.getQuizID()).getTeams().get(cVE.getTeamID())
-					.getPlayers().keySet());
-
-			ServerVoteEvent sVE = new ServerVoteEvent(cVE.getUserID(), cVE.getTeamID(), cVE.getQuizID(), cVE.getVote());
-			sVE.addRecipients(receivers);
-			server.publishEvent(sVE);
-		}
-
-		public void handleClientAnswerEvent(ClientAnswerEvent cAE) {
-			Quiz quiz = ServerContext.getContext().getQuiz(cAE.getQuizID());
-			quiz.addAnswer(cAE.getTeamID(), cAE.getQuestionID(), cAE.getAnswer());
-			quiz.addPoints(cAE.getTeamID(), cAE.getQuestionID(), cAE.getAnswer());
-			ArrayList<Integer> receivers = new ArrayList<Integer>();
-			receivers.addAll(ServerContext.getContext().getQuiz(cAE.getQuizID()).getTeams().get(cAE.getTeamID())
-					.getPlayers().keySet());
-
-			MCQuestion mCQ = (MCQuestion) ServerContext.getContext().getQuestion(cAE.getQuestionID());
-			ServerAnswerEvent serverAnswer = new ServerAnswerEvent(cAE.getTeamID(), cAE.getQuestionID(),
-					cAE.getAnswer(), mCQ.getCorrectAnswer());
-			serverAnswer.addRecipients(receivers);
-			server.publishEvent(serverAnswer);
-		}
-
-		public void handleClientNewQuestionEvent(ClientNewQuestionEvent cNQE) {
-			Quiz quiz = ServerContext.getContext().getQuiz(cNQE.getQuizID());
-			if (quiz.isAnsweredByAll()) {
-				ArrayList<Integer> receivers = ServerContext.getContext().getUsersFromQuiz(cNQE.getQuizID());
-
-				if ((quiz.getRound().getQuestionNumber() + 1) < quiz.getRound().getNumberOfQuestions()) {
-					MCQuestion nQ = (MCQuestion) ServerContext.getContext()
-							.getQuestion(quiz.getRound().getNextQuestion());
-					int[] permutatie = { 1, 2, 3, 4 };
-					ServerNewQuestionEvent sNQE = new ServerNewQuestionEvent(nQ.getQuestionID(), nQ.getQuestion(),
-							nQ.getAnswers(), permutatie);
-					sNQE.addRecipients(receivers);
-					Server.getServer().publishEvent(sNQE);
-				} else {
-					if ((quiz.getCurrentRound() + 1) < quiz.getMaxAmountOfRounds()) {
-						ServerNewRoundEvent sNRE = new ServerNewRoundEvent(quiz.getCurrentRound() + 1);
-						receivers = ServerContext.getContext().getUsersFromQuiz(cNQE.getQuizID());
-						receivers.add(ServerContext.getContext().getQuiz(cNQE.getQuizID()).getQuizmaster());
-						sNRE.addRecipients(receivers);
-						Server.getServer().publishEvent(sNRE);
-					} else {
-						// TODO: trigger end quiz
-						ServerEndQuizEvent sEQE = new ServerEndQuizEvent();
-						sEQE.addRecipients(ServerContext.getContext().getUsersFromQuiz(quiz.getQuizID()));
-						server.publishEvent(sEQE);
-					}
-				}
-			} else {
-				ServerNotAllAnsweredEvent sNAEE = new ServerNotAllAnsweredEvent();
-				sNAEE.addRecipient(cNQE.getUserID());
-				server.publishEvent(sNAEE);
-			}
-		}
-
-		public void handleClientCreateRoundEvent(ClientCreateRoundEvent cCRE) {
-			Quiz quiz = ServerContext.getContext().getQuiz(cCRE.getQuizID());
-			quiz.addRound(cCRE.getDiff(), cCRE.getTheme());
-			// quiz.getRound().addQuestions(cCRE.getNumberOfQuestions());
-			ArrayList<Integer> receivers = ServerContext.getContext().getUsersFromQuiz(cCRE.getQuizID());
-
-			MCQuestion nQ = (MCQuestion) ServerContext.getContext().getQuestion(quiz.getRound().getNextQuestion());
-			int[] permutatie = { 1, 2, 3, 4 };
-
-			ServerNewQuestionEvent sNQE = new ServerNewQuestionEvent(nQ.getQuestionID(), nQ.getQuestion(),
-					nQ.getAnswers(), permutatie);
-			sNQE.addRecipients(receivers);
-			server.publishEvent(sNQE);
-
-			ServerStartRoundEvent sSRE = new ServerStartRoundEvent();
-			sSRE.addRecipients(receivers);
-			Server.getServer().publishEvent(sSRE);
-		}
-	}
-
 	private static class CreateAccountHandler implements EventListener {
 
 		@Override
@@ -401,6 +195,336 @@ public class Server extends EventPublisher {
 				sLISE.addRecipient(userID);
 				server.publishEvent(sLISE);
 			}
+		}
+
+	}
+
+	private static class JoinQuizHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ClientJoinQuizEvent cJQE = (ClientJoinQuizEvent) event;
+
+			int userID = cJQE.getUserID();
+			String username = cJQE.getUsername();
+			int quizID = cJQE.getQuizID();
+
+			ServerContext context = ServerContext.getContext();
+			context.getQuizMap().get(quizID).addUnassignedPlayer(userID, username);
+
+			ServerJoinQuizEvent sJQE = new ServerJoinQuizEvent(context.getQuizMap().get(quizID));
+			sJQE.addRecipient(userID);
+
+			server.publishEvent(sJQE);
+
+			ServerQuizNewPlayerEvent sQNP = new ServerQuizNewPlayerEvent(userID, username);
+			sQNP.addRecipients(context.getUsersFromQuiz(quizID));
+
+			server.publishEvent(sQNP);
+		}
+
+	}
+
+	private static class CreateQuizHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ClientCreateQuizEvent cCQE = (ClientCreateQuizEvent) event;
+
+			String quizname = cCQE.getQuizname();
+			int maxAmountOfTeams = cCQE.getMaxAmountOfTeams();
+			int maxAmountOfPlayersPerTeam = cCQE.getMaxAmountOfPlayersPerTeam();
+			int maxAmountOfRounds = cCQE.getMaxAmountOfRounds();
+			int maxAmountOfQuestionsPerRound = cCQE.getMaxAmountOfQuestionsPerRound();
+			int userID = cCQE.getUserID();
+
+			ServerContext context = ServerContext.getContext();
+			int quizID = context.addQuiz(quizname, maxAmountOfTeams, maxAmountOfPlayersPerTeam, maxAmountOfRounds,
+					maxAmountOfQuestionsPerRound, userID);
+			Quiz quiz = context.getQuizMap().get(quizID);
+
+			ServerCreateQuizEvent sRQE = new ServerCreateQuizEvent(quiz);
+			sRQE.addRecipient(userID);
+
+			server.publishEvent(sRQE);
+
+			ServerSendQuizEvent sSQE = new ServerSendQuizEvent(quiz);
+			sSQE.addRecipients(context.getUserMap());
+
+			server.publishEvent(sSQE);
+		}
+
+	}
+
+	private static class VoteHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ClientVoteEvent cVE = (ClientVoteEvent) event;
+
+			int userID = cVE.getUserID();
+			int quizID = cVE.getQuizID();
+			int teamID = cVE.getTeamID();
+			int vote = cVE.getVote();
+
+			ServerContext context = ServerContext.getContext();
+			Quiz quiz = context.getQuiz(quizID);
+			quiz.addVote(userID, teamID, vote);
+
+			ArrayList<Integer> receivers = new ArrayList<Integer>();
+			receivers.addAll(context.getQuiz(quizID).getTeams().get(teamID).getPlayers().keySet());
+
+			ServerVoteEvent sVE = new ServerVoteEvent(userID, teamID, quizID, vote);
+			sVE.addRecipients(receivers);
+
+			server.publishEvent(sVE);
+		}
+
+	}
+
+	private static class AnswerHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ClientAnswerEvent cAE = (ClientAnswerEvent) event;
+
+			int quizID = cAE.getQuizID();
+			int teamID = cAE.getTeamID();
+			int questionID = cAE.getQuestionID();
+			int answer = cAE.getAnswer();
+
+			ServerContext context = ServerContext.getContext();
+			Quiz quiz = context.getQuiz(quizID);
+			quiz.addAnswer(teamID, questionID, answer);
+			quiz.addPoints(teamID, questionID, answer);
+			ArrayList<Integer> receivers = new ArrayList<>();
+			receivers.addAll(context.getQuiz(quizID).getTeams().get(teamID).getPlayers().keySet());
+
+			MCQuestion mCQ = (MCQuestion) context.getQuestion(questionID);
+			ServerVoteAnswerEvent serverAnswer = new ServerVoteAnswerEvent(teamID, questionID, answer,
+					mCQ.getCorrectAnswer());
+			serverAnswer.addRecipients(receivers);
+
+			server.publishEvent(serverAnswer);
+		}
+
+	}
+
+	private static class NewQuestionHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ClientNewQuestionEvent cNQE = (ClientNewQuestionEvent) event;
+
+			int userID = cNQE.getUserID();
+			int quizID = cNQE.getQuizID();
+
+			ServerContext context = ServerContext.getContext();
+			Quiz quiz = context.getQuiz(quizID);
+			if (quiz.isAnsweredByAll()) {
+				ArrayList<Integer> receivers = context.getUsersFromQuiz(quizID);
+
+				if ((quiz.getRound().getQuestionNumber() + 1) < quiz.getRound().getNumberOfQuestions()) {
+					MCQuestion nQ = (MCQuestion) context.getQuestion(quiz.getRound().getNextQuestion());
+
+					int[] permutatie = { 1, 2, 3, 4 };
+					ServerNewQuestionEvent sNQE = new ServerNewQuestionEvent(nQ.getQuestionID(), nQ.getQuestion(),
+							nQ.getAnswers(), permutatie);
+					sNQE.addRecipients(receivers);
+
+					server.publishEvent(sNQE);
+				} else {
+					if ((quiz.getCurrentRound() + 1) < quiz.getMaxAmountOfRounds()) {
+						ServerNewRoundEvent sNRE = new ServerNewRoundEvent(quiz.getCurrentRound() + 1);
+						receivers = context.getUsersFromQuiz(cNQE.getQuizID());
+						receivers.add(context.getQuiz(quizID).getQuizmasterID());
+						sNRE.addRecipients(receivers);
+
+						server.publishEvent(sNRE);
+					} else {
+						// TODO: Trigger end of quiz
+						ServerEndQuizEvent sEQE = new ServerEndQuizEvent();
+						sEQE.addRecipients(context.getUsersFromQuiz(quiz.getQuizID()));
+
+						server.publishEvent(sEQE);
+					}
+				}
+			} else {
+				ServerNotAllAnsweredEvent sNAEE = new ServerNotAllAnsweredEvent();
+				sNAEE.addRecipient(userID);
+
+				server.publishEvent(sNAEE);
+			}
+		}
+
+	}
+
+	private static class CreateRoundHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			// TODO: Old team (check for null) and newteam modifier
+			ClientCreateRoundEvent cCRE = (ClientCreateRoundEvent) event;
+
+			Difficulty difficulty = cCRE.getDifficulty();
+			Theme theme = cCRE.getTheme();
+			int quizID = cCRE.getQuizID();
+
+			ServerContext context = ServerContext.getContext();
+			Quiz quiz = context.getQuiz(cCRE.getQuizID());
+			quiz.addRound(difficulty, theme);
+			// quiz.getRound().addQuestions(cCRE.getNumberOfQuestions());
+			ArrayList<Integer> receivers = context.getUsersFromQuiz(quizID);
+
+			MCQuestion nQ = (MCQuestion) context.getQuestion(quiz.getRound().getNextQuestion());
+			int[] permutatie = { 1, 2, 3, 4 };
+
+			ServerNewQuestionEvent sNQE = new ServerNewQuestionEvent(nQ.getQuestionID(), nQ.getQuestion(),
+					nQ.getAnswers(), permutatie);
+			sNQE.addRecipients(receivers);
+
+			server.publishEvent(sNQE);
+
+			ServerStartRoundEvent sSRE = new ServerStartRoundEvent();
+			sSRE.addRecipients(receivers);
+
+			server.publishEvent(sSRE);
+		}
+
+	}
+
+	private static class ChatHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ChatMessage chatMessage = (ChatMessage) event;
+
+			ArrayList<Integer> destinations = new ArrayList<>();
+
+			// TODO: Add all usernames for the chat
+			for (Map.Entry<Integer, Integer> entry : ServerContext.getContext().getNetwork().getUserIDConnectionIDMap()
+					.entrySet())
+				if (entry.getKey() != chatMessage.getUserID())
+					destinations.add(entry.getKey());
+
+			// TODO: Change to ChatMessage.EVENTTYPESERVER
+			chatMessage.setType(ChatMessage.EVENTTYPESERVER);
+			chatMessage.addRecipients(destinations);
+
+			server.publishEvent(chatMessage);
+		}
+
+	}
+
+	private static class ScoreboardDataHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ClientScoreboardDataEvent cSDE = (ClientScoreboardDataEvent) event;
+
+			int userID = cSDE.getUserID();
+			int quizID = cSDE.getQuizID();
+
+			ServerScoreboardDataEvent sSDE = new ServerScoreboardDataEvent(quizID);
+			sSDE.addRecipient(userID);
+
+			server.publishEvent(sSDE);
+		}
+
+	}
+
+	private static class GetQuizzesHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ClientGetQuizzesEvent cGQE = (ClientGetQuizzesEvent) event;
+
+			int userID = cGQE.getUserID();
+
+			ServerGetQuizzesEvent sGQE = new ServerGetQuizzesEvent();
+			sGQE.addRecipient(userID);
+
+			server.publishEvent(sGQE);
+		}
+
+	}
+
+	private static class NewTeamHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ClientNewTeamEvent cNTE = (ClientNewTeamEvent) event;
+
+			int userID = cNTE.getUserID();
+			int quizID = cNTE.getQuizID();
+			String teamname = cNTE.getTeamname();
+			Color color = cNTE.getColor();
+
+			ServerContext context = ServerContext.getContext();
+			int newTeamID = context.addTeam(quizID, teamname, color, userID);
+			if (newTeamID != -1) {
+				Team newteam = context.getQuiz(quizID).getTeams().get(newTeamID);
+
+				ServerNewTeamEvent serverNewTeamEvent = new ServerNewTeamEvent(quizID, newTeamID, newteam.getTeamName(),
+						newteam.getColor(), newteam.getCaptainID(), newteam.getPlayers().get(newteam.getCaptainID()));
+				ArrayList<Integer> receivers = context.getUsersFromQuiz(quizID);
+				context.getQuizMap().get(cNTE.getQuizID()).removeUnassignedPlayer(newteam.getCaptainID());
+				serverNewTeamEvent.addRecipients(receivers);
+
+				server.publishEvent(serverNewTeamEvent);
+			} else
+				System.out.println("newTeamID != -1");
+		}
+
+	}
+
+	private static class ChangeTeamHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ClientChangeTeamEvent cCTE = (ClientChangeTeamEvent) event;
+
+			int userID = cCTE.getUserID();
+			int quizID = cCTE.getQuizID();
+			int oldTeamID = cCTE.getOldTeamID();
+			int newTeamID = cCTE.getNewTeamID();
+
+			ServerContext context = ServerContext.getContext();
+			String userName = context.changeTeam(quizID, newTeamID, userID, 'a');
+			context.changeTeam(quizID, oldTeamID, userID, 'd');
+			if (cCTE.getOldTeamID() == -1)
+				// remove from unassinged list
+				context.getQuizMap().get(quizID).removeUnassignedPlayer(userID);
+
+			if (userName != null) {
+				ServerChangeTeamEvent sCTE = new ServerChangeTeamEvent(quizID, newTeamID, oldTeamID, userID, userName);
+				ArrayList<Integer> receivers = context.getUsersFromQuiz(cCTE.getQuizID());
+				sCTE.addRecipients(receivers);
+
+				server.publishEvent(sCTE);
+			}
+		}
+
+	}
+
+	private static class HostReadyHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ClientHostReadyEvent cHRE = (ClientHostReadyEvent) event;
+
+			int quizID = cHRE.getQuizID();
+
+			ServerContext context = ServerContext.getContext();
+			context.getQuizMap().get(quizID).setRunning(true);
+			context.getQuizMap().get(quizID).clearUnassignedPlayers();
+
+			ServerStartQuizEvent sSQE = new ServerStartQuizEvent(quizID);
+			ArrayList<Integer> receivers = new ArrayList<>();
+			receivers.addAll(context.getUserMap().keySet());
+			sSQE.addRecipients(receivers);
+
+			server.publishEvent(sSQE);
 		}
 
 	}

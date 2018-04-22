@@ -1,5 +1,7 @@
 package quiz.view;
 
+import java.util.ArrayList;
+
 import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
@@ -30,70 +32,39 @@ public class ScoreboardController extends EventPublisher {
 	@FXML
 	private Label winnerLoser;
 
-	private ScoreboardModel scoreboardModel;
-	private ScoreboardEventHandler eventHandler;
+	private ScoreboardModel scoreboardModel = new ScoreboardModel();
+	private ScoreboardDataHandler scoreboardDataHandler;
 
 	// Reference to the main application
 	private Main main;
 
 	public void setMainApp(Main main) {
 		this.main = main;
+
 		scoreboardTable.setItems(scoreboardModel.getScoreboardTeams());
 	}
 
-	// Constructor
-	public ScoreboardController() {
-		this.scoreboardModel = new ScoreboardModel();
+	// Getters
+	public ScoreboardModel getScoreboardModel() {
+		return scoreboardModel;
 	}
 
+	// Methods
 	@FXML
 	private void initialize() {
-		eventHandler = new ScoreboardEventHandler();
-		EventBroker.getEventBroker().addEventListener(eventHandler);
+		scoreboardDataHandler = new ScoreboardDataHandler();
+
+		EventBroker.getEventBroker().addEventListener(ServerScoreboardDataEvent.EVENTTYPE, scoreboardDataHandler);
 
 		winnerLoser.textProperty().bind(scoreboardModel.getWinnerLoserProperty());
-		rankColumn.setCellValueFactory(cellData -> (new SimpleIntegerProperty(cellData.getValue().getRank()).asObject()));
-        teamNameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getTeamName())));
-        scoreColumn.setCellValueFactory(cellData -> (new SimpleIntegerProperty(cellData.getValue().getScore()).asObject()));
-        
+		rankColumn
+				.setCellValueFactory(cellData -> (new SimpleIntegerProperty(cellData.getValue().getRank()).asObject()));
+		teamNameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getTeamName())));
+		scoreColumn.setCellValueFactory(
+				cellData -> (new SimpleIntegerProperty(cellData.getValue().getScore()).asObject()));
+
 		ClientScoreboardDataEvent cSDE = new ClientScoreboardDataEvent();
 		publishEvent(cSDE);
-	}
-
-	public class ScoreboardEventHandler implements EventListener {
-
-		@Override
-		public void handleEvent(Event e) {
-			switch (e.getType()) {
-			case "SERVER_SCOREBOARDDATA":
-				ServerScoreboardDataEvent scoreboardData = (ServerScoreboardDataEvent) e;
-
-				scoreboardModel.addScoreboardTeams(scoreboardData.getScoreboardTeams());
-				
-				if (scoreboardData.getScoreboardTeams().size() > 0) {
-					int curTeamID = Context.getContext().getTeamID();
-					ScoreboardTeam curTeam = null;
-					for(ScoreboardTeam team : scoreboardData.getScoreboardTeams()) {
-						if(team.getTeamID() == curTeamID) {
-							curTeam = team;
-							break;
-						}
-					}
-					if(Context.getContext().getQuiz().getQuizmaster() == Context.getContext().getUser().getUserID())
-						scoreboardModel.updateWinnerLoser("HOST");
-					else if(curTeam != null) {
-						if (scoreboardData.getScoreboardTeams().get(0).getTeamID() == curTeamID)
-							scoreboardModel.updateWinnerLoser("WINNER WINNER CHICKEN DINNER");
-						else {
-							scoreboardModel.updateWinnerLoser(curTeam.getTeamName() + ": LOSER");
-						}
-					}
-				}
-
-				break;
-			}
-		}
-
 	}
 
 	/**
@@ -102,7 +73,8 @@ public class ScoreboardController extends EventPublisher {
 	@FXML
 	private void handleRematchButton() {
 		// TO DO: Clear quiz, go back to quizroom
-		EventBroker.getEventBroker().removeEventListener(eventHandler);
+		EventBroker.getEventBroker().removeEventListener(scoreboardDataHandler);
+
 		main.showQuizroomScene();
 	}
 
@@ -111,13 +83,44 @@ public class ScoreboardController extends EventPublisher {
 	 */
 	@FXML
 	private void handleQuitButton() {
-		// TO DO: Clear quiz, show List of Available quizzes
-		EventBroker.getEventBroker().removeEventListener(eventHandler);
+		// TODO: Clear quiz, show List of Available quizzes
+		EventBroker.getEventBroker().removeEventListener(scoreboardDataHandler);
 		main.showJoinQuizScene();
 	}
 
-	public ScoreboardModel getScoreboardModel() {
-		return scoreboardModel;
+	// Inner class
+	public class ScoreboardDataHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ServerScoreboardDataEvent sSDE = (ServerScoreboardDataEvent) event;
+
+			ArrayList<ScoreboardTeam> scoreboardTeams = sSDE.getScoreboardTeams();
+
+			scoreboardModel.addScoreboardTeams(scoreboardTeams);
+
+			Context context = Context.getContext();
+			if (sSDE.getScoreboardTeams().size() > 0) {
+				int curTeamID = context.getTeamID();
+				ScoreboardTeam curTeam = null;
+				for (ScoreboardTeam team : scoreboardTeams) {
+					if (team.getTeamID() == curTeamID) {
+						curTeam = team;
+						break;
+					}
+				}
+
+				if (context.getQuiz().getQuizmasterID() == context.getUser().getUserID())
+					scoreboardModel.updateWinnerLoser("HOST");
+				else if (curTeam != null) {
+					if (scoreboardTeams.get(0).getTeamID() == curTeamID)
+						scoreboardModel.updateWinnerLoser("WINNER WINNER CHICKEN DINNER");
+					else
+						scoreboardModel.updateWinnerLoser(curTeam.getTeamName() + ": LOSER");
+				}
+			}
+		}
+
 	}
 
 }

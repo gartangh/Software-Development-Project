@@ -1,4 +1,4 @@
-package user.view;
+package quiz.view;
 
 import eventbroker.Event;
 import eventbroker.EventBroker;
@@ -16,7 +16,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import main.Main;
 import main.view.AlertBox;
-import user.model.User;
+import user.User;
 
 public class LogInController extends EventPublisher {
 
@@ -58,6 +58,7 @@ public class LogInController extends EventPublisher {
 		return logInSuccesHandler;
 	}
 
+	// Methods
 	@FXML
 	private void initialize() {
 		createAccountFailHandler = new CreateAccountFailHandler();

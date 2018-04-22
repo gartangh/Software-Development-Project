@@ -19,9 +19,9 @@ public class NewTeamController {
 	private Stage dialogStage;
 	private boolean okClicked = false;
 
-	@FXML
-	private void initialize() {
-		// Empty initialize
+	// Getters and setters
+	public void setTeamEvent(ClientNewTeamEvent teamevent) {
+		this.teamevent = teamevent;
 	}
 
 	public void setDialogStage(Stage dialogStage) {
@@ -32,8 +32,10 @@ public class NewTeamController {
 		return okClicked;
 	}
 
-	public void setTeamEvent(ClientNewTeamEvent teamevent) {
-		this.teamevent = teamevent;
+	// Methods
+	@FXML
+	private void initialize() {
+		// Empty initialize
 	}
 
 	@FXML

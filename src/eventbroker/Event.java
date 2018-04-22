@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import user.model.User;
+import user.User;
 
 @SuppressWarnings("serial")
 public class Event implements Serializable {

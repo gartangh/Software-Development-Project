@@ -1,7 +1,7 @@
 package eventbroker.serverevent;
 
 @SuppressWarnings("serial")
-public class ServerAnswerEvent extends ServerEvent {
+public class ServerVoteAnswerEvent extends ServerEvent {
 
 	public final static String EVENTTYPE = "SERVER_ANSWER";
 
@@ -11,7 +11,7 @@ public class ServerAnswerEvent extends ServerEvent {
 	private int correctAnswer;
 
 	// Constructors
-	public ServerAnswerEvent(int teamID, int questionID, int answer, int correctAnswer) {
+	public ServerVoteAnswerEvent(int teamID, int questionID, int answer, int correctAnswer) {
 		super.type = EVENTTYPE;
 		this.teamID = teamID;
 		this.questionID = questionID;
