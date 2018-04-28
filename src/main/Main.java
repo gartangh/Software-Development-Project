@@ -50,8 +50,8 @@ public class Main extends Application {
 		this.primaryStage.setTitle(QUIZNAME);
 
 		// Connect to network with randomly generated client port between
-		// SERVERPORT + 1 and 65535 (2^16 - 1)
-		Network network = new Network(new Random().nextInt(65535 - SERVERPORT + 2) + 1026, "CLIENT");
+		// SERVERPORT + 1 and 65535 (2^16 - 1) and type CLIENT
+		Network network = new Network(new Random().nextInt(65535 - SERVERPORT + 2) + 1026, Network.CLIENTTYPE);
 		Context.getContext().setNetwork(network);
 
 		// Close button

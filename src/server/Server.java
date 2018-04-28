@@ -58,6 +58,7 @@ public class Server extends EventPublisher {
 
 	// Singleton
 	private final static Server server = new Server();
+	
 	private static CreateAccountHandler createAccountHandler = new CreateAccountHandler();
 	private static LogInHandler logInHandler = new LogInHandler();
 	private static JoinQuizHandler joinQuizHandler = new JoinQuizHandler();
@@ -75,7 +76,7 @@ public class Server extends EventPublisher {
 
 	public static void main(String[] args) {
 		// Create a network on port Main.SERVERPORT and type SERVER
-		Network network = new Network(Main.SERVERPORT, "SERVER");
+		Network network = new Network(Main.SERVERPORT, Network.SERVERTYPE);
 		ServerContext.getContext().setNetwork(network);
 
 		try {

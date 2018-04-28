@@ -16,7 +16,10 @@ import eventbroker.serverevent.ServerCreateAccountFailEvent;
 // TODO: End ReceiverThread Connection Chat
 public class Network extends EventPublisher implements EventListener {
 
-	private String TYPE;
+	public final static String CLIENTTYPE = "CLIENT";
+	public final static String SERVERTYPE = "SERVER";
+	
+	private String type;
 	// Map(connectionID -> Connection)
 	private Map<Integer, Connection> connectionMap = new HashMap<>();
 	// Map(userID -> ConnectionID)
@@ -32,8 +35,8 @@ public class Network extends EventPublisher implements EventListener {
 	public Network(int serverPort, String type) {
 		// Server 2
 		// Not safe when multi-threaded
-		TYPE = type;
-		connectionListener = new ConnectionListener(this, serverPort);
+		this.type = type;
+		this.connectionListener = new ConnectionListener(this, serverPort);
 		new Thread(connectionListener).start();
 	}
 
@@ -68,11 +71,11 @@ public class Network extends EventPublisher implements EventListener {
 
 			connection.receive();
 
-			if (TYPE == "CLIENT") {
+			if (type == "CLIENT") {
 				// Client always has connectionID 0
 				connection.setConnectionID(0);
 				connectionMap.put(0, connection);
-			} else if (TYPE == "SERVER") {
+			} else if (type == "SERVER") {
 				int newServerUserConnectionID;
 				do {
 					newServerUserConnectionID = (int) (Math.random() * Integer.MAX_VALUE);
@@ -100,11 +103,11 @@ public class Network extends EventPublisher implements EventListener {
 
 			connection.receive();
 
-			if (TYPE == "CLIENT") {
+			if (type == "CLIENT") {
 				// Client always has connectionID 0
 				connection.setConnectionID(0);
 				connectionMap.put(0, connection);
-			} else if (TYPE == "SERVER") {
+			} else if (type == "SERVER") {
 				int newServerUserConnectionID;
 				do {
 					newServerUserConnectionID = (int) (Math.random() * Integer.MAX_VALUE);
@@ -127,9 +130,9 @@ public class Network extends EventPublisher implements EventListener {
 		// Server 4.2.2
 		connection.receive();
 
-		if (TYPE == "CLIENT") {
+		if (type == "CLIENT") {
 			connectionMap.put(connection.getConnectionID(), connection);
-		} else if (TYPE == "SERVER") {
+		} else if (type == "SERVER") {
 			int newServerUserConnectionID;
 			do {
 				newServerUserConnectionID = (int) (Math.random() * Integer.MAX_VALUE);
@@ -147,9 +150,9 @@ public class Network extends EventPublisher implements EventListener {
 	 */
 	@Override
 	public void handleEvent(Event event) {
-		if (TYPE == "CLIENT") {
+		if (type == "CLIENT") {
 			connectionMap.get(0).send(event);
-		} else if (TYPE == "SERVER") {
+		} else if (type == "SERVER") {
 			if (event.getType().equals("SERVER_CREATE_ACCOUNT_FAIL_EVENT")) {
 				ServerCreateAccountFailEvent sCAFE = (ServerCreateAccountFailEvent) event;
 

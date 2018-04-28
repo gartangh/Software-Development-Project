@@ -7,7 +7,6 @@ import java.net.Socket;
 import java.net.SocketException;
 
 import eventbroker.Event;
-import eventbroker.EventBroker;
 import eventbroker.clientevent.ClientCreateAccountEvent;
 import eventbroker.clientevent.ClientLogInEvent;
 
@@ -61,14 +60,12 @@ public class Connection {
 	public void close() {
 		synchronized (this) {
 			try {
-				objectOutputStream.writeObject(new Event("stop", "stop"));
-				objectOutputStream.flush();
-
 				objectInputStream.close();
 				objectOutputStream.close();
 				socket.close();
 			} catch (SocketException e) {
-				// e.printStackTrace();
+				// TODO Handle connection disrupted properly
+				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -95,31 +92,32 @@ public class Connection {
 					try {
 						// Server 4.2.2.2.1
 						Event event = (Event) objectInputStream.readObject();
+						
+						String type = event.getType();
 
-						if (event.getMessage() != null) {
-							if (event.getMessage().equals("stop")) {
-								EventBroker.getEventBroker().stop();
-								break;
-							}
-						}
-
-						if (event.getType().equals(ClientCreateAccountEvent.EVENTTYPE)) {
+						if (type.equals(ClientCreateAccountEvent.EVENTTYPE)) {
 							ClientCreateAccountEvent cCAE = (ClientCreateAccountEvent) event;
+							
 							cCAE.setConnectionID(connectionID);
+							
 							network.publishEvent(cCAE);
-						} else if (event.getType().equals(ClientLogInEvent.EVENTTYPE)) {
+						} else if (type.equals(ClientLogInEvent.EVENTTYPE)) {
 							ClientLogInEvent cLIE = (ClientLogInEvent) event;
+							
 							cLIE.setConnectionID(connectionID);
+							
 							network.publishEvent(cLIE);
 						} else
 							network.publishEvent(event);
 					} catch (SocketException e) {
-						// e.printStackTrace();
+						// TODO Handle connection disrupted properly
+						//e.printStackTrace();
 						break;
 					} catch (ClassNotFoundException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
-						e.printStackTrace();
+						//e.printStackTrace();
+						break;
 					}
 				}
 			}
