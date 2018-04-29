@@ -1,8 +1,9 @@
-package user;
+package quiz.model;
 
 import java.io.Serializable;
 
 import main.Context;
+import quiz.util.UserType;
 import server.ServerContext;
 
 @SuppressWarnings("serial")
@@ -16,6 +17,7 @@ public class User implements Serializable {
 	private String password;
 	private int level = 1;
 	private long xp = 0L;
+	private UserType userType = UserType.USER;
 
 	// Constructors
 	public User(int userID, String username, String password) {
@@ -25,9 +27,7 @@ public class User implements Serializable {
 	}
 
 	private User(int userID, String username, String password, int level, long xp) {
-		this.userID = userID;
-		this.username = username;
-		this.password = password;
+		this(userID, username, password);
 		this.level = level;
 		this.xp = xp;
 	}
@@ -43,41 +43,32 @@ public class User implements Serializable {
 
 	// Factory methods
 	public static int createUser(String username, String password, int connectionID) {
+		// Server side
 		// Generate random userID
+		ServerContext context = ServerContext.getContext();
 		int userID;
 		do {
 			userID = (int) (Math.random() * Integer.MAX_VALUE);
-		} while (ServerContext.getContext().getUserMap().containsKey(userID));
-
-		ServerContext.getContext().getUserMap().put(userID, new User(userID, username, password));
-		ServerContext.getContext().getNetwork().getUserIDConnectionIDMap().put(userID, connectionID);
+		} while (context.getUserMap().containsKey(userID));
+		
+		context.getUserMap().put(userID, new User(userID, username, password));
+		context.getNetwork().getUserIDConnectionIDMap().put(userID, connectionID);
 		
 		return userID;
 	}
 	
 	public static void createAccount(int userID, String username, String password) {
-		Context.getContext().setUser(new User(userID, username, password));
-		Context.getContext().getNetwork().getUserIDConnectionIDMap().put(userID, 0);
+		// Client side
+		Context context = Context.getContext();
+		context.setUser(new User(userID, username, password));
+		context.getNetwork().getUserIDConnectionIDMap().put(userID, 0);
 	}
 	
 	public static void logIn(int userID, String username, String password, int level, long xp) {
-		Context.getContext().setUser(new User(userID, username, password, level, xp));
-		Context.getContext().getNetwork().getUserIDConnectionIDMap().put(userID, 0);
-	}
-
-	// Upcasting
-	// Factory method
-	public static void createUser(User user) {
-		Context.getContext().setUser(new User(user));
-	}
-
-	// Downcasting
-	public void castToGuest() {
-		Context.getContext().setUser(new Guest(this));
-	}
-
-	public void castToHost() {
-		Context.getContext().setUser(new Host(this));
+		// Client side
+		Context context = Context.getContext();
+		context.setUser(new User(userID, username, password, level, xp));
+		context.getNetwork().getUserIDConnectionIDMap().put(userID, 0);
 	}
 
 	// Getters and setters
@@ -120,6 +111,14 @@ public class User implements Serializable {
 
 	public long getXp() {
 		return xp;
+	}
+	
+	public UserType getUserType() {
+		return userType;
+	}
+	
+	public void setUserType(UserType userType) {
+		this.userType = userType;
 	}
 
 	// Methods

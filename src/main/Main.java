@@ -19,7 +19,7 @@ import network.Network;
 import quiz.view.CreateQuizController;
 import quiz.view.JoinQuizController;
 import quiz.view.LogInController;
-import quiz.view.NewTeamController;
+import quiz.view.CreateTeamController;
 import quiz.view.QuestionFormController;
 import quiz.view.QuizRoomController;
 import quiz.view.RoundMakerController;
@@ -221,7 +221,7 @@ public class Main extends Application {
 			dialogStage.setScene(scene);
 
 			// Set the person into the controller
-			NewTeamController controller = loader.getController();
+			CreateTeamController controller = loader.getController();
 			controller.setDialogStage(dialogStage);
 			controller.setTeamEvent(teamevent);
 

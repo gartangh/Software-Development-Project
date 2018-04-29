@@ -44,7 +44,6 @@
       		<ButtonBar>
       			<buttons>
       				<Button fx:id="mJoin" defaultButton="true" mnemonicParsing="false" onAction="#handleJoin" text="Join" />
-      				<Button fx:id="mBack" mnemonicParsing="false" onAction="#handleBack" text="Back" />
       			</buttons>
       			<opaqueInsets>
       				<Insets />
@@ -65,7 +64,7 @@
    <left>
       <VBox spacing="5.0" BorderPane.alignment="CENTER">
          <children>
-            <TableView fx:id="quizTable">
+            <TableView fx:id="quizTable" VBox.vgrow="ALWAYS">
               <columns>
                 <TableColumn fx:id="quiznameColumn" maxWidth="-1.0" minWidth="70.0" prefWidth="-1.0" text="Quiz" />
                 <TableColumn fx:id="hostnameColumn" maxWidth="-1.0" minWidth="70.0" prefWidth="-1.0" text="Host" />
@@ -73,7 +72,8 @@
             </TableView>
             <ButtonBar>
               <buttons>
-                <Button mnemonicParsing="false" onAction="#handleCreateQuiz" text="New quiz" />
+                <Button mnemonicParsing="false" onAction="#handleCreateQuiz" text="Create quiz" />
+                  <Button mnemonicParsing="false" onAction="#handleBack" text="Back" />
               </buttons>
             </ButtonBar>
          </children>

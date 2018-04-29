@@ -15,8 +15,8 @@ import main.Main;
 import quiz.model.QuizRoomModel;
 import quiz.model.Team;
 import quiz.model.TeamNameID;
-import user.User;
-
+import quiz.model.User;
+import quiz.util.UserType;
 import chat.ChatPanel;
 import eventbroker.Event;
 import eventbroker.EventBroker;
@@ -101,28 +101,27 @@ public class QuizRoomController extends EventPublisher {
 	}
 
 	@FXML
-	private void handleNewTeam() {
-		String errorMessage = "No error";
-		if (Context.getContext().getQuiz().getHostID() != Context.getContext().getUser().getUserID()) {
-			if (Context.getContext().getQuiz().getAmountOfTeams() < Context.getContext().getQuiz()
-					.getMaxAmountOfTeams()) {
-				User currUser = Context.getContext().getUser();
-				int currTeamID = Context.getContext().getTeamID();
+	private void handleCreateTeam() {
+		Context context = Context.getContext();
+		String errorMessage = "";
+		if (context.getQuiz().getHostID() != context.getUser().getUserID()) {
+			if (context.getQuiz().getAmountOfTeams() < context.getQuiz().getMaxAmountOfTeams()) {
+				User currUser = context.getUser();
+				int currTeamID = context.getTeamID();
 				int currCaptainID;
 
 				if (currTeamID != -1)
-					currCaptainID = Context.getContext().getQuiz().getTeams().get(currTeamID).getCaptainID();
+					currCaptainID = context.getQuiz().getTeams().get(currTeamID).getCaptainID();
 				else
 					currCaptainID = -1;
 
 				if (currCaptainID != currUser.getUserID()) {
-					ClientNewTeamEvent teamevent = new ClientNewTeamEvent(Context.getContext().getQuiz().getQuizID(),
-							"", Color.TRANSPARENT);
-					boolean okClicked = main.showNewTeam(teamevent);
-					if (okClicked) {
-						publishEvent(teamevent);
-						System.out.println(teamevent.getTeamname());
-					}
+					ClientNewTeamEvent cNTE = new ClientNewTeamEvent(context.getQuiz().getQuizID(), "",
+							Color.TRANSPARENT);
+					
+					boolean okClicked = main.showNewTeam(cNTE);
+					if (okClicked)
+						publishEvent(cNTE);
 				} else
 					errorMessage = "You can't create a new team, because you are already a captain of an existing team";
 			} else
@@ -130,7 +129,7 @@ public class QuizRoomController extends EventPublisher {
 		} else
 			errorMessage = "You can't create a team if you are the quizmaster, click ready when you want to start the quiz";
 
-		if (errorMessage != "No error") {
+		if (errorMessage != "") {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.initOwner(main.getPrimaryStage());
 			alert.setTitle("New Team error");
@@ -147,7 +146,6 @@ public class QuizRoomController extends EventPublisher {
 		if (context.getQuiz().getHostID() == context.getUser().getUserID()) {
 			ClientHostReadyEvent cHRE = new ClientHostReadyEvent(context.getQuiz().getQuizID(),
 					context.getUser().getUserID());
-
 			publishEvent(cHRE);
 		} else {
 			if (Context.getContext().getTeamID() != -1) {
@@ -181,16 +179,14 @@ public class QuizRoomController extends EventPublisher {
 
 				int currCaptainID;
 				if (currTeamID != -1)
-					currCaptainID = Context.getContext().getQuiz().getTeams().get(currTeamID).getCaptainID();
+					currCaptainID = context.getQuiz().getTeams().get(currTeamID).getCaptainID();
 				else
 					currCaptainID = -1;
 
-				if (selectedTeam.getTeamID() != Context.getContext().getTeamID()) {
+				if (selectedTeam.getTeamID() != context.getTeamID()) {
 					if (currCaptainID != currUser.getUserID()) {
-						ClientChangeTeamEvent cCTE = new ClientChangeTeamEvent(
-								Context.getContext().getQuiz().getQuizID(), selectedTeam.getTeamID(), currTeamID,
-								currUser.getUserID());
-
+						ClientChangeTeamEvent cCTE = new ClientChangeTeamEvent(context.getQuiz().getQuizID(),
+								selectedTeam.getTeamID(), currTeamID, currUser.getUserID());
 						publishEvent(cCTE);
 					} else
 						errorMessage = "You are a captain, you can't join another team.";
@@ -212,6 +208,21 @@ public class QuizRoomController extends EventPublisher {
 		}
 	}
 
+	@FXML
+	private void hadleBack() {
+		// User is now a USER
+		Context.getContext().getUser().setUserType(UserType.USER);
+
+		EventBroker eventBroker = EventBroker.getEventBroker();
+		eventBroker.removeEventListener(newTeamHandler);
+		eventBroker.removeEventListener(changeTeamHandler);
+		eventBroker.removeEventListener(startQuizHandler);
+		eventBroker.removeEventListener(quizNewPlayerHandler);
+
+		main.showJoinQuizScene();
+	}
+
+	// Inner classes
 	private class NewTeamHandler implements EventListener {
 
 		@Override

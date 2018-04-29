@@ -23,6 +23,8 @@ import main.Context;
 import main.Main;
 import quiz.model.JoinQuizModel;
 import quiz.model.Quiz;
+import quiz.model.User;
+import quiz.util.UserType;
 
 public class JoinQuizController extends EventPublisher {
 
@@ -79,8 +81,7 @@ public class JoinQuizController extends EventPublisher {
 		mPlayers.textProperty().bind(joinQuizModel.getPlayersProperty());
 		mJoin.disableProperty().bind(joinQuizModel.getJoinDisableProperty());
 		quiznameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getQuizname())));
-		hostnameColumn
-				.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getHostname())));
+		hostnameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getHostname())));
 
 		quizTable.getSelectionModel().selectedItemProperty()
 				.addListener((observable, oldValue, newValue) -> showQuizDetails(newValue));
@@ -91,7 +92,8 @@ public class JoinQuizController extends EventPublisher {
 
 	@FXML
 	public void handleCreateQuiz() {
-		Context.getContext().getUser().castToHost();
+		// User is now a HOST
+		Context.getContext().getUser().setUserType(UserType.HOST);
 
 		main.showCreateQuizScene();
 	}
@@ -100,23 +102,25 @@ public class JoinQuizController extends EventPublisher {
 		if (quiz != null) {
 			selectedQuiz = quiz;
 			joinQuizModel.updateQuizDetail(quiz);
-		} else {
-			// TODO
 		}
 	}
 
 	@FXML
 	private void handleJoin() {
-		Context.getContext().getUser().castToGuest();
-		ClientJoinQuizEvent cjqe = new ClientJoinQuizEvent(Context.getContext().getUser().getUserID(),
-				selectedQuiz.getQuizID(), Context.getContext().getUser().getUsername());
-		publishEvent(cjqe);
+		User user = Context.getContext().getUser();
+		// User is now a PLAYER
+		user.setUserType(UserType.PLAYER);
+		ClientJoinQuizEvent cJQE = new ClientJoinQuizEvent(user.getUserID(), user.getUsername(),
+				selectedQuiz.getQuizID());
+		publishEvent(cJQE);
 	}
 
 	@FXML
 	private void handleBack() {
-		// TODO: Handle back
-		Context.getContext().setQuiz(null);
+		Context context = Context.getContext();
+		context.setQuiz(null);
+		// User is logged out
+		context.setUser(null);
 
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.removeEventListener(joinQuizHandler);
@@ -179,7 +183,8 @@ public class JoinQuizController extends EventPublisher {
 			int hostID = sSQE.getHostID();
 			String hostname = sSQE.getHostname();
 
-			joinQuizModel.addQuiz(new Quiz(quizID, quizname, maxAmountOfTeams, maxAmountOfPlayersPerTeam, maxAmountOfRounds, hostID, hostname));
+			joinQuizModel.addQuiz(new Quiz(quizID, quizname, maxAmountOfTeams, maxAmountOfPlayersPerTeam,
+					maxAmountOfRounds, hostID, hostname));
 		}
 
 	}

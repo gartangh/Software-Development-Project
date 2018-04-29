@@ -5,7 +5,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import main.Context;
 import main.Main;
-import user.User;
+import quiz.model.User;
 
 public class MenuController {
 

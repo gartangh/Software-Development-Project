@@ -39,9 +39,9 @@
 				</ScrollPane>
 				<ButtonBar prefHeight="40.0" prefWidth="334.0">
 					<buttons>
-						<Button mnemonicParsing="false" onAction="#handleNewTeam" text="New team" />
+						<Button mnemonicParsing="false" onAction="#handleCreateTeam" text="Create team" />
 						<Button mnemonicParsing="false" onAction="#handleReady" text="Ready" />
-						<Button mnemonicParsing="false" text="Show info" />
+                  <Button mnemonicParsing="false" onAction="#hadleBack" text="Back" />
 					</buttons>
 				</ButtonBar>
 			</children>

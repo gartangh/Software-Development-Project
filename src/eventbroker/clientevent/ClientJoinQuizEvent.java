@@ -6,28 +6,32 @@ public class ClientJoinQuizEvent extends ClientEvent {
 	public final static String EVENTTYPE = "CLIENT_JOIN_QUIZ";
 
 	private int userID;
+	private String username;
 	private int quizID;
-	private String userName;
 
 	// Constructor
-	public ClientJoinQuizEvent(int userID, int quizID, String userName) {
+	public ClientJoinQuizEvent(int userID, String username, int quizID) {
 		super.type = EVENTTYPE;
 		this.userID = userID;
+		this.username = username;
 		this.quizID = quizID;
-		this.userName = userName;
 	}
 
-	// Getters
-	public String getUsername() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
+	// Getters and setters
 	public int getUserID() {
 		return userID;
+	}
+
+	public void setUserID(int userID) {
+		this.userID = userID;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUserName(String username) {
+		this.username = username;
 	}
 
 	public int getQuizID() {
@@ -36,10 +40,6 @@ public class ClientJoinQuizEvent extends ClientEvent {
 
 	public void setQuizID(int quizID) {
 		this.quizID = quizID;
-	}
-
-	public void setUserID(int userID) {
-		this.userID = userID;
 	}
 
 }

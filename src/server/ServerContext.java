@@ -14,9 +14,9 @@ import quiz.model.MCQuestion;
 import quiz.model.Question;
 import quiz.model.Quiz;
 import quiz.model.Team;
+import quiz.model.User;
 import quiz.util.Difficulty;
 import quiz.util.Theme;
-import user.User;
 
 public class ServerContext {
 

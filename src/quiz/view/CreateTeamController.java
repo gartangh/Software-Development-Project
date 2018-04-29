@@ -8,20 +8,19 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class NewTeamController {
+public class CreateTeamController {
 	@FXML
-	private TextField newTeamname;
+	private TextField mTeamname;
 	@FXML
-	private ColorPicker colorpicker;
+	private ColorPicker mColor;
 
-	private ClientNewTeamEvent teamevent;
-
+	private ClientNewTeamEvent cNTE;
 	private Stage dialogStage;
 	private boolean okClicked = false;
 
 	// Getters and setters
-	public void setTeamEvent(ClientNewTeamEvent teamevent) {
-		this.teamevent = teamevent;
+	public void setTeamEvent(ClientNewTeamEvent cNTE) {
+		this.cNTE = cNTE;
 	}
 
 	public void setDialogStage(Stage dialogStage) {
@@ -39,10 +38,10 @@ public class NewTeamController {
 	}
 
 	@FXML
-	private void handleOk() {
+	private void handleOK() {
 		if (isInputValid()) {
-			teamevent.setTeamName(newTeamname.getText());
-			teamevent.setColor(colorpicker.getValue());
+			cNTE.setTeamName(mTeamname.getText());
+			cNTE.setColor(mColor.getValue());
 
 			okClicked = true;
 			dialogStage.close();
@@ -50,17 +49,17 @@ public class NewTeamController {
 	}
 
 	@FXML
-	private void handleCancel() {
+	private void handleBack() {
 		dialogStage.close();
 	}
 
 	private boolean isInputValid() {
 		String errorMessage = "";
 
-		if (newTeamname.getText() == null || newTeamname.getText().length() == 0)
+		if (mTeamname.getText() == null || mTeamname.getText().length() == 0)
 			errorMessage += "No valid teamname!\n";
 		
-		if (colorpicker.getValue() == null)
+		if (mColor.getValue() == null)
 			errorMessage += "No color picked!\n";
 		
 		if (errorMessage.length() == 0)

@@ -16,7 +16,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import main.Main;
 import main.view.AlertBox;
-import user.User;
+import quiz.model.User;
 
 public class LogInController extends EventPublisher {
 
@@ -133,8 +133,12 @@ public class LogInController extends EventPublisher {
 		@Override
 		public void handleEvent(Event event) {
 			ServerCreateAccountSuccesEvent sCASE = (ServerCreateAccountSuccesEvent) event;
+			
+			int userID = sCASE.getUserID();
+			String username = sCASE.getUsername();
+			String password = sCASE.getPassword();
 
-			User.createAccount(sCASE.getUserID(), sCASE.getUsername(), sCASE.getPassword());
+			User.createAccount(userID, username, password);
 
 			EventBroker eventBroker = EventBroker.getEventBroker();
 			eventBroker.removeEventListener(createAccountFailHandler);

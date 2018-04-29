@@ -11,7 +11,7 @@ import javafx.scene.control.TextField;
 import main.Context;
 import main.Main;
 import quiz.model.Quiz;
-import user.Host;
+import quiz.util.UserType;
 
 public class CreateQuizController extends EventPublisher {
 
@@ -59,10 +59,11 @@ public class CreateQuizController extends EventPublisher {
 
 	@FXML
 	private void handleBack() {
-		// TODO Handle back
-		((Host) Context.getContext().getUser()).castToUser();
+		// User is now a USER
+		Context.getContext().getUser().setUserType(UserType.USER);
 		
-		EventBroker.getEventBroker().removeEventListener(createQuizHandler);
+		EventBroker eventBroker = EventBroker.getEventBroker();
+		eventBroker.removeEventListener(createQuizHandler);
 		
 		main.showJoinQuizScene();
 	}
