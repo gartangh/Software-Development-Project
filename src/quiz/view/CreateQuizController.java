@@ -5,11 +5,13 @@ import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import eventbroker.clientevent.ClientCreateQuizEvent;
-import eventbroker.serverevent.ServerCreateQuizEvent;
+import eventbroker.serverevent.ServerCreateQuizFailEvent;
+import eventbroker.serverevent.ServerCreateQuizSuccesEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import main.Context;
 import main.Main;
+import main.view.AlertBox;
 import quiz.model.Quiz;
 import quiz.util.UserType;
 
@@ -24,7 +26,8 @@ public class CreateQuizController extends EventPublisher {
 	@FXML
 	private TextField mPlayers;
 
-	private CreateQuizHandler createQuizHandler;
+	private CreateQuizFailHandler createQuizFailHandler;
+	private CreateQuizSuccesHandler createQuizSuccesHandler;
 
 	// Reference to the main application
 	private Main main;
@@ -34,26 +37,92 @@ public class CreateQuizController extends EventPublisher {
 	}
 
 	// Getter
-	public CreateQuizHandler getCreateQuizHandler() {
-		return createQuizHandler;
+	public CreateQuizSuccesHandler getCreateQuizFailHandler() {
+		return createQuizSuccesHandler;
+	}
+
+	public CreateQuizSuccesHandler getCreateQuizSuccesHandler() {
+		return createQuizSuccesHandler;
 	}
 
 	// Methods
 	@FXML
 	private void initialize() {
-		createQuizHandler = new CreateQuizHandler();
+		createQuizFailHandler = new CreateQuizFailHandler();
+		createQuizSuccesHandler = new CreateQuizSuccesHandler();
 
-		EventBroker.getEventBroker().addEventListener(ServerCreateQuizEvent.EVENTTYPE, createQuizHandler);
+		EventBroker eventBroker = EventBroker.getEventBroker();
+		eventBroker.addEventListener(ServerCreateQuizFailEvent.EVENTTYPE, createQuizFailHandler);
+		eventBroker.addEventListener(ServerCreateQuizSuccesEvent.EVENTTYPE, createQuizSuccesHandler);
 	}
 
 	@FXML
 	private void handleCreateQuiz() {
-		String name = mQuizname.getText();
-		int teams = Integer.parseInt(mTeams.getText());
-		int players = Integer.parseInt(mPlayers.getText());
-		int rounds = Integer.parseInt(mRounds.getText());
+		String quizname = mQuizname.getText();
+		int rounds = 0;
+		int teams = 0;
+		int players = 0;
+		
+		if (!quizname.matches(Quiz.QUIZNAMEREGEX)) {
+			AlertBox.display("Error", "Quizname is invalid!");
 
-		ClientCreateQuizEvent cCQE = new ClientCreateQuizEvent(name, teams, players, rounds, Context.getContext().getUser().getUsername());
+			return;
+		}
+		
+		try {
+			rounds = Integer.parseInt(mRounds.getText());
+			
+			if (rounds < Quiz.MINROUNDS) {
+				AlertBox.display("Error", "Minimum amount of rounds is " + Quiz.MINROUNDS + "!");
+
+				return;
+			}
+			if (rounds > Quiz.MAXROUNDS) {
+				AlertBox.display("Error", "Maximum amount of rounds is " + Quiz.MAXROUNDS + "!");
+
+				return;
+			}
+		} catch (NumberFormatException e) {
+			AlertBox.display("Error", "Amount of rounds must be a integer between " + Quiz.MINROUNDS + " and " + Quiz.MAXROUNDS + "!");
+		}
+		
+		try {
+			teams = Integer.parseInt(mTeams.getText());
+			
+			if (teams < Quiz.MINTEAMS) {
+				AlertBox.display("Error", "Minimum amount of teams is " + Quiz.MINTEAMS + "!");
+
+				return;
+			}
+			if (teams > Quiz.MAXTEAMS) {
+				AlertBox.display("Error", "Maximum amount of teams is " + Quiz.MAXTEAMS + "!");
+
+				return;
+			}
+		} catch (NumberFormatException e) {
+			AlertBox.display("Error", "Amount of teams must be a integer between " + Quiz.MINTEAMS + " and " + Quiz.MAXTEAMS + "!");
+		}
+		
+		try {
+			players = Integer.parseInt(mPlayers.getText());
+			
+			if (players < Quiz.MINPLAYERS) {
+				AlertBox.display("Error", "Minimum amount of players is " + Quiz.MINPLAYERS + "!");
+
+				return;
+			}
+			if (players > Quiz.MAXPLAYERS) {
+				AlertBox.display("Error", "Maximum amount of players is " + Quiz.MAXPLAYERS + "!");
+
+				return;
+			}
+		} catch (NumberFormatException e) {
+			AlertBox.display("Error", "Amount of players must be a integer between " + Quiz.MINPLAYERS + " and " + Quiz.MAXPLAYERS + "!");
+		}
+
+		// Everything is valid
+		ClientCreateQuizEvent cCQE = new ClientCreateQuizEvent(quizname, teams, players, rounds,
+				Context.getContext().getUser().getUsername());
 		publishEvent(cCQE);
 	}
 
@@ -61,34 +130,48 @@ public class CreateQuizController extends EventPublisher {
 	private void handleBack() {
 		// User is now a USER
 		Context.getContext().getUser().setUserType(UserType.USER);
-		
+
 		EventBroker eventBroker = EventBroker.getEventBroker();
-		eventBroker.removeEventListener(createQuizHandler);
-		
+		eventBroker.removeEventListener(createQuizFailHandler);
+		eventBroker.removeEventListener(createQuizSuccesHandler);
+
 		main.showJoinQuizScene();
 	}
 
-	// Inner class
-	public class CreateQuizHandler implements EventListener {
+	// Inner classes
+	private class CreateQuizFailHandler implements EventListener {
 
 		@Override
 		public void handleEvent(Event event) {
-			ServerCreateQuizEvent sCQE = (ServerCreateQuizEvent) event;
+			@SuppressWarnings("unused")
+			ServerCreateQuizFailEvent sCQSE = (ServerCreateQuizFailEvent) event;
+
+			AlertBox.display("Error", "Create quiz failed!\nThe quizname already exists.");
+		}
+
+	}
+
+	private class CreateQuizSuccesHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ServerCreateQuizSuccesEvent sCQE = (ServerCreateQuizSuccesEvent) event;
 
 			int quizID = sCQE.getQuizID();
 			String quizname = sCQE.getQuizname();
-			int maxAmountOfTeams = sCQE.getMaxAmountOfTeams();
-			int maxAmountOfPlayersPerTeam = sCQE.getMaxAmountOfPlayersPerTeam();
-			int maxAmountOfRounds = sCQE.getMaxAmountOfRounds();
+			int rounds = sCQE.getMaxAmountOfRounds();
+			int teams = sCQE.getMaxAmountOfTeams();
+			int players = sCQE.getMaxAmountOfPlayersPerTeam();
 			int hostID = sCQE.getHostID();
 			String hostname = sCQE.getHostname();
 
-			Context.getContext().setQuiz(new Quiz(quizID, quizname, maxAmountOfTeams, maxAmountOfPlayersPerTeam,
-					maxAmountOfRounds, hostID, hostname));
+			Quiz.createQuiz(quizID, quizname, rounds, teams, players, hostID, hostname);
 
-			EventBroker.getEventBroker().removeEventListener(createQuizHandler);
+			EventBroker eventBroker = EventBroker.getEventBroker();
+			eventBroker.removeEventListener(createQuizFailHandler);
+			eventBroker.removeEventListener(createQuizSuccesHandler);
 
-			main.showQuizroomScene();
+			main.showJoinTeamScene();
 		}
 
 	}

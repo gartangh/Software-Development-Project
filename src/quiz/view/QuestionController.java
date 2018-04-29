@@ -28,7 +28,7 @@ import main.Main;
 import quiz.model.AnswerVoteModel;
 import quiz.model.MCQuestion;
 
-public class QuestionFormController extends EventPublisher {
+public class QuestionController extends EventPublisher {
 
 	@FXML
 	private Label questionTitle;
@@ -202,7 +202,7 @@ public class QuestionFormController extends EventPublisher {
 	private void handleAnswer() {
 		Context context = Context.getContext();
 		int answer = this.getChecked();
-		if (context.getQuiz().getTeams().get(context.getTeamID()).getCaptainID() != Context.getContext().getUser()
+		if (context.getQuiz().getTeamMap().get(context.getTeamID()).getCaptainID() != Context.getContext().getUser()
 				.getUserID()) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.initOwner(main.getPrimaryStage());
@@ -228,7 +228,7 @@ public class QuestionFormController extends EventPublisher {
 
 	@FXML
 	private void handleNext() {
-		if (Context.getContext().getQuiz().getTeams().get(Context.getContext().getTeamID()).getCaptainID() != Context
+		if (Context.getContext().getQuiz().getTeamMap().get(Context.getContext().getTeamID()).getCaptainID() != Context
 				.getContext().getUser().getUserID()) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.initOwner(main.getPrimaryStage());
@@ -315,7 +315,7 @@ public class QuestionFormController extends EventPublisher {
 			eventBroker.removeEventListener(newRoundHandler);
 			eventBroker.removeEventListener(endQuizHandler);
 
-			main.showWaitRound();
+			main.showWaitRoundScene();
 		}
 
 	}

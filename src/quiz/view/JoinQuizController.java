@@ -150,7 +150,7 @@ public class JoinQuizController extends EventPublisher {
 			eventBroker.removeEventListener(sendQuizHandler);
 			eventBroker.removeEventListener(startQuizHandler);
 
-			main.showQuizroomScene();
+			main.showJoinTeamScene();
 		}
 
 	}
@@ -177,14 +177,13 @@ public class JoinQuizController extends EventPublisher {
 
 			int quizID = sSQE.getQuizID();
 			String quizname = sSQE.getQuizname();
-			int maxAmountOfTeams = sSQE.getMaxAmountOfTeams();
-			int maxAmountOfPlayersPerTeam = sSQE.getMaxAmountOfPlayersPerTeam();
-			int maxAmountOfRounds = sSQE.getMaxAmountOfRounds();
+			int rounds = sSQE.getMaxAmountOfRounds();
+			int teams = sSQE.getMaxAmountOfTeams();
+			int players = sSQE.getMaxAmountOfPlayersPerTeam();
 			int hostID = sSQE.getHostID();
 			String hostname = sSQE.getHostname();
-
-			joinQuizModel.addQuiz(new Quiz(quizID, quizname, maxAmountOfTeams, maxAmountOfPlayersPerTeam,
-					maxAmountOfRounds, hostID, hostname));
+			
+			joinQuizModel.addQuiz(Quiz.createQuiz(quizID, quizname, rounds, teams, players, hostID, hostname));
 		}
 
 	}

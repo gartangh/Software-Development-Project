@@ -11,7 +11,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Alert.AlertType;
 import main.Context;
@@ -20,15 +19,13 @@ import quiz.model.MCQuestion;
 import quiz.util.Difficulty;
 import quiz.util.Theme;
 
-public class RoundMakerController extends EventPublisher {
+public class CreateRoundController extends EventPublisher {
 	@FXML
 	ChoiceBox<String> themeChoiceBox;
 	@FXML
 	ChoiceBox<String> diffChoiceBox;
 	@FXML
 	ChoiceBox<String> numberChoiceBox;
-	@FXML
-	Button confirmButton;
 
 	private StartRoundHandler startRoundHandler;
 	private NewQuestionHandler newQuestionHandler;
@@ -57,7 +54,7 @@ public class RoundMakerController extends EventPublisher {
 	}
 
 	@FXML
-	private void handleConfirm() {
+	private void handleCreateRound() {
 		boolean blank = false;
 		Theme theme = Theme.CULTURE;
 		switch ((String) themeChoiceBox.getValue()) {
@@ -134,12 +131,12 @@ public class RoundMakerController extends EventPublisher {
 
 			// This is the roundHandler for a player. You need to show a
 			// Quizmaster screen here.
-			// TODO: Make Special screen for Quizmaster. Now it is only a
+			// TODO Make Special screen for Quizmaster. Now it is only a
 			// waiting screen until the round has finished
 			EventBroker.getEventBroker().removeEventListener(startRoundHandler);
 			EventBroker.getEventBroker().removeEventListener(newQuestionHandler);
 
-			main.showWaitHost();
+			main.showWaitHostScene();
 		}
 	}
 

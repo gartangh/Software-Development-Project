@@ -12,13 +12,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<BorderPane xmlns="http://javafx.com/javafx/8.0.141"
-	xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.RoundMakerController">
+<BorderPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.CreateRoundController">
 	<center>
 		<VBox spacing="5.0" BorderPane.alignment="CENTER">
 			<children>
-				<Label text="Settings for new round:">
+				<Label text="Create round">
 					<VBox.margin>
 						<Insets />
 					</VBox.margin>
@@ -28,29 +26,21 @@
 				</Label>
 				<GridPane>
 					<columnConstraints>
-						<ColumnConstraints hgrow="SOMETIMES" minWidth="130.0"
-							prefWidth="100.0" />
-						<ColumnConstraints hgrow="ALWAYS" minWidth="10.0"
-							prefWidth="100.0" />
+						<ColumnConstraints hgrow="SOMETIMES" minWidth="130.0" prefWidth="100.0" />
+						<ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
 					</columnConstraints>
 					<rowConstraints>
-						<RowConstraints minHeight="30.0" prefHeight="30.0"
-							vgrow="SOMETIMES" />
-						<RowConstraints minHeight="10.0" prefHeight="30.0"
-							vgrow="SOMETIMES" />
-						<RowConstraints minHeight="30.0" prefHeight="30.0"
-							vgrow="SOMETIMES" />
+						<RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+						<RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
 					</rowConstraints>
 					<children>
 						<Label text="Theme" />
 						<Label text="Difficulty" GridPane.rowIndex="1" />
 						<Label text="Number of questions" GridPane.rowIndex="2" />
-						<ChoiceBox fx:id="themeChoiceBox" minWidth="100.0"
-							prefWidth="200.0" GridPane.columnIndex="1" />
-						<ChoiceBox fx:id="diffChoiceBox" minWidth="100.0"
-							prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-						<ChoiceBox fx:id="numberChoiceBox" prefWidth="200.0"
-							GridPane.columnIndex="1" GridPane.rowIndex="2" />
+						<ChoiceBox fx:id="themeChoiceBox" minWidth="100.0" prefWidth="200.0" GridPane.columnIndex="1" />
+						<ChoiceBox fx:id="diffChoiceBox" minWidth="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+						<ChoiceBox fx:id="numberChoiceBox" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 					</children>
 					<padding>
 						<Insets left="15.0" />
@@ -58,9 +48,11 @@
 				</GridPane>
 				<ButtonBar>
 					<buttons>
-						<Button fx:id="confirmButton" mnemonicParsing="false"
-							onAction="#handleConfirm" text="Confirm" />
+						<Button mnemonicParsing="false" onAction="#handleCreateRound" text="Create round" />
 					</buttons>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
 				</ButtonBar>
 			</children>
 			<padding>

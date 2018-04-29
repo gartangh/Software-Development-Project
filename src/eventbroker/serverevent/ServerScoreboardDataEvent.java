@@ -24,7 +24,7 @@ public class ServerScoreboardDataEvent extends ServerEvent {
 
 		// Adds all teams to teams and sets all recipients from the quiz
 		Quiz quiz = ServerContext.getContext().getQuizMap().get(quizID);
-		Map<Integer, Team> quizTeams = quiz.getTeams();
+		Map<Integer, Team> quizTeams = quiz.getTeamMap();
 
 		ArrayList<Team> quizTeamsList = new ArrayList<>();
 		for (Entry<Integer, Team> team : quizTeams.entrySet()) {

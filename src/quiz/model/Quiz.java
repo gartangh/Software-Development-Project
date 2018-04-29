@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import main.Context;
 import quiz.util.Difficulty;
 import quiz.util.Theme;
 import quiz.util.RoundType;
@@ -12,114 +14,89 @@ import server.ServerContext;
 @SuppressWarnings("serial")
 public class Quiz implements Serializable {
 
-	private final static int MAXROUNDS = 10;
-	private final static int MAXQUESTIONS = 10;
-	private final static int MAXTEAMS = 10;
-	private final static int MAXPLAYERS = 10;
-	private final static String QUIZNAMEREGEX = "^[a-zA-Z0-9._-]{3,}$";
+	public final static int MINROUNDS = 1;
+	public final static int MAXROUNDS = 5;
+	public final static int MINTEAMS = 2;
+	public final static int MAXTEAMS = 5;
+	public final static int MINPLAYERS = 1;
+	public final static int MAXPLAYERS = 5;
+	public final static String QUIZNAMEREGEX = "^[a-zA-Z0-9._-]{3,}$";
 
-	private String quizname;
 	private int quizID;
-	private int amountOfRounds = 0;
-	// minAmountOfRounds = 1;
-	private int maxAmountOfRounds;
-	private transient ArrayList<Round> rounds = new ArrayList<>();
+	private String quizname;
+	// Maximum amount of rounds
+	private int rounds;
+	private transient ArrayList<Round> roundList = new ArrayList<>();
 	private int currentRound = -1;
-	private int amountOfTeams = 0;
-	// minAmountOfTeams = 2;
-	private int maxAmountOfTeams;
-	// minAmountofPlayersPerTeam = 1;
-	private int maxAmountOfPlayersPerTeam;
+	// Maximum amount of teams
+	private int teams;
+	// Map(teamID -> team)
+	private Map<Integer, Team> teamMap = new HashMap<>();
+	// Maximum amount of players per team
+	private int players;
 	private int hostID;
 	private String hostname;
-	// Map(teamID -> team)
-	private Map<Integer, Team> teams = new HashMap<Integer, Team>();
 	// Map(teamID -> Map(userID -> vote))
 	private Map<Integer, Map<Integer, Integer>> votes = new HashMap<>();
+	// Map(userID -> username)
 	private Map<Integer, String> unassignedPlayers = new HashMap<>();
-	private boolean isRunning = false;
+	private boolean running = false;
 
-	public Quiz(int quizID, String quizname, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds,
-			int hostID, String hostname) {
+	// Constructor
+	private Quiz(int quizID, String quizname, int rounds, int teams, int players, int hostID, String hostname) {
 		this.quizID = quizID;
 		this.quizname = quizname;
-		this.maxAmountOfTeams = maxAmountOfTeams;
-		this.maxAmountOfPlayersPerTeam = maxAmountOfPlayersPerTeam;
-		this.maxAmountOfRounds = maxAmountOfRounds;
+		this.rounds = rounds;
+		this.teams = teams;
+		this.players = players;
 		this.hostID = hostID;
 		this.hostname = hostname;
 	}
 
-	// Factory method
-	/*
-	 * public static int createQuiz(String quizname, int rounds, int questions,
-	 * int teams, int players) { if (!quizname.matches(QUIZNAMEREGEX)) return 1;
-	 * else if (!isUniqueQuizname(quizname)) return 2; else if (rounds < 1)
-	 * return 3; else if (rounds > MAXROUNDS) return 4; else if (questions < 1)
-	 * return 5; else if (questions > MAXQUESTIONS) return 6; else if (teams <
-	 * 2) return 7; else if (teams > MAXTEAMS) return 8; else if (players < 1)
-	 * return 9; else if (players > MAXPLAYERS) return 10;
-	 *
-	 * // Everything is valid Quiz quiz = new Quiz(quizname, rounds, questions,
-	 * teams, players);
-	 *
-	 * quiz.quizID = n++;
-	 *
-	 * Context.getContext().setQuiz(quiz);
-	 *
-	 * return 0; }
-	 */
-
-	// Factory method
-	/*
-	 * public static void createServerQuiz(String quizname, int quizID, int
-	 * rounds, int questions, int teams, int players) { Quiz quiz = new
-	 * Quiz(quizname, rounds, questions, teams, players);
-	 *
-	 * quiz.quizID = quizID;
-	 *
-	 * ServerContext.getContext().addQuiz(quiz); }
-	 */
-
-	// Getters
-	public static int getMaxrounds() {
-		return MAXROUNDS;
+	// Factory methods
+	public static int createServerQuiz(String quizname, int rounds, int teams, int players, int hostID,
+			String hostname) {
+		// Server side
+		// Generate random quizID
+		ServerContext context = ServerContext.getContext();
+		int quizID;
+		do
+			quizID = (int) (Math.random() * Integer.MAX_VALUE);
+		while (context.getQuizMap().containsKey(quizID));
+		
+		context.getQuizMap().put(quizID, new Quiz(quizID, quizname, rounds, teams, players, hostID, hostname));
+		
+		return quizID;
+	}
+	
+	public static Quiz createQuiz(int quizID, String quizname, int rounds, int teams, int players, int hostID,
+			String hostname) {
+		// Client side
+		Quiz quiz = new Quiz(quizID, quizname, rounds, teams, players, hostID, hostname);
+		Context.getContext().setQuiz(quiz);
+		
+		return quiz;
 	}
 
-	public static int getMaxquestions() {
-		return MAXQUESTIONS;
-	}
-
-	public Map<Integer, Team> getTeams() {
-		return teams;
-	}
-
-	public static int getMaxteams() {
-		return MAXTEAMS;
-	}
-
-	public static int getMaxplayers() {
-		return MAXPLAYERS;
-	}
-
-	public String getQuizname() {
-		return quizname;
-	}
-
+	// Getters and setters
 	public int getQuizID() {
 		return quizID;
 	}
-
+	
+	public String getQuizname() {
+		return quizname;
+	}
+	
 	public int getAmountOfRounds() {
-		return amountOfRounds;
+		return roundList.size();
 	}
-
-	public int getMaxAmountOfRounds() {
-		return maxAmountOfRounds;
+	
+	public int getRounds() {
+		return rounds;
 	}
-
-	public Round getRound() {
-		return rounds.get(currentRound);
+	
+	public ArrayList<Round> getRoundList() {
+		return roundList;
 	}
 
 	public int getCurrentRound() {
@@ -127,23 +104,23 @@ public class Quiz implements Serializable {
 	}
 
 	public int getAmountOfTeams() {
-		return amountOfTeams;
+		return teamMap.size();
 	}
 
-	public int getMaxAmountOfTeams() {
-		return maxAmountOfTeams;
+	public int getTeams() {
+		return teams;
+	}
+	
+	public Map<Integer, Team> getTeamMap() {
+		return teamMap;
 	}
 
-	public int getMaxAmountOfPlayersPerTeam() {
-		return maxAmountOfPlayersPerTeam;
+	public int getPlayers() {
+		return players;
 	}
 
 	public int getHostID() {
 		return hostID;
-	}
-
-	public void setHostID(int hostID) {
-		this.hostID = hostID;
 	}
 
 	public String getHostname() {
@@ -153,42 +130,43 @@ public class Quiz implements Serializable {
 	public Map<Integer, Map<Integer, Integer>> getVotes() {
 		return votes;
 	}
+	
+	public Map<Integer, String> getUnassignedPlayers() {
+		return unassignedPlayers;
+	}
+	
+	public boolean getRunning() {
+		return running;
+	}
 
-	public boolean isAnsweredByAll() {
-		if (this.getRound().getNumberOfAnswers() != teams.size())
-			return true;
-
-		return false;
+	public void setRunning(boolean running) {
+		this.running = running;
 	}
 
 	// Adders and removers
 	public void addTeam(Team team) {
-		if (amountOfTeams < maxAmountOfTeams) {
-			teams.put(team.getTeamID(), team);
-			amountOfTeams++;
-			team.setMaxAmountOfPlayers(maxAmountOfPlayersPerTeam);
+		if (teamMap.size() < teams) {
+			teamMap.put(team.getTeamID(), team);
+			team.setPlayers(players);
+		} else {
+			// TODO Go back and show error
+		}
+	}
+	
+	public void removeTeam(int teamID) {
+		if (teamMap.get(teamID) != null) {
+			teamMap.remove(teamID);
 		} else {
 			// TODO Go back and show error
 		}
 	}
 
 	public void addRound(Difficulty diff, Theme theme, int questions) {
-		if (amountOfRounds < maxAmountOfRounds) {
+		if (roundList.size() < rounds) {
 			Round round = new Round(RoundType.MC, diff, theme, questions);
-			rounds.add(round);
+			roundList.add(round);
 			round.addQuestions(questions);
 			currentRound++;
-			amountOfRounds++;
-		} else {
-			// TODO Go back and show error
-		}
-	}
-
-	// Removers
-	public void removeTeam(int teamID) {
-		if (teams.get(teamID) != null) {
-			teams.remove(teamID);
-			amountOfTeams--;
 		} else {
 			// TODO Go back and show error
 		}
@@ -203,29 +181,6 @@ public class Quiz implements Serializable {
 		votes.put(teamID, teamVotes);
 	}
 
-	public void resetVotes() {
-		this.votes = new HashMap<Integer, Map<Integer, Integer>>();
-	}
-
-	public void addAnswer(int teamID, int questionID, int answer) {
-		rounds.get(currentRound).addAnswer(teamID, questionID, answer);
-	}
-
-	public void addPoints(int teamID, int questionID, int answer) {
-		MCQuestion q = (MCQuestion) ServerContext.getContext().getQuestion(questionID);
-		if (answer == q.getCorrectAnswer()) {
-			teams.get(teamID).addPoints(1);
-		}
-	}
-
-	// Methods
-	/*
-	 * private static boolean isUniqueQuizname(String quizname) { // TODO: Check
-	 * uniqueness of quizname
-	 *
-	 * return true; // Temporary }
-	 */
-
 	public void addUnassignedPlayer(int userID, String username) {
 		unassignedPlayers.put(userID, username);
 	}
@@ -234,20 +189,30 @@ public class Quiz implements Serializable {
 		unassignedPlayers.remove(userID);
 	}
 
-	public Map<Integer, String> getUnassignedPlayers() {
-		return unassignedPlayers;
-	}
+	// Methods
+	public boolean isAnsweredByAll() {
+		if (roundList.get(currentRound).getNumberOfAnswers() != teamMap.size())
+			return true;
 
+		return false;
+	}
+	
+	public void resetVotes() {
+		this.votes = new HashMap<Integer, Map<Integer, Integer>>();
+	}
+	
 	public void clearUnassignedPlayers() {
 		unassignedPlayers.clear();
 	}
-
-	public boolean isRunning() {
-		return isRunning;
+	
+	public void addAnswer(int teamID, int questionID, int answer) {
+		roundList.get(currentRound).addAnswer(teamID, questionID, answer);
 	}
-
-	public void setRunning(boolean isRunning) {
-		this.isRunning = isRunning;
+	
+	public void addPoints(int teamID, int questionID, int answer) {
+		MCQuestion q = (MCQuestion) ServerContext.getContext().getQuestion(questionID);
+		if (answer == q.getCorrectAnswer())
+			teamMap.get(teamID).addPoints(1);
 	}
 
 }

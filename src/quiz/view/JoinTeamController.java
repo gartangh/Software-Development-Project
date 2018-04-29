@@ -30,7 +30,7 @@ import eventbroker.serverevent.ServerNewTeamEvent;
 import eventbroker.serverevent.ServerQuizNewPlayerEvent;
 import eventbroker.serverevent.ServerStartQuizEvent;
 
-public class QuizRoomController extends EventPublisher {
+public class JoinTeamController extends EventPublisher {
 	@FXML
 	private TableView<TeamNameID> teamTable;
 	@FXML
@@ -105,13 +105,13 @@ public class QuizRoomController extends EventPublisher {
 		Context context = Context.getContext();
 		String errorMessage = "";
 		if (context.getQuiz().getHostID() != context.getUser().getUserID()) {
-			if (context.getQuiz().getAmountOfTeams() < context.getQuiz().getMaxAmountOfTeams()) {
+			if (context.getQuiz().getAmountOfTeams() < context.getQuiz().getTeams()) {
 				User currUser = context.getUser();
 				int currTeamID = context.getTeamID();
 				int currCaptainID;
 
 				if (currTeamID != -1)
-					currCaptainID = context.getQuiz().getTeams().get(currTeamID).getCaptainID();
+					currCaptainID = context.getQuiz().getTeamMap().get(currTeamID).getCaptainID();
 				else
 					currCaptainID = -1;
 
@@ -119,7 +119,7 @@ public class QuizRoomController extends EventPublisher {
 					ClientNewTeamEvent cNTE = new ClientNewTeamEvent(context.getQuiz().getQuizID(), "",
 							Color.TRANSPARENT);
 					
-					boolean okClicked = main.showNewTeam(cNTE);
+					boolean okClicked = main.showCreateTeamScene(cNTE);
 					if (okClicked)
 						publishEvent(cNTE);
 				} else
@@ -154,7 +154,7 @@ public class QuizRoomController extends EventPublisher {
 				EventBroker.getEventBroker().removeEventListener(startQuizHandler);
 				EventBroker.getEventBroker().removeEventListener(quizNewPlayerHandler);
 
-				main.showWaitRound();
+				main.showWaitRoundScene();
 			} else {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.initOwner(main.getPrimaryStage());
@@ -179,7 +179,7 @@ public class QuizRoomController extends EventPublisher {
 
 				int currCaptainID;
 				if (currTeamID != -1)
-					currCaptainID = context.getQuiz().getTeams().get(currTeamID).getCaptainID();
+					currCaptainID = context.getQuiz().getTeamMap().get(currTeamID).getCaptainID();
 				else
 					currCaptainID = -1;
 
@@ -268,8 +268,8 @@ public class QuizRoomController extends EventPublisher {
 
 			Context context = Context.getContext();
 			if (quizID == context.getQuiz().getQuizID()) {
-				Team newteam = context.getQuiz().getTeams().get(newteamID);
-				Team oldteam = context.getQuiz().getTeams().get(oldteamID);
+				Team newteam = context.getQuiz().getTeamMap().get(newteamID);
+				Team oldteam = context.getQuiz().getTeamMap().get(oldteamID);
 
 				if (newteam != null) {
 					// Should always happen
@@ -307,10 +307,10 @@ public class QuizRoomController extends EventPublisher {
 
 			if (context.getQuiz().getHostID() == context.getUser().getUserID()) {
 				context.getQuiz().setRunning(true);
-				main.showCreateRound();
+				main.showCreateRoundScene();
 			} else if (context.getTeamID() != -1) {
 				context.getQuiz().setRunning(true);
-				main.showWaitRound();
+				main.showWaitRoundScene();
 			} else {
 				context.setQuiz(null);
 				main.showJoinQuizScene();

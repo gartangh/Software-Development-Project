@@ -40,7 +40,7 @@
 				</GridPane>
 				<ButtonBar>
 					<buttons>
-						<Button mnemonicParsing="false" onAction="#handleOK" text="OK" />
+						<Button mnemonicParsing="false" onAction="#handleCreateTeam" text="Create team" />
 						<Button mnemonicParsing="false" onAction="#handleBack" text="Back" />
 					</buttons>
 				</ButtonBar>

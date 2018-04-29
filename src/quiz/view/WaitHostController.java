@@ -39,7 +39,7 @@ public class WaitHostController extends EventPublisher {
 			EventBroker.getEventBroker().removeEventListener(newRoundHandler);
 			EventBroker.getEventBroker().removeEventListener(endQuizHandler);
 
-			main.showCreateRound();
+			main.showCreateRoundScene();
 		}
 
 	}

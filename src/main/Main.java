@@ -20,9 +20,9 @@ import quiz.view.CreateQuizController;
 import quiz.view.JoinQuizController;
 import quiz.view.LogInController;
 import quiz.view.CreateTeamController;
-import quiz.view.QuestionFormController;
-import quiz.view.QuizRoomController;
-import quiz.view.RoundMakerController;
+import quiz.view.QuestionController;
+import quiz.view.JoinTeamController;
+import quiz.view.CreateRoundController;
 import quiz.view.ScoreboardController;
 import quiz.view.WaitHostController;
 import quiz.view.WaitRoundController;
@@ -38,11 +38,11 @@ public class Main extends Application {
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
+
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
@@ -83,7 +83,6 @@ public class Main extends Application {
 			e.printStackTrace();
 		}
 	}
-
 
 	// Getters
 	public Stage getPrimaryStage() {
@@ -172,12 +171,12 @@ public class Main extends Application {
 		}
 	}
 
-	public void showQuizroomScene() {
+	public void showJoinTeamScene() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(Main.class.getResource("../quiz/view/Quizroom.fxml"));
+			loader.setLocation(Main.class.getResource("../quiz/view/JoinTeam.fxml"));
 			BorderPane content = (BorderPane) loader.load();
-			QuizRoomController quizcontroller = loader.getController();
+			JoinTeamController quizcontroller = loader.getController();
 			quizcontroller.setMain(this);
 
 			Platform.runLater(new Runnable() {
@@ -208,10 +207,10 @@ public class Main extends Application {
 		}
 	}
 
-	public boolean showNewTeam(ClientNewTeamEvent teamevent) {
+	public boolean showCreateTeamScene(ClientNewTeamEvent teamevent) {
 		try {
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(Main.class.getResource("../quiz/view/NewTeam.fxml"));
+			loader.setLocation(Main.class.getResource("../quiz/view/CreateTeam.fxml"));
 			BorderPane newteam = (BorderPane) loader.load();
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("New Team");
@@ -236,12 +235,12 @@ public class Main extends Application {
 		}
 	}
 
-	public void showQuestionForm() {
+	public void showQuestionScene() {
 		try {
 			FXMLLoader questionFormLoader = new FXMLLoader();
-			questionFormLoader.setLocation(Main.class.getResource("../quiz/view/QuestionForm.fxml"));
+			questionFormLoader.setLocation(Main.class.getResource("../quiz/view/Question.fxml"));
 			BorderPane questionFormRoot = (BorderPane) questionFormLoader.load();
-			QuestionFormController questionFormController = questionFormLoader.getController();
+			QuestionController questionFormController = questionFormLoader.getController();
 			questionFormController.setMainApp(this);
 
 			Platform.runLater(new Runnable() {
@@ -254,7 +253,7 @@ public class Main extends Application {
 		}
 	}
 
-	public void showWaitRound() {
+	public void showWaitRoundScene() {
 		try {
 			FXMLLoader waitRoundLoader = new FXMLLoader();
 			waitRoundLoader.setLocation(Main.class.getResource("../quiz/view/WaitRound.fxml"));
@@ -272,7 +271,7 @@ public class Main extends Application {
 		}
 	}
 
-	public void showWaitHost() {
+	public void showWaitHostScene() {
 		try {
 			FXMLLoader waitHostLoader = new FXMLLoader();
 			waitHostLoader.setLocation(Main.class.getResource("../quiz/view/WaitHost.fxml"));
@@ -290,12 +289,12 @@ public class Main extends Application {
 		}
 	}
 
-	public void showCreateRound() {
+	public void showCreateRoundScene() {
 		try {
 			FXMLLoader roundMakerLoader = new FXMLLoader();
-			roundMakerLoader.setLocation(Main.class.getResource("../quiz/view/RoundMaker.fxml"));
+			roundMakerLoader.setLocation(Main.class.getResource("../quiz/view/CreateRound.fxml"));
 			BorderPane roundMakerRoot = (BorderPane) roundMakerLoader.load();
-			RoundMakerController roundMakerController = roundMakerLoader.getController();
+			CreateRoundController roundMakerController = roundMakerLoader.getController();
 			roundMakerController.setMain(this);
 
 			Platform.runLater(new Runnable() {

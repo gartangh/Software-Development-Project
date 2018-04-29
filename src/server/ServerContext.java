@@ -67,7 +67,7 @@ public class ServerContext {
 		if (quizMap.containsKey(quizID) && userMap.containsKey(userID) && teamID != -1) {
 			Quiz quiz = quizMap.get(quizID);
 			User user = userMap.get(userID);
-			Team team = quiz.getTeams().get(teamID);
+			Team team = quiz.getTeamMap().get(teamID);
 
 			if (team != null) {
 				if (type == 'a') {// add
@@ -85,20 +85,6 @@ public class ServerContext {
 		return null;
 	}
 
-	public int addQuiz(String quizName, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds,
-			int hostID) {
-		int newID;
-		do {
-			newID = (int) (Math.random() * Integer.MAX_VALUE);
-		} while (quizMap.containsKey(newID));
-
-		Quiz quiz = new Quiz(newID, quizName, maxAmountOfTeams, maxAmountOfPlayersPerTeam, maxAmountOfRounds, hostID,
-				userMap.get(hostID).getUsername());
-		quizMap.put(newID, quiz);
-
-		return newID;
-	}
-
 	public int addTeam(int quizID, String teamName, Color color, int captainID) {
 		if (quizMap.containsKey(quizID) && userMap.containsKey(captainID)) {
 			Quiz q = quizMap.get(quizID);
@@ -108,14 +94,14 @@ public class ServerContext {
 			do {
 				unique = true;
 				newID = (int) (Math.random() * Integer.MAX_VALUE);
-				for (Team t : q.getTeams().values()) {
+				for (Team t : q.getTeamMap().values()) {
 					if (t.getTeamID() == newID)
 						unique = false;
 				}
 			} while (!unique);
 
 			Team team = new Team(newID, teamName, color, captainID, userMap.get(captainID).getUsername());
-			team.setMaxAmountOfPlayers(q.getMaxAmountOfPlayersPerTeam());
+			team.setPlayers(q.getPlayers());
 			q.addTeam(team);
 			quizMap.put(quizID, q);
 
@@ -194,8 +180,8 @@ public class ServerContext {
 		ArrayList<Integer> r = new ArrayList<>();
 		Quiz quiz = quizMap.get(quizID);
 
-		for (Team team : quiz.getTeams().values())
-			for (int userID : team.getPlayers().keySet())
+		for (Team team : quiz.getTeamMap().values())
+			for (int userID : team.getPlayerMap().keySet())
 				r.add(userID);
 
 		for (int userID : quiz.getUnassignedPlayers().keySet())

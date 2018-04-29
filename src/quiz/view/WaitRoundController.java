@@ -44,7 +44,7 @@ public class WaitRoundController extends EventPublisher {
 			eventBroker.removeEventListener(startRoundHandler);
 			eventBroker.removeEventListener(newQuestionHandler);
 
-			main.showQuestionForm();
+			main.showQuestionScene();
 		}
 
 	}

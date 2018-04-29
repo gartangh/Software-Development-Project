@@ -75,7 +75,7 @@ public class ScoreboardController extends EventPublisher {
 		// TO DO: Clear quiz, go back to quizroom
 		EventBroker.getEventBroker().removeEventListener(scoreboardDataHandler);
 
-		main.showQuizroomScene();
+		main.showJoinTeamScene();
 	}
 
 	/**

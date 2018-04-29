@@ -20,7 +20,7 @@ public class ServerGetQuizzesEvent extends ServerEvent {
 
 		Map<Integer, Quiz> map = ServerContext.getContext().getQuizMap();
 		for (Entry<Integer, Quiz> quizEntry : map.entrySet()) {
-			if (!quizEntry.getValue().isRunning())
+			if (!quizEntry.getValue().getRunning())
 				quizMap.put(quizEntry.getKey(), quizEntry.getValue());
 		}
 	}

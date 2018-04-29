@@ -5,7 +5,6 @@
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -17,26 +16,18 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.QuizRoomController">
+<BorderPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.JoinTeamController">
 	<left>
 		<VBox spacing="5.0" BorderPane.alignment="CENTER">
 			<padding>
 				<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
 			</padding>
 			<children>
-				<ScrollPane VBox.vgrow="SOMETIMES">
-					<content>
-						<AnchorPane>
-							<children>
-								<TableView fx:id="teamTable" layoutX="2.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <columns>
-                              <TableColumn fx:id="NameColumn" prefWidth="244.00000309944153" text="Teams" />
-                           </columns>
+								<TableView fx:id="teamTable" VBox.vgrow="ALWAYS">
+               <columns>
+                  <TableColumn fx:id="NameColumn" maxWidth="1.7976931348623157E308" minWidth="70.0" prefWidth="-1.0" text="Teams" />
+               </columns>
 								</TableView>
-							</children>
-						</AnchorPane>
-					</content>
-				</ScrollPane>
 				<ButtonBar prefHeight="40.0" prefWidth="334.0">
 					<buttons>
 						<Button mnemonicParsing="false" onAction="#handleCreateTeam" text="Create team" />

@@ -20,7 +20,7 @@ public class User implements Serializable {
 	private UserType userType = UserType.USER;
 
 	// Constructors
-	public User(int userID, String username, String password) {
+	private User(int userID, String username, String password) {
 		this.userID = userID;
 		this.username = username;
 		this.password = password;
@@ -32,24 +32,15 @@ public class User implements Serializable {
 		this.xp = xp;
 	}
 
-	User(User user) {
-		// Copy constructor
-		this.username = user.username;
-		this.password = user.password;
-		this.level = user.level;
-		this.xp = user.xp;
-		this.userID = user.userID;
-	}
-
 	// Factory methods
 	public static int createUser(String username, String password, int connectionID) {
 		// Server side
 		// Generate random userID
 		ServerContext context = ServerContext.getContext();
 		int userID;
-		do {
+		do
 			userID = (int) (Math.random() * Integer.MAX_VALUE);
-		} while (context.getUserMap().containsKey(userID));
+		while (context.getUserMap().containsKey(userID));
 		
 		context.getUserMap().put(userID, new User(userID, username, password));
 		context.getNetwork().getUserIDConnectionIDMap().put(userID, connectionID);
@@ -89,6 +80,7 @@ public class User implements Serializable {
 	}
 
 	// Password cannot be changed for the moment
+	// TODO Move this to a new controller
 	/*public int setPassword(String password1, String password2) {
 		if (!password1.equals(password2)) {
 			// TODO: Go back and show error
@@ -133,7 +125,7 @@ public class User implements Serializable {
 
 	@Override
 	public String toString() {
-		// For tableview in Quizroom
+		// For TableView in QuizRoom
 		return username;
 	}
 

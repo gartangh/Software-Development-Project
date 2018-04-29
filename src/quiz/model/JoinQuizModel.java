@@ -15,15 +15,13 @@ public class JoinQuizModel {
 	private StringProperty quizRoundsProperty;
 	private StringProperty teamProperty;
 	private StringProperty playersProperty;
-
 	private BooleanProperty joinDisableProperty;
 
 	public JoinQuizModel() {
-		quiznameProperty = new SimpleStringProperty("");
+		quiznameProperty = new SimpleStringProperty();
 		quizRoundsProperty = new SimpleStringProperty();
 		teamProperty = new SimpleStringProperty();
 		playersProperty = new SimpleStringProperty();
-
 		joinDisableProperty = new SimpleBooleanProperty(true);
 	}
 
@@ -32,9 +30,9 @@ public class JoinQuizModel {
 		Platform.runLater(new Runnable() {
 			public void run() {
 				quiznameProperty.setValue(quiz.getQuizname());
-				quizRoundsProperty.setValue(Integer.toString(quiz.getMaxAmountOfRounds()));
-				teamProperty.setValue(Integer.toString(quiz.getMaxAmountOfTeams()));
-				playersProperty.setValue(Integer.toString(quiz.getMaxAmountOfPlayersPerTeam()));
+				quizRoundsProperty.setValue(Integer.toString(quiz.getRounds()));
+				teamProperty.setValue(Integer.toString(quiz.getTeams()));
+				playersProperty.setValue(Integer.toString(quiz.getPlayers()));
 				joinDisableProperty.setValue(false);
 			}
 		});

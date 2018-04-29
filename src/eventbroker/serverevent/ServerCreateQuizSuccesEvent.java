@@ -1,7 +1,7 @@
 package eventbroker.serverevent;
 
 @SuppressWarnings("serial")
-public class ServerCreateQuizEvent extends ServerEvent {
+public class ServerCreateQuizSuccesEvent extends ServerEvent {
 
 	public final static String EVENTTYPE = "SERVER_CREATE_QUIZ";
 
@@ -14,7 +14,7 @@ public class ServerCreateQuizEvent extends ServerEvent {
 	private String hostname;
 
 	// Constructor
-	public ServerCreateQuizEvent(int quizID, String quizname, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam,
+	public ServerCreateQuizSuccesEvent(int quizID, String quizname, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam,
 			int maxAmountOfRounds, int hostID, String hostname) {
 		super.type = EVENTTYPE;
 		this.quizID = quizID;

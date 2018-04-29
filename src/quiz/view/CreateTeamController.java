@@ -38,7 +38,7 @@ public class CreateTeamController {
 	}
 
 	@FXML
-	private void handleOK() {
+	private void handleCreateTeam() {
 		if (isInputValid()) {
 			cNTE.setTeamName(mTeamname.getText());
 			cNTE.setColor(mColor.getValue());
