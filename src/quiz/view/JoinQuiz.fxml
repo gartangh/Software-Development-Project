@@ -35,7 +35,7 @@
 						<Label fx:id="mQuizname" text="Label" GridPane.columnIndex="1" />
 						<Label fx:id="mRounds" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 						<Label fx:id="mTeams" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-						<Label fx:id="mPlayersPerTeam" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+						<Label fx:id="mPlayers" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 					</children>
 					<padding>
 						<Insets left="5.0" />
@@ -68,7 +68,7 @@
             <TableView fx:id="quizTable">
               <columns>
                 <TableColumn fx:id="quiznameColumn" maxWidth="-1.0" minWidth="70.0" prefWidth="-1.0" text="Quiz" />
-                <TableColumn fx:id="quizmasternameColumn" maxWidth="-1.0" minWidth="70.0" prefWidth="-1.0" text="Quizmaster" />
+                <TableColumn fx:id="hostnameColumn" maxWidth="-1.0" minWidth="70.0" prefWidth="-1.0" text="Host" />
               </columns>
             </TableView>
             <ButtonBar>

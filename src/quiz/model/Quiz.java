@@ -18,44 +18,36 @@ public class Quiz implements Serializable {
 	private final static int MAXPLAYERS = 10;
 	private final static String QUIZNAMEREGEX = "^[a-zA-Z0-9._-]{3,}$";
 
-	private String quizName;
+	private String quizname;
 	private int quizID;
 	private int amountOfRounds = 0;
 	// minAmountOfRounds = 1;
 	private int maxAmountOfRounds;
 	private transient ArrayList<Round> rounds = new ArrayList<>();
-	private int currentRound = 0;
-	// minAmountofQuestionsPerRound = 1;
-	private int maxAmountOfQuestionsPerRound;
+	private int currentRound = -1;
 	private int amountOfTeams = 0;
 	// minAmountOfTeams = 2;
 	private int maxAmountOfTeams;
 	// minAmountofPlayersPerTeam = 1;
 	private int maxAmountOfPlayersPerTeam;
-	private int quizmasterID;
+	private int hostID;
+	private String hostname;
 	// Map(teamID -> team)
 	private Map<Integer, Team> teams = new HashMap<Integer, Team>();
 	// Map(teamID -> Map(userID -> vote))
 	private Map<Integer, Map<Integer, Integer>> votes = new HashMap<>();
 	private Map<Integer, String> unassignedPlayers = new HashMap<>();
-	private boolean isRunning;
-	private String quizMasterName;
+	private boolean isRunning = false;
 
-	public Quiz(int quizID, String quizName, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds,
-			int maxAmountOfQuestionsPerRound, int hostID, String hostName) {
+	public Quiz(int quizID, String quizname, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds,
+			int hostID, String hostname) {
 		this.quizID = quizID;
-		this.quizName = quizName;
-		this.amountOfTeams = 0;
+		this.quizname = quizname;
 		this.maxAmountOfTeams = maxAmountOfTeams;
 		this.maxAmountOfPlayersPerTeam = maxAmountOfPlayersPerTeam;
 		this.maxAmountOfRounds = maxAmountOfRounds;
-		this.amountOfRounds = 0;
-		this.maxAmountOfQuestionsPerRound = maxAmountOfQuestionsPerRound;
-		this.quizmasterID = hostID;
-		this.quizMasterName = hostName;
-		this.votes = new HashMap<Integer, Map<Integer, Integer>>();
-		this.currentRound = -1;
-		this.isRunning = false;
+		this.hostID = hostID;
+		this.hostname = hostname;
 	}
 
 	// Factory method
@@ -110,12 +102,8 @@ public class Quiz implements Serializable {
 		return MAXPLAYERS;
 	}
 
-	public static String getQuiznameregex() {
-		return QUIZNAMEREGEX;
-	}
-
 	public String getQuizname() {
-		return quizName;
+		return quizname;
 	}
 
 	public int getQuizID() {
@@ -138,10 +126,6 @@ public class Quiz implements Serializable {
 		return currentRound;
 	}
 
-	public int getMaxAmountofQuestionsPerRound() {
-		return maxAmountOfQuestionsPerRound;
-	}
-
 	public int getAmountOfTeams() {
 		return amountOfTeams;
 	}
@@ -154,12 +138,16 @@ public class Quiz implements Serializable {
 		return maxAmountOfPlayersPerTeam;
 	}
 
-	public int getQuizmasterID() {
-		return quizmasterID;
+	public int getHostID() {
+		return hostID;
 	}
 
-	public void setQuizmasterID(int quizmasterID) {
-		this.quizmasterID = quizmasterID;
+	public void setHostID(int hostID) {
+		this.hostID = hostID;
+	}
+
+	public String getHostname() {
+		return hostname;
 	}
 
 	public Map<Integer, Map<Integer, Integer>> getVotes() {
@@ -167,11 +155,10 @@ public class Quiz implements Serializable {
 	}
 
 	public boolean isAnsweredByAll() {
-		int nOA = this.getRound().getNumberOfAnswers();
-		if (nOA == teams.size())
+		if (this.getRound().getNumberOfAnswers() != teams.size())
 			return true;
-		else
-			return false;
+
+		return false;
 	}
 
 	// Adders and removers
@@ -181,17 +168,19 @@ public class Quiz implements Serializable {
 			amountOfTeams++;
 			team.setMaxAmountOfPlayers(maxAmountOfPlayersPerTeam);
 		} else {
-			// TODO: Go back and show error
+			// TODO Go back and show error
 		}
 	}
 
-	public void addRound(Difficulty diff, Theme theme) {
+	public void addRound(Difficulty diff, Theme theme, int questions) {
 		if (amountOfRounds < maxAmountOfRounds) {
-			Round round = new Round(RoundType.MC, diff, theme);
+			Round round = new Round(RoundType.MC, diff, theme, questions);
 			rounds.add(round);
-			round.addQuestions(maxAmountOfQuestionsPerRound);
+			round.addQuestions(questions);
 			currentRound++;
 			amountOfRounds++;
+		} else {
+			// TODO Go back and show error
 		}
 	}
 
@@ -201,7 +190,7 @@ public class Quiz implements Serializable {
 			teams.remove(teamID);
 			amountOfTeams--;
 		} else {
-			// TODO: Go back and show error
+			// TODO Go back and show error
 		}
 	}
 
@@ -261,7 +250,4 @@ public class Quiz implements Serializable {
 		this.isRunning = isRunning;
 	}
 
-	public String getQuizMasterName() {
-		return quizMasterName;
-	}
 }

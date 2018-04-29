@@ -38,7 +38,6 @@ public class Main extends Application {
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
-
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -221,7 +220,7 @@ public class Main extends Application {
 			Scene scene = new Scene(newteam);
 			dialogStage.setScene(scene);
 
-			// Set the person into the controller.
+			// Set the person into the controller
 			NewTeamController controller = loader.getController();
 			controller.setDialogStage(dialogStage);
 			controller.setTeamEvent(teamevent);

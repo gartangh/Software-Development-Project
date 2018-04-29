@@ -18,7 +18,7 @@ public class Network extends EventPublisher implements EventListener {
 
 	public final static String CLIENTTYPE = "CLIENT";
 	public final static String SERVERTYPE = "SERVER";
-	
+
 	private String type;
 	// Map(connectionID -> Connection)
 	private Map<Integer, Connection> connectionMap = new HashMap<>();
@@ -150,22 +150,22 @@ public class Network extends EventPublisher implements EventListener {
 	 */
 	@Override
 	public void handleEvent(Event event) {
-		if (type == "CLIENT") {
+		if (type == CLIENTTYPE)
 			connectionMap.get(0).send(event);
-		} else if (type == "SERVER") {
-			if (event.getType().equals("SERVER_CREATE_ACCOUNT_FAIL_EVENT")) {
+		else if (type == SERVERTYPE) {
+			if (event.getType().equals(ServerCreateAccountFailEvent.EVENTTYPE)) {
 				ServerCreateAccountFailEvent sCAFE = (ServerCreateAccountFailEvent) event;
 
-				for (Entry<Integer, Connection> connection : connectionMap.entrySet()) {
-					if (connection.getValue().getConnectionID() == sCAFE.getConnectionID()) {
+				int connectionID = sCAFE.getConnectionID();
+
+				for (Entry<Integer, Connection> connection : connectionMap.entrySet())
+					if (connection.getValue().getConnectionID() == connectionID) {
 						connection.getValue().send(event);
 						break;
 					}
-				}
-			} else {
+			} else
 				for (int userID : event.getRecipients())
 					connectionMap.get(UserIDConnectionIDMap.get(userID)).send(event);
-			}
 		}
 	}
 

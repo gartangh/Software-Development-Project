@@ -57,15 +57,15 @@ public class NewTeamController {
 	private boolean isInputValid() {
 		String errorMessage = "";
 
-		if (newTeamname.getText() == null || newTeamname.getText().length() == 0) {
+		if (newTeamname.getText() == null || newTeamname.getText().length() == 0)
 			errorMessage += "No valid teamname!\n";
-		}
-		if (colorpicker.getValue() == null) {
+		
+		if (colorpicker.getValue() == null)
 			errorMessage += "No color picked!\n";
-		}
-		if (errorMessage.length() == 0) {
+		
+		if (errorMessage.length() == 0)
 			return true;
-		} else {
+		else {
 			// Show the error message.
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.initOwner(dialogStage);

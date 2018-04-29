@@ -11,17 +11,17 @@ public class ClientCreateQuizEvent extends ClientEvent implements Serializable {
 	private int maxAmountOfTeams;
 	private int maxAmountOfPlayersPerTeam;
 	private int maxAmountOfRounds;
-	private int maxAmountOfQuestionsPerRound;
+	private String hostname;
 
 	// Constructor
 	public ClientCreateQuizEvent(String quizName, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam,
-			int maxAmountOfRounds, int maxAmountOfQuestionsPerRound) {
+			int maxAmountOfRounds, String hostname) {
 		super.type = EVENTTYPE;
 		this.quizName = quizName;
 		this.maxAmountOfTeams = maxAmountOfTeams;
 		this.maxAmountOfPlayersPerTeam = maxAmountOfPlayersPerTeam;
 		this.maxAmountOfRounds = maxAmountOfRounds;
-		this.maxAmountOfQuestionsPerRound = maxAmountOfQuestionsPerRound;
+		this.hostname = hostname;
 	}
 
 	// Getters
@@ -41,8 +41,8 @@ public class ClientCreateQuizEvent extends ClientEvent implements Serializable {
 		return maxAmountOfRounds;
 	}
 
-	public int getMaxAmountOfQuestionsPerRound() {
-		return maxAmountOfQuestionsPerRound;
+	public String getHostname() {
+		return hostname;
 	}
 
 }

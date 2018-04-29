@@ -31,7 +31,7 @@ public class JoinQuizController extends EventPublisher {
 	@FXML
 	private TableColumn<Quiz, String> quiznameColumn;
 	@FXML
-	private TableColumn<Quiz, String> quizmasternameColumn;
+	private TableColumn<Quiz, String> hostnameColumn;
 	@FXML
 	private Button mJoin;
 	@FXML
@@ -41,7 +41,7 @@ public class JoinQuizController extends EventPublisher {
 	@FXML
 	private Label mTeams;
 	@FXML
-	private Label mPlayersPerTeam;
+	private Label mPlayers;
 
 	private Quiz selectedQuiz;
 	private JoinQuizModel joinQuizModel = new JoinQuizModel();
@@ -76,11 +76,11 @@ public class JoinQuizController extends EventPublisher {
 		mQuizname.textProperty().bind(joinQuizModel.getQuiznameProperty());
 		mRounds.textProperty().bind(joinQuizModel.getQuizRoundsProperty());
 		mTeams.textProperty().bind(joinQuizModel.getTeamProperty());
-		mPlayersPerTeam.textProperty().bind(joinQuizModel.getPlayersPerTeamProperty());
+		mPlayers.textProperty().bind(joinQuizModel.getPlayersProperty());
 		mJoin.disableProperty().bind(joinQuizModel.getJoinDisableProperty());
 		quiznameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getQuizname())));
-		quizmasternameColumn
-				.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getQuizMasterName())));
+		hostnameColumn
+				.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getHostname())));
 
 		quizTable.getSelectionModel().selectedItemProperty()
 				.addListener((observable, oldValue, newValue) -> showQuizDetails(newValue));
@@ -171,9 +171,15 @@ public class JoinQuizController extends EventPublisher {
 		public void handleEvent(Event event) {
 			ServerSendQuizEvent sSQE = (ServerSendQuizEvent) event;
 
-			Quiz quiz = sSQE.getQuiz();
+			int quizID = sSQE.getQuizID();
+			String quizname = sSQE.getQuizname();
+			int maxAmountOfTeams = sSQE.getMaxAmountOfTeams();
+			int maxAmountOfPlayersPerTeam = sSQE.getMaxAmountOfPlayersPerTeam();
+			int maxAmountOfRounds = sSQE.getMaxAmountOfRounds();
+			int hostID = sSQE.getHostID();
+			String hostname = sSQE.getHostname();
 
-			joinQuizModel.addQuiz(quiz);
+			joinQuizModel.addQuiz(new Quiz(quizID, quizname, maxAmountOfTeams, maxAmountOfPlayersPerTeam, maxAmountOfRounds, hostID, hostname));
 		}
 
 	}
