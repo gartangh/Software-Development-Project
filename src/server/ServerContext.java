@@ -86,15 +86,15 @@ public class ServerContext {
 	}
 
 	public int addQuiz(String quizName, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam, int maxAmountOfRounds,
-			int maxAmountOfQuestionsPerRound, int hostID) {
+			int hostID) {
 		int newID;
 		do {
 			newID = (int) (Math.random() * Integer.MAX_VALUE);
 		} while (quizMap.containsKey(newID));
 
-		Quiz newQuiz = new Quiz(newID, quizName, maxAmountOfTeams, maxAmountOfPlayersPerTeam, maxAmountOfRounds,
-				maxAmountOfQuestionsPerRound, hostID, userMap.get(hostID).getUsername());
-		quizMap.put(newID, newQuiz);
+		Quiz quiz = new Quiz(newID, quizName, maxAmountOfTeams, maxAmountOfPlayersPerTeam, maxAmountOfRounds, hostID,
+				userMap.get(hostID).getUsername());
+		quizMap.put(newID, quiz);
 
 		return newID;
 	}
@@ -201,7 +201,7 @@ public class ServerContext {
 		for (int userID : quiz.getUnassignedPlayers().keySet())
 			r.add(userID);
 
-		r.add(quiz.getQuizmasterID());
+		r.add(quiz.getHostID());
 
 		return r;
 	}

@@ -16,11 +16,9 @@ import user.Host;
 public class CreateQuizController extends EventPublisher {
 
 	@FXML
-	private TextField mName;
+	private TextField mQuizname;
 	@FXML
 	private TextField mRounds;
-	@FXML
-	private TextField mQuestions;
 	@FXML
 	private TextField mTeams;
 	@FXML
@@ -50,20 +48,22 @@ public class CreateQuizController extends EventPublisher {
 
 	@FXML
 	private void handleCreateQuiz() {
-		String name = mName.getText();
+		String name = mQuizname.getText();
 		int teams = Integer.parseInt(mTeams.getText());
 		int players = Integer.parseInt(mPlayers.getText());
 		int rounds = Integer.parseInt(mRounds.getText());
-		int questions = Integer.parseInt(mRounds.getText());
 
-		ClientCreateQuizEvent cCQE = new ClientCreateQuizEvent(name, teams, players, rounds, questions);
+		ClientCreateQuizEvent cCQE = new ClientCreateQuizEvent(name, teams, players, rounds, Context.getContext().getUser().getUsername());
 		publishEvent(cCQE);
 	}
 
 	@FXML
 	private void handleBack() {
-		// TODO: Handle back
+		// TODO Handle back
 		((Host) Context.getContext().getUser()).castToUser();
+		
+		EventBroker.getEventBroker().removeEventListener(createQuizHandler);
+		
 		main.showJoinQuizScene();
 	}
 
@@ -72,11 +72,18 @@ public class CreateQuizController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event event) {
-			ServerCreateQuizEvent sRQE = (ServerCreateQuizEvent) event;
+			ServerCreateQuizEvent sCQE = (ServerCreateQuizEvent) event;
 
-			Quiz quiz = sRQE.getQuiz();
+			int quizID = sCQE.getQuizID();
+			String quizname = sCQE.getQuizname();
+			int maxAmountOfTeams = sCQE.getMaxAmountOfTeams();
+			int maxAmountOfPlayersPerTeam = sCQE.getMaxAmountOfPlayersPerTeam();
+			int maxAmountOfRounds = sCQE.getMaxAmountOfRounds();
+			int hostID = sCQE.getHostID();
+			String hostname = sCQE.getHostname();
 
-			Context.getContext().setQuiz(quiz);
+			Context.getContext().setQuiz(new Quiz(quizID, quizname, maxAmountOfTeams, maxAmountOfPlayersPerTeam,
+					maxAmountOfRounds, hostID, hostname));
 
 			EventBroker.getEventBroker().removeEventListener(createQuizHandler);
 

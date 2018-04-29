@@ -28,8 +28,9 @@ public class WaitRoundController extends EventPublisher {
 		startRoundHandler = new StartRoundHandler();
 		newQuestionHandler = new NewQuestionHandler();
 
-		EventBroker.getEventBroker().addEventListener(ServerStartRoundEvent.EVENTTYPE, startRoundHandler);
-		EventBroker.getEventBroker().addEventListener(ServerNewQuestionEvent.EVENTTYPE, newQuestionHandler);
+		EventBroker eventBroker = EventBroker.getEventBroker();
+		eventBroker.addEventListener(ServerStartRoundEvent.EVENTTYPE, startRoundHandler);
+		eventBroker.addEventListener(ServerNewQuestionEvent.EVENTTYPE, newQuestionHandler);
 	}
 
 	private class StartRoundHandler implements EventListener {
@@ -39,8 +40,9 @@ public class WaitRoundController extends EventPublisher {
 			@SuppressWarnings("unused")
 			ServerStartRoundEvent sSRE = (ServerStartRoundEvent) event;
 
-			EventBroker.getEventBroker().removeEventListener(startRoundHandler);
-			EventBroker.getEventBroker().removeEventListener(newQuestionHandler);
+			EventBroker eventBroker = EventBroker.getEventBroker();
+			eventBroker.removeEventListener(startRoundHandler);
+			eventBroker.removeEventListener(newQuestionHandler);
 
 			main.showQuestionForm();
 		}

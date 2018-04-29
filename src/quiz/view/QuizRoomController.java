@@ -103,7 +103,7 @@ public class QuizRoomController extends EventPublisher {
 	@FXML
 	private void handleNewTeam() {
 		String errorMessage = "No error";
-		if (Context.getContext().getQuiz().getQuizmasterID() != Context.getContext().getUser().getUserID()) {
+		if (Context.getContext().getQuiz().getHostID() != Context.getContext().getUser().getUserID()) {
 			if (Context.getContext().getQuiz().getAmountOfTeams() < Context.getContext().getQuiz()
 					.getMaxAmountOfTeams()) {
 				User currUser = Context.getContext().getUser();
@@ -144,7 +144,7 @@ public class QuizRoomController extends EventPublisher {
 	@FXML
 	private void handleReady() {
 		Context context = Context.getContext();
-		if (context.getQuiz().getQuizmasterID() == context.getUser().getUserID()) {
+		if (context.getQuiz().getHostID() == context.getUser().getUserID()) {
 			ClientHostReadyEvent cHRE = new ClientHostReadyEvent(context.getQuiz().getQuizID(),
 					context.getUser().getUserID());
 
@@ -173,7 +173,7 @@ public class QuizRoomController extends EventPublisher {
 	private void handleJoin() {
 		String errorMessage = "";
 		Context context = Context.getContext();
-		if (context.getQuiz().getQuizmasterID() != context.getUser().getUserID()) {
+		if (context.getQuiz().getHostID() != context.getUser().getUserID()) {
 			TeamNameID selectedTeam = teamTable.getSelectionModel().getSelectedItem();
 			if (selectedTeam != null) {
 				User currUser = context.getUser();
@@ -294,7 +294,7 @@ public class QuizRoomController extends EventPublisher {
 			EventBroker.getEventBroker().removeEventListener(startQuizHandler);
 			EventBroker.getEventBroker().removeEventListener(quizNewPlayerHandler);
 
-			if (context.getQuiz().getQuizmasterID() == context.getUser().getUserID()) {
+			if (context.getQuiz().getHostID() == context.getUser().getUserID()) {
 				context.getQuiz().setRunning(true);
 				main.showCreateRound();
 			} else if (context.getTeamID() != -1) {

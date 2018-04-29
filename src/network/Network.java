@@ -150,19 +150,19 @@ public class Network extends EventPublisher implements EventListener {
 		if (TYPE == "CLIENT") {
 			connectionMap.get(0).send(event);
 		} else if (TYPE == "SERVER") {
-			if (event.getType().equals("SERVER_CREATE_ACCOUNT_FAIL_EVENT")) {
+			if (event.getType().equals(ServerCreateAccountFailEvent.EVENTTYPE)) {
 				ServerCreateAccountFailEvent sCAFE = (ServerCreateAccountFailEvent) event;
+				
+				int connectionID = sCAFE.getConnectionID();
 
-				for (Entry<Integer, Connection> connection : connectionMap.entrySet()) {
-					if (connection.getValue().getConnectionID() == sCAFE.getConnectionID()) {
+				for (Entry<Integer, Connection> connection : connectionMap.entrySet())
+					if (connection.getValue().getConnectionID() == connectionID) {
 						connection.getValue().send(event);
 						break;
 					}
-				}
-			} else {
+			} else
 				for (int userID : event.getRecipients())
 					connectionMap.get(UserIDConnectionIDMap.get(userID)).send(event);
-			}
 		}
 	}
 

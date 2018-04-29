@@ -1,24 +1,58 @@
 package eventbroker.serverevent;
 
-import quiz.model.Quiz;
-
 @SuppressWarnings("serial")
 public class ServerSendQuizEvent extends ServerEvent {
 
 	public final static String EVENTTYPE = "SERVER_SEND_QUIZ";
 
-	// TODO: Change to necessary fields instead of Quiz
-	private Quiz quiz;
+	private int quizID;
+	private String quizname;
+	private int maxAmountOfTeams;
+	private int maxAmountOfPlayersPerTeam;
+	private int maxAmountOfRounds;
+	private int hostID;
+	private String hostname;
 
 	// Constructor
-	public ServerSendQuizEvent(Quiz quiz) {
+	public ServerSendQuizEvent(int quizID, String quizname, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam,
+			int maxAmountOfRounds, int hostID, String hostname) {
 		super.type = EVENTTYPE;
-		this.quiz = quiz;
+		this.quizID = quizID;
+		this.quizname = quizname;
+		this.maxAmountOfTeams = maxAmountOfTeams;
+		this.maxAmountOfPlayersPerTeam = maxAmountOfPlayersPerTeam;
+		this.maxAmountOfRounds = maxAmountOfRounds;
+		this.hostID = hostID;
+		this.hostname = hostname;
 	}
 
 	// Getters
-	public Quiz getQuiz() {
-		return quiz;
+	public int getQuizID() {
+		return quizID;
+	}
+
+	public String getQuizname() {
+		return quizname;
+	}
+
+	public int getMaxAmountOfTeams() {
+		return maxAmountOfTeams;
+	}
+
+	public int getMaxAmountOfPlayersPerTeam() {
+		return maxAmountOfPlayersPerTeam;
+	}
+
+	public int getMaxAmountOfRounds() {
+		return maxAmountOfRounds;
+	}
+
+	public int getHostID() {
+		return hostID;
+	}
+
+	public String getHostname() {
+		return hostname;
 	}
 
 }

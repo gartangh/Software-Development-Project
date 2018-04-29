@@ -25,19 +25,16 @@
 						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 					</rowConstraints>
 					<children>
 						<Label text="Rounds" GridPane.rowIndex="1" />
-						<Label text="Questions" GridPane.rowIndex="2" />
-						<Label text="Teams" GridPane.rowIndex="3" />
+						<Label text="Teams" GridPane.rowIndex="2" />
 						<Label text="Name" />
-						<TextField fx:id="mName" GridPane.columnIndex="1" />
+						<TextField fx:id="mQuizname" GridPane.columnIndex="1" />
 						<TextField fx:id="mRounds" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-						<TextField fx:id="mQuestions" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-						<TextField fx:id="mTeams" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-						<TextField fx:id="mPlayers" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-						<Label text="Players" GridPane.rowIndex="4" />
+						<TextField fx:id="mTeams" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+						<TextField fx:id="mPlayers" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+						<Label text="Players" GridPane.rowIndex="3" />
 					</children>
 					<padding>
 						<Insets left="5.0" right="5.0" />
