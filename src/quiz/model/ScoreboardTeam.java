@@ -5,32 +5,30 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class ScoreboardTeam implements Serializable {
 
-	private final int rank;
-
-	// You can also send the entire teamClass to all users so you can view all
-	// teamMembers in scoreboard
-	private final String teamName;
 	private final int teamID;
-
+	private final String teamname;
+	private final int rank;
 	private final int score;
 
-	public ScoreboardTeam(int rank, String teamName, int teamID, int score) {
-		this.rank = rank;
-		this.teamName = teamName;
+	// Constructor
+	public ScoreboardTeam(int teamID, String teamname, int rank, int score) {
 		this.teamID = teamID;
+		this.teamname = teamname;
+		this.rank = rank;
 		this.score = score;
+	}
+
+	// Getters
+	public int getTeamID() {
+		return teamID;
+	}
+
+	public String getTeamname() {
+		return teamname;
 	}
 
 	public int getRank() {
 		return rank;
-	}
-
-	public String getTeamName() {
-		return teamName;
-	}
-
-	public int getTeamID() {
-		return teamID;
 	}
 
 	public int getScore() {

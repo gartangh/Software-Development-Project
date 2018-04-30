@@ -27,7 +27,6 @@ public class Round {
 		this.theme = theme;
 		this.difficulty = difficulty;
 		this.questions = questions;
-		addQuestions(questions);
 	}
 
 	// Getters and setters
@@ -56,9 +55,7 @@ public class Round {
 	}
 
 	// Methods
-	private void addQuestions(int numberOfQuestions) {
-		// TODO get questions out of database
-		// Should not be loaded from ServerContext, right?
+	public void addQuestions(int numberOfQuestions) {
 		Map<Integer, MCQuestion> questions = ServerContext.getContext().getOrderedMCQuestionMap().get(theme.ordinal())
 				.get(difficulty.ordinal());
 		

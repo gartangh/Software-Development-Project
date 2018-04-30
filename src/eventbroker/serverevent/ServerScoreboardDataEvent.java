@@ -27,9 +27,8 @@ public class ServerScoreboardDataEvent extends ServerEvent {
 		Map<Integer, Team> quizTeams = quiz.getTeamMap();
 
 		ArrayList<Team> quizTeamsList = new ArrayList<>();
-		for (Entry<Integer, Team> team : quizTeams.entrySet()) {
+		for (Entry<Integer, Team> team : quizTeams.entrySet())
 			quizTeamsList.add(team.getValue());
-		}
 
 		Collections.sort(quizTeamsList, new Comparator<Team>() {
 			@Override
@@ -45,9 +44,7 @@ public class ServerScoreboardDataEvent extends ServerEvent {
 
 		for (int i = 0; i < quizTeamsList.size(); i++) {
 			Team team = quizTeamsList.get(i);
-			ScoreboardTeam scoreboardTeam = new ScoreboardTeam(i + 1, team.getTeamname(), team.getTeamID(),
-					team.getQuizScore());
-			scoreboardTeams.add(scoreboardTeam);
+			scoreboardTeams.add(new ScoreboardTeam(team.getTeamID(), team.getTeamname(), i + 1, team.getQuizScore()));
 		}
 	}
 
@@ -55,4 +52,5 @@ public class ServerScoreboardDataEvent extends ServerEvent {
 	public ArrayList<ScoreboardTeam> getScoreboardTeams() {
 		return scoreboardTeams;
 	}
+	
 }

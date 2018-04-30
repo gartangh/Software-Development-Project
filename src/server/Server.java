@@ -34,6 +34,7 @@ import eventbroker.serverevent.ServerGetQuizzesEvent;
 import eventbroker.serverevent.ServerJoinQuizEvent;
 import eventbroker.serverevent.ServerLogInFailEvent;
 import eventbroker.serverevent.ServerLogInSuccesEvent;
+import eventbroker.serverevent.ServerNewIPQuestionEvent;
 import eventbroker.serverevent.ServerNewMCQuestionEvent;
 import eventbroker.serverevent.ServerNewRoundEvent;
 import eventbroker.serverevent.ServerCreateTeamEvent;
@@ -338,9 +339,8 @@ public class Server extends EventPublisher {
 					MCQuestion nQ = (MCQuestion) context
 							.getQuestion(quiz.getRoundList().get(quiz.getCurrentRound()).getNextQuestion());
 
-					int[] permutatie = { 1, 2, 3, 4 };
 					ServerNewMCQuestionEvent sNQE = new ServerNewMCQuestionEvent(nQ.getQuestionID(), nQ.getQuestion(),
-							nQ.getAnswers(), permutatie);
+							nQ.getAnswers());
 					sNQE.addRecipients(receivers);
 					server.publishEvent(sNQE);
 				} else {
@@ -351,7 +351,7 @@ public class Server extends EventPublisher {
 						sNRE.addRecipients(receivers);
 						server.publishEvent(sNRE);
 					} else {
-						// TODO: Trigger end of quiz
+						// TODO Trigger end of quiz
 						ServerEndQuizEvent sEQE = new ServerEndQuizEvent();
 						sEQE.addRecipients(context.getUsersFromQuiz(quiz.getQuizID()));
 						server.publishEvent(sEQE);
@@ -384,24 +384,25 @@ public class Server extends EventPublisher {
 			ArrayList<Integer> receivers = context.getUsersFromQuiz(quizID);
 
 			switch (roundType) {
-			case MC:
-				MCQuestion mCQuestion = (MCQuestion) context
-						.getQuestion(quiz.getRoundList().get(quiz.getCurrentRound()).getNextQuestion());
-
-				int[] permutatie = { 1, 2, 3, 4 };
-
-				ServerNewMCQuestionEvent sNMCQE = new ServerNewMCQuestionEvent(mCQuestion.getQuestionID(),
-						mCQuestion.getQuestion(), mCQuestion.getAnswers(), permutatie);
-				sNMCQE.addRecipients(receivers);
-				server.publishEvent(sNMCQE);
-				break;
 			case IP:
 				IPQuestion iPQuestion = (IPQuestion) context
 						.getQuestion(quiz.getRoundList().get(quiz.getCurrentRound()).getNextQuestion());
 
-				// TODO What in case of an IPQuestion?
-			}
+				ServerNewIPQuestionEvent sNIPQE = new ServerNewIPQuestionEvent(iPQuestion.getQuestionID(),
+						iPQuestion.getQuestion(), iPQuestion.getAnswers());
+				sNIPQE.addRecipients(receivers);
+				server.publishEvent(sNIPQE);
+				
+			default:
+				MCQuestion mCQuestion = (MCQuestion) context
+						.getQuestion(quiz.getRoundList().get(quiz.getCurrentRound()).getNextQuestion());
 
+				ServerNewMCQuestionEvent sNMCQE = new ServerNewMCQuestionEvent(mCQuestion.getQuestionID(),
+						mCQuestion.getQuestion(), mCQuestion.getAnswers());
+				sNMCQE.addRecipients(receivers);
+				server.publishEvent(sNMCQE);
+			}
+			
 			ServerStartRoundEvent sSRE = new ServerStartRoundEvent();
 			sSRE.addRecipients(receivers);
 			server.publishEvent(sSRE);
@@ -418,7 +419,7 @@ public class Server extends EventPublisher {
 
 			ArrayList<Integer> destinations = new ArrayList<>();
 
-			// TODO: Add all usernames for the chat
+			// TODO Add all usernames for the chat
 			for (Map.Entry<Integer, Integer> entry : ServerContext.getContext().getNetwork().getUserIDConnectionIDMap()
 					.entrySet())
 				destinations.add(entry.getKey());

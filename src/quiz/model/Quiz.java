@@ -163,7 +163,9 @@ public class Quiz implements Serializable {
 
 	public void addRound(RoundType roundType, Theme theme, Difficulty difficulty, int questions) {
 		if (roundList.size() < rounds) {
-			roundList.add(new Round(roundType, theme, difficulty, questions));
+			Round round = new Round(roundType, theme, difficulty, questions);
+			roundList.add(round);
+			round.addQuestions(questions);
 			currentRound++;
 		} else {
 			// TODO Go back and show error

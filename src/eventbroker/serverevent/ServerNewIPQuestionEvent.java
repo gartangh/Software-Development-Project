@@ -1,16 +1,16 @@
 package eventbroker.serverevent;
 
 @SuppressWarnings("serial")
-public class ServerNewMCQuestionEvent extends ServerEvent {
+public class ServerNewIPQuestionEvent extends ServerEvent {
 
-	public final static String EVENTTYPE = "SERVER_NEW_MC_QUESTION";
+	public final static String EVENTTYPE = "SERVER_NEW_IP_QUESTION";
 
 	private int questionID;
 	private String question;
 	private String[] answers;
 
 	// Constructor
-	public ServerNewMCQuestionEvent(int questionID, String question, String[] answers) {
+	public ServerNewIPQuestionEvent(int questionID, String question, String[] answers) {
 		super.type = EVENTTYPE;
 		this.questionID = questionID;
 		this.question = question;

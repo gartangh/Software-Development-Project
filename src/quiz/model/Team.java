@@ -11,7 +11,6 @@ public class Team implements Serializable {
 
 	private int teamID;
 	private String teamname;
-	private int amountOfPlayers = 0;
 	// Maximum amount of players
 	private int players;
 	private Map<Integer, String> playerMap = new HashMap<Integer, String>();
@@ -31,7 +30,6 @@ public class Team implements Serializable {
 		this.colorGreen = (int) (color.getGreen() * 255);
 		this.colorBlue = (int) (color.getBlue() * 255);
 		this.playerMap.put(captainID, captainName);
-		this.amountOfPlayers++;
 	}
 
 	// Getters and setter
@@ -41,10 +39,6 @@ public class Team implements Serializable {
 
 	public String getTeamname() {
 		return teamname;
-	}
-
-	public int getAmountOfPlayers() {
-		return amountOfPlayers;
 	}
 
 	public int getPlayers() {
@@ -73,15 +67,13 @@ public class Team implements Serializable {
 
 	// Adder and remover
 	public void addPlayer(int userID, String userName) {
-		if (amountOfPlayers < players) {
+		if (playerMap.size() < players) {
 			playerMap.put(userID, userName);
-			amountOfPlayers++;
 		}
 	}
 
 	public void removePlayer(int playerID) {
-		if (playerMap.remove(playerID) != null)
-			amountOfPlayers--;
+		playerMap.remove(playerID);
 	}
 
 	// Method

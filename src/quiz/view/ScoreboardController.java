@@ -59,7 +59,7 @@ public class ScoreboardController extends EventPublisher {
 		winnerLoser.textProperty().bind(scoreboardModel.getWinnerLoserProperty());
 		rankColumn
 				.setCellValueFactory(cellData -> (new SimpleIntegerProperty(cellData.getValue().getRank()).asObject()));
-		teamNameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getTeamName())));
+		teamNameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getTeamname())));
 		scoreColumn.setCellValueFactory(
 				cellData -> (new SimpleIntegerProperty(cellData.getValue().getScore()).asObject()));
 
@@ -116,7 +116,7 @@ public class ScoreboardController extends EventPublisher {
 					if (scoreboardTeams.get(0).getTeamID() == curTeamID)
 						scoreboardModel.updateWinnerLoser("WINNER WINNER CHICKEN DINNER");
 					else
-						scoreboardModel.updateWinnerLoser(curTeam.getTeamName() + ": LOSER");
+						scoreboardModel.updateWinnerLoser(curTeam.getTeamname() + ": LOSER");
 				}
 			}
 		}

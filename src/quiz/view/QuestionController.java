@@ -80,7 +80,7 @@ public class QuestionController extends EventPublisher {
 	private AnswerVoteModel answerVoteModel = new AnswerVoteModel();
 	private VoteHandler voteHandler;
 	private VoteAnwserHandler voteAnwserHandler;
-	private NewQuestionHandler newQuestionHandler;
+	private NewMCQuestionHandler newMCQuestionHandler;
 	private NotAllAnsweredHandler notAllAnsweredHandler;
 	private NewRoundHandler newRoundHandler;
 	private EndQuizHandler endQuizHandler;
@@ -97,7 +97,7 @@ public class QuestionController extends EventPublisher {
 	public void initialize() {
 		voteHandler = new VoteHandler();
 		voteAnwserHandler = new VoteAnwserHandler();
-		newQuestionHandler = new NewQuestionHandler();
+		newMCQuestionHandler = new NewMCQuestionHandler();
 		notAllAnsweredHandler = new NotAllAnsweredHandler();
 		newRoundHandler = new NewRoundHandler();
 		endQuizHandler = new EndQuizHandler();
@@ -105,7 +105,7 @@ public class QuestionController extends EventPublisher {
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerVoteEvent.EVENTTYPE, voteHandler);
 		eventBroker.addEventListener(ServerVoteAnswerEvent.EVENTTYPE, voteAnwserHandler);
-		eventBroker.addEventListener(ServerNewMCQuestionEvent.EVENTTYPE, newQuestionHandler);
+		eventBroker.addEventListener(ServerNewMCQuestionEvent.EVENTTYPE, newMCQuestionHandler);
 		eventBroker.addEventListener(ServerNotAllAnsweredEvent.EVENTTYPE, notAllAnsweredHandler);
 		eventBroker.addEventListener(ServerNewRoundEvent.EVENTTYPE, newRoundHandler);
 		eventBroker.addEventListener(ServerEndQuizEvent.EVENTTYPE, endQuizHandler);
@@ -274,15 +274,15 @@ public class QuestionController extends EventPublisher {
 
 	}
 
-	private class NewQuestionHandler implements EventListener {
+	private class NewMCQuestionHandler implements EventListener {
 
 		@Override
 		public void handleEvent(Event event) {
-			ServerNewMCQuestionEvent sNQE = (ServerNewMCQuestionEvent) event;
+			ServerNewMCQuestionEvent sNMCQE = (ServerNewMCQuestionEvent) event;
 
-			int questionID = sNQE.getQuestionID();
-			String question = sNQE.getQuestion();
-			String[] answers = sNQE.getAnswers();
+			int questionID = sNMCQE.getQuestionID();
+			String question = sNMCQE.getQuestion();
+			String[] answers = sNMCQE.getAnswers();
 
 			MCQuestion q = new MCQuestion(questionID, question, answers);
 			Context.getContext().setQuestion(q);
@@ -311,7 +311,7 @@ public class QuestionController extends EventPublisher {
 			EventBroker eventBroker = EventBroker.getEventBroker();
 			eventBroker.removeEventListener(voteHandler);
 			eventBroker.removeEventListener(voteAnwserHandler);
-			eventBroker.removeEventListener(newQuestionHandler);
+			eventBroker.removeEventListener(newMCQuestionHandler);
 			eventBroker.removeEventListener(notAllAnsweredHandler);
 			eventBroker.removeEventListener(newRoundHandler);
 			eventBroker.removeEventListener(endQuizHandler);
@@ -331,7 +331,7 @@ public class QuestionController extends EventPublisher {
 			EventBroker eventBroker = EventBroker.getEventBroker();
 			eventBroker.removeEventListener(voteHandler);
 			eventBroker.removeEventListener(voteAnwserHandler);
-			eventBroker.removeEventListener(newQuestionHandler);
+			eventBroker.removeEventListener(newMCQuestionHandler);
 			eventBroker.removeEventListener(notAllAnsweredHandler);
 			eventBroker.removeEventListener(newRoundHandler);
 			eventBroker.removeEventListener(endQuizHandler);
