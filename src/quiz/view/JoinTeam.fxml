@@ -30,9 +30,9 @@
 								</TableView>
 				<ButtonBar prefHeight="40.0" prefWidth="334.0">
 					<buttons>
-						<Button mnemonicParsing="false" onAction="#handleCreateTeam" text="Create team" />
+						<Button defaultButton="true" mnemonicParsing="false" onAction="#handleCreateTeam" text="Create team" />
 						<Button mnemonicParsing="false" onAction="#handleReady" text="Ready" />
-                  <Button mnemonicParsing="false" onAction="#hadleBack" text="Back" />
+                  <Button cancelButton="true" mnemonicParsing="false" onAction="#hadleBack" text="Back" />
 					</buttons>
 				</ButtonBar>
 			</children>

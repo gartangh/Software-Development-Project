@@ -1,3 +1,5 @@
 package quiz.util;
 
-public enum RoundType {MC, IP}
+public enum RoundType {
+	MC, IP
+}

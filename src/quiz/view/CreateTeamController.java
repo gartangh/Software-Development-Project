@@ -1,6 +1,6 @@
 package quiz.view;
 
-import eventbroker.clientevent.ClientNewTeamEvent;
+import eventbroker.clientevent.ClientCreateTeamEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -14,12 +14,12 @@ public class CreateTeamController {
 	@FXML
 	private ColorPicker mColor;
 
-	private ClientNewTeamEvent cNTE;
+	private ClientCreateTeamEvent cNTE;
 	private Stage dialogStage;
 	private boolean okClicked = false;
 
 	// Getters and setters
-	public void setTeamEvent(ClientNewTeamEvent cNTE) {
+	public void setTeamEvent(ClientCreateTeamEvent cNTE) {
 		this.cNTE = cNTE;
 	}
 

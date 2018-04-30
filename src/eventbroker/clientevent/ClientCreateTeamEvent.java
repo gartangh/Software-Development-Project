@@ -3,7 +3,7 @@ package eventbroker.clientevent;
 import javafx.scene.paint.Color;
 
 @SuppressWarnings("serial")
-public class ClientNewTeamEvent extends ClientEvent {
+public class ClientCreateTeamEvent extends ClientEvent {
 
 	public final static String EVENTTYPE = "CLIENT_NEW_TEAM";
 
@@ -14,7 +14,7 @@ public class ClientNewTeamEvent extends ClientEvent {
 	private int colorBlue;
 
 	// Constructor
-	public ClientNewTeamEvent(int quizID, String teamname, Color color) {
+	public ClientCreateTeamEvent(int quizID, String teamname, Color color) {
 		super.type = EVENTTYPE;
 		this.quizID = quizID;
 		this.teamname = teamname;

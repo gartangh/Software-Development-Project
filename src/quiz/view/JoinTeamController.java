@@ -12,11 +12,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import main.Context;
 import main.Main;
-import quiz.model.QuizRoomModel;
+import quiz.model.JoinTeamModel;
 import quiz.model.Team;
 import quiz.model.TeamNameID;
 import quiz.model.User;
-import quiz.util.UserType;
 import chat.ChatPanel;
 import eventbroker.Event;
 import eventbroker.EventBroker;
@@ -24,13 +23,14 @@ import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import eventbroker.clientevent.ClientChangeTeamEvent;
 import eventbroker.clientevent.ClientHostReadyEvent;
-import eventbroker.clientevent.ClientNewTeamEvent;
+import eventbroker.clientevent.ClientCreateTeamEvent;
 import eventbroker.serverevent.ServerChangeTeamEvent;
-import eventbroker.serverevent.ServerNewTeamEvent;
+import eventbroker.serverevent.ServerCreateTeamEvent;
 import eventbroker.serverevent.ServerQuizNewPlayerEvent;
 import eventbroker.serverevent.ServerStartQuizEvent;
 
 public class JoinTeamController extends EventPublisher {
+
 	@FXML
 	private TableView<TeamNameID> teamTable;
 	@FXML
@@ -46,7 +46,7 @@ public class JoinTeamController extends EventPublisher {
 	@FXML
 	private AnchorPane mPlaceholder;
 
-	private QuizRoomModel quizRoomModel = new QuizRoomModel();
+	private JoinTeamModel quizRoomModel = new JoinTeamModel();
 	private NewTeamHandler newTeamHandler;
 	private ChangeTeamHandler changeTeamHandler;
 	private StartQuizHandler startQuizHandler;
@@ -71,20 +71,20 @@ public class JoinTeamController extends EventPublisher {
 		quizNewPlayerHandler = new QuizNewPlayerHandler();
 
 		EventBroker eventBroker = EventBroker.getEventBroker();
-		eventBroker.addEventListener(ServerNewTeamEvent.EVENTTYPE, newTeamHandler);
+		eventBroker.addEventListener(ServerCreateTeamEvent.EVENTTYPE, newTeamHandler);
 		eventBroker.addEventListener(ServerChangeTeamEvent.EVENTTYPE, changeTeamHandler);
 		eventBroker.addEventListener(ServerStartQuizEvent.EVENTTYPE, startQuizHandler);
 		eventBroker.addEventListener(ServerQuizNewPlayerEvent.EVENTTYPE, quizNewPlayerHandler);
 
-		NameColumn.setCellValueFactory(cellData -> cellData.getValue().getTeamName());
+		NameColumn.setCellValueFactory(cellData -> cellData.getValue().getTeamname());
 		teamTable.getSelectionModel().selectedItemProperty()
 				.addListener((observable, oldValue, newValue) -> showTeamDetails(newValue));
 		showTeamDetails(null);
 
-		CaptainLabel.textProperty().bind(quizRoomModel.getCaptainName());
-		TeamnameLabel.textProperty().bind(quizRoomModel.getTeamName());
-		circle.fillProperty().bind(quizRoomModel.getTeamColor());
-		teammemberslist.itemsProperty().bind(quizRoomModel.getTeamMembers());
+		CaptainLabel.textProperty().bind(quizRoomModel.getCaptainname());
+		TeamnameLabel.textProperty().bind(quizRoomModel.getTeamname());
+		circle.fillProperty().bind(quizRoomModel.getColor());
+		teammemberslist.itemsProperty().bind(quizRoomModel.getMembers());
 
 		// ChatPanel (ChatModel and ChatController) are created
 		ChatPanel chatPanel = ChatPanel.createChatPanel();
@@ -95,7 +95,7 @@ public class JoinTeamController extends EventPublisher {
 		if (team != null)
 			quizRoomModel.updateTeamDetail(team.getTeamID());
 		else {
-			quizRoomModel = new QuizRoomModel();
+			quizRoomModel = new JoinTeamModel();
 			quizRoomModel.updateTeams();
 		}
 	}
@@ -116,9 +116,9 @@ public class JoinTeamController extends EventPublisher {
 					currCaptainID = -1;
 
 				if (currCaptainID != currUser.getUserID()) {
-					ClientNewTeamEvent cNTE = new ClientNewTeamEvent(context.getQuiz().getQuizID(), "",
+					ClientCreateTeamEvent cNTE = new ClientCreateTeamEvent(context.getQuiz().getQuizID(), "",
 							Color.TRANSPARENT);
-					
+
 					boolean okClicked = main.showCreateTeamScene(cNTE);
 					if (okClicked)
 						publishEvent(cNTE);
@@ -210,9 +210,6 @@ public class JoinTeamController extends EventPublisher {
 
 	@FXML
 	private void hadleBack() {
-		// User is now a USER
-		Context.getContext().getUser().setUserType(UserType.USER);
-
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.removeEventListener(newTeamHandler);
 		eventBroker.removeEventListener(changeTeamHandler);
@@ -227,7 +224,7 @@ public class JoinTeamController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event event) {
-			ServerNewTeamEvent sNTE = (ServerNewTeamEvent) event;
+			ServerCreateTeamEvent sNTE = (ServerCreateTeamEvent) event;
 
 			int quizID = sNTE.getQuizID();
 			int teamID = sNTE.getTeamID();

@@ -72,8 +72,8 @@
             </TableView>
             <ButtonBar>
               <buttons>
-                <Button mnemonicParsing="false" onAction="#handleCreateQuiz" text="Create quiz" />
-                  <Button mnemonicParsing="false" onAction="#handleBack" text="Back" />
+                <Button defaultButton="true" mnemonicParsing="false" onAction="#handleCreateQuiz" text="Create quiz" />
+                  <Button cancelButton="true" mnemonicParsing="false" onAction="#handleBack" text="Back" />
               </buttons>
             </ButtonBar>
          </children>

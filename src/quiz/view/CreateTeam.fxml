@@ -40,8 +40,8 @@
 				</GridPane>
 				<ButtonBar>
 					<buttons>
-						<Button mnemonicParsing="false" onAction="#handleCreateTeam" text="Create team" />
-						<Button mnemonicParsing="false" onAction="#handleBack" text="Back" />
+						<Button defaultButton="true" mnemonicParsing="false" onAction="#handleCreateTeam" text="Create team" />
+						<Button cancelButton="true" mnemonicParsing="false" onAction="#handleBack" text="Back" />
 					</buttons>
 				</ButtonBar>
 			</children>

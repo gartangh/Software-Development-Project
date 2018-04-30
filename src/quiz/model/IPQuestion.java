@@ -5,19 +5,21 @@ import quiz.util.Theme;
 
 public class IPQuestion extends Question {
 
-	// TODO: Add pictures
+	// TODO Add pictures
 	private String correctAnswer;
 
-	public IPQuestion(Difficulty difficulty, Theme theme, int questionID) {
-		super(difficulty, theme, questionID);
-		// TODO: Get pictures (with correct difficulty and theme) and answer
+	// Constructor
+	public IPQuestion(int questionID, Theme theme, Difficulty difficulty) {
+		super(questionID, theme, difficulty);
+		// TODO Get pictures (with correct difficulty and theme) and answer
 	}
 
-	public String getAnswer() {
+	// Getters
+	public String getCorrectAnswer() {
 		return correctAnswer;
 	}
 
-	// TODO: Add getPictures()
+	// TODO Add getPictures()
 
 	// Methods
 	public boolean checkCorrectAnswer(String answer) {

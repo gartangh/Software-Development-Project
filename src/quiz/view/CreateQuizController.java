@@ -13,7 +13,6 @@ import main.Context;
 import main.Main;
 import main.view.AlertBox;
 import quiz.model.Quiz;
-import quiz.util.UserType;
 
 public class CreateQuizController extends EventPublisher {
 
@@ -128,9 +127,6 @@ public class CreateQuizController extends EventPublisher {
 
 	@FXML
 	private void handleBack() {
-		// User is now a USER
-		Context.getContext().getUser().setUserType(UserType.USER);
-
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.removeEventListener(createQuizFailHandler);
 		eventBroker.removeEventListener(createQuizSuccesHandler);

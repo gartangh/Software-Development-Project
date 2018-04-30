@@ -109,7 +109,7 @@ final public class ChatController extends EventPublisher {
 		
 		EventBroker.getEventBroker().addEventListener(ChatMessage.EVENTTYPESERVER, chatHandler);
 
-		chatTextArea.textProperty().bind(chatModel.chatTextProperty());
+		chatTextArea.textProperty().bind(chatModel.getChatText());
 		
 		try {
 			// Substring is to remove file:/ before resource

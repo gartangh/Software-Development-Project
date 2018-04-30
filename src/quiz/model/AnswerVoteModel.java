@@ -16,27 +16,33 @@ import javafx.scene.paint.Paint;
 import main.Context;
 
 public class AnswerVoteModel {
-	private StringProperty questionTitleProperty, questionTextProperty;	// Question properties
-	
-	private StringProperty answerPropertyA, answerPropertyB, answerPropertyC, answerPropertyD;	// Answer properties
+	// Question properties
+	private StringProperty questionTitleProperty;
+	private StringProperty questionTextProperty;
+
+	// Answer properties
+	private StringProperty answerPropertyA, answerPropertyB, answerPropertyC, answerPropertyD;
 	private ObjectProperty<Paint> paintPropertyA, paintPropertyB, paintPropertyC, paintPropertyD;
-	
-	private DoubleProperty progressPropertyA, progressPropertyB, progressPropertyC, progressPropertyD; 	// Vote properties
+
+	// Vote properties
+	private DoubleProperty progressPropertyA, progressPropertyB, progressPropertyC, progressPropertyD;
 	private StringProperty percentagePropertyA, percentagePropertyB, percentagePropertyC, percentagePropertyD;
 	private StringProperty numberOfVotesProperty;
-	
-	private BooleanProperty voteDisableProperty, confirmDisableProperty, nextDisableProperty; // Button properties
+
+	// Button properties
+	private BooleanProperty voteDisableProperty, confirmDisableProperty, nextDisableProperty;
 
 	// Constructor
 	public AnswerVoteModel() {
-		questionTitleProperty = new SimpleStringProperty("Question:");
-		questionTextProperty = new SimpleStringProperty("");
+		// Question properties
+		questionTitleProperty = new SimpleStringProperty("Question");
+		questionTextProperty = new SimpleStringProperty();
 
 		// Answer properties
-		answerPropertyA = new SimpleStringProperty("");
-		answerPropertyB = new SimpleStringProperty("");
-		answerPropertyC = new SimpleStringProperty("");
-		answerPropertyD = new SimpleStringProperty("");
+		answerPropertyA = new SimpleStringProperty();
+		answerPropertyB = new SimpleStringProperty();
+		answerPropertyC = new SimpleStringProperty();
+		answerPropertyD = new SimpleStringProperty();
 		paintPropertyA = new SimpleObjectProperty<Paint>(Color.BLACK);
 		paintPropertyB = new SimpleObjectProperty<Paint>(Color.BLACK);
 		paintPropertyC = new SimpleObjectProperty<Paint>(Color.BLACK);
@@ -52,48 +58,51 @@ public class AnswerVoteModel {
 		percentagePropertyC = new SimpleStringProperty("0 %");
 		percentagePropertyD = new SimpleStringProperty("0 %");
 		numberOfVotesProperty = new SimpleStringProperty("0 votes");
-		
-		voteDisableProperty = new SimpleBooleanProperty(false);	// Button properties
+
+		// Button properties
+		voteDisableProperty = new SimpleBooleanProperty(false);
 		confirmDisableProperty = new SimpleBooleanProperty(false);
 		nextDisableProperty = new SimpleBooleanProperty(true);
 	}
 
 	public void updateVotes(int teamID) {
 		Map<Integer, Map<Integer, Integer>> allVotes = Context.getContext().getQuiz().getVotes();
-		if(allVotes != null) {
+		if (allVotes != null) {
 			Map<Integer, Integer> teamVotes = allVotes.get(teamID);
-			if(teamVotes != null) {
+			if (teamVotes != null) {
 				int total = teamVotes.size();
-				int [] votes = new int[4];
-				for(int vote : teamVotes.values()) {
+				int[] votes = new int[4];
+				for (int vote : teamVotes.values())
 					votes[vote]++;
-				}
-				if(total>0) {
-					double fA = (100.0*votes[0])/total;
-					double fB = (100.0*votes[1])/total;
-					double fC = (100.0*votes[2])/total;
-					double fD = (100.0*votes[3])/total;
-					
+
+				if (total > 0) {
+					double fA = (100.0 * votes[0]) / total;
+					double fB = (100.0 * votes[1]) / total;
+					double fC = (100.0 * votes[2]) / total;
+					double fD = (100.0 * votes[3]) / total;
+
 					long A = Math.round(fA);
 					long B = Math.round(fB);
 					long C = Math.round(fC);
 					long D = Math.round(fD);
-									
+
 					Platform.runLater(new Runnable() {
 						public void run() {
-							progressPropertyA.setValue((double) A/100);
-							progressPropertyB.setValue((double) B/100);
-							progressPropertyC.setValue((double) C/100);
-							progressPropertyD.setValue((double) D/100);
-							percentagePropertyA.setValue(A+"%");
-							percentagePropertyB.setValue(B+"%");
-							percentagePropertyC.setValue(C+"%");
-							percentagePropertyD.setValue(D+"%");
-							if(total == 1) numberOfVotesProperty.setValue(total+" vote");
-							else numberOfVotesProperty.setValue(total+" votes");
+							progressPropertyA.setValue((double) A / 100);
+							progressPropertyB.setValue((double) B / 100);
+							progressPropertyC.setValue((double) C / 100);
+							progressPropertyD.setValue((double) D / 100);
+							percentagePropertyA.setValue(A + "%");
+							percentagePropertyB.setValue(B + "%");
+							percentagePropertyC.setValue(C + "%");
+							percentagePropertyD.setValue(D + "%");
+							if (total == 1)
+								numberOfVotesProperty.setValue(total + " vote");
+							else
+								numberOfVotesProperty.setValue(total + " votes");
 						}
 					});
-					
+
 					return;
 				}
 			}
@@ -112,12 +121,12 @@ public class AnswerVoteModel {
 			}
 		});
 	}
-	
+
 	public void updateAnswer(int answer, int correctAnswer) {
 		Platform.runLater(new Runnable() {
 			public void run() {
-				if(answer != correctAnswer) {
-					switch(answer) {
+				if (answer != correctAnswer) {
+					switch (answer) {
 					case 0:
 						paintPropertyA.setValue(Color.RED);
 						break;
@@ -132,7 +141,12 @@ public class AnswerVoteModel {
 						break;
 					}
 				}
-				switch(correctAnswer) {
+				else {
+					// TODO Make xp depend on difficulty
+					Context.getContext().getUser().addXp(10);
+				}
+
+				switch (correctAnswer) {
 				case 0:
 					paintPropertyA.setValue(Color.GREEN);
 					break;
@@ -146,20 +160,21 @@ public class AnswerVoteModel {
 					paintPropertyD.setValue(Color.GREEN);
 					break;
 				}
+
 				voteDisableProperty.setValue(true);
 				confirmDisableProperty.setValue(true);
 				nextDisableProperty.setValue(false);
 			}
 		});
 	}
-	
+
 	public void updateQuestion() {
 		MCQuestion q = (MCQuestion) Context.getContext().getQuestion();
 		System.out.println(q.getQuestion());
 		Platform.runLater(new Runnable() {
 			public void run() {
 				questionTextProperty.setValue(q.getQuestion());
-				
+
 				answerPropertyA.setValue(q.getAnswers()[0]);
 				answerPropertyB.setValue(q.getAnswers()[1]);
 				answerPropertyC.setValue(q.getAnswers()[2]);
@@ -168,14 +183,14 @@ public class AnswerVoteModel {
 				paintPropertyB.setValue(Color.BLACK);
 				paintPropertyC.setValue(Color.BLACK);
 				paintPropertyD.setValue(Color.BLACK);
-				
+
 				voteDisableProperty.setValue(false);
 				confirmDisableProperty.setValue(false);
 				nextDisableProperty.setValue(true);
 			}
 		});
 	}
-	
+
 	public StringProperty getNumberOfVotesProperty() {
 		return numberOfVotesProperty;
 	}
@@ -259,8 +274,9 @@ public class AnswerVoteModel {
 	public BooleanProperty getConfirmDisableProperty() {
 		return confirmDisableProperty;
 	}
-	
+
 	public BooleanProperty getNextDisableProperty() {
 		return nextDisableProperty;
 	}
+
 }

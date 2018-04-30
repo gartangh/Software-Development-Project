@@ -45,7 +45,7 @@ public class ServerScoreboardDataEvent extends ServerEvent {
 
 		for (int i = 0; i < quizTeamsList.size(); i++) {
 			Team team = quizTeamsList.get(i);
-			ScoreboardTeam scoreboardTeam = new ScoreboardTeam(i + 1, team.getTeamName(), team.getTeamID(),
+			ScoreboardTeam scoreboardTeam = new ScoreboardTeam(i + 1, team.getTeamname(), team.getTeamID(),
 					team.getQuizScore());
 			scoreboardTeams.add(scoreboardTeam);
 		}

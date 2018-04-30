@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 public class Team implements Serializable {
 
 	private int teamID;
-	private String teamName;
+	private String teamname;
 	private int amountOfPlayers = 0;
 	// Maximum amount of players
 	private int players;
@@ -22,10 +22,10 @@ public class Team implements Serializable {
 	private int quizScore = 0;
 	private int captainID;
 
-	// Constructors
-	public Team(int teamID, String teamName, Color color, int captainID, String captainName) {
+	// Constructor
+	public Team(int teamID, String teamname, Color color, int captainID, String captainName) {
 		this.teamID = teamID;
-		this.teamName = teamName;
+		this.teamname = teamname;
 		this.captainID = captainID;
 		this.colorRed = (int) (color.getRed() * 255);
 		this.colorGreen = (int) (color.getGreen() * 255);
@@ -34,21 +34,13 @@ public class Team implements Serializable {
 		this.amountOfPlayers++;
 	}
 
-	// Getters and setters
+	// Getters and setter
 	public int getTeamID() {
 		return teamID;
 	}
 
-	public void setTeamID(int teamID) {
-		this.teamID = teamID;
-	}
-	
-	public String getTeamName() {
-		return teamName;
-	}
-
-	public void setTeamName(String teamName) {
-		this.teamName = teamName;
+	public String getTeamname() {
+		return teamname;
 	}
 
 	public int getAmountOfPlayers() {
@@ -66,12 +58,6 @@ public class Team implements Serializable {
 	public Color getColor() {
 		return Color.rgb(colorRed, colorGreen, colorBlue);
 	}
-	
-	public void setColor(Color color) {
-		this.colorRed = ((int) color.getRed() * 255);
-		this.colorGreen = ((int) color.getGreen() * 255);
-		this.colorBlue = ((int) color.getBlue() * 255);
-	}
 
 	public Map<Integer, String> getPlayerMap() {
 		return playerMap;
@@ -80,16 +66,12 @@ public class Team implements Serializable {
 	public int getQuizScore() {
 		return quizScore;
 	}
-	
-	public void setQuizScore(int quizScore) {
-		this.quizScore = quizScore;
-	}
-	
+
 	public int getCaptainID() {
 		return captainID;
 	}
 
-	// Adders and removers
+	// Adder and remover
 	public void addPlayer(int userID, String userName) {
 		if (amountOfPlayers < players) {
 			playerMap.put(userID, userName);

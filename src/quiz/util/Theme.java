@@ -1,3 +1,5 @@
 package quiz.util;
 
-public enum Theme {CULTURE, SPORTS}
+public enum Theme {
+	CULTURE, SPORTS
+}

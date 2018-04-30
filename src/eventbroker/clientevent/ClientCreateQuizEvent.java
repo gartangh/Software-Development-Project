@@ -1,9 +1,7 @@
 package eventbroker.clientevent;
 
-import java.io.Serializable;
-
 @SuppressWarnings("serial")
-public class ClientCreateQuizEvent extends ClientEvent implements Serializable {
+public class ClientCreateQuizEvent extends ClientEvent {
 
 	public final static String EVENTTYPE = "CLIENT_CREATE_QUIZ";
 

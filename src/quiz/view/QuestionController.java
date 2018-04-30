@@ -10,7 +10,7 @@ import eventbroker.clientevent.ClientNewQuestionEvent;
 import eventbroker.clientevent.ClientVoteEvent;
 import eventbroker.serverevent.ServerVoteAnswerEvent;
 import eventbroker.serverevent.ServerEndQuizEvent;
-import eventbroker.serverevent.ServerNewQuestionEvent;
+import eventbroker.serverevent.ServerNewMCQuestionEvent;
 import eventbroker.serverevent.ServerNewRoundEvent;
 import eventbroker.serverevent.ServerNotAllAnsweredEvent;
 import eventbroker.serverevent.ServerVoteEvent;
@@ -105,7 +105,7 @@ public class QuestionController extends EventPublisher {
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerVoteEvent.EVENTTYPE, voteHandler);
 		eventBroker.addEventListener(ServerVoteAnswerEvent.EVENTTYPE, voteAnwserHandler);
-		eventBroker.addEventListener(ServerNewQuestionEvent.EVENTTYPE, newQuestionHandler);
+		eventBroker.addEventListener(ServerNewMCQuestionEvent.EVENTTYPE, newQuestionHandler);
 		eventBroker.addEventListener(ServerNotAllAnsweredEvent.EVENTTYPE, notAllAnsweredHandler);
 		eventBroker.addEventListener(ServerNewRoundEvent.EVENTTYPE, newRoundHandler);
 		eventBroker.addEventListener(ServerEndQuizEvent.EVENTTYPE, endQuizHandler);
@@ -266,9 +266,10 @@ public class QuestionController extends EventPublisher {
 		public void handleEvent(Event event) {
 			ServerVoteAnswerEvent sVAE = (ServerVoteAnswerEvent) event;
 
-			// Context.getContext().getQuiz().addAnswer(serverAnswer.getTeamID(),
-			// serverAnswer.getQuestionID(), serverAnswer.getAnswer());
-			answerVoteModel.updateAnswer(sVAE.getAnswer(), sVAE.getCorrectAnswer());
+			int answer = sVAE.getAnswer();
+			int correctAnswer = sVAE.getCorrectAnswer();
+			
+			answerVoteModel.updateAnswer(answer, correctAnswer);
 		}
 
 	}
@@ -277,7 +278,7 @@ public class QuestionController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event event) {
-			ServerNewQuestionEvent sNQE = (ServerNewQuestionEvent) event;
+			ServerNewMCQuestionEvent sNQE = (ServerNewMCQuestionEvent) event;
 
 			int questionID = sNQE.getQuestionID();
 			String question = sNQE.getQuestion();

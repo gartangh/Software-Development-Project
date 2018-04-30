@@ -1,13 +1,9 @@
 package quiz.model;
 
-import java.io.Serializable;
-
 import main.Context;
-import quiz.util.UserType;
 import server.ServerContext;
 
-@SuppressWarnings("serial")
-public class User implements Serializable {
+public class User {
 
 	public final static String USERNAMEREGEX = "^[a-zA-Z0-9._-]{3,}$";
 	public final static String PASSWORDREGEX = "^[a-zA-Z0-9._-]{3,}$";
@@ -17,7 +13,6 @@ public class User implements Serializable {
 	private String password;
 	private int level = 1;
 	private long xp = 0L;
-	private UserType userType = UserType.USER;
 
 	// Constructors
 	private User(int userID, String username, String password) {
@@ -103,14 +98,6 @@ public class User implements Serializable {
 
 	public long getXp() {
 		return xp;
-	}
-	
-	public UserType getUserType() {
-		return userType;
-	}
-	
-	public void setUserType(UserType userType) {
-		this.userType = userType;
 	}
 
 	// Methods

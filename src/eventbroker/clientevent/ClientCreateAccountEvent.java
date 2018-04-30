@@ -1,12 +1,10 @@
 package eventbroker.clientevent;
 
-import java.io.Serializable;
-
 import eventbroker.Event;
 
 // This event does not extends a UserEvent, because the userID is not known yet
 @SuppressWarnings("serial")
-public class ClientCreateAccountEvent extends Event implements Serializable {
+public class ClientCreateAccountEvent extends Event {
 
 	public final static String EVENTTYPE = "CLIENT_CREATE_ACCOUNT";
 

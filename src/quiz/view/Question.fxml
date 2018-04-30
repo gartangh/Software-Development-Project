@@ -82,7 +82,7 @@
 								</GridPane>
 								<ButtonBar minWidth="360.0" prefHeight="40.0">
 									<buttons>
-										<Button fx:id="voteButton" mnemonicParsing="false" onAction="#handleVote" text="Vote" />
+										<Button fx:id="voteButton" defaultButton="true" mnemonicParsing="false" onAction="#handleVote" text="Vote" />
 										<Button fx:id="confirmButton" mnemonicParsing="false" onAction="#handleAnswer" text="Confirm answer" />
 										<Button fx:id="nextButton" mnemonicParsing="false" onAction="#handleNext" text="Next question" />
 									</buttons>

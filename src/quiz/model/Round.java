@@ -10,19 +10,24 @@ import quiz.util.RoundType;
 
 public class Round {
 
-	private RoundType roundType;
-	private Difficulty difficulty;
-	private Theme theme;
-	// Map(questionID -> Map(teamID -> answerID))
-	private Map<Integer, Map<Integer, Integer>> answers = new HashMap<Integer, Map<Integer, Integer>>();
-	private int questions; // Minimum 1
-	private int currentQuestion = -1;
+	public final static int MINQUESTIONS = 1;
+	public final static int MAXQUESTIONS = 5;
 
-	public Round(RoundType roundType, Difficulty difficulty, Theme theme, int questions) {
+	private RoundType roundType;
+	private Theme theme;
+	private Difficulty difficulty;
+	private int questions;
+	private int currentQuestion = -1;
+	// Map(questionID -> Map(teamID -> answerID))
+	private Map<Integer, Map<Integer, Integer>> answers = new HashMap<>();
+
+	// Constructor
+	public Round(RoundType roundType, Theme theme, Difficulty difficulty, int questions) {
 		this.roundType = roundType;
-		this.difficulty = difficulty;
 		this.theme = theme;
+		this.difficulty = difficulty;
 		this.questions = questions;
+		addQuestions(questions);
 	}
 
 	// Getters and setters
@@ -38,10 +43,6 @@ public class Round {
 		return theme;
 	}
 
-	public int getNextQuestion() {
-		return (int) answers.keySet().toArray()[++currentQuestion];
-	}
-
 	public int getCurrentQuestion() {
 		return currentQuestion;
 	}
@@ -55,11 +56,12 @@ public class Round {
 	}
 
 	// Methods
-	public void addQuestions(int numberOfQuestions) {
+	private void addQuestions(int numberOfQuestions) {
 		// TODO get questions out of database
 		// Should not be loaded from ServerContext, right?
 		Map<Integer, MCQuestion> questions = ServerContext.getContext().getOrderedMCQuestionMap().get(theme.ordinal())
 				.get(difficulty.ordinal());
+		
 		while (numberOfQuestions > 0) {
 			int i = (int) Math.floor(Math.random() * questions.size());
 			int qID = (int) questions.keySet().toArray()[i];
@@ -74,6 +76,10 @@ public class Round {
 		Map<Integer, Integer> questionAnswers = answers.get(questionID);
 		questionAnswers.put(teamID, answer);
 		answers.put(questionID, questionAnswers);
+	}
+	
+	public int getNextQuestion() {
+		return (int) answers.keySet().toArray()[++currentQuestion];
 	}
 
 }

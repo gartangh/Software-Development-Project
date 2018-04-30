@@ -24,7 +24,6 @@ import main.Main;
 import quiz.model.JoinQuizModel;
 import quiz.model.Quiz;
 import quiz.model.User;
-import quiz.util.UserType;
 
 public class JoinQuizController extends EventPublisher {
 
@@ -92,9 +91,6 @@ public class JoinQuizController extends EventPublisher {
 
 	@FXML
 	public void handleCreateQuiz() {
-		// User is now a HOST
-		Context.getContext().getUser().setUserType(UserType.HOST);
-
 		main.showCreateQuizScene();
 	}
 
@@ -108,8 +104,6 @@ public class JoinQuizController extends EventPublisher {
 	@FXML
 	private void handleJoin() {
 		User user = Context.getContext().getUser();
-		// User is now a PLAYER
-		user.setUserType(UserType.PLAYER);
 		ClientJoinQuizEvent cJQE = new ClientJoinQuizEvent(user.getUserID(), user.getUsername(),
 				selectedQuiz.getQuizID());
 		publishEvent(cJQE);
@@ -196,7 +190,7 @@ public class JoinQuizController extends EventPublisher {
 
 			int quizID = sSTQE.getQuizID();
 
-			joinQuizModel.deleteQuiz(quizID);
+			joinQuizModel.removeQuiz(quizID);
 		}
 
 	}

@@ -1,14 +1,21 @@
 package eventbroker.serverevent;
 
-import java.io.Serializable;
-
 @SuppressWarnings("serial")
-public class ServerLogInFailEvent extends ServerEvent implements Serializable {
+public class ServerLogInFailEvent extends ServerEvent {
 
 	public final static String EVENTTYPE = "SERVER_LOG_IN_FAIL";
 
-	public ServerLogInFailEvent() {
+	private int connectionID;
+
+	// Constructor
+	public ServerLogInFailEvent(int connectionID) {
 		super.type = EVENTTYPE;
+		this.connectionID = connectionID;
+	}
+
+	// Getter
+	public int getConnectionID() {
+		return connectionID;
 	}
 
 }

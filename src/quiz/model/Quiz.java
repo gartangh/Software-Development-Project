@@ -26,7 +26,7 @@ public class Quiz implements Serializable {
 	private String quizname;
 	// Maximum amount of rounds
 	private int rounds;
-	private transient ArrayList<Round> roundList = new ArrayList<>();
+	private ArrayList<Round> roundList = new ArrayList<>();
 	private int currentRound = -1;
 	// Maximum amount of teams
 	private int teams;
@@ -63,18 +63,18 @@ public class Quiz implements Serializable {
 		do
 			quizID = (int) (Math.random() * Integer.MAX_VALUE);
 		while (context.getQuizMap().containsKey(quizID));
-		
+
 		context.getQuizMap().put(quizID, new Quiz(quizID, quizname, rounds, teams, players, hostID, hostname));
-		
+
 		return quizID;
 	}
-	
+
 	public static Quiz createQuiz(int quizID, String quizname, int rounds, int teams, int players, int hostID,
 			String hostname) {
 		// Client side
 		Quiz quiz = new Quiz(quizID, quizname, rounds, teams, players, hostID, hostname);
 		Context.getContext().setQuiz(quiz);
-		
+
 		return quiz;
 	}
 
@@ -82,19 +82,19 @@ public class Quiz implements Serializable {
 	public int getQuizID() {
 		return quizID;
 	}
-	
+
 	public String getQuizname() {
 		return quizname;
 	}
-	
+
 	public int getAmountOfRounds() {
 		return roundList.size();
 	}
-	
+
 	public int getRounds() {
 		return rounds;
 	}
-	
+
 	public ArrayList<Round> getRoundList() {
 		return roundList;
 	}
@@ -110,7 +110,7 @@ public class Quiz implements Serializable {
 	public int getTeams() {
 		return teams;
 	}
-	
+
 	public Map<Integer, Team> getTeamMap() {
 		return teamMap;
 	}
@@ -130,11 +130,11 @@ public class Quiz implements Serializable {
 	public Map<Integer, Map<Integer, Integer>> getVotes() {
 		return votes;
 	}
-	
+
 	public Map<Integer, String> getUnassignedPlayers() {
 		return unassignedPlayers;
 	}
-	
+
 	public boolean getRunning() {
 		return running;
 	}
@@ -152,7 +152,7 @@ public class Quiz implements Serializable {
 			// TODO Go back and show error
 		}
 	}
-	
+
 	public void removeTeam(int teamID) {
 		if (teamMap.get(teamID) != null) {
 			teamMap.remove(teamID);
@@ -161,11 +161,9 @@ public class Quiz implements Serializable {
 		}
 	}
 
-	public void addRound(Difficulty diff, Theme theme, int questions) {
+	public void addRound(RoundType roundType, Theme theme, Difficulty difficulty, int questions) {
 		if (roundList.size() < rounds) {
-			Round round = new Round(RoundType.MC, diff, theme, questions);
-			roundList.add(round);
-			round.addQuestions(questions);
+			roundList.add(new Round(roundType, theme, difficulty, questions));
 			currentRound++;
 		} else {
 			// TODO Go back and show error
@@ -196,19 +194,19 @@ public class Quiz implements Serializable {
 
 		return false;
 	}
-	
+
 	public void resetVotes() {
 		this.votes = new HashMap<Integer, Map<Integer, Integer>>();
 	}
-	
+
 	public void clearUnassignedPlayers() {
 		unassignedPlayers.clear();
 	}
-	
+
 	public void addAnswer(int teamID, int questionID, int answer) {
 		roundList.get(currentRound).addAnswer(teamID, questionID, answer);
 	}
-	
+
 	public void addPoints(int teamID, int questionID, int answer) {
 		MCQuestion q = (MCQuestion) ServerContext.getContext().getQuestion(questionID);
 		if (answer == q.getCorrectAnswer())

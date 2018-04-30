@@ -43,7 +43,7 @@
 				<ButtonBar>
 					<buttons>
 						<Button defaultButton="true" mnemonicParsing="false" onAction="#handleCreateQuiz" text="Create Quiz" />
-						<Button mnemonicParsing="false" onAction="#handleBack" text="Back" />
+						<Button cancelButton="true" mnemonicParsing="false" onAction="#handleBack" text="Back" />
 					</buttons>
 				</ButtonBar>
 			</children>

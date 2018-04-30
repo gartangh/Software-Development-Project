@@ -12,6 +12,7 @@ import eventbroker.Event;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import eventbroker.serverevent.ServerCreateAccountFailEvent;
+import eventbroker.serverevent.ServerLogInFailEvent;
 
 // TODO: End ReceiverThread Connection Chat
 public class Network extends EventPublisher implements EventListener {
@@ -71,15 +72,15 @@ public class Network extends EventPublisher implements EventListener {
 
 			connection.receive();
 
-			if (type == "CLIENT") {
+			if (type.equals(CLIENTTYPE)) {
 				// Client always has connectionID 0
 				connection.setConnectionID(0);
 				connectionMap.put(0, connection);
-			} else if (type == "SERVER") {
+			} else if (type.equals(SERVERTYPE)) {
 				int newServerUserConnectionID;
-				do {
+				do
 					newServerUserConnectionID = (int) (Math.random() * Integer.MAX_VALUE);
-				} while (connectionMap.containsKey(newServerUserConnectionID));
+				while (connectionMap.containsKey(newServerUserConnectionID));
 
 				connection.setConnectionID(newServerUserConnectionID);
 				connectionMap.put(newServerUserConnectionID, connection);
@@ -103,15 +104,15 @@ public class Network extends EventPublisher implements EventListener {
 
 			connection.receive();
 
-			if (type == "CLIENT") {
+			if (type.equals(CLIENTTYPE)) {
 				// Client always has connectionID 0
 				connection.setConnectionID(0);
 				connectionMap.put(0, connection);
-			} else if (type == "SERVER") {
+			} else if (type.equals(SERVERTYPE)) {
 				int newServerUserConnectionID;
-				do {
+				do
 					newServerUserConnectionID = (int) (Math.random() * Integer.MAX_VALUE);
-				} while (connectionMap.containsKey(newServerUserConnectionID));
+				while (connectionMap.containsKey(newServerUserConnectionID));
 
 				connection.setConnectionID(newServerUserConnectionID);
 				connectionMap.put(newServerUserConnectionID, connection);
@@ -150,13 +151,23 @@ public class Network extends EventPublisher implements EventListener {
 	 */
 	@Override
 	public void handleEvent(Event event) {
-		if (type == CLIENTTYPE)
+		if (type.equals(CLIENTTYPE))
 			connectionMap.get(0).send(event);
-		else if (type == SERVERTYPE) {
+		else if (type.equals(SERVERTYPE)) {
 			if (event.getType().equals(ServerCreateAccountFailEvent.EVENTTYPE)) {
 				ServerCreateAccountFailEvent sCAFE = (ServerCreateAccountFailEvent) event;
 
 				int connectionID = sCAFE.getConnectionID();
+
+				for (Entry<Integer, Connection> connection : connectionMap.entrySet())
+					if (connection.getValue().getConnectionID() == connectionID) {
+						connection.getValue().send(event);
+						break;
+					}
+			} else if (event.getType().equals(ServerLogInFailEvent.EVENTTYPE)) {
+				ServerLogInFailEvent sLIFE = (ServerLogInFailEvent) event;
+
+				int connectionID = sLIFE.getConnectionID();
 
 				for (Entry<Integer, Connection> connection : connectionMap.entrySet())
 					if (connection.getValue().getConnectionID() == connectionID) {

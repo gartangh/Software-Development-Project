@@ -154,15 +154,15 @@ public class ServerContext {
 							bufferedReader.readLine(), bufferedReader.readLine() };
 					int correctAnswer = Integer.parseInt(bufferedReader.readLine());
 
-					Theme t = Theme.values()[themeFile];
-					Difficulty d = Difficulty.values()[diff];
+					Theme theme = Theme.values()[themeFile];
+					Difficulty difficulty = Difficulty.values()[diff];
 					// 256 possible themes and 4 difficulties with each 2^21
 					// questions gives unique ID
 					int questionID = themeFile * (2 ^ 24) + diff * (2 ^ 22) + i;
-					MCQuestion q = new MCQuestion(d, t, questionID, question, answers, correctAnswer);
+					MCQuestion mCQuestion = new MCQuestion(questionID, theme, difficulty, question, answers, correctAnswer);
 
-					diffMap.put(questionID, q);
-					allMCQuestions.put(questionID, q);
+					diffMap.put(questionID, mCQuestion);
+					allMCQuestions.put(questionID, mCQuestion);
 
 					// Read next line
 					i++;

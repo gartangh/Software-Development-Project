@@ -6,7 +6,7 @@ import java.net.UnknownHostException;
 import java.util.Random;
 
 import eventbroker.EventBroker;
-import eventbroker.clientevent.ClientNewTeamEvent;
+import eventbroker.clientevent.ClientCreateTeamEvent;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -207,7 +207,7 @@ public class Main extends Application {
 		}
 	}
 
-	public boolean showCreateTeamScene(ClientNewTeamEvent teamevent) {
+	public boolean showCreateTeamScene(ClientCreateTeamEvent teamevent) {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(Main.class.getResource("../quiz/view/CreateTeam.fxml"));
