@@ -110,7 +110,7 @@ public class Server extends EventPublisher {
 		eventBroker.addEventListener(ClientAnswerEvent.EVENTTYPE, answerHandler);
 		eventBroker.addEventListener(ClientNewQuestionEvent.EVENTTYPE, newQuestionHandler);
 		eventBroker.addEventListener(ClientCreateRoundEvent.EVENTTYPE, createRoundHandler);
-		eventBroker.addEventListener(ChatMessage.EVENTTYPE, chatHandler);
+		eventBroker.addEventListener(ChatMessage.CLIENTTYPE, chatHandler);
 		eventBroker.addEventListener(ClientScoreboardDataEvent.EVENTTYPE, scoreboardDataHandler);
 		eventBroker.addEventListener(ClientGetQuizzesEvent.EVENTTYPE, getQuizzesHandler);
 		eventBroker.addEventListener(ClientCreateTeamEvent.EVENTTYPE, newTeamHandler);
@@ -415,7 +415,7 @@ public class Server extends EventPublisher {
 		@Override
 		public void handleEvent(Event event) {
 			ChatMessage chatMessage = (ChatMessage) event;
-			chatMessage.setType(ChatMessage.EVENTTYPESERVER);
+			chatMessage.setType(ChatMessage.SERVERTYPE);
 
 			ArrayList<Integer> destinations = new ArrayList<>();
 
@@ -424,7 +424,7 @@ public class Server extends EventPublisher {
 					.entrySet())
 				destinations.add(entry.getKey());
 
-			chatMessage.setType(ChatMessage.EVENTTYPESERVER);
+			chatMessage.setType(ChatMessage.SERVERTYPE);
 			chatMessage.addRecipients(destinations);
 			server.publishEvent(chatMessage);
 		}

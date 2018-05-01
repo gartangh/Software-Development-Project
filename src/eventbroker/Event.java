@@ -10,16 +10,13 @@ import quiz.model.User;
 @SuppressWarnings("serial")
 public class Event implements Serializable {
 
-	protected static long n = 0;
-
 	protected String type = "EVENT";
 	protected String message = "";
-	protected long eventID = n++;
 	private ArrayList<Integer> recipients = new ArrayList<>();
 
 	// Constructors
 	public Event() {
-		// Empty default contstructor
+		// Empty default constructor
 	}
 
 	public Event(String type, String message) {
@@ -58,15 +55,15 @@ public class Event implements Serializable {
 		for (Entry<Integer, User> entry : userMap.entrySet())
 			addRecipient(entry.getValue().getUserID());
 	}
-
+	
 	public void removeAllRecipients() {
 		recipients.clear();
 	}
 
-	// Methods
+	// Method
 	@Override
 	public String toString() {
-		return "ID" + eventID + "[" + type + "] : " + message;
+		return "[" + type + "] : " + message;
 	}
 
 }

@@ -14,7 +14,7 @@ import eventbroker.EventPublisher;
 import eventbroker.serverevent.ServerCreateAccountFailEvent;
 import eventbroker.serverevent.ServerLogInFailEvent;
 
-// TODO: End ReceiverThread Connection Chat
+// TODO End ReceiverThread Connection Chat
 public class Network extends EventPublisher implements EventListener {
 
 	public final static String CLIENTTYPE = "CLIENT";
@@ -28,13 +28,13 @@ public class Network extends EventPublisher implements EventListener {
 	private ConnectionListener connectionListener;
 	private InetAddress networkAddress;
 
+	// Constructors
 	public Network() {
 		// Empty default constructor
 	}
 
 	// A factory method would be a better solution
 	public Network(int serverPort, String type) {
-		// Server 2
 		// Not safe when multi-threaded
 		this.type = type;
 		this.connectionListener = new ConnectionListener(this, serverPort);
@@ -64,12 +64,8 @@ public class Network extends EventPublisher implements EventListener {
 		networkAddress = address;
 
 		try {
-			// Client 2.1
 			Socket socket = new Socket(address, port);
-			// Client 2.2
 			Connection connection = new Connection(socket, this);
-			// Client 2.3
-
 			connection.receive();
 
 			if (type.equals(CLIENTTYPE)) {
@@ -96,12 +92,8 @@ public class Network extends EventPublisher implements EventListener {
 			// Parsing from String to InetAddress
 			networkAddress = InetAddress.getByName(address);
 
-			// Client 2.1
 			Socket socket = new Socket(address, port);
-			// Client 2.2
 			Connection connection = new Connection(socket, this);
-			// Client 2.3
-
 			connection.receive();
 
 			if (type.equals(CLIENTTYPE)) {
@@ -126,20 +118,20 @@ public class Network extends EventPublisher implements EventListener {
 
 	// Package local would be safer
 	public Connection connect(Socket socket) {
-		// Server 4.2.1
 		Connection connection = new Connection(socket, this);
-		// Server 4.2.2
 		connection.receive();
 
-		if (type == "CLIENT") {
+		if (type == "CLIENT")
 			connectionMap.put(connection.getConnectionID(), connection);
-		} else if (type == "SERVER") {
-			int newServerUserConnectionID;
-			do {
-				newServerUserConnectionID = (int) (Math.random() * Integer.MAX_VALUE);
-			} while (connectionMap.containsKey(newServerUserConnectionID));
-			connection.setConnectionID(newServerUserConnectionID);
-			connectionMap.put(newServerUserConnectionID, connection);
+		else if (type == "SERVER") {
+			// Generate random connectionID
+			int connectionID;
+			do
+				connectionID = (int) (Math.random() * Integer.MAX_VALUE);
+			while (connectionMap.containsKey(connectionID));
+
+			connection.setConnectionID(connectionID);
+			connectionMap.put(connectionID, connection);
 		}
 
 		return connection;

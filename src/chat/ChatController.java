@@ -29,8 +29,7 @@ final public class ChatController extends EventPublisher {
 
 	private ChatModel chatModel = new ChatModel();
 	private ChatHandler chatHandler;
-
-	ArrayList<String> prohibitedWords = new ArrayList<>();
+	private ArrayList<String> prohibitedWords = new ArrayList<>();
 
 	// Getters
 	public ChatModel getChatModel() {
@@ -38,9 +37,6 @@ final public class ChatController extends EventPublisher {
 	}
 
 	// Methods
-	/**
-	 * Called when the user clicks on the send button.
-	 */
 	@FXML
 	public void handle(ActionEvent e) {
 		// Get message from chatTextField
@@ -50,14 +46,14 @@ final public class ChatController extends EventPublisher {
 			sendMessage(checkMessage(message));
 	}
 
-	// TODO: Change: for all prohibitedWords do: if contains, loop! else next
+	// TODO Change: for all prohibitedWords do: if contains, loop! else next
 	// word => faster!
 	private String checkMessage(String message) {
 		int lengthMessage = message.length();
-		
+
 		String oldMessage = message;
 		String newMessage = message.toLowerCase();
-		
+
 		for (int k = 0; k < prohibitedWords.size(); k++) {
 			if (newMessage.contains(prohibitedWords.get(k)))
 				for (int i = 0; i < lengthMessage - 1; i++)
@@ -66,10 +62,10 @@ final public class ChatController extends EventPublisher {
 							newMessage = oldMessage.substring(0, i);
 							for (int l = 0; l < j - i; l++)
 								newMessage += "*";
-							
+
 							if (j < lengthMessage)
 								newMessage += oldMessage.substring(j);
-							
+
 							oldMessage = newMessage;
 						}
 		}
@@ -106,11 +102,11 @@ final public class ChatController extends EventPublisher {
 	@FXML
 	private void initialize() {
 		this.chatHandler = new ChatHandler();
-		
-		EventBroker.getEventBroker().addEventListener(ChatMessage.EVENTTYPESERVER, chatHandler);
+
+		EventBroker.getEventBroker().addEventListener(ChatMessage.SERVERTYPE, chatHandler);
 
 		chatTextArea.textProperty().bind(chatModel.getChatText());
-		
+
 		try {
 			// Substring is to remove file:/ before resource
 			BufferedReader bufferedReader = new BufferedReader(
@@ -119,7 +115,7 @@ final public class ChatController extends EventPublisher {
 			String line;
 			while ((line = bufferedReader.readLine()) != null)
 				prohibitedWords.add(line);
-			
+
 			bufferedReader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
