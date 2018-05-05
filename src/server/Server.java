@@ -191,7 +191,6 @@ public class Server extends EventPublisher {
 			if (userID == -1) {
 				// Username and / or password are incorrect
 				ServerLogInFailEvent sLIFE = new ServerLogInFailEvent(connectionID);
-				// TODO Send to the correct connection
 				server.publishEvent(sLIFE);
 			} else {
 				// Username and password are correct
@@ -357,7 +356,6 @@ public class Server extends EventPublisher {
 						sNRE.addRecipients(receivers);
 						server.publishEvent(sNRE);
 					} else {
-						// TODO Trigger end of quiz
 						ServerEndQuizEvent sEQE = new ServerEndQuizEvent();
 						sEQE.addRecipients(context.getUsersFromQuiz(quiz.getQuizID()));
 						server.publishEvent(sEQE);
@@ -422,15 +420,10 @@ public class Server extends EventPublisher {
 		public void handleEvent(Event event) {
 			ChatMessage chatMessage = (ChatMessage) event;
 			chatMessage.setType(ChatMessage.SERVERTYPE);
-
 			ArrayList<Integer> destinations = new ArrayList<>();
-
-			// TODO Add all usernames for the chat
 			for (Map.Entry<Integer, Integer> entry : ServerContext.getContext().getNetwork().getUserIDConnectionIDMap()
 					.entrySet())
 				destinations.add(entry.getKey());
-
-			chatMessage.setType(ChatMessage.SERVERTYPE);
 			chatMessage.addRecipients(destinations);
 			server.publishEvent(chatMessage);
 		}
