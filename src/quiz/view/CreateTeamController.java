@@ -1,6 +1,7 @@
 package quiz.view;
 
 import eventbroker.clientevent.ClientCreateTeamEvent;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -11,7 +12,7 @@ import javafx.stage.Stage;
 import quiz.model.Team;
 
 public class CreateTeamController {
-	
+
 	@FXML
 	private TextField mTeamname;
 	@FXML
@@ -59,22 +60,32 @@ public class CreateTeamController {
 	private boolean isInputValid() {
 		String teamname = mTeamname.getText();
 		if (teamname == null || !teamname.matches(Team.TEAMNAMEREGEX)) {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("Warning");
-			alert.setHeaderText("Teamname is invalid!");
-			alert.setContentText("Try again with a valid quizname.");
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("Teamname is invalid!");
+					alert.setContentText("Try again with a valid quizname.");
+					alert.showAndWait();
+				}
+			});
 
 			return false;
 		}
 
 		Color color = mColor.getValue();
 		if (color == null) {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("Warning");
-			alert.setHeaderText("No color picked!");
-			alert.setContentText("Select a color and try again.");
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("No color picked!");
+					alert.setContentText("Select a color and try again.");
+					alert.showAndWait();
+				}
+			});
 
 			return false;
 		}

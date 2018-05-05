@@ -10,6 +10,7 @@ import eventbroker.serverevent.ServerCreateAccountFailEvent;
 import eventbroker.serverevent.ServerCreateAccountSuccesEvent;
 import eventbroker.serverevent.ServerLogInFailEvent;
 import eventbroker.serverevent.ServerLogInSuccesEvent;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -78,22 +79,32 @@ public class LogInController extends EventPublisher {
 	private void handleCreateAccount() {
 		String username = mUsername.getText();
 		if (username == null || !username.matches(User.USERNAMEREGEX)) {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("Warning");
-			alert.setHeaderText("Username is invalid!");
-			alert.setContentText("Try again with a valid username.");
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("Username is invalid!");
+					alert.setContentText("Try again with a valid username.");
+					alert.showAndWait();
+				}
+			});
 
 			return;
 		}
 
 		String password = mPassword.getText();
 		if (password == null || !password.matches(User.PASSWORDREGEX)) {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("Warning");
-			alert.setHeaderText("Password is invalid!");
-			alert.setContentText("Try again with a valid password.");
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("Password is invalid!");
+					alert.setContentText("Try again with a valid password.");
+					alert.showAndWait();
+				}
+			});
 
 			return;
 		}
@@ -107,22 +118,32 @@ public class LogInController extends EventPublisher {
 	private void handleLogIn() {
 		String username = mUsername.getText();
 		if (username == null || !username.matches(User.USERNAMEREGEX)) {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("Warning");
-			alert.setHeaderText("Username is invalid!");
-			alert.setContentText("Try again with a valid username.");
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("Username is invalid!");
+					alert.setContentText("Try again with a valid username.");
+					alert.showAndWait();
+				}
+			});
 
 			return;
 		}
 
 		String password = mPassword.getText();
 		if (password == null || !password.matches(User.PASSWORDREGEX)) {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("Warning");
-			alert.setHeaderText("Password is invalid!");
-			alert.setContentText("Try again with a valid password.");
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("Password is invalid!");
+					alert.setContentText("Try again with a valid password.");
+					alert.showAndWait();
+				}
+			});
 
 			return;
 		}
@@ -139,12 +160,16 @@ public class LogInController extends EventPublisher {
 		public void handleEvent(Event event) {
 			@SuppressWarnings("unused")
 			ServerCreateAccountFailEvent sCAFE = (ServerCreateAccountFailEvent) event;
-
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Error");
-			alert.setHeaderText("Account creation failed!");
-			alert.setContentText("The username already exists.");
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Error");
+					alert.setHeaderText("Account creation failed!");
+					alert.setContentText("The username already exists.");
+					alert.showAndWait();
+				}
+			});
 		}
 
 	}
@@ -179,11 +204,16 @@ public class LogInController extends EventPublisher {
 			@SuppressWarnings("unused")
 			ServerLogInFailEvent sLIFE = (ServerLogInFailEvent) event;
 
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Error");
-			alert.setHeaderText("Logging in failed!");
-			alert.setContentText("The combination of this username and password does not exist.");
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Error");
+					alert.setHeaderText("Logging in failed!");
+					alert.setContentText("The combination of this username and password does not exist.");
+					alert.showAndWait();
+				}
+			});
 		}
 
 	}

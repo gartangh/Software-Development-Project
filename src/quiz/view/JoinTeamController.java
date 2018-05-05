@@ -1,5 +1,6 @@
 package quiz.view;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -111,27 +112,42 @@ public class JoinTeamController extends EventPublisher {
 			captainID = context.getQuiz().getTeamMap().get(teamID).getCaptainID();
 
 		if (hostID == userID) {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("Warning");
-			alert.setHeaderText("You can't create a team!");
-			alert.setContentText("You're the host, click ready when you want to start the quiz.");
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("You can't create a team!");
+					alert.setContentText("You're the host, click ready when you want to start the quiz.");
+					alert.showAndWait();
+				}
+			});
 
 			return;
 		} else if (context.getQuiz().getAmountOfTeams() >= context.getQuiz().getTeams()) {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("Warning");
-			alert.setHeaderText("You can't create a team!");
-			alert.setContentText("The maximum amount of teams is already reached.");
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("You can't create a team!");
+					alert.setContentText("The maximum amount of teams is already reached.");
+					alert.showAndWait();
+				}
+			});
 
 			return;
 		} else if (captainID == userID) {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("Warning");
-			alert.setHeaderText("You can't create a team!");
-			alert.setContentText("You're already captain of an existing team.");
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("You can't create a team!");
+					alert.setContentText("You're already captain of an existing team.");
+					alert.showAndWait();
+				}
+			});
 
 			return;
 		}
@@ -159,11 +175,16 @@ public class JoinTeamController extends EventPublisher {
 
 				main.showWaitRoundScene();
 			} else {
-				Alert alert = new Alert(AlertType.WARNING);
-				alert.setTitle("Warning");
-				alert.setHeaderText("You can't be ready when you're not part of a team!");
-				alert.setContentText("First join or create a team, then click ready.");
-				alert.showAndWait();
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						Alert alert = new Alert(AlertType.WARNING);
+						alert.setTitle("Warning");
+						alert.setHeaderText("You can't be ready when you're not part of a team!");
+						alert.setContentText("First join or create a team, then click ready.");
+						alert.showAndWait();
+					}
+				});
 			}
 
 			return;
@@ -187,35 +208,56 @@ public class JoinTeamController extends EventPublisher {
 		TeamNameID selectedTeam = teamTable.getSelectionModel().getSelectedItem();
 
 		if (hostID == userID) {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("Warning");
-			alert.setHeaderText("You couldn't join a team!");
-			alert.setContentText("The quizmaster can't join a team, click ready when you want to start the quiz.");
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("You couldn't join a team!");
+					alert.setContentText(
+							"The quizmaster can't join a team, click ready when you want to start the quiz.");
+					alert.showAndWait();
+				}
+			});
 
 			return;
 		} else if (selectedTeam == null) {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("Warning");
-			alert.setHeaderText("You couldn't join a team!");
-			alert.setContentText("You didn't select a team, please select a team and try again.");
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("You couldn't join a team!");
+					alert.setContentText("You didn't select a team, please select a team and try again.");
+					alert.showAndWait();
+				}
+			});
 
 			return;
 		} else if (selectedTeam.getTeamID() != teamID) {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("Warning");
-			alert.setHeaderText("You couldn't join the team!");
-			alert.setContentText("You're already in this team.");
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("You couldn't join the team!");
+					alert.setContentText("You're already in this team.");
+					alert.showAndWait();
+				}
+			});
 
 			return;
 		} else if (captainID != userID) {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("Warning");
-			alert.setHeaderText("You couldn't join a team!");
-			alert.setContentText("You are a captain, you can't join another team.");
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("You couldn't join a team!");
+					alert.setContentText("You are a captain, you can't join another team.");
+					alert.showAndWait();
+				}
+			});
 
 			return;
 		}

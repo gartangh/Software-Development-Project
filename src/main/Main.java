@@ -13,7 +13,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import network.Network;
 import quiz.view.CreateQuizController;
@@ -214,8 +213,6 @@ public class Main extends Application {
 			BorderPane newteam = (BorderPane) loader.load();
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("New Team");
-			dialogStage.initModality(Modality.WINDOW_MODAL);
-			dialogStage.initOwner(primaryStage);
 			Scene scene = new Scene(newteam);
 			dialogStage.setScene(scene);
 

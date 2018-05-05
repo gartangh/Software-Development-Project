@@ -7,6 +7,7 @@ import eventbroker.EventPublisher;
 import eventbroker.clientevent.ClientCreateQuizEvent;
 import eventbroker.serverevent.ServerCreateQuizFailEvent;
 import eventbroker.serverevent.ServerCreateQuizSuccesEvent;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -60,11 +61,16 @@ public class CreateQuizController extends EventPublisher {
 	private void handleCreateQuiz() {
 		String quizname = mQuizname.getText();
 		if (quizname == null || !quizname.matches(Quiz.QUIZNAMEREGEX)) {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("Warning");
-			alert.setHeaderText("Quizname is invalid!");
-			alert.setContentText("Try again with a valid quizname.");
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("Quizname is invalid!");
+					alert.setContentText("Try again with a valid quizname.");
+					alert.showAndWait();
+				}
+			});
 
 			return;
 		}
@@ -73,29 +79,44 @@ public class CreateQuizController extends EventPublisher {
 		try {
 			rounds = Integer.parseInt(mRounds.getText());
 			if (rounds < Quiz.MINROUNDS) {
-				Alert alert = new Alert(AlertType.WARNING);
-				alert.setTitle("Warning");
-				alert.setHeaderText("Amount of rounds is invalid!");
-				alert.setContentText("Minimum amount of rounds is " + Quiz.MINROUNDS + ".");
-				alert.showAndWait();
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						Alert alert = new Alert(AlertType.WARNING);
+						alert.setTitle("Warning");
+						alert.setHeaderText("Amount of rounds is invalid!");
+						alert.setContentText("Minimum amount of rounds is " + Quiz.MINROUNDS + ".");
+						alert.showAndWait();
+					}
+				});
 
 				return;
 			} else if (rounds > Quiz.MAXROUNDS) {
-				Alert alert = new Alert(AlertType.WARNING);
-				alert.setTitle("Warning");
-				alert.setHeaderText("Amount of rounds is invalid!");
-				alert.setContentText("Maximum amount of rounds is " + Quiz.MAXROUNDS + ".");
-				alert.showAndWait();
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						Alert alert = new Alert(AlertType.WARNING);
+						alert.setTitle("Warning");
+						alert.setHeaderText("Amount of rounds is invalid!");
+						alert.setContentText("Maximum amount of rounds is " + Quiz.MAXROUNDS + ".");
+						alert.showAndWait();
+					}
+				});
 
 				return;
 			}
 		} catch (NumberFormatException e) {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("Warning");
-			alert.setHeaderText("Amount of rounds is invalid!");
-			alert.setContentText(
-					"Amount of rounds must be a integer between " + Quiz.MINROUNDS + " and " + Quiz.MAXROUNDS + ".");
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("Amount of rounds is invalid!");
+					alert.setContentText("Amount of rounds must be a integer between " + Quiz.MINROUNDS + " and "
+							+ Quiz.MAXROUNDS + ".");
+					alert.showAndWait();
+				}
+			});
 
 			return;
 		}
@@ -104,29 +125,44 @@ public class CreateQuizController extends EventPublisher {
 		try {
 			teams = Integer.parseInt(mTeams.getText());
 			if (teams < Quiz.MINTEAMS) {
-				Alert alert = new Alert(AlertType.WARNING);
-				alert.setTitle("Warning");
-				alert.setHeaderText("Amount of teams is invalid!");
-				alert.setContentText("Minimum amount of teams is " + Quiz.MINTEAMS + ".");
-				alert.showAndWait();
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						Alert alert = new Alert(AlertType.WARNING);
+						alert.setTitle("Warning");
+						alert.setHeaderText("Amount of teams is invalid!");
+						alert.setContentText("Minimum amount of teams is " + Quiz.MINTEAMS + ".");
+						alert.showAndWait();
+					}
+				});
 
 				return;
 			} else if (teams > Quiz.MAXTEAMS) {
-				Alert alert = new Alert(AlertType.WARNING);
-				alert.setTitle("Warning");
-				alert.setHeaderText("Amount of teams is invalid!");
-				alert.setContentText("Maximum amount of teams is " + Quiz.MAXTEAMS + ".");
-				alert.showAndWait();
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						Alert alert = new Alert(AlertType.WARNING);
+						alert.setTitle("Warning");
+						alert.setHeaderText("Amount of teams is invalid!");
+						alert.setContentText("Maximum amount of teams is " + Quiz.MAXTEAMS + ".");
+						alert.showAndWait();
+					}
+				});
 
 				return;
 			}
 		} catch (NumberFormatException e) {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("Warning");
-			alert.setHeaderText("Amount of teams is invalid!");
-			alert.setContentText(
-					"Amount of teams must be a integer between " + Quiz.MINTEAMS + " and " + Quiz.MAXTEAMS + ".");
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("Amount of teams is invalid!");
+					alert.setContentText("Amount of teams must be a integer between " + Quiz.MINTEAMS + " and "
+							+ Quiz.MAXTEAMS + ".");
+					alert.showAndWait();
+				}
+			});
 
 			return;
 		}
@@ -135,29 +171,44 @@ public class CreateQuizController extends EventPublisher {
 		try {
 			players = Integer.parseInt(mPlayers.getText());
 			if (players < Quiz.MINPLAYERS) {
-				Alert alert = new Alert(AlertType.WARNING);
-				alert.setTitle("Warning");
-				alert.setHeaderText("Amount of players is invalid!");
-				alert.setContentText("Minimum amount of players is " + Quiz.MINPLAYERS + ".");
-				alert.showAndWait();
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						Alert alert = new Alert(AlertType.WARNING);
+						alert.setTitle("Warning");
+						alert.setHeaderText("Amount of players is invalid!");
+						alert.setContentText("Minimum amount of players is " + Quiz.MINPLAYERS + ".");
+						alert.showAndWait();
+					}
+				});
 
 				return;
 			} else if (players > Quiz.MAXPLAYERS) {
-				Alert alert = new Alert(AlertType.WARNING);
-				alert.setTitle("Warning");
-				alert.setHeaderText("Amount of players is invalid!");
-				alert.setContentText("Maximum amount of players is " + Quiz.MAXPLAYERS + ".");
-				alert.showAndWait();
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						Alert alert = new Alert(AlertType.WARNING);
+						alert.setTitle("Warning");
+						alert.setHeaderText("Amount of players is invalid!");
+						alert.setContentText("Maximum amount of players is " + Quiz.MAXPLAYERS + ".");
+						alert.showAndWait();
+					}
+				});
 
 				return;
 			}
 		} catch (NumberFormatException e) {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("Warning");
-			alert.setHeaderText("Amount of players is invalid!");
-			alert.setContentText(
-					"Amount of players must be a integer between " + Quiz.MINPLAYERS + " and " + Quiz.MAXPLAYERS + ".");
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("Amount of players is invalid!");
+					alert.setContentText("Amount of players must be a integer between " + Quiz.MINPLAYERS + " and "
+							+ Quiz.MAXPLAYERS + ".");
+					alert.showAndWait();
+				}
+			});
 
 			return;
 		}
@@ -185,11 +236,16 @@ public class CreateQuizController extends EventPublisher {
 			@SuppressWarnings("unused")
 			ServerCreateQuizFailEvent sCQSE = (ServerCreateQuizFailEvent) event;
 
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Error");
-			alert.setHeaderText("Quiz creation failed!");
-			alert.setContentText("The quizname already exists.");
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Error");
+					alert.setHeaderText("Quiz creation failed!");
+					alert.setContentText("The quizname already exists.");
+					alert.showAndWait();
+				}
+			});
 		}
 
 	}

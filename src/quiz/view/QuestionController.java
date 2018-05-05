@@ -14,6 +14,7 @@ import eventbroker.serverevent.ServerNewMCQuestionEvent;
 import eventbroker.serverevent.ServerNewRoundEvent;
 import eventbroker.serverevent.ServerNotAllAnsweredEvent;
 import eventbroker.serverevent.ServerVoteEvent;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -204,18 +205,28 @@ public class QuestionController extends EventPublisher {
 		int answer = this.getChecked();
 		if (context.getQuiz().getTeamMap().get(context.getTeamID()).getCaptainID() != Context.getContext().getUser()
 				.getUserID()) {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.initOwner(main.getPrimaryStage());
-			alert.setTitle("Warning");
-			alert.setHeaderText("You can't submit an answer!");
-			alert.setContentText("You must be the captain of the team in order to submit the answer.");
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.initOwner(main.getPrimaryStage());
+					alert.setTitle("Warning");
+					alert.setHeaderText("You can't submit an answer!");
+					alert.setContentText("You must be the captain of the team in order to submit the answer.");
+					alert.showAndWait();
+				}
+			});
 		} else if (answer < 0) {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("Warning");
-			alert.setHeaderText("You can't submit an empty answer!");
-			alert.setContentText("Please select a valid answer and try again.");
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("You can't submit an empty answer!");
+					alert.setContentText("Please select a valid answer and try again.");
+					alert.showAndWait();
+				}
+			});
 		} else {
 			ClientAnswerEvent cAE = new ClientAnswerEvent(Context.getContext().getQuestion().getQuestionID(), answer);
 			publishEvent(cAE);
@@ -227,11 +238,17 @@ public class QuestionController extends EventPublisher {
 	private void handleNext() {
 		if (Context.getContext().getQuiz().getTeamMap().get(Context.getContext().getTeamID()).getCaptainID() != Context
 				.getContext().getUser().getUserID()) {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("Warning");
-			alert.setHeaderText("You can't go to the next question!");
-			alert.setContentText("You must be the captain of the team in order to proceed to the next question.");
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("You can't go to the next question!");
+					alert.setContentText(
+							"You must be the captain of the team in order to proceed to the next question.");
+					alert.showAndWait();
+				}
+			});
 		} else {
 			ClientNewQuestionEvent cnqe = new ClientNewQuestionEvent();
 			this.publishEvent(cnqe);
@@ -263,7 +280,7 @@ public class QuestionController extends EventPublisher {
 
 			int answer = sVAE.getAnswer();
 			int correctAnswer = sVAE.getCorrectAnswer();
-			
+
 			answerVoteModel.updateAnswer(answer, correctAnswer);
 		}
 
@@ -291,7 +308,12 @@ public class QuestionController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event event) {
-			// TODO Alert
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					// TODO Show alert
+				}
+			});
 		}
 
 	}
