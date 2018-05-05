@@ -1,8 +1,10 @@
 package quiz.view;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
@@ -13,9 +15,15 @@ import javafx.scene.shape.Circle;
 import main.Context;
 import main.Main;
 import quiz.model.JoinTeamModel;
+import quiz.model.Quiz;
 import quiz.model.Team;
 import quiz.model.TeamNameID;
 import quiz.model.User;
+
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.Map.Entry;
+
 import chat.ChatPanel;
 import eventbroker.Event;
 import eventbroker.EventBroker;
@@ -24,8 +32,10 @@ import eventbroker.EventPublisher;
 import eventbroker.clientevent.ClientChangeTeamEvent;
 import eventbroker.clientevent.ClientHostReadyEvent;
 import eventbroker.clientevent.ClientCreateTeamEvent;
+import eventbroker.clientevent.ClientDeleteTeamEvent;
 import eventbroker.serverevent.ServerChangeTeamEvent;
 import eventbroker.serverevent.ServerCreateTeamEvent;
+import eventbroker.serverevent.ServerDeleteTeamEvent;
 import eventbroker.serverevent.ServerQuizNewPlayerEvent;
 import eventbroker.serverevent.ServerStartQuizEvent;
 
@@ -51,7 +61,7 @@ public class JoinTeamController extends EventPublisher {
 	private ChangeTeamHandler changeTeamHandler;
 	private StartQuizHandler startQuizHandler;
 	private QuizNewPlayerHandler quizNewPlayerHandler;
-
+	private QuizDeleteTeamHandler quizDeleteTeamHandler;
 	// Reference to the main application
 	private Main main;
 
@@ -69,16 +79,19 @@ public class JoinTeamController extends EventPublisher {
 		changeTeamHandler = new ChangeTeamHandler();
 		startQuizHandler = new StartQuizHandler();
 		quizNewPlayerHandler = new QuizNewPlayerHandler();
+		quizDeleteTeamHandler=new QuizDeleteTeamHandler();
 
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerCreateTeamEvent.EVENTTYPE, newTeamHandler);
 		eventBroker.addEventListener(ServerChangeTeamEvent.EVENTTYPE, changeTeamHandler);
 		eventBroker.addEventListener(ServerStartQuizEvent.EVENTTYPE, startQuizHandler);
 		eventBroker.addEventListener(ServerQuizNewPlayerEvent.EVENTTYPE, quizNewPlayerHandler);
+		eventBroker.addEventListener(ServerDeleteTeamEvent.EVENTTYPE, quizDeleteTeamHandler);
 
 		NameColumn.setCellValueFactory(cellData -> cellData.getValue().getTeamname());
 		teamTable.getSelectionModel().selectedItemProperty()
 				.addListener((observable, oldValue, newValue) -> showTeamDetails(newValue));
+		quizRoomModel = new JoinTeamModel();
 		showTeamDetails(null);
 
 		CaptainLabel.textProperty().bind(quizRoomModel.getCaptainname());
@@ -95,7 +108,6 @@ public class JoinTeamController extends EventPublisher {
 		if (team != null)
 			quizRoomModel.updateTeamDetail(team.getTeamID());
 		else {
-			quizRoomModel = new JoinTeamModel();
 			quizRoomModel.updateTeams();
 		}
 	}
@@ -117,7 +129,7 @@ public class JoinTeamController extends EventPublisher {
 
 				if (currCaptainID != currUser.getUserID()) {
 					ClientCreateTeamEvent cNTE = new ClientCreateTeamEvent(context.getQuiz().getQuizID(), "",
-							Color.TRANSPARENT);
+							Color.TRANSPARENT,context.getTeamID());
 
 					boolean okClicked = main.showCreateTeamScene(cNTE);
 					if (okClicked)
@@ -215,8 +227,50 @@ public class JoinTeamController extends EventPublisher {
 		eventBroker.removeEventListener(changeTeamHandler);
 		eventBroker.removeEventListener(startQuizHandler);
 		eventBroker.removeEventListener(quizNewPlayerHandler);
-
+		//TODO handle players uit of quiz, delete the right teams... what if host leaves the quiz?
 		main.showJoinQuizScene();
+	}
+
+	@FXML
+	private void handleDeleteTeam(){
+		String errorMessage = "";
+		Context context = Context.getContext();
+		if (context.getQuiz().getHostID() != context.getUser().getUserID()){
+			TeamNameID selectedTeam = teamTable.getSelectionModel().getSelectedItem();
+			if (selectedTeam !=null){
+				if (context.getUser().getUserID()==context.getQuiz().getTeamMap().get(selectedTeam.getTeamID()).getCaptainID()){
+					Alert alert = new Alert(AlertType.CONFIRMATION);
+					alert.setTitle("Confirmation Dialog");
+					alert.setHeaderText("You are going to delete this team");
+					alert.setContentText("Are you sure you want to delete this team?");
+
+					Optional<ButtonType> result = alert.showAndWait();
+					if (result.get() == ButtonType.OK){
+						ClientDeleteTeamEvent cDTE=new ClientDeleteTeamEvent(selectedTeam.getTeamID(),context.getQuiz().getQuizID());
+						publishEvent(cDTE);
+					}
+				}
+				else {
+					errorMessage="You can't delete a team if you're not the captain!";
+				}
+			}
+			else {
+				errorMessage="Please select a team if you want to delete it. You can only delete a team if you are the captain!";
+			}
+		}
+		else {
+			errorMessage = "You are the quizmaster, you can't delete teams. Only captains can delete teams!";
+		}
+
+		if (errorMessage != "") {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.initOwner(main.getPrimaryStage());
+			alert.setTitle("Delete team error!");
+			alert.setHeaderText("You can't delete this team");
+			alert.setContentText(errorMessage);
+			alert.showAndWait();
+		}
+
 	}
 
 	// Inner classes
@@ -268,8 +322,7 @@ public class JoinTeamController extends EventPublisher {
 				Team newteam = context.getQuiz().getTeamMap().get(newteamID);
 				Team oldteam = context.getQuiz().getTeamMap().get(oldteamID);
 
-				if (newteam != null) {
-					// Should always happen
+				if (newteam != null) { //if the new team is a created team, changeteamevent to remove player from his old team
 					newteam.addPlayer(userID, userName);
 					if (context.getUser().getUserID() == userID)
 						context.setTeamID(newteam.getTeamID());
@@ -326,6 +379,45 @@ public class JoinTeamController extends EventPublisher {
 			String username = sQNPE.getUsername();
 
 			Context.getContext().getQuiz().addUnassignedPlayer(userID, username);
+		}
+
+	}
+
+	private class QuizDeleteTeamHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ServerDeleteTeamEvent sDTE=(ServerDeleteTeamEvent) event;
+
+			Quiz quiz=Context.getContext().getQuiz();
+			Team team=quiz.getTeamMap().get(sDTE.getTeamID());
+
+			if (team!=null){
+				for (Entry <Integer,String> entry : team.getPlayerMap().entrySet()){
+					quiz.addUnassignedPlayer(entry.getKey(),entry.getValue());
+				}
+				quiz.removeTeam(team.getTeamID());
+				int oldTeamID=Context.getContext().getTeamID();
+				if (oldTeamID==team.getTeamID()){
+					Context.getContext().setTeamID(-1);
+				}
+				Platform.runLater(new Runnable() {
+					public void run() {
+						quizRoomModel.updateTeams();
+						quizRoomModel.updateTeamDetail(-1);
+						if (oldTeamID==team.getTeamID() && team.getCaptainID() != Context.getContext().getUser().getUserID()){
+							Alert alert = new Alert(AlertType.ERROR);
+							alert.initOwner(main.getPrimaryStage());
+							alert.setTitle("Team deleted!");
+							alert.setHeaderText("Your captain deleted your team!");
+							alert.setContentText("Please choose another team or create a new team.");
+							alert.showAndWait();
+						}
+					}
+				});
+
+			}
+
 		}
 
 	}

@@ -149,15 +149,16 @@ public class Quiz implements Serializable {
 			teamMap.put(team.getTeamID(), team);
 			team.setPlayers(players);
 		} else {
-			// TODO Go back and show error
+			// TODO change to boolean return value and check in server if not false!
 		}
 	}
 
-	public void removeTeam(int teamID) {
+	public boolean removeTeam(int teamID) {
 		if (teamMap.get(teamID) != null) {
 			teamMap.remove(teamID);
+			return true;
 		} else {
-			// TODO Go back and show error
+			return false;
 		}
 	}
 

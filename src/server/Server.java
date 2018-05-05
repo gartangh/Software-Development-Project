@@ -24,6 +24,7 @@ import eventbroker.clientevent.ClientNewQuestionEvent;
 import eventbroker.clientevent.ClientScoreboardDataEvent;
 import eventbroker.clientevent.ClientVoteEvent;
 import eventbroker.clientevent.ClientCreateTeamEvent;
+import eventbroker.clientevent.ClientDeleteTeamEvent;
 import eventbroker.serverevent.ServerVoteAnswerEvent;
 import eventbroker.serverevent.ServerChangeTeamEvent;
 import eventbroker.serverevent.ServerCreateAccountFailEvent;
@@ -38,6 +39,7 @@ import eventbroker.serverevent.ServerNewIPQuestionEvent;
 import eventbroker.serverevent.ServerNewMCQuestionEvent;
 import eventbroker.serverevent.ServerNewRoundEvent;
 import eventbroker.serverevent.ServerCreateTeamEvent;
+import eventbroker.serverevent.ServerDeleteTeamEvent;
 import eventbroker.serverevent.ServerNotAllAnsweredEvent;
 import eventbroker.serverevent.ServerQuizNewPlayerEvent;
 import eventbroker.serverevent.ServerCreateQuizSuccesEvent;
@@ -77,6 +79,7 @@ public class Server extends EventPublisher {
 	private static CreateTeamHandler newTeamHandler = new CreateTeamHandler();
 	private static ChangeTeamHandler changeTeamHandler = new ChangeTeamHandler();
 	private static HostReadyHandler hostReadyHandler = new HostReadyHandler();
+	private static DeleteTeamHandler deleteTeamHandler = new DeleteTeamHandler();
 
 	public static void main(String[] args) {
 		// Create a network on port Main.SERVERPORT and type SERVER
@@ -116,6 +119,7 @@ public class Server extends EventPublisher {
 		eventBroker.addEventListener(ClientCreateTeamEvent.EVENTTYPE, newTeamHandler);
 		eventBroker.addEventListener(ClientChangeTeamEvent.EVENTTYPE, changeTeamHandler);
 		eventBroker.addEventListener(ClientHostReadyEvent.EVENTTYPE, hostReadyHandler);
+		eventBroker.addEventListener(ClientDeleteTeamEvent.EVENTTYPE,deleteTeamHandler);
 
 		// Start the EventBroker
 		eventBroker.start();
@@ -392,7 +396,7 @@ public class Server extends EventPublisher {
 						iPQuestion.getQuestion(), iPQuestion.getAnswers());
 				sNIPQE.addRecipients(receivers);
 				server.publishEvent(sNIPQE);
-				
+
 			default:
 				MCQuestion mCQuestion = (MCQuestion) context
 						.getQuestion(quiz.getRoundList().get(quiz.getCurrentRound()).getNextQuestion());
@@ -402,7 +406,7 @@ public class Server extends EventPublisher {
 				sNMCQE.addRecipients(receivers);
 				server.publishEvent(sNMCQE);
 			}
-			
+
 			ServerStartRoundEvent sSRE = new ServerStartRoundEvent();
 			sSRE.addRecipients(receivers);
 			server.publishEvent(sSRE);
@@ -470,6 +474,7 @@ public class Server extends EventPublisher {
 
 			int userID = cCTE.getUserID();
 			int quizID = cCTE.getQuizID();
+			int oldTeamID = cCTE.getOldTeamID();
 			String teamname = cCTE.getTeamname();
 			Color color = cCTE.getColor();
 
@@ -481,13 +486,44 @@ public class Server extends EventPublisher {
 				ServerCreateTeamEvent sCTE = new ServerCreateTeamEvent(quizID, newTeamID, newteam.getTeamname(),
 						newteam.getColor(), newteam.getCaptainID(), newteam.getPlayerMap().get(newteam.getCaptainID()));
 				ArrayList<Integer> receivers = context.getUsersFromQuiz(quizID);
-				context.getQuizMap().get(cCTE.getQuizID()).removeUnassignedPlayer(newteam.getCaptainID());
+				if (oldTeamID == -1){
+					context.getQuizMap().get(cCTE.getQuizID()).removeUnassignedPlayer(newteam.getCaptainID());
+				}
+				else {
+					context.changeTeam(quizID, oldTeamID, userID, 'd');
+					String userName=context.getUserMap().get(userID).getUsername();
+					ServerChangeTeamEvent sCHTE = new ServerChangeTeamEvent(quizID,-1, oldTeamID, userID, userName);
+					sCHTE.addRecipients(receivers);
+					server.publishEvent(sCHTE);
+					}
 				sCTE.addRecipients(receivers);
 				server.publishEvent(sCTE);
 			} else
 				System.out.println("newTeamID != -1");
 		}
 
+	}
+
+	private static class DeleteTeamHandler implements EventListener {
+		@Override
+		public void handleEvent(Event event){
+			ClientDeleteTeamEvent cDTE = (ClientDeleteTeamEvent) event;
+
+			ServerContext context =ServerContext.getContext();
+			Quiz quiz=context.getQuizMap().get(cDTE.getQuizID());
+			Team team =quiz.getTeamMap().get(cDTE.getTeamID());
+
+			if (team!=null){
+				for (Entry <Integer,String> entry : team.getPlayerMap().entrySet()){
+					quiz.addUnassignedPlayer(entry.getKey(),entry.getValue());
+				}
+				quiz.removeTeam(team.getTeamID());
+				ServerDeleteTeamEvent sDTE=new ServerDeleteTeamEvent(team.getTeamID());
+				ArrayList<Integer> receivers = context.getUsersFromQuiz(quiz.getQuizID());
+				sDTE.addRecipients(receivers);
+				server.publishEvent(sDTE);
+			}
+		}
 	}
 
 	private static class ChangeTeamHandler implements EventListener {

@@ -12,12 +12,14 @@ public class ClientCreateTeamEvent extends ClientEvent {
 	private int colorRed;
 	private int colorGreen;
 	private int colorBlue;
+	private int oldTeamID;
 
 	// Constructor
-	public ClientCreateTeamEvent(int quizID, String teamname, Color color) {
+	public ClientCreateTeamEvent(int quizID, String teamname, Color color, int oldTeamID) {
 		super.type = EVENTTYPE;
 		this.quizID = quizID;
 		this.teamname = teamname;
+		this.oldTeamID = oldTeamID;
 		this.colorRed = (int) (color.getRed() * 255);
 		this.colorGreen = (int) (color.getGreen() * 255);
 		this.colorBlue = (int) (color.getBlue() * 255);
@@ -56,6 +58,10 @@ public class ClientCreateTeamEvent extends ClientEvent {
 		this.colorRed = (int) (color.getRed() * 255);
 		this.colorGreen = (int) (color.getGreen() * 255);
 		this.colorBlue = (int) (color.getBlue() * 255);
+	}
+
+	public int getOldTeamID() {
+		return oldTeamID;
 	}
 
 }

@@ -17,14 +17,14 @@ import javafx.scene.paint.Paint;
 import main.Context;
 
 public class JoinTeamModel {
-	
+
 	private ObservableList<TeamNameID> teams = FXCollections.observableArrayList();
 	private int teamID = -1;
 	private StringProperty teamname;
 	private StringProperty captainname;
 	private ObjectProperty<Paint> color;
 	private ListProperty<String> members = new SimpleListProperty<>();
-	
+
 	// Constructor
 	public JoinTeamModel() {
 		this.teamname = new SimpleStringProperty("");
@@ -43,7 +43,7 @@ public class JoinTeamModel {
 	public ObservableList<TeamNameID> getTeams() {
 		return teams;
 	}
-	
+
 	public int getTeamID() {
 		return teamID;
 	}
@@ -69,11 +69,11 @@ public class JoinTeamModel {
 		Quiz quiz = Context.getContext().getQuiz();
 		Platform.runLater(new Runnable() {
 			public void run() {
+				teams.clear();
 				for (Team team : quiz.getTeamMap().values()) {
 					TeamNameID teamNameID = new TeamNameID(new SimpleStringProperty(team.getTeamname()),
 							team.getTeamID());
-					if (!teams.contains(teamNameID))
-						teams.add(teamNameID);
+					teams.add(teamNameID);
 				}
 			}
 		});
@@ -84,15 +84,24 @@ public class JoinTeamModel {
 
 		Platform.runLater(new Runnable() {
 			public void run() {
-				Team team = Context.getContext().getQuiz().getTeamMap().get(teamID);
-				teamname.setValue(team.getTeamname());
-				captainname.setValue(team.getPlayerMap().get(team.getCaptainID()));
-				color.setValue(team.getColor());
-				Set<Entry<Integer, String>> r = team.getPlayerMap().entrySet();
-				members.clear();
-				members.set(FXCollections.observableArrayList());
-				for (Entry<Integer, String> entry : r)
-					members.add(entry.getValue());
+				if (teamID != -1){
+					Team team = Context.getContext().getQuiz().getTeamMap().get(teamID);
+					teamname.setValue(team.getTeamname());
+					captainname.setValue(team.getPlayerMap().get(team.getCaptainID()));
+					color.setValue(team.getColor());
+					Set<Entry<Integer, String>> r = team.getPlayerMap().entrySet();
+					members.clear();
+					members.set(FXCollections.observableArrayList());
+					for (Entry<Integer, String> entry : r)
+						members.add(entry.getValue());
+				}
+				else {
+					teamname.setValue("");
+					captainname.setValue("");
+					color.setValue(Color.TRANSPARENT);
+					members.clear();
+					members.set(FXCollections.observableArrayList());
+				}
 			}
 		});
 	}
