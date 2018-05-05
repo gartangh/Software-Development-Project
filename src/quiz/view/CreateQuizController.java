@@ -8,10 +8,11 @@ import eventbroker.clientevent.ClientCreateQuizEvent;
 import eventbroker.serverevent.ServerCreateQuizFailEvent;
 import eventbroker.serverevent.ServerCreateQuizSuccesEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
 import main.Context;
 import main.Main;
-import main.view.AlertBox;
 import quiz.model.Quiz;
 
 public class CreateQuizController extends EventPublisher {
@@ -58,65 +59,107 @@ public class CreateQuizController extends EventPublisher {
 	@FXML
 	private void handleCreateQuiz() {
 		String quizname = mQuizname.getText();
-		int rounds = 0;
-		int teams = 0;
-		int players = 0;
-		
-		if (!quizname.matches(Quiz.QUIZNAMEREGEX)) {
-			AlertBox.display("Error", "Quizname is invalid!");
+		if (quizname == null || !quizname.matches(Quiz.QUIZNAMEREGEX)) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Warning");
+			alert.setHeaderText("Quizname is invalid!");
+			alert.setContentText("Try again with a valid quizname.");
+			alert.showAndWait();
 
 			return;
 		}
-		
+
+		int rounds = 0;
 		try {
 			rounds = Integer.parseInt(mRounds.getText());
-			
 			if (rounds < Quiz.MINROUNDS) {
-				AlertBox.display("Error", "Minimum amount of rounds is " + Quiz.MINROUNDS + "!");
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("Warning");
+				alert.setHeaderText("Amount of rounds is invalid!");
+				alert.setContentText("Minimum amount of rounds is " + Quiz.MINROUNDS + ".");
+				alert.showAndWait();
 
 				return;
-			}
-			if (rounds > Quiz.MAXROUNDS) {
-				AlertBox.display("Error", "Maximum amount of rounds is " + Quiz.MAXROUNDS + "!");
+			} else if (rounds > Quiz.MAXROUNDS) {
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("Warning");
+				alert.setHeaderText("Amount of rounds is invalid!");
+				alert.setContentText("Maximum amount of rounds is " + Quiz.MAXROUNDS + ".");
+				alert.showAndWait();
 
 				return;
 			}
 		} catch (NumberFormatException e) {
-			AlertBox.display("Error", "Amount of rounds must be a integer between " + Quiz.MINROUNDS + " and " + Quiz.MAXROUNDS + "!");
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Warning");
+			alert.setHeaderText("Amount of rounds is invalid!");
+			alert.setContentText(
+					"Amount of rounds must be a integer between " + Quiz.MINROUNDS + " and " + Quiz.MAXROUNDS + ".");
+			alert.showAndWait();
+
+			return;
 		}
-		
+
+		int teams = 0;
 		try {
 			teams = Integer.parseInt(mTeams.getText());
-			
 			if (teams < Quiz.MINTEAMS) {
-				AlertBox.display("Error", "Minimum amount of teams is " + Quiz.MINTEAMS + "!");
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("Warning");
+				alert.setHeaderText("Amount of teams is invalid!");
+				alert.setContentText("Minimum amount of teams is " + Quiz.MINTEAMS + ".");
+				alert.showAndWait();
 
 				return;
-			}
-			if (teams > Quiz.MAXTEAMS) {
-				AlertBox.display("Error", "Maximum amount of teams is " + Quiz.MAXTEAMS + "!");
+			} else if (teams > Quiz.MAXTEAMS) {
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("Warning");
+				alert.setHeaderText("Amount of teams is invalid!");
+				alert.setContentText("Maximum amount of teams is " + Quiz.MAXTEAMS + ".");
+				alert.showAndWait();
 
 				return;
 			}
 		} catch (NumberFormatException e) {
-			AlertBox.display("Error", "Amount of teams must be a integer between " + Quiz.MINTEAMS + " and " + Quiz.MAXTEAMS + "!");
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Warning");
+			alert.setHeaderText("Amount of teams is invalid!");
+			alert.setContentText(
+					"Amount of teams must be a integer between " + Quiz.MINTEAMS + " and " + Quiz.MAXTEAMS + ".");
+			alert.showAndWait();
+
+			return;
 		}
-		
+
+		int players = 0;
 		try {
 			players = Integer.parseInt(mPlayers.getText());
-			
 			if (players < Quiz.MINPLAYERS) {
-				AlertBox.display("Error", "Minimum amount of players is " + Quiz.MINPLAYERS + "!");
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("Warning");
+				alert.setHeaderText("Amount of players is invalid!");
+				alert.setContentText("Minimum amount of players is " + Quiz.MINPLAYERS + ".");
+				alert.showAndWait();
 
 				return;
-			}
-			if (players > Quiz.MAXPLAYERS) {
-				AlertBox.display("Error", "Maximum amount of players is " + Quiz.MAXPLAYERS + "!");
+			} else if (players > Quiz.MAXPLAYERS) {
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("Warning");
+				alert.setHeaderText("Amount of players is invalid!");
+				alert.setContentText("Maximum amount of players is " + Quiz.MAXPLAYERS + ".");
+				alert.showAndWait();
 
 				return;
 			}
 		} catch (NumberFormatException e) {
-			AlertBox.display("Error", "Amount of players must be a integer between " + Quiz.MINPLAYERS + " and " + Quiz.MAXPLAYERS + "!");
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Warning");
+			alert.setHeaderText("Amount of players is invalid!");
+			alert.setContentText(
+					"Amount of players must be a integer between " + Quiz.MINPLAYERS + " and " + Quiz.MAXPLAYERS + ".");
+			alert.showAndWait();
+
+			return;
 		}
 
 		// Everything is valid
@@ -142,7 +185,11 @@ public class CreateQuizController extends EventPublisher {
 			@SuppressWarnings("unused")
 			ServerCreateQuizFailEvent sCQSE = (ServerCreateQuizFailEvent) event;
 
-			AlertBox.display("Error", "Create quiz failed!\nThe quizname already exists.");
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error");
+			alert.setHeaderText("Quiz creation failed!");
+			alert.setContentText("The quizname already exists.");
+			alert.showAndWait();
 		}
 
 	}

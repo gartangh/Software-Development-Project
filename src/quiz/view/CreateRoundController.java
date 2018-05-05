@@ -34,7 +34,7 @@ public class CreateRoundController extends EventPublisher {
 	private NewMCQuestionHandler newMCQuestionHandler;
 
 	// Reference to the main application
-	Main main;
+	private Main main;
 
 	public void setMain(Main main) {
 		this.main = main;

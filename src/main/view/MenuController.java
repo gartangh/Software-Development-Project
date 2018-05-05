@@ -4,11 +4,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import main.Context;
-import main.Main;
 import quiz.model.User;
 
 public class MenuController {
 
+	// Methods
 	@FXML
 	private void initialize() {
 		// Empty initialize
@@ -19,17 +19,15 @@ public class MenuController {
 	 */
 	@FXML
 	private void handleProfile() {
+		User user = Context.getContext().getUser();
 		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle(Main.QUIZNAME);
+		alert.setTitle("Information");
 		alert.setHeaderText("Profile");
-		if (Context.getContext().getUser() == null)
-			alert.setContentText("No user is logged in.");
-		else {
-			User user = Context.getContext().getUser();
+		if (user == null)
+			alert.setContentText("No user is logged in at the moment.");
+		else
 			alert.setContentText("Username: " + user.getUsername() + "\nLevel: " + Integer.toString(user.getLevel())
 					+ "\nXP: " + Long.toString(user.getXp()));
-		}
-
 		alert.showAndWait();
 	}
 
@@ -39,10 +37,9 @@ public class MenuController {
 	@FXML
 	private void handleAbout() {
 		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle(Main.QUIZNAME);
+		alert.setTitle("Information");
 		alert.setHeaderText("About");
 		alert.setContentText("Authors:\nArthur Crapé\nHannes Demuynck\nEmiel Huyge\nGarben Tanghe");
-
 		alert.showAndWait();
 	}
 

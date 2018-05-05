@@ -6,9 +6,12 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import quiz.model.Team;
 
 public class CreateTeamController {
+	
 	@FXML
 	private TextField mTeamname;
 	@FXML
@@ -54,28 +57,30 @@ public class CreateTeamController {
 	}
 
 	private boolean isInputValid() {
-		String errorMessage = "";
-
-		if (mTeamname.getText() == null || mTeamname.getText().length() == 0)
-			errorMessage += "No valid teamname!\n";
-		
-		if (mColor.getValue() == null)
-			errorMessage += "No color picked!\n";
-		
-		if (errorMessage.length() == 0)
-			return true;
-		else {
-			// Show the error message.
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.initOwner(dialogStage);
-			alert.setTitle("Invalid Fields");
-			alert.setHeaderText("Please correct invalid fields");
-			alert.setContentText(errorMessage);
-
+		String teamname = mTeamname.getText();
+		if (teamname == null || !teamname.matches(Team.TEAMNAMEREGEX)) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Warning");
+			alert.setHeaderText("Teamname is invalid!");
+			alert.setContentText("Try again with a valid quizname.");
 			alert.showAndWait();
 
 			return false;
 		}
+
+		Color color = mColor.getValue();
+		if (color == null) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Warning");
+			alert.setHeaderText("No color picked!");
+			alert.setContentText("Select a color and try again.");
+			alert.showAndWait();
+
+			return false;
+		}
+
+		// Everything is valid
+		return true;
 	}
 
 }

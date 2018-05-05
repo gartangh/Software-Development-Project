@@ -11,11 +11,12 @@ import eventbroker.serverevent.ServerCreateAccountSuccesEvent;
 import eventbroker.serverevent.ServerLogInFailEvent;
 import eventbroker.serverevent.ServerLogInSuccesEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import main.Main;
-import main.view.AlertBox;
 import quiz.model.User;
 
 public class LogInController extends EventPublisher {
@@ -76,15 +77,23 @@ public class LogInController extends EventPublisher {
 	@FXML
 	private void handleCreateAccount() {
 		String username = mUsername.getText();
-		String password = mPassword.getText();
-
-		if (!username.matches(User.USERNAMEREGEX)) {
-			AlertBox.display("Error", "Username is invalid!");
+		if (username == null || !username.matches(User.USERNAMEREGEX)) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Warning");
+			alert.setHeaderText("Username is invalid!");
+			alert.setContentText("Try again with a valid username.");
+			alert.showAndWait();
 
 			return;
 		}
-		if (!password.matches(User.PASSWORDREGEX)) {
-			AlertBox.display("Error", "Password is invalid!");
+
+		String password = mPassword.getText();
+		if (password == null || !password.matches(User.PASSWORDREGEX)) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Warning");
+			alert.setHeaderText("Password is invalid!");
+			alert.setContentText("Try again with a valid password.");
+			alert.showAndWait();
 
 			return;
 		}
@@ -97,15 +106,23 @@ public class LogInController extends EventPublisher {
 	@FXML
 	private void handleLogIn() {
 		String username = mUsername.getText();
-		String password = mPassword.getText();
-
-		if (!username.matches(User.USERNAMEREGEX)) {
-			AlertBox.display("Error", "Username is invalid!");
+		if (username == null || !username.matches(User.USERNAMEREGEX)) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Warning");
+			alert.setHeaderText("Username is invalid!");
+			alert.setContentText("Try again with a valid username.");
+			alert.showAndWait();
 
 			return;
 		}
-		if (!password.matches(User.PASSWORDREGEX)) {
-			AlertBox.display("Error", "Password is invalid!");
+
+		String password = mPassword.getText();
+		if (password == null || !password.matches(User.PASSWORDREGEX)) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Warning");
+			alert.setHeaderText("Password is invalid!");
+			alert.setContentText("Try again with a valid password.");
+			alert.showAndWait();
 
 			return;
 		}
@@ -123,7 +140,11 @@ public class LogInController extends EventPublisher {
 			@SuppressWarnings("unused")
 			ServerCreateAccountFailEvent sCAFE = (ServerCreateAccountFailEvent) event;
 
-			AlertBox.display("Error", "Create account failed!\nThe username already exists.");
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error");
+			alert.setHeaderText("Account creation failed!");
+			alert.setContentText("The username already exists.");
+			alert.showAndWait();
 		}
 
 	}
@@ -133,7 +154,7 @@ public class LogInController extends EventPublisher {
 		@Override
 		public void handleEvent(Event event) {
 			ServerCreateAccountSuccesEvent sCASE = (ServerCreateAccountSuccesEvent) event;
-			
+
 			int userID = sCASE.getUserID();
 			String username = sCASE.getUsername();
 			String password = sCASE.getPassword();
@@ -158,7 +179,11 @@ public class LogInController extends EventPublisher {
 			@SuppressWarnings("unused")
 			ServerLogInFailEvent sLIFE = (ServerLogInFailEvent) event;
 
-			AlertBox.display("Error", "Log in failed!\nThe combination of this username and password does not exist.");
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error");
+			alert.setHeaderText("Logging in failed!");
+			alert.setContentText("The combination of this username and password does not exist.");
+			alert.showAndWait();
 		}
 
 	}
@@ -168,7 +193,7 @@ public class LogInController extends EventPublisher {
 		@Override
 		public void handleEvent(Event event) {
 			ServerLogInSuccesEvent sLISE = (ServerLogInSuccesEvent) event;
-			
+
 			int userID = sLISE.getUserID();
 			String username = sLISE.getUsername();
 			String password = sLISE.getPassword();

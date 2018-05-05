@@ -9,6 +9,8 @@ import javafx.scene.paint.Color;
 @SuppressWarnings("serial")
 public class Team implements Serializable {
 
+	public final static String TEAMNAMEREGEX = "^[a-zA-Z0-9._-]{3,}$";
+	
 	private int teamID;
 	private String teamname;
 	// Maximum amount of players

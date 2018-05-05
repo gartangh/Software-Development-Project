@@ -15,7 +15,6 @@ import main.Main;
 import quiz.model.JoinTeamModel;
 import quiz.model.Team;
 import quiz.model.TeamNameID;
-import quiz.model.User;
 import chat.ChatPanel;
 import eventbroker.Event;
 import eventbroker.EventBroker;
@@ -103,52 +102,56 @@ public class JoinTeamController extends EventPublisher {
 	@FXML
 	private void handleCreateTeam() {
 		Context context = Context.getContext();
-		String errorMessage = "";
-		if (context.getQuiz().getHostID() != context.getUser().getUserID()) {
-			if (context.getQuiz().getAmountOfTeams() < context.getQuiz().getTeams()) {
-				User currUser = context.getUser();
-				int currTeamID = context.getTeamID();
-				int currCaptainID;
+		int userID = context.getUser().getUserID();
+		int quizID = context.getQuiz().getQuizID();
+		int hostID = context.getQuiz().getHostID();
+		int teamID = context.getTeamID();
+		int captainID = -1;
+		if (teamID != -1)
+			captainID = context.getQuiz().getTeamMap().get(teamID).getCaptainID();
 
-				if (currTeamID != -1)
-					currCaptainID = context.getQuiz().getTeamMap().get(currTeamID).getCaptainID();
-				else
-					currCaptainID = -1;
-
-				if (currCaptainID != currUser.getUserID()) {
-					ClientCreateTeamEvent cNTE = new ClientCreateTeamEvent(context.getQuiz().getQuizID(), "",
-							Color.TRANSPARENT);
-
-					boolean okClicked = main.showCreateTeamScene(cNTE);
-					if (okClicked)
-						publishEvent(cNTE);
-				} else
-					errorMessage = "You can't create a new team, because you are already a captain of an existing team";
-			} else
-				errorMessage = "The maximum of teams is already reached";
-		} else
-			errorMessage = "You can't create a team if you are the quizmaster, click ready when you want to start the quiz";
-
-		if (errorMessage != "") {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.initOwner(main.getPrimaryStage());
-			alert.setTitle("New Team error");
-			alert.setHeaderText("You can't create a new team");
-			alert.setContentText(errorMessage);
-
+		if (hostID == userID) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Warning");
+			alert.setHeaderText("You can't create a team!");
+			alert.setContentText("You're the host, click ready when you want to start the quiz.");
 			alert.showAndWait();
+
+			return;
+		} else if (context.getQuiz().getAmountOfTeams() >= context.getQuiz().getTeams()) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Warning");
+			alert.setHeaderText("You can't create a team!");
+			alert.setContentText("The maximum amount of teams is already reached.");
+			alert.showAndWait();
+
+			return;
+		} else if (captainID == userID) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Warning");
+			alert.setHeaderText("You can't create a team!");
+			alert.setContentText("You're already captain of an existing team.");
+			alert.showAndWait();
+
+			return;
 		}
+
+		// You can create a team
+		ClientCreateTeamEvent cNTE = new ClientCreateTeamEvent(quizID, "", Color.TRANSPARENT);
+		if (main.showCreateTeamScene(cNTE))
+			publishEvent(cNTE);
 	}
 
 	@FXML
 	private void handleReady() {
 		Context context = Context.getContext();
-		if (context.getQuiz().getHostID() == context.getUser().getUserID()) {
-			ClientHostReadyEvent cHRE = new ClientHostReadyEvent(context.getQuiz().getQuizID(),
-					context.getUser().getUserID());
-			publishEvent(cHRE);
-		} else {
-			if (Context.getContext().getTeamID() != -1) {
+		int userID = context.getUser().getUserID();
+		int quizID = context.getQuiz().getQuizID();
+		int hostID = context.getQuiz().getHostID();
+		int teamID = context.getTeamID();
+
+		if (hostID != userID) {
+			if (teamID != -1) {
 				EventBroker.getEventBroker().removeEventListener(newTeamHandler);
 				EventBroker.getEventBroker().removeEventListener(changeTeamHandler);
 				EventBroker.getEventBroker().removeEventListener(startQuizHandler);
@@ -156,56 +159,69 @@ public class JoinTeamController extends EventPublisher {
 
 				main.showWaitRoundScene();
 			} else {
-				Alert alert = new Alert(AlertType.ERROR);
-				alert.initOwner(main.getPrimaryStage());
-				alert.setTitle("No team Error");
-				alert.setHeaderText("You can't be ready");
-				alert.setContentText("First join or create a team, then click ready");
-
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("Warning");
+				alert.setHeaderText("You can't be ready when you're not part of a team!");
+				alert.setContentText("First join or create a team, then click ready.");
 				alert.showAndWait();
 			}
+
+			return;
 		}
+
+		ClientHostReadyEvent cHRE = new ClientHostReadyEvent(quizID, userID);
+		publishEvent(cHRE);
 	}
 
 	@FXML
 	private void handleJoin() {
-		String errorMessage = "";
 		Context context = Context.getContext();
-		if (context.getQuiz().getHostID() != context.getUser().getUserID()) {
-			TeamNameID selectedTeam = teamTable.getSelectionModel().getSelectedItem();
-			if (selectedTeam != null) {
-				User currUser = context.getUser();
-				int currTeamID = context.getTeamID();
+		int userID = context.getUser().getUserID();
+		int quizID = context.getQuiz().getQuizID();
+		int hostID = context.getQuiz().getHostID();
+		int teamID = context.getTeamID();
+		int captainID = -1;
+		if (teamID != -1)
+			captainID = context.getQuiz().getTeamMap().get(teamID).getCaptainID();
 
-				int currCaptainID;
-				if (currTeamID != -1)
-					currCaptainID = context.getQuiz().getTeamMap().get(currTeamID).getCaptainID();
-				else
-					currCaptainID = -1;
+		TeamNameID selectedTeam = teamTable.getSelectionModel().getSelectedItem();
 
-				if (selectedTeam.getTeamID() != context.getTeamID()) {
-					if (currCaptainID != currUser.getUserID()) {
-						ClientChangeTeamEvent cCTE = new ClientChangeTeamEvent(context.getQuiz().getQuizID(),
-								selectedTeam.getTeamID(), currTeamID, currUser.getUserID());
-						publishEvent(cCTE);
-					} else
-						errorMessage = "You are a captain, you can't join another team.";
-				} else
-					errorMessage = "You are already in this team.";
-			} else
-				errorMessage = "You didn't select a team, please select a team before you click the join button.";
-		} else
-			errorMessage = "You can't join a team if you are the quizmaster, click ready when you want to start the quiz.";
-
-		if (errorMessage != "") {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.initOwner(main.getPrimaryStage());
-			alert.setTitle("Joining error!");
-			alert.setHeaderText("You couldn't join a team.");
-			alert.setContentText(errorMessage);
-
+		if (hostID == userID) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Warning");
+			alert.setHeaderText("You couldn't join a team!");
+			alert.setContentText("The quizmaster can't join a team, click ready when you want to start the quiz.");
 			alert.showAndWait();
+
+			return;
+		} else if (selectedTeam == null) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Warning");
+			alert.setHeaderText("You couldn't join a team!");
+			alert.setContentText("You didn't select a team, please select a team and try again.");
+			alert.showAndWait();
+
+			return;
+		} else if (selectedTeam.getTeamID() != teamID) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Warning");
+			alert.setHeaderText("You couldn't join the team!");
+			alert.setContentText("You're already in this team.");
+			alert.showAndWait();
+
+			return;
+		} else if (captainID != userID) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Warning");
+			alert.setHeaderText("You couldn't join a team!");
+			alert.setContentText("You are a captain, you can't join another team.");
+			alert.showAndWait();
+
+			return;
 		}
+
+		ClientChangeTeamEvent cCTE = new ClientChangeTeamEvent(quizID, selectedTeam.getTeamID(), teamID, userID);
+		publishEvent(cCTE);
 	}
 
 	@FXML
@@ -304,12 +320,15 @@ public class JoinTeamController extends EventPublisher {
 
 			if (context.getQuiz().getHostID() == context.getUser().getUserID()) {
 				context.getQuiz().setRunning(true);
+
 				main.showCreateRoundScene();
 			} else if (context.getTeamID() != -1) {
 				context.getQuiz().setRunning(true);
+
 				main.showWaitRoundScene();
 			} else {
 				context.setQuiz(null);
+
 				main.showJoinQuizScene();
 			}
 		}

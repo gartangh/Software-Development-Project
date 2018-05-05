@@ -204,20 +204,17 @@ public class QuestionController extends EventPublisher {
 		int answer = this.getChecked();
 		if (context.getQuiz().getTeamMap().get(context.getTeamID()).getCaptainID() != Context.getContext().getUser()
 				.getUserID()) {
-			Alert alert = new Alert(AlertType.ERROR);
+			Alert alert = new Alert(AlertType.WARNING);
 			alert.initOwner(main.getPrimaryStage());
-			alert.setTitle("QuizForm Error");
-			alert.setHeaderText("You can't submit an answer");
-			alert.setContentText("You are not the captain, so you can't submit an answer.");
-
+			alert.setTitle("Warning");
+			alert.setHeaderText("You can't submit an answer!");
+			alert.setContentText("You must be the captain of the team in order to submit the answer.");
 			alert.showAndWait();
 		} else if (answer < 0) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.initOwner(main.getPrimaryStage());
-			alert.setTitle("QuizForm Error");
-			alert.setHeaderText("You can't submit an empty answer");
-			alert.setContentText("Please select an answer to submit.");
-
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Warning");
+			alert.setHeaderText("You can't submit an empty answer!");
+			alert.setContentText("Please select a valid answer and try again.");
 			alert.showAndWait();
 		} else {
 			ClientAnswerEvent cAE = new ClientAnswerEvent(Context.getContext().getQuestion().getQuestionID(), answer);
@@ -230,12 +227,10 @@ public class QuestionController extends EventPublisher {
 	private void handleNext() {
 		if (Context.getContext().getQuiz().getTeamMap().get(Context.getContext().getTeamID()).getCaptainID() != Context
 				.getContext().getUser().getUserID()) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.initOwner(main.getPrimaryStage());
-			alert.setTitle("QuizForm Error");
-			alert.setHeaderText("You can't go to the next question");
-			alert.setContentText("You are not a team captain, so you can't proceed to the next question.");
-
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Warning");
+			alert.setHeaderText("You can't go to the next question!");
+			alert.setContentText("You must be the captain of the team in order to proceed to the next question.");
 			alert.showAndWait();
 		} else {
 			ClientNewQuestionEvent cnqe = new ClientNewQuestionEvent();
@@ -296,7 +291,7 @@ public class QuestionController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event event) {
-			// TODO: Alert
+			// TODO Alert
 		}
 
 	}
