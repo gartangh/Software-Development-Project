@@ -78,6 +78,12 @@ public class Server extends EventPublisher {
 	private static ChangeTeamHandler changeTeamHandler = new ChangeTeamHandler();
 	private static HostReadyHandler hostReadyHandler = new HostReadyHandler();
 
+	/**
+	 * The main method.
+	 *
+	 * @param args
+	 *            the arguments
+	 */
 	public static void main(String[] args) {
 		// Create a network on port Main.SERVERPORT and type SERVER
 		Network network = new Network(Main.SERVERPORT, Network.SERVERTYPE);
@@ -392,7 +398,7 @@ public class Server extends EventPublisher {
 						iPQuestion.getQuestion(), iPQuestion.getAnswers());
 				sNIPQE.addRecipients(receivers);
 				server.publishEvent(sNIPQE);
-				
+
 			default:
 				MCQuestion mCQuestion = (MCQuestion) context
 						.getQuestion(quiz.getRoundList().get(quiz.getCurrentRound()).getNextQuestion());
@@ -402,7 +408,7 @@ public class Server extends EventPublisher {
 				sNMCQE.addRecipients(receivers);
 				server.publishEvent(sNMCQE);
 			}
-			
+
 			ServerStartRoundEvent sSRE = new ServerStartRoundEvent();
 			sSRE.addRecipients(receivers);
 			server.publishEvent(sSRE);

@@ -36,55 +36,110 @@ public class ServerContext {
 	}
 
 	// Getters and setters
+	/**
+	 * Gets the context.
+	 *
+	 * @return the context
+	 */
 	public static ServerContext getContext() {
 		return context;
 	}
 
+	/**
+	 * Gets the network.
+	 *
+	 * @return the network
+	 */
 	public Network getNetwork() {
 		return network;
 	}
 
+	/**
+	 * Sets the network.
+	 *
+	 * @param network
+	 *            the new network
+	 */
 	public void setNetwork(Network network) {
 		this.network = network;
 	}
 
+	/**
+	 * Gets the user map.
+	 *
+	 * @return the user map
+	 */
 	public Map<Integer, User> getUserMap() {
 		return userMap;
 	}
 
+	/**
+	 * Gets the quiz map.
+	 *
+	 * @return the quiz map
+	 */
 	public Map<Integer, Quiz> getQuizMap() {
 		return quizMap;
 	}
 
+	/**
+	 * Gets the ordered MC question map.
+	 *
+	 * @return the ordered MC question map
+	 */
 	public Map<Integer, Map<Integer, Map<Integer, MCQuestion>>> getOrderedMCQuestionMap() {
 		return orderedMCQuestionMap;
 	}
 
 	// Methods
-	// Return username for serverEventHandler
+	/**
+	 * Change team.
+	 *
+	 * @param quizID
+	 *            the quiz ID
+	 * @param teamID
+	 *            the team ID
+	 * @param userID
+	 *            the user ID
+	 * @param type
+	 *            the type
+	 * @return the string username for server event handler
+	 */
 	public String changeTeam(int quizID, int teamID, int userID, char type) {
-		// Nothing to delete if teamID == -1
 		if (quizMap.containsKey(quizID) && userMap.containsKey(userID) && teamID != -1) {
 			Quiz quiz = quizMap.get(quizID);
 			User user = userMap.get(userID);
 			Team team = quiz.getTeamMap().get(teamID);
 
 			if (team != null) {
-				if (type == 'a') {// add
+				if (type == 'a')
+					// Add
 					team.addPlayer(user.getUserID(), user.getUsername());
-
-					return user.getUsername();
-				} else if (type == 'd') {// Delete
+				else if (type == 'd')
+					// Delete
 					team.removePlayer(user.getUserID());
 
-					return user.getUsername();
-				}
+				return user.getUsername();
 			}
 		}
 
+		// Nothing to delete if teamID == -1
 		return null;
 	}
 
+	/**
+	 * Adds the team.
+	 *
+	 * @param quizID
+	 *            the quiz ID
+	 * @param teamName
+	 *            the team name
+	 * @param color
+	 *            the color
+	 * @param captainID
+	 *            the captain ID
+	 * @return the int teamID
+	 */
 	public int addTeam(int quizID, String teamName, Color color, int captainID) {
 		if (quizMap.containsKey(quizID) && userMap.containsKey(captainID)) {
 			Quiz q = quizMap.get(quizID);
@@ -94,10 +149,9 @@ public class ServerContext {
 			do {
 				unique = true;
 				newID = (int) (Math.random() * Integer.MAX_VALUE);
-				for (Team t : q.getTeamMap().values()) {
+				for (Team t : q.getTeamMap().values())
 					if (t.getTeamID() == newID)
 						unique = false;
-				}
 			} while (!unique);
 
 			Team team = new Team(newID, teamName, color, captainID, userMap.get(captainID).getUsername());
@@ -112,14 +166,31 @@ public class ServerContext {
 	}
 
 	// Methods
+	/**
+	 * Gets the user.
+	 *
+	 * @param userID
+	 *            the user ID
+	 * @return the user
+	 */
 	public User getUser(int userID) {
 		return userMap.get(userID);
 	}
 
+	/**
+	 * Gets the quiz.
+	 *
+	 * @param quizID
+	 *            the quiz ID
+	 * @return the quiz
+	 */
 	public Quiz getQuiz(int quizID) {
 		return quizMap.get(quizID);
 	}
 
+	/**
+	 * Load data.
+	 */
 	public void loadData() {
 		String[] themeFiles = { "QUESTIONS_CULTURE.txt", "QUESTIONS_SPORTS.txt" };
 
@@ -159,7 +230,8 @@ public class ServerContext {
 					// 256 possible themes and 4 difficulties with each 2^21
 					// questions gives unique ID
 					int questionID = themeFile * (2 ^ 24) + diff * (2 ^ 22) + i;
-					MCQuestion mCQuestion = new MCQuestion(questionID, theme, difficulty, question, answers, correctAnswer);
+					MCQuestion mCQuestion = new MCQuestion(questionID, theme, difficulty, question, answers,
+							correctAnswer);
 
 					diffMap.put(questionID, mCQuestion);
 					allMCQuestions.put(questionID, mCQuestion);
@@ -176,6 +248,13 @@ public class ServerContext {
 		}
 	}
 
+	/**
+	 * Gets the users from quiz.
+	 *
+	 * @param quizID
+	 *            the quiz ID
+	 * @return the users from quiz
+	 */
 	public ArrayList<Integer> getUsersFromQuiz(int quizID) {
 		ArrayList<Integer> r = new ArrayList<>();
 		Quiz quiz = quizMap.get(quizID);
@@ -192,6 +271,13 @@ public class ServerContext {
 		return r;
 	}
 
+	/**
+	 * Gets the question.
+	 *
+	 * @param questionID
+	 *            the question ID
+	 * @return the question
+	 */
 	public Question getQuestion(int questionID) {
 		return allMCQuestions.get(questionID);
 	}

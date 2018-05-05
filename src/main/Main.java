@@ -28,20 +28,49 @@ import quiz.view.WaitRoundController;
 
 public class Main extends Application {
 
+	/** The Constant QUIZNAME represents the name of the quiz. */
 	public final static String QUIZNAME = "Quiz";
+
+	/**
+	 * The Constant DEBUG. True is for development. False is for releases.
+	 */
 	public final static boolean DEBUG = true;
+
+	/**
+	 * The Constant LOCAL. True is for local development. False is for network
+	 * development and releases.
+	 */
 	public final static boolean LOCAL = true;
-	// public final static String SERVERADDRESS = "10.10.131.52";
-	public final static String SERVERADDRESS = "192.168.1.30";
+
+	/** The Constant SERVERADDRESS represents the IP address of the server. */
+	// public final static String SERVERADDRESS = "10.10.131.52"; // On the
+	// iVisitor network at iGent
+	public final static String SERVERADDRESS = "192.168.1.30"; // On the
+																// Proximus
+																// network at
+																// Emiel.
+
+	/** The Constant SERVERPORT represents the port on the server. */
 	public final static int SERVERPORT = 1025;
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
 
+	/**
+	 * The main method.
+	 *
+	 * @param args
+	 *            the arguments
+	 */
 	public static void main(String[] args) {
 		launch(args);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javafx.application.Application#start(javafx.stage.Stage)
+	 */
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
@@ -84,6 +113,11 @@ public class Main extends Application {
 	}
 
 	// Getters
+	/**
+	 * Gets the primary stage.
+	 *
+	 * @return the primary stage
+	 */
 	public Stage getPrimaryStage() {
 		return primaryStage;
 	}
@@ -116,6 +150,9 @@ public class Main extends Application {
 	}
 
 	// Show scenes
+	/**
+	 * Show log in scene.
+	 */
 	public void showLogInScene() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
@@ -134,6 +171,9 @@ public class Main extends Application {
 		}
 	}
 
+	/**
+	 * Show create quiz scene.
+	 */
 	public void showCreateQuizScene() {
 		try {
 			FXMLLoader createQuizLoader = new FXMLLoader();
@@ -152,6 +192,9 @@ public class Main extends Application {
 		}
 	}
 
+	/**
+	 * Show join quiz scene.
+	 */
 	public void showJoinQuizScene() {
 		try {
 			FXMLLoader joinQuizLoader = new FXMLLoader();
@@ -170,6 +213,9 @@ public class Main extends Application {
 		}
 	}
 
+	/**
+	 * Show join team scene.
+	 */
 	public void showJoinTeamScene() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
@@ -188,6 +234,9 @@ public class Main extends Application {
 		}
 	}
 
+	/**
+	 * Show scoreboard scene.
+	 */
 	public void showScoreboardScene() {
 		try {
 			FXMLLoader scoreboardLoader = new FXMLLoader();
@@ -206,7 +255,14 @@ public class Main extends Application {
 		}
 	}
 
-	public boolean showCreateTeamScene(ClientCreateTeamEvent teamevent) {
+	/**
+	 * Show create team scene.
+	 *
+	 * @param cCTE
+	 *            the create team event
+	 * @return true, if team creation was successful
+	 */
+	public boolean showCreateTeamScene(ClientCreateTeamEvent cCTE) {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(Main.class.getResource("../quiz/view/CreateTeam.fxml"));
@@ -219,7 +275,7 @@ public class Main extends Application {
 			// Set the person into the controller
 			CreateTeamController controller = loader.getController();
 			controller.setDialogStage(dialogStage);
-			controller.setTeamEvent(teamevent);
+			controller.setTeamEvent(cCTE);
 
 			// Show the dialog and wait until the user closes it
 			dialogStage.showAndWait();
@@ -232,6 +288,9 @@ public class Main extends Application {
 		}
 	}
 
+	/**
+	 * Show question scene.
+	 */
 	public void showQuestionScene() {
 		try {
 			FXMLLoader questionFormLoader = new FXMLLoader();
@@ -250,6 +309,9 @@ public class Main extends Application {
 		}
 	}
 
+	/**
+	 * Show wait round scene.
+	 */
 	public void showWaitRoundScene() {
 		try {
 			FXMLLoader waitRoundLoader = new FXMLLoader();
@@ -268,6 +330,9 @@ public class Main extends Application {
 		}
 	}
 
+	/**
+	 * Show wait host scene.
+	 */
 	public void showWaitHostScene() {
 		try {
 			FXMLLoader waitHostLoader = new FXMLLoader();
@@ -286,6 +351,9 @@ public class Main extends Application {
 		}
 	}
 
+	/**
+	 * Show create round scene.
+	 */
 	public void showCreateRoundScene() {
 		try {
 			FXMLLoader roundMakerLoader = new FXMLLoader();
