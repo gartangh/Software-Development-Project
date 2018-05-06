@@ -138,14 +138,7 @@ final public class ChatController extends EventPublisher {
 		}
 	}
 
-	@FXML
-	private void initialize() {
-		EventBroker.getEventBroker().addEventListener(chatEventHandler);
 
-		chatTextArea.textProperty().bind(chatModel.chatTextProperty());
-
-		//chatTextArea.setFont(Font.loadFont(Paths.get(".").toAbsolutePath().normalize().toString() + "\\Files\\OpenSansEmoji.ttf", 15));
-	}
 	// Inner class
 	private class ChatHandler implements EventListener {
 

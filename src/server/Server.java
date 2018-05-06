@@ -48,9 +48,6 @@ import eventbroker.serverevent.ServerStartRoundEvent;
 import eventbroker.serverevent.ServerVoteEvent;
 import javafx.scene.paint.Color;
 import main.Main;
-import quiz.util.ChangeTeamEvent;
-import quiz.util.NewTeamEvent;
-import user.model.Player;
 import quiz.model.Team;
 import quiz.model.User;
 import quiz.util.Difficulty;
@@ -424,9 +421,20 @@ public class Server extends EventPublisher {
 			ChatMessage chatMessage = (ChatMessage) event;
 			chatMessage.setType(ChatMessage.SERVERTYPE);
 			ArrayList<Integer> destinations = new ArrayList<>();
-			for (Map.Entry<Integer, Integer> entry : ServerContext.getContext().getNetwork().getUserIDConnectionIDMap()
-					.entrySet())
-				destinations.add(entry.getKey());
+			
+			if(chatMessage.getReceiverType().equals("TEAM")) {
+			// TODO: Add all usernames of the team of the sender, excluding the sender
+				Map<Integer, Team> listOfTeams = ServerContext.getContext().getQuiz(chatMessage.getQuizID()).getTeamMap();
+				for (Map.Entry<Integer, Team> teamEntry : listOfTeams.entrySet())
+					if(teamEntry.getValue().getPlayerMap().containsKey(chatMessage.getUserID()))
+						for (Map.Entry<Integer, String> playerEntry : teamEntry.getValue().getPlayerMap().entrySet())
+							destinations.add(playerEntry.getKey());
+				}
+				else if(chatMessage.getReceiverType().equals("ALL")) {
+					for (Map.Entry<Integer, Integer> entry : ServerContext.getContext().getNetwork().getUserIDConnectionIDMap().entrySet())
+						destinations.add(entry.getKey());
+				}
+			
 			chatMessage.addRecipients(destinations);
 			server.publishEvent(chatMessage);
 		}
