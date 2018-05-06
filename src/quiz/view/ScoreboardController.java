@@ -72,7 +72,7 @@ public class ScoreboardController extends EventPublisher {
 	 */
 	@FXML
 	private void handleRematchButton() {
-		// TO DO: Clear quiz, go back to quizroom
+		// TODO Clear quiz, go back to join team scene
 		EventBroker.getEventBroker().removeEventListener(scoreboardDataHandler);
 
 		main.showJoinTeamScene();
@@ -83,8 +83,9 @@ public class ScoreboardController extends EventPublisher {
 	 */
 	@FXML
 	private void handleQuitButton() {
-		// TODO: Clear quiz, show List of Available quizzes
+		// TODO Clear quiz, show List of Available quizzes
 		EventBroker.getEventBroker().removeEventListener(scoreboardDataHandler);
+		
 		main.showJoinQuizScene();
 	}
 
@@ -100,7 +101,7 @@ public class ScoreboardController extends EventPublisher {
 			scoreboardModel.addScoreboardTeams(scoreboardTeams);
 
 			Context context = Context.getContext();
-			if (sSDE.getScoreboardTeams().size() > 0) {
+			if (scoreboardTeams.size() > 0) {
 				int curTeamID = context.getTeamID();
 				ScoreboardTeam curTeam = null;
 				for (ScoreboardTeam team : scoreboardTeams) {

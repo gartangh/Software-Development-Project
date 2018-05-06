@@ -43,12 +43,10 @@ public class Main extends Application {
 	public final static boolean LOCAL = true;
 
 	/** The Constant SERVERADDRESS represents the IP address of the server. */
-	// public final static String SERVERADDRESS = "10.10.131.52"; // On the
-	// iVisitor network at iGent
-	public final static String SERVERADDRESS = "192.168.1.30"; // On the
-																// Proximus
-																// network at
-																// Emiel.
+	// On the iVisitor network at iGent
+	// public final static String SERVERADDRESS = "10.10.131.52";
+	// On the Proximus network at Emiel
+	public final static String SERVERADDRESS = "192.168.1.30";
 
 	/** The Constant SERVERPORT represents the port on the server. */
 	public final static int SERVERPORT = 1025;

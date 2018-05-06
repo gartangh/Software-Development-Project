@@ -43,23 +43,6 @@ public class LogInController extends EventPublisher {
 		this.main = main;
 	}
 
-	// Getters
-	public CreateAccountFailHandler getCreateAccountFailHandler() {
-		return createAccountFailHandler;
-	}
-
-	public CreateAccountSuccesHandler getCreateAccountSuccesHandler() {
-		return createAccountSuccesHandler;
-	}
-
-	public LogInFailHandler getLogInFailHandler() {
-		return logInFailHandler;
-	}
-
-	public LogInSuccesHandler getLogInSuccesHandler() {
-		return logInSuccesHandler;
-	}
-
 	// Methods
 	@FXML
 	private void initialize() {

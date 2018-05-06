@@ -36,16 +36,7 @@ public class CreateQuizController extends EventPublisher {
 	public void setMainApp(Main main) {
 		this.main = main;
 	}
-
-	// Getter
-	public CreateQuizSuccesHandler getCreateQuizFailHandler() {
-		return createQuizSuccesHandler;
-	}
-
-	public CreateQuizSuccesHandler getCreateQuizSuccesHandler() {
-		return createQuizSuccesHandler;
-	}
-
+	
 	// Methods
 	@FXML
 	private void initialize() {
