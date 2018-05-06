@@ -14,7 +14,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import main.Context;
+import main.MainContext;
 import main.Main;
 import quiz.model.ScoreboardModel;
 import quiz.model.ScoreboardTeam;
@@ -100,7 +100,7 @@ public class ScoreboardController extends EventPublisher {
 
 			scoreboardModel.addScoreboardTeams(scoreboardTeams);
 
-			Context context = Context.getContext();
+			MainContext context = MainContext.getContext();
 			if (scoreboardTeams.size() > 0) {
 				int curTeamID = context.getTeamID();
 				ScoreboardTeam curTeam = null;

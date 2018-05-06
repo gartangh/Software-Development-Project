@@ -1,7 +1,7 @@
 package eventbroker.clientevent;
 
 import eventbroker.Event;
-import main.Context;
+import main.MainContext;
 
 @SuppressWarnings("serial")
 public class ClientEvent extends Event {
@@ -13,11 +13,12 @@ public class ClientEvent extends Event {
 	// Constructor
 	public ClientEvent() {
 		super.type = EVENTTYPE;
-		this.userID = Context.getContext().getUser().getUserID();
+		this.userID = MainContext.getContext().getUser().getUserID();
 	}
 
 	// Getter
 	public int getUserID() {
 		return userID;
 	}
+	
 }

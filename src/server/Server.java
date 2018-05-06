@@ -20,11 +20,13 @@ import eventbroker.clientevent.ClientGetQuizzesEvent;
 import eventbroker.clientevent.ClientHostReadyEvent;
 import eventbroker.clientevent.ClientJoinQuizEvent;
 import eventbroker.clientevent.ClientLogInEvent;
+import eventbroker.clientevent.ClientLogOutEvent;
 import eventbroker.clientevent.ClientNewQuestionEvent;
 import eventbroker.clientevent.ClientScoreboardDataEvent;
 import eventbroker.clientevent.ClientVoteEvent;
 import eventbroker.clientevent.ClientCreateTeamEvent;
 import eventbroker.serverevent.ServerVoteAnswerEvent;
+import eventbroker.serverevent.ServerAlreadyLoggedInEvent;
 import eventbroker.serverevent.ServerChangeTeamEvent;
 import eventbroker.serverevent.ServerCreateAccountFailEvent;
 import eventbroker.serverevent.ServerCreateAccountSuccesEvent;
@@ -65,6 +67,7 @@ public class Server extends EventPublisher {
 
 	private static CreateAccountHandler createAccountHandler = new CreateAccountHandler();
 	private static LogInHandler logInHandler = new LogInHandler();
+	private static LogOutHandler logOutHandler = new LogOutHandler();
 	private static JoinQuizHandler joinQuizHandler = new JoinQuizHandler();
 	private static CreateQuizHandler createQuizHandler = new CreateQuizHandler();
 	private static VoteHandler voteHandler = new VoteHandler();
@@ -110,6 +113,7 @@ public class Server extends EventPublisher {
 
 		eventBroker.addEventListener(ClientCreateAccountEvent.EVENTTYPE, createAccountHandler);
 		eventBroker.addEventListener(ClientLogInEvent.EVENTTYPE, logInHandler);
+		eventBroker.addEventListener(ClientLogOutEvent.EVENTTYPE, logOutHandler);
 		eventBroker.addEventListener(ClientJoinQuizEvent.EVENTTYPE, joinQuizHandler);
 		eventBroker.addEventListener(ClientCreateQuizEvent.EVENTTYPE, createQuizHandler);
 		eventBroker.addEventListener(ClientVoteEvent.EVENTTYPE, voteHandler);
@@ -128,6 +132,13 @@ public class Server extends EventPublisher {
 
 		System.out.println("Server running ...");
 	}
+
+	// TODO On connection lost, log user out
+	// ServerContext context = ServerContext.getContext();
+	// context.getUserMap().get(userID).setLoggedIn(false);
+	// context.getNetwork().getUserIDConnectionIDMap().remove(userID);
+	// if user was the host of a quiz or the captain of a team, remove the quiz
+	// or the team an notify its users
 
 	// Inner classes
 	private static class CreateAccountHandler implements EventListener {
@@ -181,6 +192,15 @@ public class Server extends EventPublisher {
 			long xp = 0L;
 			for (Entry<Integer, User> user : ServerContext.getContext().getUserMap().entrySet()) {
 				if (user.getValue().getUsername().equals(username) && user.getValue().getPassword().equals(password)) {
+					if (user.getValue().isLoggedIn()) {
+						// User is already logged in
+						ServerAlreadyLoggedInEvent sALIE = new ServerAlreadyLoggedInEvent(connectionID);
+						server.publishEvent(sALIE);
+
+						return;
+					}
+
+					// User is not logged in yet
 					userID = user.getKey();
 					level = user.getValue().getLevel();
 					xp = user.getValue().getXp();
@@ -192,14 +212,33 @@ public class Server extends EventPublisher {
 				// Username and / or password are incorrect
 				ServerLogInFailEvent sLIFE = new ServerLogInFailEvent(connectionID);
 				server.publishEvent(sLIFE);
-			} else {
-				// Username and password are correct
-				ServerContext.getContext().getNetwork().getUserIDConnectionIDMap().put(userID, connectionID);
 
-				ServerLogInSuccesEvent sLISE = new ServerLogInSuccesEvent(userID, username, password, level, xp);
-				sLISE.addRecipient(userID);
-				server.publishEvent(sLISE);
+				return;
 			}
+
+			// Username and password are correct
+			ServerContext context = ServerContext.getContext();
+			context.getUserMap().get(userID).setLoggedIn(true);
+			context.getNetwork().getUserIDConnectionIDMap().put(userID, connectionID);
+
+			ServerLogInSuccesEvent sLISE = new ServerLogInSuccesEvent(userID, username, password, level, xp);
+			sLISE.addRecipient(userID);
+			server.publishEvent(sLISE);
+		}
+
+	}
+
+	private static class LogOutHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ClientLogOutEvent cLOE = (ClientLogOutEvent) event;
+
+			int userID = cLOE.getUserID();
+
+			ServerContext context = ServerContext.getContext();
+			context.getUserMap().get(userID).setLoggedIn(false);
+			context.getNetwork().getUserIDConnectionIDMap().remove(userID);
 		}
 
 	}

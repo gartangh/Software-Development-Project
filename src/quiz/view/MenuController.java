@@ -1,10 +1,10 @@
-package main.view;
+package quiz.view;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import main.Context;
+import main.MainContext;
 import quiz.model.User;
 
 public class MenuController {
@@ -16,11 +16,11 @@ public class MenuController {
 	}
 
 	/**
-	 * Opens an profile dialog.
+	 * Opens a profile dialog.
 	 */
 	@FXML
 	private void handleProfile() {
-		User user = Context.getContext().getUser();
+		User user = MainContext.getContext().getUser();
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {

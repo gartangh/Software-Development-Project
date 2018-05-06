@@ -13,7 +13,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import main.Context;
+import main.MainContext;
 
 public class AnswerVoteModel {
 	// Question properties
@@ -66,7 +66,7 @@ public class AnswerVoteModel {
 	}
 
 	public void updateVotes(int teamID) {
-		Map<Integer, Map<Integer, Integer>> allVotes = Context.getContext().getQuiz().getVotes();
+		Map<Integer, Map<Integer, Integer>> allVotes = MainContext.getContext().getQuiz().getVotes();
 		if (allVotes != null) {
 			Map<Integer, Integer> teamVotes = allVotes.get(teamID);
 			if (teamVotes != null) {
@@ -143,7 +143,7 @@ public class AnswerVoteModel {
 				}
 				else {
 					// TODO Make xp depend on difficulty
-					Context.getContext().getUser().addXp(10);
+					MainContext.getContext().getUser().addXp(10);
 				}
 
 				switch (correctAnswer) {
@@ -169,7 +169,7 @@ public class AnswerVoteModel {
 	}
 
 	public void updateQuestion() {
-		MCQuestion q = (MCQuestion) Context.getContext().getQuestion();
+		MCQuestion q = (MCQuestion) MainContext.getContext().getQuestion();
 		System.out.println(q.getQuestion());
 		Platform.runLater(new Runnable() {
 			public void run() {

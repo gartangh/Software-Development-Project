@@ -1,6 +1,6 @@
 package quiz.model;
 
-import main.Context;
+import main.MainContext;
 import server.ServerContext;
 
 public class User {
@@ -13,6 +13,8 @@ public class User {
 	private String password;
 	private int level = 1;
 	private long xp = 0L;
+	// Only the server uses this
+	private boolean loggedIn = true;
 
 	// Constructors
 	private User(int userID, String username, String password) {
@@ -45,14 +47,14 @@ public class User {
 	
 	public static void createAccount(int userID, String username, String password) {
 		// Client side
-		Context context = Context.getContext();
+		MainContext context = MainContext.getContext();
 		context.setUser(new User(userID, username, password));
 		context.getNetwork().getUserIDConnectionIDMap().put(userID, 0);
 	}
 	
 	public static void logIn(int userID, String username, String password, int level, long xp) {
 		// Client side
-		Context context = Context.getContext();
+		MainContext context = MainContext.getContext();
 		context.setUser(new User(userID, username, password, level, xp));
 		context.getNetwork().getUserIDConnectionIDMap().put(userID, 0);
 	}
@@ -98,6 +100,14 @@ public class User {
 
 	public long getXp() {
 		return xp;
+	}
+	
+	public boolean isLoggedIn() {
+		return loggedIn;
+	}
+	
+	public void setLoggedIn(boolean loggedIn) {
+		this.loggedIn = loggedIn;
 	}
 
 	// Methods
