@@ -1,11 +1,18 @@
 package quiz.view;
 
+import java.util.Map;
 import java.util.Map.Entry;
 
 import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
+import eventbroker.clientevent.ClientGetQuizzesEvent;
+import eventbroker.clientevent.ClientJoinQuizEvent;
+import eventbroker.serverevent.ServerGetQuizzesEvent;
+import eventbroker.serverevent.ServerJoinQuizEvent;
+import eventbroker.serverevent.ServerSendQuizEvent;
+import eventbroker.serverevent.ServerStartQuizEvent;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -14,13 +21,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import main.Context;
 import main.Main;
+import quiz.model.JoinQuizModel;
 import quiz.model.Quiz;
-import quiz.util.ClientGetQuizzesEvent;
-import quiz.util.ClientJoinQuizEvent;
-import server.ServerGetQuizzesEvent;
-import server.ServerJoinQuizEvent;
-import server.ServerSendQuizEvent;
-import server.ServerStartQuizEvent;
+import quiz.model.User;
 
 public class JoinQuizController extends EventPublisher {
 
@@ -29,7 +32,7 @@ public class JoinQuizController extends EventPublisher {
 	@FXML
 	private TableColumn<Quiz, String> quiznameColumn;
 	@FXML
-	private TableColumn<Quiz, String> quizmasternameColumn;
+	private TableColumn<Quiz, String> hostnameColumn;
 	@FXML
 	private Button mJoin;
 	@FXML
@@ -39,13 +42,17 @@ public class JoinQuizController extends EventPublisher {
 	@FXML
 	private Label mTeams;
 	@FXML
-	private Label mPlayersPerTeam;
+	private Label mPlayers;
+
+	private Quiz selectedQuiz;
+	private JoinQuizModel joinQuizModel = new JoinQuizModel();
+	private JoinQuizHandler joinQuizHandler;
+	private GetQuizzesHandler getQuizzesHandler;
+	private SendQuizHandler sendQuizHandler;
+	private StartQuizHandler startQuizHandler;
 
 	// Reference to the main application
 	private Main main;
-	private JoinQuizModel joinQuizModel = new JoinQuizModel();
-	private JoinQuizEventHandler joinQuizeventHandler = new JoinQuizEventHandler();
-	private Quiz selectedQuiz;
 
 	public void setMainApp(Main main) {
 		this.main = main;
@@ -53,18 +60,27 @@ public class JoinQuizController extends EventPublisher {
 		Context.getContext().setTeamID(-1);
 	}
 
+	// Methods
 	@FXML
 	private void initialize() {
-		EventBroker.getEventBroker().addEventListener(joinQuizeventHandler);
+		joinQuizHandler = new JoinQuizHandler();
+		getQuizzesHandler = new GetQuizzesHandler();
+		sendQuizHandler = new SendQuizHandler();
+		startQuizHandler = new StartQuizHandler();
+
+		EventBroker eventBroker = EventBroker.getEventBroker();
+		eventBroker.addEventListener(ServerJoinQuizEvent.EVENTTYPE, joinQuizHandler);
+		eventBroker.addEventListener(ServerGetQuizzesEvent.EVENTTYPE, getQuizzesHandler);
+		eventBroker.addEventListener(ServerSendQuizEvent.EVENTTYPE, sendQuizHandler);
+		eventBroker.addEventListener(ServerStartQuizEvent.EVENTTYPE, startQuizHandler);
 
 		mQuizname.textProperty().bind(joinQuizModel.getQuiznameProperty());
 		mRounds.textProperty().bind(joinQuizModel.getQuizRoundsProperty());
 		mTeams.textProperty().bind(joinQuizModel.getTeamProperty());
-		mPlayersPerTeam.textProperty().bind(joinQuizModel.getPlayersPerTeamProperty());
+		mPlayers.textProperty().bind(joinQuizModel.getPlayersProperty());
 		mJoin.disableProperty().bind(joinQuizModel.getJoinDisableProperty());
 		quiznameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getQuizname())));
-		quizmasternameColumn
-				.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getQuizMasterName())));
+		hostnameColumn.setCellValueFactory(cellData -> (new SimpleStringProperty(cellData.getValue().getHostname())));
 
 		quizTable.getSelectionModel().selectedItemProperty()
 				.addListener((observable, oldValue, newValue) -> showQuizDetails(newValue));
@@ -75,7 +91,6 @@ public class JoinQuizController extends EventPublisher {
 
 	@FXML
 	public void handleCreateQuiz() {
-		Context.getContext().getUser().castToHost();
 		main.showCreateQuizScene();
 	}
 
@@ -83,66 +98,101 @@ public class JoinQuizController extends EventPublisher {
 		if (quiz != null) {
 			selectedQuiz = quiz;
 			joinQuizModel.updateQuizDetail(quiz);
-		} else {
-			// TODO
 		}
 	}
 
 	@FXML
 	private void handleJoin() {
-		Context.getContext().getUser().castToGuest();
-		ClientJoinQuizEvent cjqe = new ClientJoinQuizEvent(Context.getContext().getUser().getUserID(),
-				selectedQuiz.getQuizID(), Context.getContext().getUser().getUsername());
-		publishEvent(cjqe);
-		// EventBroker.getEventBroker().removeEventListener(joinQuizeventHandler);
+		User user = Context.getContext().getUser();
+		ClientJoinQuizEvent cJQE = new ClientJoinQuizEvent(user.getUserID(), user.getUsername(),
+				selectedQuiz.getQuizID());
+		publishEvent(cJQE);
 	}
 
 	@FXML
 	private void handleBack() {
-		// TODO: Handle back
-		// TODO: set context quiz back to null;
-		Context.getContext().setQuiz(null);
-		// EventBroker.getEventBroker().removeEventListener(joinQuizeventHandler);
+		Context context = Context.getContext();
+		context.setQuiz(null);
+		// User is logged out
+		context.setUser(null);
+
+		EventBroker eventBroker = EventBroker.getEventBroker();
+		eventBroker.removeEventListener(joinQuizHandler);
+		eventBroker.removeEventListener(getQuizzesHandler);
+		eventBroker.removeEventListener(sendQuizHandler);
+		eventBroker.removeEventListener(startQuizHandler);
+
 		main.showLogInScene();
 	}
 
-	public class JoinQuizEventHandler implements EventListener {
+	// Inner classes
+	private class JoinQuizHandler implements EventListener {
 
 		@Override
 		public void handleEvent(Event event) {
-			Quiz quiz;
-			switch (event.getType()) {
-			case "SERVER_GET_QUIZZES":
-				ServerGetQuizzesEvent sGQE = (ServerGetQuizzesEvent) event;
+			ServerJoinQuizEvent sJQE = (ServerJoinQuizEvent) event;
 
-				for (Entry<Integer, Quiz> entry : sGQE.getQuizMap().entrySet())
-					joinQuizModel.addQuiz(entry.getValue());
+			Quiz quiz = sJQE.getQuiz();
 
-				System.out.println("Event received and handled: " + event.getType());
-				break;
+			Context context = Context.getContext();
+			quiz.addUnassignedPlayer(context.getUser().getUserID(), context.getUser().getUsername());
+			context.setQuiz(quiz);
 
-			case "SERVER_SEND_QUIZ":
-				ServerSendQuizEvent sSQE = (ServerSendQuizEvent) event;
-				quiz = sSQE.getQuiz();
-				joinQuizModel.addQuiz(quiz);
-				break;
+			EventBroker eventBroker = EventBroker.getEventBroker();
+			eventBroker.removeEventListener(joinQuizHandler);
+			eventBroker.removeEventListener(getQuizzesHandler);
+			eventBroker.removeEventListener(sendQuizHandler);
+			eventBroker.removeEventListener(startQuizHandler);
 
-			case "SERVER_JOIN_QUIZ":
-				ServerJoinQuizEvent sJQE = (ServerJoinQuizEvent) event;
-				quiz = sJQE.getQuiz();
-				quiz.addUnassignedPlayer(Context.getContext().getUser().getUserID(),
-						Context.getContext().getUser().getUsername());
-				Context.getContext().setQuiz(quiz);
-				main.showQuizroomScene();
-				break;
-			case "SERVER_START_QUIZ":
-				ServerStartQuizEvent sSTQE = (ServerStartQuizEvent) event;
-				joinQuizModel.deleteQuiz(sSTQE.getQuizID());
-				break;
-			default:
-				System.out.println("Event received but left unhandled: " + event.getType());
-			}
+			main.showJoinTeamScene();
 		}
+
+	}
+
+	private class GetQuizzesHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ServerGetQuizzesEvent sGQE = (ServerGetQuizzesEvent) event;
+
+			Map<Integer, Quiz> quizMap = sGQE.getQuizMap();
+
+			for (Entry<Integer, Quiz> entry : quizMap.entrySet())
+				joinQuizModel.addQuiz(entry.getValue());
+		}
+
+	}
+
+	private class SendQuizHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ServerSendQuizEvent sSQE = (ServerSendQuizEvent) event;
+
+			int quizID = sSQE.getQuizID();
+			String quizname = sSQE.getQuizname();
+			int rounds = sSQE.getMaxAmountOfRounds();
+			int teams = sSQE.getMaxAmountOfTeams();
+			int players = sSQE.getMaxAmountOfPlayersPerTeam();
+			int hostID = sSQE.getHostID();
+			String hostname = sSQE.getHostname();
+			
+			joinQuizModel.addQuiz(Quiz.createQuiz(quizID, quizname, rounds, teams, players, hostID, hostname));
+		}
+
+	}
+
+	private class StartQuizHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ServerStartQuizEvent sSTQE = (ServerStartQuizEvent) event;
+
+			int quizID = sSTQE.getQuizID();
+
+			joinQuizModel.removeQuiz(quizID);
+		}
+
 	}
 
 }

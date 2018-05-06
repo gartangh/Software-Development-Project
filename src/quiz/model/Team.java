@@ -4,113 +4,81 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableMap;
 import javafx.scene.paint.Color;
 
 @SuppressWarnings("serial")
 public class Team implements Serializable {
 
-	private String teamName;
+	public final static String TEAMNAMEREGEX = "^[a-zA-Z0-9._-]{3,}$";
+	
 	private int teamID;
-	private int amountOfPlayers = 0;
-	// minAmountOfTeamPlayers = 1;
-	private int maxAmountOfPlayers;
-	//private transient ObservableMap<Integer, String> players = FXCollections.observableHashMap();
-	private Map<Integer,String> players=new HashMap<Integer,String>();
-	// To make it serializable
+	private String teamname;
+	// Maximum amount of players
+	private int players;
+	private Map<Integer, String> playerMap = new HashMap<Integer, String>();
+	// To make the color serializable
 	private int colorRed;
 	private int colorGreen;
 	private int colorBlue;
 	private int quizScore = 0;
 	private int captainID;
 
-	// Constructors
-	public Team(int teamID, String teamName, Color color, int captainID, String captainName) {
+	// Constructor
+	public Team(int teamID, String teamname, Color color, int captainID, String captainName) {
 		this.teamID = teamID;
-		this.teamName = teamName;
+		this.teamname = teamname;
 		this.captainID = captainID;
 		this.colorRed = (int) (color.getRed() * 255);
 		this.colorGreen = (int) (color.getGreen() * 255);
 		this.colorBlue = (int) (color.getBlue() * 255);
-		this.players.put(captainID, captainName);
-		this.amountOfPlayers++;
+		this.playerMap.put(captainID, captainName);
 	}
 
-	// Getters and setters
-	public String getTeamName() {
-		return teamName;
+	// Getters and setter
+	public int getTeamID() {
+		return teamID;
 	}
 
-	public int getAmountOfPlayers() {
-		return amountOfPlayers;
+	public String getTeamname() {
+		return teamname;
 	}
 
-	public int getMaxAmountOfPlayers() {
-		return maxAmountOfPlayers;
+	public int getPlayers() {
+		return players;
 	}
 
-	public void setMaxAmountOfPlayers(int maxAmountofPlayers) {
-		this.maxAmountOfPlayers = maxAmountofPlayers;
+	public void setPlayers(int players) {
+		this.players = players;
 	}
 
 	public Color getColor() {
 		return Color.rgb(colorRed, colorGreen, colorBlue);
 	}
 
-	/*public ObservableMap<Integer, String> getPlayers() {
-		return players;
-	}*/
-
-	public Map<Integer, String> getPlayers() {
-		return players;
+	public Map<Integer, String> getPlayerMap() {
+		return playerMap;
 	}
 
 	public int getQuizScore() {
 		return quizScore;
 	}
 
-	// Adders
-	public void addPlayer(int userID, String userName) {
-		if (amountOfPlayers < maxAmountOfPlayers) {
-			players.put(userID, userName);
-			amountOfPlayers++;
-		}
-	}
-
-	public void setTeamName(String teamName) {
-		this.teamName = teamName;
-	}
-
-	public void setColor(Color color) {
-		this.colorRed = ((int) color.getRed() * 255);
-		this.colorGreen = ((int) color.getGreen() * 255);
-		this.colorBlue = ((int) color.getBlue() * 255);
-	}
-
-	// Removers
-	public void removePlayer(int playerID) {
-		if (players.remove(playerID) != null)
-			amountOfPlayers--;
-	}
-
-	// Test
-	public void setQuizScore(int quizScore) {
-		this.quizScore = quizScore;
-	}
-
-	public int getTeamID() {
-		return teamID;
-	}
-
-	public void setTeamID(int teamID) {
-		this.teamID = teamID;
-	}
-
 	public int getCaptainID() {
 		return captainID;
 	}
 
+	// Adder and remover
+	public void addPlayer(int userID, String userName) {
+		if (playerMap.size() < players) {
+			playerMap.put(userID, userName);
+		}
+	}
+
+	public void removePlayer(int playerID) {
+		playerMap.remove(playerID);
+	}
+
+	// Method
 	public void addPoints(int i) {
 		this.quizScore += i;
 	}

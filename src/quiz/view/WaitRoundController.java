@@ -4,16 +4,17 @@ import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
+import eventbroker.serverevent.ServerNewMCQuestionEvent;
+import eventbroker.serverevent.ServerStartRoundEvent;
 import javafx.fxml.FXML;
 import main.Context;
 import main.Main;
 import quiz.model.MCQuestion;
-import server.ServerNewQuestionEvent;
-import server.ServerStartRoundEvent;
 
 public class WaitRoundController extends EventPublisher {
 
-	private WaitRoundHandler waitRoundHandler;
+	private StartRoundHandler startRoundHandler;
+	private NewQuestionHandler newQuestionHandler;
 
 	// Reference to the main application
 	private Main main;
@@ -24,29 +25,42 @@ public class WaitRoundController extends EventPublisher {
 
 	@FXML
 	public void initialize() {
-		waitRoundHandler = new WaitRoundHandler();
-		EventBroker.getEventBroker().addEventListener(waitRoundHandler);
+		startRoundHandler = new StartRoundHandler();
+		newQuestionHandler = new NewQuestionHandler();
+
+		EventBroker eventBroker = EventBroker.getEventBroker();
+		eventBroker.addEventListener(ServerStartRoundEvent.EVENTTYPE, startRoundHandler);
+		eventBroker.addEventListener(ServerNewMCQuestionEvent.EVENTTYPE, newQuestionHandler);
 	}
 
-	public WaitRoundController(){
-	}
-
-	public class WaitRoundHandler implements EventListener {
+	private class StartRoundHandler implements EventListener {
 
 		@Override
 		public void handleEvent(Event event) {
-			switch(event.getType()) {
-				case "SERVER_START_ROUND":
-					// This is the roundHandler for a player. You need to show questions here.
-					EventBroker.getEventBroker().removeEventListener(waitRoundHandler);
-					main.showQuestionForm();
-					break;
-				case "SERVER_NEW_QUESTION":
-					ServerNewQuestionEvent sNQE = (ServerNewQuestionEvent) event;
-					MCQuestion q = new MCQuestion(sNQE.getQuestionID(), sNQE.getQuestion(), sNQE.getAnswers());
-					Context.getContext().setQuestion(q);
-					break;
-			}
+			@SuppressWarnings("unused")
+			ServerStartRoundEvent sSRE = (ServerStartRoundEvent) event;
+
+			EventBroker eventBroker = EventBroker.getEventBroker();
+			eventBroker.removeEventListener(startRoundHandler);
+			eventBroker.removeEventListener(newQuestionHandler);
+
+			main.showQuestionScene();
+		}
+
+	}
+
+	public class NewQuestionHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ServerNewMCQuestionEvent sNQE = (ServerNewMCQuestionEvent) event;
+
+			int questionID = sNQE.getQuestionID();
+			String question = sNQE.getQuestion();
+			String[] answers = sNQE.getAnswers();
+
+			MCQuestion q = new MCQuestion(questionID, question, answers);
+			Context.getContext().setQuestion(q);
 		}
 
 	}

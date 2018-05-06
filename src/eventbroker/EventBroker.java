@@ -7,16 +7,12 @@ import java.util.Map;
 
 final public class EventBroker implements Runnable {
 
-	final static EventBroker broker = new EventBroker(); // Singleton
+	private final static EventBroker broker = new EventBroker(); // Singleton
 
-	LinkedList<QueueItem> queue = new LinkedList<>();
-	Map<String, ArrayList<EventListener>> listeners = new HashMap<>();
-	Map<String, ArrayList<EventListener>> newListeners = new HashMap<>();
-	ArrayList<EventListener> toRemoveListeners = new ArrayList<>();
-
-	public LinkedList<QueueItem> getQueue() {
-		return queue;
-	}
+	private LinkedList<QueueItem> queue = new LinkedList<>();
+	private Map<String, ArrayList<EventListener>> listeners = new HashMap<>();
+	private Map<String, ArrayList<EventListener>> newListeners = new HashMap<>();
+	private ArrayList<EventListener> toRemoveListeners = new ArrayList<>();
 
 	private boolean stop = false;
 	private boolean proceed;
@@ -29,19 +25,6 @@ final public class EventBroker implements Runnable {
 	// Getters
 	public static EventBroker getEventBroker() {
 		return broker;
-	}
-
-	// Internal class
-	private class QueueItem {
-
-		Event event;
-		EventPublisher source;
-
-		public QueueItem(EventPublisher source, Event e) {
-			this.source = source;
-			this.event = e;
-		}
-
 	}
 
 	public void addEventListener(EventListener el) {
@@ -66,37 +49,38 @@ final public class EventBroker implements Runnable {
 		toRemoveListeners.add(el);
 	}
 
-	public void addEvent(EventPublisher source, Event e) {
-		QueueItem qI = new QueueItem(source, e);
+	public void addEvent(EventPublisher source, Event event) {
+		QueueItem qI = new QueueItem(source, event);
 		synchronized (this) {
 			queue.add(qI);
-			this.setProceed(true);
+			setProceed(true);
 			this.notifyAll();
 		}
 	}
 
-	private void process(EventPublisher source, Event e) {
-		for(Map.Entry<String, ArrayList<EventListener>> entry : newListeners.entrySet()) {
-			if(!listeners.containsKey(entry.getKey()))
+	private void process(EventPublisher source, Event event) {
+		for (Map.Entry<String, ArrayList<EventListener>> entry : newListeners.entrySet()) {
+			if (!listeners.containsKey(entry.getKey()))
 				listeners.put(entry.getKey(), entry.getValue());
-			else 
+			else
 				listeners.get(entry.getKey()).addAll(entry.getValue());
 		}
-		newListeners = new HashMap<>();
-		
+
+		newListeners.clear();
+
 		for (EventListener el : toRemoveListeners) {
 			for (Map.Entry<String, ArrayList<EventListener>> entry : listeners.entrySet())
-				if(entry.getValue().contains(el)) {
+				if (entry.getValue().contains(el))
 					entry.getValue().remove(el);
-				}
 		}
-		toRemoveListeners = new ArrayList<>();
-		
+
+		toRemoveListeners.clear();
+
 		for (Map.Entry<String, ArrayList<EventListener>> entry : listeners.entrySet())
-			if (entry.getKey().equals(e.getType()) || entry.getKey().equals("all"))
+			if (entry.getKey().equals(event.getType()) || entry.getKey().equals("all"))
 				for (EventListener el : entry.getValue())
 					if (source != el)
-						el.handleEvent(e);
+						el.handleEvent(event);
 	}
 
 	@Override
@@ -111,11 +95,13 @@ final public class EventBroker implements Runnable {
 
 							break;
 						}
+
 						wait();
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+
 				this.setProceed(false);
 			}
 
@@ -162,6 +148,19 @@ final public class EventBroker implements Runnable {
 
 	public synchronized void setProceed(boolean p) {
 		proceed = p;
+	}
+
+	// Internal class
+	private class QueueItem {
+
+		Event event;
+		EventPublisher source;
+
+		public QueueItem(EventPublisher source, Event e) {
+			this.source = source;
+			this.event = e;
+		}
+
 	}
 
 }

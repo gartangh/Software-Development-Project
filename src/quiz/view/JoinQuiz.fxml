@@ -35,7 +35,7 @@
 						<Label fx:id="mQuizname" text="Label" GridPane.columnIndex="1" />
 						<Label fx:id="mRounds" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 						<Label fx:id="mTeams" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-						<Label fx:id="mPlayersPerTeam" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+						<Label fx:id="mPlayers" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 					</children>
 					<padding>
 						<Insets left="5.0" />
@@ -44,7 +44,6 @@
       		<ButtonBar>
       			<buttons>
       				<Button fx:id="mJoin" defaultButton="true" mnemonicParsing="false" onAction="#handleJoin" text="Join" />
-      				<Button fx:id="mBack" mnemonicParsing="false" onAction="#handleBack" text="Back" />
       			</buttons>
       			<opaqueInsets>
       				<Insets />
@@ -65,15 +64,16 @@
    <left>
       <VBox spacing="5.0" BorderPane.alignment="CENTER">
          <children>
-            <TableView fx:id="quizTable">
+            <TableView fx:id="quizTable" VBox.vgrow="ALWAYS">
               <columns>
                 <TableColumn fx:id="quiznameColumn" maxWidth="-1.0" minWidth="70.0" prefWidth="-1.0" text="Quiz" />
-                <TableColumn fx:id="quizmasternameColumn" maxWidth="-1.0" minWidth="70.0" prefWidth="-1.0" text="Quizmaster" />
+                <TableColumn fx:id="hostnameColumn" maxWidth="-1.0" minWidth="70.0" prefWidth="-1.0" text="Host" />
               </columns>
             </TableView>
             <ButtonBar>
               <buttons>
-                <Button mnemonicParsing="false" onAction="#handleCreateQuiz" text="New quiz" />
+                <Button defaultButton="true" mnemonicParsing="false" onAction="#handleCreateQuiz" text="Create quiz" />
+                  <Button cancelButton="true" mnemonicParsing="false" onAction="#handleBack" text="Back" />
               </buttons>
             </ButtonBar>
          </children>

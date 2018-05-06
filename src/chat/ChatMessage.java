@@ -1,10 +1,14 @@
 package chat;
 
 import java.io.Serializable;
-import quiz.util.UserEvent;
+
+import eventbroker.clientevent.ClientEvent;
 
 @SuppressWarnings("serial")
-public class ChatMessage extends UserEvent implements Serializable {
+public class ChatMessage extends ClientEvent implements Serializable {
+
+	public final static String CLIENTTYPE = "CLIENT_CHAT";
+	public final static String SERVERTYPE = "SERVER_CHAT";
 
 	private String sender;
 	private String receiverType;
@@ -12,14 +16,14 @@ public class ChatMessage extends UserEvent implements Serializable {
 	
 	public ChatMessage(String sender, String message, String receiverType, int quizID) {
 		super();
-		this.type = "CLIENT_CHAT";
+		this.type = CLIENTTYPE;
 		this.receiverType = receiverType;
 		this.message = message;
 		this.sender = sender;
 		this.quizID = quizID;
 	}
 
-	// Getters
+	// Getter
 	public String getSender() {
 		return sender;
 	}

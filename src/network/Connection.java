@@ -7,8 +7,8 @@ import java.net.Socket;
 import java.net.SocketException;
 
 import eventbroker.Event;
-import eventbroker.EventBroker;
-import quiz.util.ClientCreateAccountEvent;
+import eventbroker.clientevent.ClientCreateAccountEvent;
+import eventbroker.clientevent.ClientLogInEvent;
 
 public class Connection {
 
@@ -23,11 +23,8 @@ public class Connection {
 		this.socket = socket;
 
 		try {
-			// Server 5, Client 3
 			this.objectOutputStream = new ObjectOutputStream(this.socket.getOutputStream());
-			// Server 6, Client 4
 			this.objectOutputStream.flush();
-			// Server 7, Client 5
 			this.objectInputStream = new ObjectInputStream(this.socket.getInputStream());
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -37,12 +34,10 @@ public class Connection {
 	}
 
 	// Package local would be safer
-	public void send(Event e) {
+	public void send(Event event) {
 		try {
 			synchronized (this) {
-				// Client 7.1
-				objectOutputStream.writeObject(e);
-				// Client 7.2
+				objectOutputStream.writeObject(event);
 				objectOutputStream.flush();
 			}
 		} catch (IOException e1) {
@@ -52,7 +47,6 @@ public class Connection {
 
 	// Package local would be safer
 	public void receive() {
-		// Server 4.2.2.1 and Server 4.2.2.2
 		new Thread(new ReceiverThread()).start();
 	}
 
@@ -60,14 +54,11 @@ public class Connection {
 	public void close() {
 		synchronized (this) {
 			try {
-				objectOutputStream.writeObject(new Event("stop", "stop"));
-				objectOutputStream.flush();
-
 				objectInputStream.close();
 				objectOutputStream.close();
 				socket.close();
 			} catch (SocketException e) {
-				// e.printStackTrace();
+				System.err.println("SocketException");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -92,30 +83,32 @@ public class Connection {
 			while (true) {
 				synchronized (this) {
 					try {
-						// Server 4.2.2.2.1
 						Event event = (Event) objectInputStream.readObject();
 
-						if (event.getMessage() != null) {
-							if (event.getMessage().equals("stop")) {
-								EventBroker.getEventBroker().stop();
-								break;
-							}
-						}
+						String type = event.getType();
 
-						ClientCreateAccountEvent createEvent;
-						if (event.getType().equals("CLIENT_CREATE_ACCOUNT")) {
-							createEvent = (ClientCreateAccountEvent) event;
-							createEvent.setConnectionID(connectionID);
-							network.publishEvent(createEvent);
+						if (type.equals(ClientCreateAccountEvent.EVENTTYPE)) {
+							ClientCreateAccountEvent cCAE = (ClientCreateAccountEvent) event;
+
+							cCAE.setConnectionID(connectionID);
+
+							network.publishEvent(cCAE);
+						} else if (type.equals(ClientLogInEvent.EVENTTYPE)) {
+							ClientLogInEvent cLIE = (ClientLogInEvent) event;
+
+							cLIE.setConnectionID(connectionID);
+
+							network.publishEvent(cLIE);
 						} else
 							network.publishEvent(event);
 					} catch (SocketException e) {
-						// e.printStackTrace();
+						System.err.println("SocketException");
 						break;
 					} catch (ClassNotFoundException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
-						e.printStackTrace();
+						System.err.println("IOException");
+						break;
 					}
 				}
 			}

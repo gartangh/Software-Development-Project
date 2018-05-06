@@ -5,23 +5,39 @@ import quiz.util.Theme;
 
 public class IPQuestion extends Question {
 
-	// TODO: Add pictures
-	private String correctAnswer;
+	private String question;
+	private String[] answers;
+	private int correctAnswer = -1;
+	// TODO Add pictures
 
-	public IPQuestion(Difficulty difficulty, Theme theme, int questionID) {
-		super(difficulty, theme, questionID);
-		// TODO: Get pictures (with correct difficulty and theme) and answer
+	// Constructor
+	public IPQuestion(int questionID, Theme theme, Difficulty difficulty, String question, String[] answers,
+			int correctAnswer) {
+		super(questionID, theme, difficulty);
+		this.question = question;
+		this.answers = answers;
+		this.correctAnswer = correctAnswer;
+		// TODO Get pictures (with correct difficulty and theme) and answer
 	}
 
-	public String getAnswer() {
+	// Getters
+	public String getQuestion() {
+		return question;
+	}
+
+	public String[] getAnswers() {
+		return answers;
+	}
+
+	public int getCorrectAnswer() {
 		return correctAnswer;
 	}
 
-	// TODO: Add getPictures()
+	// TODO Add getPictures()
 
 	// Methods
-	public boolean checkCorrectAnswer(String answer) {
-		return correctAnswer.equals(answer);
+	public boolean checkCorrectAnswer(int answer) {
+		return correctAnswer == answer;
 	}
 
 }

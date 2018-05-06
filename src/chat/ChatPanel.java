@@ -27,7 +27,7 @@ public class ChatPanel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return chatPanel;
 	}
 
