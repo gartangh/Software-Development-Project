@@ -78,7 +78,7 @@ public class Main extends Application {
 		// Connect to network with randomly generated client port between
 		// SERVERPORT + 1 and 65535 (2^16 - 1) and type CLIENT
 		Network network = new Network(new Random().nextInt(65535 - SERVERPORT + 2) + 1026, Network.CLIENTTYPE);
-		Context.getContext().setNetwork(network);
+		MainContext.getContext().setNetwork(network);
 
 		// Close button
 		this.primaryStage.setOnCloseRequest(e -> {
@@ -126,7 +126,7 @@ public class Main extends Application {
 		try {
 			// Load root layout from fxml file
 			FXMLLoader rootLayoutloader = new FXMLLoader();
-			rootLayoutloader.setLocation(Main.class.getResource("view/RootLayout.fxml"));
+			rootLayoutloader.setLocation(Main.class.getResource("../quiz/view/RootLayout.fxml"));
 			rootLayout = (BorderPane) rootLayoutloader.load();
 
 			// Show the scene containing the root layout
@@ -134,7 +134,7 @@ public class Main extends Application {
 			primaryStage.setScene(scene);
 
 			FXMLLoader menuLoader = new FXMLLoader();
-			menuLoader.setLocation(Main.class.getResource("view/Menu.fxml"));
+			menuLoader.setLocation(Main.class.getResource("../quiz/view/Menu.fxml"));
 			AnchorPane menu = (AnchorPane) menuLoader.load();
 			Platform.runLater(new Runnable() {
 				public void run() {

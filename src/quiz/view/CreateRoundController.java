@@ -11,7 +11,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
-import main.Context;
+import main.MainContext;
 import main.Main;
 import quiz.model.MCQuestion;
 import quiz.model.Round;
@@ -136,7 +136,7 @@ public class CreateRoundController extends EventPublisher {
 			String[] answers = sNQE.getAnswers();
 
 			MCQuestion mCQuestion = new MCQuestion(questionID, question, answers);
-			Context.getContext().setQuestion(mCQuestion);
+			MainContext.getContext().setQuestion(mCQuestion);
 		}
 
 	}

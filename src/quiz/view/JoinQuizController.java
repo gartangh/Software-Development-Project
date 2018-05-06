@@ -9,6 +9,7 @@ import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import eventbroker.clientevent.ClientGetQuizzesEvent;
 import eventbroker.clientevent.ClientJoinQuizEvent;
+import eventbroker.clientevent.ClientLogOutEvent;
 import eventbroker.serverevent.ServerGetQuizzesEvent;
 import eventbroker.serverevent.ServerJoinQuizEvent;
 import eventbroker.serverevent.ServerSendQuizEvent;
@@ -19,7 +20,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import main.Context;
+import main.MainContext;
 import main.Main;
 import quiz.model.JoinQuizModel;
 import quiz.model.Quiz;
@@ -57,7 +58,7 @@ public class JoinQuizController extends EventPublisher {
 	public void setMainApp(Main main) {
 		this.main = main;
 		quizTable.setItems(joinQuizModel.getQuizzes());
-		Context.getContext().setTeamID(-1);
+		MainContext.getContext().setTeamID(-1);
 	}
 
 	// Methods
@@ -103,7 +104,7 @@ public class JoinQuizController extends EventPublisher {
 
 	@FXML
 	private void handleJoin() {
-		User user = Context.getContext().getUser();
+		User user = MainContext.getContext().getUser();
 		ClientJoinQuizEvent cJQE = new ClientJoinQuizEvent(user.getUserID(), user.getUsername(),
 				selectedQuiz.getQuizID());
 		publishEvent(cJQE);
@@ -111,9 +112,11 @@ public class JoinQuizController extends EventPublisher {
 
 	@FXML
 	private void handleBack() {
-		Context context = Context.getContext();
+		MainContext context = MainContext.getContext();
 		context.setQuiz(null);
-		// User is logged out
+		// Log user out
+		ClientLogOutEvent cLOE = new ClientLogOutEvent();
+		publishEvent(cLOE);
 		context.setUser(null);
 
 		EventBroker eventBroker = EventBroker.getEventBroker();
@@ -134,7 +137,7 @@ public class JoinQuizController extends EventPublisher {
 
 			Quiz quiz = sJQE.getQuiz();
 
-			Context context = Context.getContext();
+			MainContext context = MainContext.getContext();
 			quiz.addUnassignedPlayer(context.getUser().getUserID(), context.getUser().getUsername());
 			context.setQuiz(quiz);
 

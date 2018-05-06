@@ -24,7 +24,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-import main.Context;
+import main.MainContext;
 import main.Main;
 import quiz.model.AnswerVoteModel;
 import quiz.model.MCQuestion;
@@ -139,7 +139,7 @@ public class QuestionController extends EventPublisher {
 		nextButton.disableProperty().bind(answerVoteModel.getNextDisableProperty());
 
 		answerVoteModel.updateQuestion();
-		answerVoteModel.updateVotes(Context.getContext().getTeamID());
+		answerVoteModel.updateVotes(MainContext.getContext().getTeamID());
 
 		// ChatPanel (ChatModel and ChatController) are created
 		ChatPanel chatPanel = ChatPanel.createChatPanel();
@@ -201,9 +201,9 @@ public class QuestionController extends EventPublisher {
 
 	@FXML
 	private void handleAnswer() {
-		Context context = Context.getContext();
+		MainContext context = MainContext.getContext();
 		int answer = this.getChecked();
-		if (context.getQuiz().getTeamMap().get(context.getTeamID()).getCaptainID() != Context.getContext().getUser()
+		if (context.getQuiz().getTeamMap().get(context.getTeamID()).getCaptainID() != MainContext.getContext().getUser()
 				.getUserID()) {
 			Platform.runLater(new Runnable() {
 				@Override
@@ -228,7 +228,7 @@ public class QuestionController extends EventPublisher {
 				}
 			});
 		} else {
-			ClientAnswerEvent cAE = new ClientAnswerEvent(Context.getContext().getQuestion().getQuestionID(), answer);
+			ClientAnswerEvent cAE = new ClientAnswerEvent(MainContext.getContext().getQuestion().getQuestionID(), answer);
 			publishEvent(cAE);
 			handleCheck(-1);
 		}
@@ -236,7 +236,7 @@ public class QuestionController extends EventPublisher {
 
 	@FXML
 	private void handleNext() {
-		if (Context.getContext().getQuiz().getTeamMap().get(Context.getContext().getTeamID()).getCaptainID() != Context
+		if (MainContext.getContext().getQuiz().getTeamMap().get(MainContext.getContext().getTeamID()).getCaptainID() != MainContext
 				.getContext().getUser().getUserID()) {
 			Platform.runLater(new Runnable() {
 				@Override
@@ -266,7 +266,7 @@ public class QuestionController extends EventPublisher {
 			int teamID = sVE.getTeamID();
 			int vote = sVE.getVote();
 
-			Context.getContext().getQuiz().addVote(userID, teamID, vote);
+			MainContext.getContext().getQuiz().addVote(userID, teamID, vote);
 			answerVoteModel.updateVotes(teamID);
 		}
 
@@ -297,9 +297,9 @@ public class QuestionController extends EventPublisher {
 			String[] answers = sNMCQE.getAnswers();
 
 			MCQuestion q = new MCQuestion(questionID, question, answers);
-			Context.getContext().setQuestion(q);
+			MainContext.getContext().setQuestion(q);
 			answerVoteModel.updateQuestion();
-			answerVoteModel.updateVotes(Context.getContext().getTeamID());
+			answerVoteModel.updateVotes(MainContext.getContext().getTeamID());
 		}
 
 	}

@@ -3,7 +3,6 @@ package chat;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -17,8 +16,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.text.Font;
-import main.Context;
+import main.MainContext;
 import main.Main;
 
 final public class ChatController extends EventPublisher {
@@ -45,9 +43,10 @@ final public class ChatController extends EventPublisher {
 		EventBroker.getEventBroker().addEventListener(ChatMessage.SERVERTYPE, chatHandler);
 
 		chatTextArea.textProperty().bind(chatModel.getChatText());
+		//chatTextArea.setFont(Font.loadFont(Paths.get(".").toAbsolutePath().normalize().toString() + "\\Files\\OpenSansEmoji.ttf", 15));
 
 		try {
-			// Substring is to remove file:/ before resource
+			// Substring is to remove "file:/" before resource
 			BufferedReader bufferedReader = new BufferedReader(
 					new FileReader(Main.class.getResource("../chat/swearWords.txt").toString().substring(6)));
 
@@ -70,17 +69,15 @@ final public class ChatController extends EventPublisher {
 		if(message.length() > 1) {
 			if(message.charAt(0) == '*') {
 				message = message.substring(1);
-					team = false;
+				team = false;
 			}
 		} else if(message.length() == 1) {
 			if(message.charAt(0) == '*')
 				message = null;
 		}
 
-
-		if((Context.getContext().getTeamID() == -1))
-			team = false;
-		
+		if((MainContext.getContext().getTeamID() == -1))
+			team = false;		
 
 		if (message != null && message.length() > 0) {
 			message = checkMessage(message);
@@ -95,9 +92,11 @@ final public class ChatController extends EventPublisher {
 					}
 				}
 			}
+			
 			if(finalMessage != null)
 				sendMessage(finalMessage, team);
-			else sendMessage(message, team);
+			else
+				sendMessage(message, team);
 		}
 	}
 
@@ -118,9 +117,9 @@ final public class ChatController extends EventPublisher {
 	public void sendMessage(String message, boolean team) {
 		// Publish to the event broker
 		if(team)
-			publishEvent(new ChatMessage(Context.getContext().getUser().getUsername(), message, "TEAM", Context.getContext().getQuiz().getQuizID()));
+			publishEvent(new ChatMessage(MainContext.getContext().getUser().getUsername(), message, "TEAM", MainContext.getContext().getQuiz().getQuizID()));
 		else
-			publishEvent(new ChatMessage(Context.getContext().getUser().getUsername(), message, "ALL", Context.getContext().getQuiz().getQuizID()));
+			publishEvent(new ChatMessage(MainContext.getContext().getUser().getUsername(), message, "ALL", MainContext.getContext().getQuiz().getQuizID()));
 
 		// Update local GUI
 		Platform.runLater(new Runnable() {
@@ -138,14 +137,6 @@ final public class ChatController extends EventPublisher {
 		}
 	}
 
-	@FXML
-	private void initialize() {
-		EventBroker.getEventBroker().addEventListener(chatEventHandler);
-
-		chatTextArea.textProperty().bind(chatModel.chatTextProperty());
-
-		//chatTextArea.setFont(Font.loadFont(Paths.get(".").toAbsolutePath().normalize().toString() + "\\Files\\OpenSansEmoji.ttf", 15));
-	}
 	// Inner class
 	private class ChatHandler implements EventListener {
 

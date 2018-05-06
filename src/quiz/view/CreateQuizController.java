@@ -12,7 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
-import main.Context;
+import main.MainContext;
 import main.Main;
 import quiz.model.Quiz;
 
@@ -206,7 +206,7 @@ public class CreateQuizController extends EventPublisher {
 
 		// Everything is valid
 		ClientCreateQuizEvent cCQE = new ClientCreateQuizEvent(quizname, teams, players, rounds,
-				Context.getContext().getUser().getUsername());
+				MainContext.getContext().getUser().getUsername());
 		publishEvent(cCQE);
 	}
 

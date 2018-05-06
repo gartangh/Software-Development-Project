@@ -11,7 +11,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import main.Context;
+import main.MainContext;
 import main.Main;
 import quiz.model.JoinTeamModel;
 import quiz.model.Team;
@@ -102,7 +102,7 @@ public class JoinTeamController extends EventPublisher {
 
 	@FXML
 	private void handleCreateTeam() {
-		Context context = Context.getContext();
+		MainContext context = MainContext.getContext();
 		int userID = context.getUser().getUserID();
 		int quizID = context.getQuiz().getQuizID();
 		int hostID = context.getQuiz().getHostID();
@@ -160,7 +160,7 @@ public class JoinTeamController extends EventPublisher {
 
 	@FXML
 	private void handleReady() {
-		Context context = Context.getContext();
+		MainContext context = MainContext.getContext();
 		int userID = context.getUser().getUserID();
 		int quizID = context.getQuiz().getQuizID();
 		int hostID = context.getQuiz().getHostID();
@@ -196,7 +196,7 @@ public class JoinTeamController extends EventPublisher {
 
 	@FXML
 	private void handleJoin() {
-		Context context = Context.getContext();
+		MainContext context = MainContext.getContext();
 		int userID = context.getUser().getUserID();
 		int quizID = context.getQuiz().getQuizID();
 		int hostID = context.getQuiz().getHostID();
@@ -262,12 +262,14 @@ public class JoinTeamController extends EventPublisher {
 			return;
 		}
 
-		ClientChangeTeamEvent cCTE = new ClientChangeTeamEvent(quizID, selectedTeam.getTeamID(), teamID, userID);
+		ClientChangeTeamEvent cCTE = new ClientChangeTeamEvent(quizID, selectedTeam.getTeamID(), teamID);
 		publishEvent(cCTE);
 	}
 
 	@FXML
 	private void hadleBack() {
+		MainContext.getContext().setQuiz(null);
+		
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.removeEventListener(newTeamHandler);
 		eventBroker.removeEventListener(changeTeamHandler);
@@ -291,7 +293,7 @@ public class JoinTeamController extends EventPublisher {
 			int captainID = sNTE.getCaptainID();
 			String captainname = sNTE.getCaptainname();
 
-			Context context = Context.getContext();
+			MainContext context = MainContext.getContext();
 			// Extra check
 			if (quizID == context.getQuiz().getQuizID()) {
 				Team newTeam = new Team(teamID, teamname, color, captainID, captainname);
@@ -321,7 +323,7 @@ public class JoinTeamController extends EventPublisher {
 			int userID = sCTE.getUserID();
 			String userName = sCTE.getUserName();
 
-			Context context = Context.getContext();
+			MainContext context = MainContext.getContext();
 			if (quizID == context.getQuiz().getQuizID()) {
 				Team newteam = context.getQuiz().getTeamMap().get(newteamID);
 				Team oldteam = context.getQuiz().getTeamMap().get(oldteamID);
@@ -352,7 +354,7 @@ public class JoinTeamController extends EventPublisher {
 			@SuppressWarnings("unused")
 			ServerStartQuizEvent sSQE = (ServerStartQuizEvent) event;
 
-			Context context = Context.getContext();
+			MainContext context = MainContext.getContext();
 			context.getQuiz().clearUnassignedPlayers();
 
 			EventBroker.getEventBroker().removeEventListener(newTeamHandler);
@@ -386,7 +388,7 @@ public class JoinTeamController extends EventPublisher {
 			int userID = sQNPE.getUserID();
 			String username = sQNPE.getUsername();
 
-			Context.getContext().getQuiz().addUnassignedPlayer(userID, username);
+			MainContext.getContext().getQuiz().addUnassignedPlayer(userID, username);
 		}
 
 	}

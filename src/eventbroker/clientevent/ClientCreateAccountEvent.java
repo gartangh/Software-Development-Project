@@ -2,7 +2,7 @@ package eventbroker.clientevent;
 
 import eventbroker.Event;
 
-// This event does not extends a UserEvent, because the userID is not known yet
+// This event does not extends a ClientEvent, because the userID is not known yet
 @SuppressWarnings("serial")
 public class ClientCreateAccountEvent extends Event {
 

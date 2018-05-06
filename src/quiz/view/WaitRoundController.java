@@ -7,7 +7,7 @@ import eventbroker.EventPublisher;
 import eventbroker.serverevent.ServerNewMCQuestionEvent;
 import eventbroker.serverevent.ServerStartRoundEvent;
 import javafx.fxml.FXML;
-import main.Context;
+import main.MainContext;
 import main.Main;
 import quiz.model.MCQuestion;
 
@@ -60,7 +60,7 @@ public class WaitRoundController extends EventPublisher {
 			String[] answers = sNQE.getAnswers();
 
 			MCQuestion q = new MCQuestion(questionID, question, answers);
-			Context.getContext().setQuestion(q);
+			MainContext.getContext().setQuestion(q);
 		}
 
 	}

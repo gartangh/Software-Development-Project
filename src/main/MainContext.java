@@ -5,10 +5,10 @@ import quiz.model.Quiz;
 import quiz.model.User;
 import quiz.model.Question;
 
-public class Context {
+public class MainContext {
 
 	// Singleton
-	private static Context context = new Context();
+	private static MainContext context = new MainContext();
 
 	private User user;
 	private Quiz quiz;
@@ -22,7 +22,7 @@ public class Context {
 	 *
 	 * @return the context
 	 */
-	public static Context getContext() {
+	public static MainContext getContext() {
 		return context;
 	}
 

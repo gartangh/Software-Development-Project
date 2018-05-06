@@ -14,7 +14,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import main.Context;
+import main.MainContext;
 
 public class JoinTeamModel {
 	
@@ -27,8 +27,8 @@ public class JoinTeamModel {
 	
 	// Constructor
 	public JoinTeamModel() {
-		this.teamname = new SimpleStringProperty("");
-		this.captainname = new SimpleStringProperty("");
+		this.teamname = new SimpleStringProperty();
+		this.captainname = new SimpleStringProperty();
 		this.color = new SimpleObjectProperty<>(Color.TRANSPARENT);
 	}
 
@@ -66,7 +66,7 @@ public class JoinTeamModel {
 
 	// Methods
 	public void updateTeams() {
-		Quiz quiz = Context.getContext().getQuiz();
+		Quiz quiz = MainContext.getContext().getQuiz();
 		Platform.runLater(new Runnable() {
 			public void run() {
 				for (Team team : quiz.getTeamMap().values()) {
@@ -84,7 +84,7 @@ public class JoinTeamModel {
 
 		Platform.runLater(new Runnable() {
 			public void run() {
-				Team team = Context.getContext().getQuiz().getTeamMap().get(teamID);
+				Team team = MainContext.getContext().getQuiz().getTeamMap().get(teamID);
 				teamname.setValue(team.getTeamname());
 				captainname.setValue(team.getPlayerMap().get(team.getCaptainID()));
 				color.setValue(team.getColor());

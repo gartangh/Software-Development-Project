@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import main.Context;
+import main.MainContext;
 import quiz.util.Difficulty;
 import quiz.util.Theme;
 import quiz.util.RoundType;
@@ -73,7 +73,7 @@ public class Quiz implements Serializable {
 			String hostname) {
 		// Client side
 		Quiz quiz = new Quiz(quizID, quizname, rounds, teams, players, hostID, hostname);
-		Context.getContext().setQuiz(quiz);
+		MainContext.getContext().setQuiz(quiz);
 
 		return quiz;
 	}

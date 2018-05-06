@@ -1,4 +1,4 @@
-package main.view;
+package quiz.view;
 
 import javafx.fxml.FXML;
 
