@@ -49,6 +49,7 @@ public class Main extends Application {
 	public final static String SERVERADDRESS = "192.168.1.30";
 
 	/** The Constant SERVERPORT represents the port on the server. */
+
 	public final static int SERVERPORT = 1025;
 
 	private Stage primaryStage;
