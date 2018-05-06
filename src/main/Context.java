@@ -12,7 +12,7 @@ public class Context {
 
 	private User user;
 	private Quiz quiz;
-	private int teamID;
+	private int teamID = -1;
 	private Question question;
 	private Network network;
 

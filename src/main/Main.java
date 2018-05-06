@@ -51,6 +51,7 @@ public class Main extends Application {
 																// Emiel.
 
 	/** The Constant SERVERPORT represents the port on the server. */
+
 	public final static int SERVERPORT = 1025;
 
 	private Stage primaryStage;
