@@ -5,10 +5,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Map.Entry;
 
 import eventbroker.Event;
 import eventbroker.clientevent.ClientCreateAccountEvent;
 import eventbroker.clientevent.ClientLogInEvent;
+import server.Server;
 
 public class Connection {
 
@@ -103,6 +105,10 @@ public class Connection {
 							network.publishEvent(event);
 					} catch (SocketException e) {
 						System.err.println("SocketException");
+						//if (serverside connection)
+							//for (Entry<Integer, Integer> entry: network.getUserIDConnectionIDMap().entrySet())
+								//if (entry.getValue() == connectionID)
+									//Server.onConnectionLost(entry.getKey());
 						break;
 					} catch (ClassNotFoundException e) {
 						e.printStackTrace();

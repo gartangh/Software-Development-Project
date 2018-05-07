@@ -135,12 +135,15 @@ public class Server extends EventPublisher {
 		System.out.println("Server running ...");
 	}
 
-	// TODO On connection lost, log user out
-	// ServerContext context = ServerContext.getContext();
-	// context.getUserMap().get(userID).setLoggedIn(false);
-	// context.getNetwork().getUserIDConnectionIDMap().remove(userID);
-	// if user was the host of a quiz or the captain of a team, remove the quiz
-	// or the team an notify its users
+	public static void onConnectionLost(int userID) {
+		ServerContext context = ServerContext.getContext();
+		// log user out
+		context.getUserMap().get(userID).setLoggedIn(false);
+		context.getNetwork().getUserIDConnectionIDMap().remove(userID);
+		
+		// TODO if user was the host of a quiz or the captain of a team, remove the quiz
+		// or the team an notify its users
+	}
 
 	// Inner classes
 	private static class CreateAccountHandler implements EventListener {
