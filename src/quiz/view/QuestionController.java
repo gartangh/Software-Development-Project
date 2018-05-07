@@ -243,8 +243,8 @@ public class QuestionController extends EventPublisher {
 				}
 			});
 		} else {
-			ClientNewQuestionEvent cnqe = new ClientNewQuestionEvent();
-			publishEvent(cnqe);
+			ClientNewQuestionEvent cNQE = new ClientNewQuestionEvent();
+			publishEvent(cNQE);
 		}
 	}
 
@@ -304,7 +304,11 @@ public class QuestionController extends EventPublisher {
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
-					// TODO Show alert
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("You can't go to the next question!");
+					alert.setContentText("Not all teams have answered this question.");
+					alert.showAndWait();
 				}
 			});
 		}

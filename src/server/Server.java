@@ -61,6 +61,7 @@ import network.Network;
 import quiz.model.IPQuestion;
 import quiz.model.MCQuestion;
 import quiz.model.Quiz;
+import quiz.model.QuizModel;
 
 public class Server extends EventPublisher {
 
@@ -140,8 +141,9 @@ public class Server extends EventPublisher {
 		// log user out
 		context.getUserMap().get(userID).setLoggedIn(false);
 		context.getNetwork().getUserIDConnectionIDMap().remove(userID);
-		
-		// TODO if user was the host of a quiz or the captain of a team, remove the quiz
+
+		// TODO if user was the host of a quiz or the captain of a team, remove
+		// the quiz
 		// or the team an notify its users
 	}
 
@@ -302,13 +304,13 @@ public class Server extends EventPublisher {
 
 				int quizID = Quiz.createServerQuiz(quizname, rounds, teams, players, userID, hostname);
 
-				ServerCreateQuizSuccesEvent sCQSE = new ServerCreateQuizSuccesEvent(quizID, quizname, teams, players,
-						rounds, userID, hostname);
+				ServerCreateQuizSuccesEvent sCQSE = new ServerCreateQuizSuccesEvent(
+						new QuizModel(quizID, quizname, teams, players, rounds, userID, hostname));
 				sCQSE.addRecipient(userID);
 				server.publishEvent(sCQSE);
 
-				ServerNewQuizEvent sNQE = new ServerNewQuizEvent(quizID, quizname, teams, players, rounds, userID,
-						hostname);
+				ServerNewQuizEvent sNQE = new ServerNewQuizEvent(
+						new QuizModel(quizID, quizname, teams, players, rounds, userID, hostname));
 				sNQE.addRecipients(context.getUserMap());
 				server.publishEvent(sNQE);
 			}

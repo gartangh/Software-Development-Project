@@ -170,8 +170,9 @@ public class AnswerVoteModel {
 
 	public void updateQuestion() {
 		MCQuestion q = (MCQuestion) MainContext.getContext().getQuestion();
-		System.out.println(q.getQuestion());
+
 		Platform.runLater(new Runnable() {
+			@Override
 			public void run() {
 				questionTextProperty.setValue(q.getQuestion());
 

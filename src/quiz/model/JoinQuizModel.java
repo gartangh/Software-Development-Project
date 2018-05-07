@@ -1,5 +1,7 @@
 package quiz.model;
 
+import java.util.ArrayList;
+
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -10,24 +12,15 @@ import javafx.collections.ObservableList;
 
 public class JoinQuizModel {
 
-	private ObservableList<Quiz> quizzes = FXCollections.observableArrayList();
-	private StringProperty quiznameProperty;
-	private StringProperty quizRoundsProperty;
-	private StringProperty teamProperty;
-	private StringProperty playersProperty;
-	private BooleanProperty joinDisableProperty;
-
-	// Constructor
-	public JoinQuizModel() {
-		quiznameProperty = new SimpleStringProperty();
-		quizRoundsProperty = new SimpleStringProperty();
-		teamProperty = new SimpleStringProperty();
-		playersProperty = new SimpleStringProperty();
-		joinDisableProperty = new SimpleBooleanProperty(true);
-	}
+	private ObservableList<QuizModel> quizzes = FXCollections.observableArrayList();
+	private StringProperty quiznameProperty = new SimpleStringProperty();
+	private StringProperty quizRoundsProperty = new SimpleStringProperty();
+	private StringProperty teamProperty = new SimpleStringProperty();
+	private StringProperty playersProperty = new SimpleStringProperty();
+	private BooleanProperty joinDisableProperty = new SimpleBooleanProperty(true);
 
 	// Getters
-	public ObservableList<Quiz> getQuizzes() {
+	public ObservableList<QuizModel> getQuizzes() {
 		return quizzes;
 	}
 
@@ -52,36 +45,46 @@ public class JoinQuizModel {
 	}
 
 	// Adder and remover
-	public void addQuiz(Quiz quiz) {
+	public void addQuiz(QuizModel quiz) {
 		Platform.runLater(new Runnable() {
+			@Override
 			public void run() {
-				quizzes.add(quiz);
+				JoinQuizModel.this.quizzes.add(quiz);
+			}
+		});
+	}
+
+	public void addQuizzes(ArrayList<QuizModel> quizzes) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				JoinQuizModel.this.quizzes.addAll(quizzes);
 			}
 		});
 	}
 
 	public void removeQuiz(int quizID) {
 		Platform.runLater(new Runnable() {
+			@Override
 			public void run() {
-				for (int i = 0; i < quizzes.size(); i++) {
-					if (quizzes.get(i).getQuizID() == quizID) {
-						quizzes.remove(i);
+				for (QuizModel quiz : quizzes)
+					if (quiz.getQuizID() == quizID) {
+						quizzes.remove(quiz);
 						break;
 					}
-				}
 			}
 		});
 	}
-	
+
 	// Method
-	public void updateQuizDetail(Quiz quiz) {
-		// For the selected team
+	public void updateQuizDetail(String quizname, int rounds, int teams, int players) {
+		// For the selected quiz
 		Platform.runLater(new Runnable() {
 			public void run() {
-				quiznameProperty.setValue(quiz.getQuizname());
-				quizRoundsProperty.setValue(Integer.toString(quiz.getRounds()));
-				teamProperty.setValue(Integer.toString(quiz.getTeams()));
-				playersProperty.setValue(Integer.toString(quiz.getPlayers()));
+				quiznameProperty.setValue(quizname);
+				quizRoundsProperty.setValue(Integer.toString(rounds));
+				teamProperty.setValue(Integer.toString(teams));
+				playersProperty.setValue(Integer.toString(players));
 				joinDisableProperty.setValue(false);
 			}
 		});

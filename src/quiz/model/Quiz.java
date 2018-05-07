@@ -135,7 +135,7 @@ public class Quiz implements Serializable {
 		return unassignedPlayers;
 	}
 
-	public boolean getRunning() {
+	public boolean isRunning() {
 		return running;
 	}
 
@@ -194,7 +194,7 @@ public class Quiz implements Serializable {
 
 	// Methods
 	public boolean isAnsweredByAll() {
-		if (roundList.get(currentRound).getNumberOfAnswers() != teamMap.size())
+		if (roundList.get(currentRound).getNumberOfAnswers() == teamMap.size())
 			return true;
 
 		return false;

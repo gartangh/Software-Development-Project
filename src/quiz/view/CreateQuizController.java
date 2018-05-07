@@ -15,6 +15,7 @@ import javafx.scene.control.TextField;
 import main.MainContext;
 import main.Main;
 import quiz.model.Quiz;
+import quiz.model.QuizModel;
 
 public class CreateQuizController extends EventPublisher {
 
@@ -36,7 +37,7 @@ public class CreateQuizController extends EventPublisher {
 	public void setMainApp(Main main) {
 		this.main = main;
 	}
-	
+
 	// Methods
 	@FXML
 	private void initialize() {
@@ -244,15 +245,10 @@ public class CreateQuizController extends EventPublisher {
 		public void handleEvent(Event event) {
 			ServerCreateQuizSuccesEvent sCQSE = (ServerCreateQuizSuccesEvent) event;
 
-			int quizID = sCQSE.getQuizID();
-			String quizname = sCQSE.getQuizname();
-			int rounds = sCQSE.getRounds();
-			int teams = sCQSE.getTeams();
-			int players = sCQSE.getPlayers();
-			int hostID = sCQSE.getHostID();
-			String hostname = sCQSE.getHostname();
+			QuizModel quiz = sCQSE.getQuiz();
 
-			Quiz.createQuiz(quizID, quizname, rounds, teams, players, hostID, hostname);
+			Quiz.createQuiz(quiz.getQuizID(), quiz.getQuizname(), quiz.getRounds(), quiz.getTeams(), quiz.getPlayers(),
+					quiz.getHostID(), quiz.getHostname());
 
 			EventBroker eventBroker = EventBroker.getEventBroker();
 			eventBroker.removeEventListener(createQuizFailHandler);

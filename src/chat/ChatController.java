@@ -43,7 +43,8 @@ final public class ChatController extends EventPublisher {
 		EventBroker.getEventBroker().addEventListener(ChatMessage.SERVERTYPE, chatHandler);
 
 		chatTextArea.textProperty().bind(chatModel.getChatText());
-		//chatTextArea.setFont(Font.loadFont(Paths.get(".").toAbsolutePath().normalize().toString() + "\\Files\\OpenSansEmoji.ttf", 15));
+		// chatTextArea.setFont(Font.loadFont(Paths.get(".").toAbsolutePath().normalize().toString()
+		// + "\\Files\\OpenSansEmoji.ttf", 15));
 
 		try {
 			// Substring is to remove "file:/" before resource
@@ -64,39 +65,41 @@ final public class ChatController extends EventPublisher {
 	public void handle(ActionEvent e) {
 		// Get message from chatTextField
 		String message = chatTextField.getText();
-		boolean team = true;
-		
-		if(message.length() > 1) {
-			if(message.charAt(0) == '*') {
-				message = message.substring(1);
-				team = false;
+
+		if (message != null) {
+			boolean team = true;
+			if (message.length() > 1) {
+				if (message.charAt(0) == '*') {
+					message = message.substring(1);
+					team = false;
+				}
+			} else if (message.length() == 1) {
+				if (message.charAt(0) == '*')
+					message = null;
 			}
-		} else if(message.length() == 1) {
-			if(message.charAt(0) == '*')
-				message = null;
-		}
 
-		if((MainContext.getContext().getTeam().getTeamID() == -1))
-			team = false;		
+			if ((MainContext.getContext().getTeam().getTeamID() == -1))
+				team = false;
 
-		if (message != null && message.length() > 0) {
-			message = checkMessage(message);
-			String finalMessage = null;
-			if(message.contains(":)")) {
-				for(int i=0;i<message.length()-1;i++) {
-					if(message.charAt(i)==':' && message.charAt(i+1) == ')') {
-						finalMessage = message.substring(0, i);
-						finalMessage += '\u263A';
-						if(i+2 < message.length())
-							finalMessage += message.substring(i+2);
+			if (message.length() > 0) {
+				message = checkMessage(message);
+				String finalMessage = null;
+				if (message.contains(":)")) {
+					for (int i = 0; i < message.length() - 1; i++) {
+						if (message.charAt(i) == ':' && message.charAt(i + 1) == ')') {
+							finalMessage = message.substring(0, i);
+							finalMessage += '\u263A';
+							if (i + 2 < message.length())
+								finalMessage += message.substring(i + 2);
+						}
 					}
 				}
+
+				if (finalMessage != null)
+					sendMessage(finalMessage, team);
+				else
+					sendMessage(message, team);
 			}
-			
-			if(finalMessage != null)
-				sendMessage(finalMessage, team);
-			else
-				sendMessage(message, team);
 		}
 	}
 
@@ -116,10 +119,12 @@ final public class ChatController extends EventPublisher {
 
 	public void sendMessage(String message, boolean team) {
 		// Publish to the event broker
-		if(team)
-			publishEvent(new ChatMessage(MainContext.getContext().getUser().getUsername(), message, "TEAM", MainContext.getContext().getQuiz().getQuizID()));
+		if (team)
+			publishEvent(new ChatMessage(MainContext.getContext().getUser().getUsername(), message, "TEAM",
+					MainContext.getContext().getQuiz().getQuizID()));
 		else
-			publishEvent(new ChatMessage(MainContext.getContext().getUser().getUsername(), message, "ALL", MainContext.getContext().getQuiz().getQuizID()));
+			publishEvent(new ChatMessage(MainContext.getContext().getUser().getUsername(), message, "ALL",
+					MainContext.getContext().getQuiz().getQuizID()));
 
 		// Update local GUI
 		Platform.runLater(new Runnable() {
