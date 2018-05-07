@@ -30,8 +30,8 @@ public class CreateRoundController extends EventPublisher {
 	@FXML
 	ChoiceBox<Integer> numberChoiceBox;
 
-	private StartRoundHandler startRoundHandler;
-	private NewMCQuestionHandler newMCQuestionHandler;
+	private StartRoundHandler startRoundHandler = new StartRoundHandler();
+	private NewMCQuestionHandler newMCQuestionHandler = new NewMCQuestionHandler();
 
 	// Reference to the main application
 	private Main main;
@@ -43,9 +43,6 @@ public class CreateRoundController extends EventPublisher {
 	// Methods
 	@FXML
 	private void initialize() {
-		startRoundHandler = new StartRoundHandler();
-		newMCQuestionHandler = new NewMCQuestionHandler();
-
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerStartRoundEvent.EVENTTYPE, startRoundHandler);
 		eventBroker.addEventListener(ServerNewMCQuestionEvent.EVENTTYPE, newMCQuestionHandler);

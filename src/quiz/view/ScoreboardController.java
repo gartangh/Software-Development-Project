@@ -33,15 +33,13 @@ public class ScoreboardController extends EventPublisher {
 	private Label winnerLoser;
 
 	private ScoreboardModel scoreboardModel = new ScoreboardModel();
-	private ScoreboardDataHandler scoreboardDataHandler;
+	private ScoreboardDataHandler scoreboardDataHandler = new ScoreboardDataHandler();
 
 	// Reference to the main application
 	private Main main;
 
 	public void setMainApp(Main main) {
 		this.main = main;
-
-		scoreboardTable.setItems(scoreboardModel.getScoreboardTeams());
 	}
 
 	// Getters
@@ -52,10 +50,11 @@ public class ScoreboardController extends EventPublisher {
 	// Methods
 	@FXML
 	private void initialize() {
-		scoreboardDataHandler = new ScoreboardDataHandler();
+		EventBroker eventBroker = EventBroker.getEventBroker();
+		eventBroker.addEventListener(ServerScoreboardDataEvent.EVENTTYPE, scoreboardDataHandler);
 
-		EventBroker.getEventBroker().addEventListener(ServerScoreboardDataEvent.EVENTTYPE, scoreboardDataHandler);
-
+		scoreboardTable.setItems(scoreboardModel.getScoreboardTeams());
+		
 		winnerLoser.textProperty().bind(scoreboardModel.getWinnerLoserProperty());
 		rankColumn
 				.setCellValueFactory(cellData -> (new SimpleIntegerProperty(cellData.getValue().getRank()).asObject()));
@@ -85,7 +84,7 @@ public class ScoreboardController extends EventPublisher {
 	private void handleQuitButton() {
 		// TODO Clear quiz, show List of Available quizzes
 		EventBroker.getEventBroker().removeEventListener(scoreboardDataHandler);
-		
+
 		main.showJoinQuizScene();
 	}
 
@@ -102,7 +101,7 @@ public class ScoreboardController extends EventPublisher {
 
 			MainContext context = MainContext.getContext();
 			if (scoreboardTeams.size() > 0) {
-				int curTeamID = context.getTeamID();
+				int curTeamID = context.getTeam().getTeamID();
 				ScoreboardTeam curTeam = null;
 				for (ScoreboardTeam team : scoreboardTeams) {
 					if (team.getTeamID() == curTeamID) {

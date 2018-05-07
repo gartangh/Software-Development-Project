@@ -6,7 +6,6 @@ import java.net.UnknownHostException;
 import java.util.Random;
 
 import eventbroker.EventBroker;
-import eventbroker.clientevent.ClientCreateTeamEvent;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -136,6 +135,7 @@ public class Main extends Application {
 			FXMLLoader menuLoader = new FXMLLoader();
 			menuLoader.setLocation(Main.class.getResource("../quiz/view/Menu.fxml"));
 			AnchorPane menu = (AnchorPane) menuLoader.load();
+
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setTop(menu);
@@ -154,15 +154,36 @@ public class Main extends Application {
 	 */
 	public void showLogInScene() {
 		try {
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(Main.class.getResource("../quiz/view/LogIn.fxml"));
-			BorderPane logIn = (BorderPane) loader.load();
-			LogInController controller = loader.getController();
-			controller.setMainApp(this);
+			FXMLLoader logInloader = new FXMLLoader();
+			logInloader.setLocation(Main.class.getResource("../quiz/view/LogIn.fxml"));
+			BorderPane logIn = (BorderPane) logInloader.load();
+			LogInController logInController = logInloader.getController();
+			logInController.setMainApp(this);
 
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(logIn);
+				}
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Show join quiz scene.
+	 */
+	public void showJoinQuizScene() {
+		try {
+			FXMLLoader joinQuizLoader = new FXMLLoader();
+			joinQuizLoader.setLocation(Main.class.getResource("../quiz/view/JoinQuiz.fxml"));
+			BorderPane joinQuiz = (BorderPane) joinQuizLoader.load();
+			JoinQuizController joinQuizController = joinQuizLoader.getController();
+			joinQuizController.setMain(this);
+
+			Platform.runLater(new Runnable() {
+				public void run() {
+					rootLayout.setCenter(joinQuiz);
 				}
 			});
 		} catch (IOException e) {
@@ -192,19 +213,19 @@ public class Main extends Application {
 	}
 
 	/**
-	 * Show join quiz scene.
+	 * Show join team scene.
 	 */
-	public void showJoinQuizScene() {
+	public void showJoinTeamScene() {
 		try {
-			FXMLLoader joinQuizLoader = new FXMLLoader();
-			joinQuizLoader.setLocation(Main.class.getResource("../quiz/view/JoinQuiz.fxml"));
-			BorderPane joinQuiz = (BorderPane) joinQuizLoader.load();
-			JoinQuizController joinQuizController = joinQuizLoader.getController();
-			joinQuizController.setMainApp(this);
+			FXMLLoader joinTeamLoader = new FXMLLoader();
+			joinTeamLoader.setLocation(Main.class.getResource("../quiz/view/JoinTeam.fxml"));
+			BorderPane joinTeam = (BorderPane) joinTeamLoader.load();
+			JoinTeamController joinTeamController = joinTeamLoader.getController();
+			joinTeamController.setMain(this);
 
 			Platform.runLater(new Runnable() {
 				public void run() {
-					rootLayout.setCenter(joinQuiz);
+					rootLayout.setCenter(joinTeam);
 				}
 			});
 		} catch (IOException e) {
@@ -213,19 +234,19 @@ public class Main extends Application {
 	}
 
 	/**
-	 * Show join team scene.
+	 * Show create team scene.
 	 */
-	public void showJoinTeamScene() {
+	public void showCreateTeamScene() {
 		try {
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(Main.class.getResource("../quiz/view/JoinTeam.fxml"));
-			BorderPane content = (BorderPane) loader.load();
-			JoinTeamController quizcontroller = loader.getController();
-			quizcontroller.setMain(this);
+			FXMLLoader createTeamLoader = new FXMLLoader();
+			createTeamLoader.setLocation(Main.class.getResource("../quiz/view/CreateTeam.fxml"));
+			BorderPane createTeam = (BorderPane) createTeamLoader.load();
+			CreateTeamController createTeamController = createTeamLoader.getController();
+			createTeamController.setMain(this);
 
 			Platform.runLater(new Runnable() {
 				public void run() {
-					rootLayout.setCenter(content);
+					rootLayout.setCenter(createTeam);
 				}
 			});
 		} catch (IOException e) {
@@ -240,50 +261,17 @@ public class Main extends Application {
 		try {
 			FXMLLoader scoreboardLoader = new FXMLLoader();
 			scoreboardLoader.setLocation(Main.class.getResource("../quiz/view/Scoreboard.fxml"));
-			BorderPane scoreboardRoot = (BorderPane) scoreboardLoader.load();
+			BorderPane scoreboard = (BorderPane) scoreboardLoader.load();
 			ScoreboardController scoreboardController = scoreboardLoader.getController();
 			scoreboardController.setMainApp(this);
 
 			Platform.runLater(new Runnable() {
 				public void run() {
-					rootLayout.setCenter(scoreboardRoot);
+					rootLayout.setCenter(scoreboard);
 				}
 			});
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Show create team scene.
-	 *
-	 * @param cCTE
-	 *            the create team event
-	 * @return true, if team creation was successful
-	 */
-	public boolean showCreateTeamScene(ClientCreateTeamEvent cCTE) {
-		try {
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(Main.class.getResource("../quiz/view/CreateTeam.fxml"));
-			BorderPane newteam = (BorderPane) loader.load();
-			Stage dialogStage = new Stage();
-			dialogStage.setTitle("New Team");
-			Scene scene = new Scene(newteam);
-			dialogStage.setScene(scene);
-
-			// Set the person into the controller
-			CreateTeamController controller = loader.getController();
-			controller.setDialogStage(dialogStage);
-			controller.setTeamEvent(cCTE);
-
-			// Show the dialog and wait until the user closes it
-			dialogStage.showAndWait();
-
-			return controller.isOkClicked();
-		} catch (IOException e) {
-			e.printStackTrace();
-
-			return false;
 		}
 	}
 

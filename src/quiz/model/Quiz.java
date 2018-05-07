@@ -20,7 +20,7 @@ public class Quiz implements Serializable {
 	public final static int MAXTEAMS = 5;
 	public final static int MINPLAYERS = 1;
 	public final static int MAXPLAYERS = 5;
-	public final static String QUIZNAMEREGEX = "^[a-zA-Z0-9._-]{3,}$";
+	public final static String QUIZNAMEREGEX = "^[a-zA-Z0-9._-]{3,10}$";
 
 	private int quizID;
 	private String quizname;
@@ -144,32 +144,35 @@ public class Quiz implements Serializable {
 	}
 
 	// Adders and removers
-	public void addTeam(Team team) {
+	public boolean addTeam(Team team) {
 		if (teamMap.size() < teams) {
 			teamMap.put(team.getTeamID(), team);
 			team.setPlayers(players);
-		} else {
-			// TODO Go back and show error
-		}
+
+			return true;
+		} else
+			return false;
 	}
 
-	public void removeTeam(int teamID) {
+	public boolean removeTeam(int teamID) {
 		if (teamMap.get(teamID) != null) {
 			teamMap.remove(teamID);
-		} else {
-			// TODO Go back and show error
-		}
+
+			return true;
+		} else
+			return false;
 	}
 
-	public void addRound(RoundType roundType, Theme theme, Difficulty difficulty, int questions) {
+	public boolean addRound(RoundType roundType, Theme theme, Difficulty difficulty, int questions) {
 		if (roundList.size() < rounds) {
 			Round round = new Round(roundType, theme, difficulty, questions);
 			roundList.add(round);
 			round.addQuestions(questions);
 			currentRound++;
-		} else {
-			// TODO Go back and show error
-		}
+
+			return true;
+		} else
+			return false;
 	}
 
 	public void addVote(int userID, int teamID, int vote) {

@@ -27,8 +27,8 @@ public class CreateQuizController extends EventPublisher {
 	@FXML
 	private TextField mPlayers;
 
-	private CreateQuizFailHandler createQuizFailHandler;
-	private CreateQuizSuccesHandler createQuizSuccesHandler;
+	private CreateQuizFailHandler createQuizFailHandler = new CreateQuizFailHandler();
+	private CreateQuizSuccesHandler createQuizSuccesHandler = new CreateQuizSuccesHandler();
 
 	// Reference to the main application
 	private Main main;
@@ -40,9 +40,6 @@ public class CreateQuizController extends EventPublisher {
 	// Methods
 	@FXML
 	private void initialize() {
-		createQuizFailHandler = new CreateQuizFailHandler();
-		createQuizSuccesHandler = new CreateQuizSuccesHandler();
-
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerCreateQuizFailEvent.EVENTTYPE, createQuizFailHandler);
 		eventBroker.addEventListener(ServerCreateQuizSuccesEvent.EVENTTYPE, createQuizSuccesHandler);
@@ -225,7 +222,7 @@ public class CreateQuizController extends EventPublisher {
 		@Override
 		public void handleEvent(Event event) {
 			@SuppressWarnings("unused")
-			ServerCreateQuizFailEvent sCQSE = (ServerCreateQuizFailEvent) event;
+			ServerCreateQuizFailEvent sCQFE = (ServerCreateQuizFailEvent) event;
 
 			Platform.runLater(new Runnable() {
 				@Override
@@ -245,15 +242,15 @@ public class CreateQuizController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event event) {
-			ServerCreateQuizSuccesEvent sCQE = (ServerCreateQuizSuccesEvent) event;
+			ServerCreateQuizSuccesEvent sCQSE = (ServerCreateQuizSuccesEvent) event;
 
-			int quizID = sCQE.getQuizID();
-			String quizname = sCQE.getQuizname();
-			int rounds = sCQE.getMaxAmountOfRounds();
-			int teams = sCQE.getMaxAmountOfTeams();
-			int players = sCQE.getMaxAmountOfPlayersPerTeam();
-			int hostID = sCQE.getHostID();
-			String hostname = sCQE.getHostname();
+			int quizID = sCQSE.getQuizID();
+			String quizname = sCQSE.getQuizname();
+			int rounds = sCQSE.getRounds();
+			int teams = sCQSE.getTeams();
+			int players = sCQSE.getPlayers();
+			int hostID = sCQSE.getHostID();
+			String hostname = sCQSE.getHostname();
 
 			Quiz.createQuiz(quizID, quizname, rounds, teams, players, hostID, hostname);
 

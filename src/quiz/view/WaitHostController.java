@@ -11,8 +11,8 @@ import main.Main;
 
 public class WaitHostController extends EventPublisher {
 
-	private NewRoundHandler newRoundHandler;
-	private EndQuizHandler endQuizHandler;
+	private NewRoundHandler newRoundHandler = new NewRoundHandler();
+	private EndQuizHandler endQuizHandler = new EndQuizHandler();
 
 	// Reference to the main application
 	private Main main;
@@ -24,11 +24,9 @@ public class WaitHostController extends EventPublisher {
 	// Method
 	@FXML
 	private void initialize() {
-		newRoundHandler = new NewRoundHandler();
-		endQuizHandler = new EndQuizHandler();
-
-		EventBroker.getEventBroker().addEventListener(ServerNewRoundEvent.EVENTTYPE, newRoundHandler);
-		EventBroker.getEventBroker().addEventListener(ServerEndQuizEvent.EVENTTYPE, endQuizHandler);
+		EventBroker eventBroker = EventBroker.getEventBroker();
+		eventBroker.addEventListener(ServerNewRoundEvent.EVENTTYPE, newRoundHandler);
+		eventBroker.addEventListener(ServerEndQuizEvent.EVENTTYPE, endQuizHandler);
 	}
 
 	// Inner classes
@@ -36,8 +34,9 @@ public class WaitHostController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event event) {
-			EventBroker.getEventBroker().removeEventListener(newRoundHandler);
-			EventBroker.getEventBroker().removeEventListener(endQuizHandler);
+			EventBroker eventBroker = EventBroker.getEventBroker();
+			eventBroker.removeEventListener(newRoundHandler);
+			eventBroker.removeEventListener(endQuizHandler);
 
 			main.showCreateRoundScene();
 		}

@@ -8,18 +8,14 @@ public class ClientHostReadyEvent extends ClientEvent {
 	private int quizID;
 
 	// Constructor
-	public ClientHostReadyEvent(int quizID, int userID) {
+	public ClientHostReadyEvent(int quizID) {
 		super.type = EVENTTYPE;
 		this.quizID = quizID;
 	}
 
-	// Getters
+	// Getter
 	public int getQuizID() {
 		return quizID;
-	}
-
-	public void setQuizID(int quizID) {
-		this.quizID = quizID;
 	}
 
 }

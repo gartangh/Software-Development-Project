@@ -2,6 +2,7 @@ package main;
 
 import network.Network;
 import quiz.model.Quiz;
+import quiz.model.Team;
 import quiz.model.User;
 import quiz.model.Question;
 
@@ -12,7 +13,7 @@ public class MainContext {
 
 	private User user;
 	private Quiz quiz;
-	private int teamID = -1;
+	private Team team;
 	private Question question;
 	private Network network;
 
@@ -65,22 +66,22 @@ public class MainContext {
 	}
 
 	/**
-	 * Gets the team ID.
+	 * Gets the team.
 	 *
-	 * @return the team ID
+	 * @return the team
 	 */
-	public int getTeamID() {
-		return teamID;
+	public Team getTeam() {
+		return team;
 	}
 
 	/**
-	 * Sets the team ID.
+	 * Sets the team.
 	 *
-	 * @param teamID
-	 *            the new team ID
+	 * @param team
+	 *            the new team
 	 */
-	public void setTeamID(int teamID) {
-		this.teamID = teamID;
+	public void setTeam(Team team) {
+		this.team = team;
 	}
 
 	/**

@@ -79,12 +79,12 @@ public class QuestionController extends EventPublisher {
 	private AnchorPane mPlaceholder;
 
 	private AnswerVoteModel answerVoteModel = new AnswerVoteModel();
-	private VoteHandler voteHandler;
-	private VoteAnwserHandler voteAnwserHandler;
-	private NewMCQuestionHandler newMCQuestionHandler;
-	private NotAllAnsweredHandler notAllAnsweredHandler;
-	private NewRoundHandler newRoundHandler;
-	private EndQuizHandler endQuizHandler;
+	private VoteHandler voteHandler = new VoteHandler();
+	private VoteAnswerHandler voteAnwserHandler = new VoteAnswerHandler();
+	private NewMCQuestionHandler newMCQuestionHandler = new NewMCQuestionHandler();
+	private NotAllAnsweredHandler notAllAnsweredHandler = new NotAllAnsweredHandler();
+	private NewRoundHandler newRoundHandler = new NewRoundHandler();
+	private EndQuizHandler endQuizHandler = new EndQuizHandler();
 
 	// Reference to the main application
 	private Main main;
@@ -96,13 +96,6 @@ public class QuestionController extends EventPublisher {
 	// Methods
 	@FXML
 	public void initialize() {
-		voteHandler = new VoteHandler();
-		voteAnwserHandler = new VoteAnwserHandler();
-		newMCQuestionHandler = new NewMCQuestionHandler();
-		notAllAnsweredHandler = new NotAllAnsweredHandler();
-		newRoundHandler = new NewRoundHandler();
-		endQuizHandler = new EndQuizHandler();
-
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerVoteEvent.EVENTTYPE, voteHandler);
 		eventBroker.addEventListener(ServerVoteAnswerEvent.EVENTTYPE, voteAnwserHandler);
@@ -139,7 +132,7 @@ public class QuestionController extends EventPublisher {
 		nextButton.disableProperty().bind(answerVoteModel.getNextDisableProperty());
 
 		answerVoteModel.updateQuestion();
-		answerVoteModel.updateVotes(MainContext.getContext().getTeamID());
+		answerVoteModel.updateVotes(MainContext.getContext().getTeam().getTeamID());
 
 		// ChatPanel (ChatModel and ChatController) are created
 		ChatPanel chatPanel = ChatPanel.createChatPanel();
@@ -192,7 +185,7 @@ public class QuestionController extends EventPublisher {
 
 	@FXML
 	private void handleVote() {
-		int vote = this.getChecked();
+		int vote = getChecked();
 		if (vote >= 0) {
 			ClientVoteEvent cVE = new ClientVoteEvent(vote);
 			publishEvent(cVE);
@@ -202,9 +195,8 @@ public class QuestionController extends EventPublisher {
 	@FXML
 	private void handleAnswer() {
 		MainContext context = MainContext.getContext();
-		int answer = this.getChecked();
-		if (context.getQuiz().getTeamMap().get(context.getTeamID()).getCaptainID() != MainContext.getContext().getUser()
-				.getUserID()) {
+		int answer = getChecked();
+		if (context.getTeam().getCaptainID() != context.getUser().getUserID()) {
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
@@ -228,7 +220,8 @@ public class QuestionController extends EventPublisher {
 				}
 			});
 		} else {
-			ClientAnswerEvent cAE = new ClientAnswerEvent(MainContext.getContext().getQuestion().getQuestionID(), answer);
+			ClientAnswerEvent cAE = new ClientAnswerEvent(MainContext.getContext().getQuestion().getQuestionID(),
+					answer);
 			publishEvent(cAE);
 			handleCheck(-1);
 		}
@@ -236,8 +229,8 @@ public class QuestionController extends EventPublisher {
 
 	@FXML
 	private void handleNext() {
-		if (MainContext.getContext().getQuiz().getTeamMap().get(MainContext.getContext().getTeamID()).getCaptainID() != MainContext
-				.getContext().getUser().getUserID()) {
+		MainContext context = MainContext.getContext();
+		if (context.getTeam().getCaptainID() != context.getUser().getUserID()) {
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
@@ -251,7 +244,7 @@ public class QuestionController extends EventPublisher {
 			});
 		} else {
 			ClientNewQuestionEvent cnqe = new ClientNewQuestionEvent();
-			this.publishEvent(cnqe);
+			publishEvent(cnqe);
 		}
 	}
 
@@ -272,7 +265,7 @@ public class QuestionController extends EventPublisher {
 
 	}
 
-	private class VoteAnwserHandler implements EventListener {
+	private class VoteAnswerHandler implements EventListener {
 
 		@Override
 		public void handleEvent(Event event) {
@@ -299,7 +292,7 @@ public class QuestionController extends EventPublisher {
 			MCQuestion q = new MCQuestion(questionID, question, answers);
 			MainContext.getContext().setQuestion(q);
 			answerVoteModel.updateQuestion();
-			answerVoteModel.updateVotes(MainContext.getContext().getTeamID());
+			answerVoteModel.updateVotes(MainContext.getContext().getTeam().getTeamID());
 		}
 
 	}

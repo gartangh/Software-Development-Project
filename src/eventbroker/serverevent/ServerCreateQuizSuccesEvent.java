@@ -3,25 +3,25 @@ package eventbroker.serverevent;
 @SuppressWarnings("serial")
 public class ServerCreateQuizSuccesEvent extends ServerEvent {
 
-	public final static String EVENTTYPE = "SERVER_CREATE_QUIZ";
+	public final static String EVENTTYPE = "SERVER_CREATE_QUIZ_SUCCES";
 
 	private int quizID;
 	private String quizname;
-	private int maxAmountOfTeams;
-	private int maxAmountOfPlayersPerTeam;
-	private int maxAmountOfRounds;
+	private int teams;
+	private int players;
+	private int rounds;
 	private int hostID;
 	private String hostname;
 
 	// Constructor
-	public ServerCreateQuizSuccesEvent(int quizID, String quizname, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam,
-			int maxAmountOfRounds, int hostID, String hostname) {
+	public ServerCreateQuizSuccesEvent(int quizID, String quizname, int teams, int players, int rounds, int hostID,
+			String hostname) {
 		super.type = EVENTTYPE;
 		this.quizID = quizID;
 		this.quizname = quizname;
-		this.maxAmountOfTeams = maxAmountOfTeams;
-		this.maxAmountOfPlayersPerTeam = maxAmountOfPlayersPerTeam;
-		this.maxAmountOfRounds = maxAmountOfRounds;
+		this.teams = teams;
+		this.players = players;
+		this.rounds = rounds;
 		this.hostID = hostID;
 		this.hostname = hostname;
 	}
@@ -35,16 +35,16 @@ public class ServerCreateQuizSuccesEvent extends ServerEvent {
 		return quizname;
 	}
 
-	public int getMaxAmountOfTeams() {
-		return maxAmountOfTeams;
+	public int getTeams() {
+		return teams;
 	}
 
-	public int getMaxAmountOfPlayersPerTeam() {
-		return maxAmountOfPlayersPerTeam;
+	public int getPlayers() {
+		return players;
 	}
 
-	public int getMaxAmountOfRounds() {
-		return maxAmountOfRounds;
+	public int getRounds() {
+		return rounds;
 	}
 
 	public int getHostID() {

@@ -7,23 +7,23 @@ public class ClientQuizzerEvent extends ClientEvent {
 
 	public final static String EVENTTYPE = "CLIENT_QUIZZER";
 
-	private int teamID;
 	private int quizID;
+	private int teamID;
 
 	// Constructor
 	public ClientQuizzerEvent() {
 		super.type = EVENTTYPE;
-		this.teamID = MainContext.getContext().getTeamID();
 		this.quizID = MainContext.getContext().getQuiz().getQuizID();
+		this.teamID = MainContext.getContext().getTeam().getTeamID();
 	}
 
 	// Getters
-	public int getTeamID() {
-		return teamID;
-	}
-
 	public int getQuizID() {
 		return quizID;
+	}
+
+	public int getTeamID() {
+		return teamID;
 	}
 
 }

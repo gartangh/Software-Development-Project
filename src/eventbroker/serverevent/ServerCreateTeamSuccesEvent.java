@@ -3,30 +3,34 @@ package eventbroker.serverevent;
 import javafx.scene.paint.Color;
 
 @SuppressWarnings("serial")
-public class ServerCreateTeamEvent extends ServerEvent {
+public class ServerCreateTeamSuccesEvent extends ServerEvent {
 
-	public final static String EVENTTYPE = "SERVER_NEW_TEAM";
+	public final static String EVENTTYPE = "SERVER_CREATE_TEAM_SUCCES";
 
 	private int quizID;
 	private int teamID;
-	private String teamName;
+	private String teamname;
+	// To make color serializable
 	private int colorRed;
 	private int colorGreen;
 	private int colorBlue;
 	private int captainID;
-	private String captainName;
+	private String captainname;
+	private int players;
 
 	// Constructor
-	public ServerCreateTeamEvent(int quizID, int teamID, String teamname, Color color, int captainID, String captainName) {
+	public ServerCreateTeamSuccesEvent(int quizID, int teamID, String teamname, Color color, int captainID,
+			String captainname, int players) {
 		super.type = EVENTTYPE;
 		this.quizID = quizID;
 		this.teamID = teamID;
-		this.teamName = teamname;
+		this.teamname = teamname;
 		this.colorRed = (int) (color.getRed() * 255);
 		this.colorGreen = (int) (color.getGreen() * 255);
 		this.colorBlue = (int) (color.getBlue() * 255);
 		this.captainID = captainID;
-		this.captainName = captainName;
+		this.captainname = captainname;
+		this.players = players;
 	}
 
 	// Getters
@@ -42,36 +46,20 @@ public class ServerCreateTeamEvent extends ServerEvent {
 		return teamID;
 	}
 
-	public void setTeamID(int teamID) {
-		this.teamID = teamID;
-	}
-
 	public String getTeamname() {
-		return teamName;
-	}
-
-	public void setTeamName(String teamName) {
-		this.teamName = teamName;
+		return teamname;
 	}
 
 	public int getCaptainID() {
 		return captainID;
 	}
 
-	public void setCaptainID(int captainID) {
-		this.captainID = captainID;
-	}
-
 	public String getCaptainname() {
-		return captainName;
+		return captainname;
 	}
 
-	public void setCaptainName(String captainName) {
-		this.captainName = captainName;
-	}
-
-	public void setQuizID(int quizID) {
-		this.quizID = quizID;
+	public int getPlayers() {
+		return players;
 	}
 
 }

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import javafx.scene.paint.Color;
 import main.Main;
 import network.Network;
 import quiz.model.MCQuestion;
@@ -125,44 +124,6 @@ public class ServerContext {
 
 		// Nothing to delete if teamID == -1
 		return null;
-	}
-
-	/**
-	 * Adds the team.
-	 *
-	 * @param quizID
-	 *            the quiz ID
-	 * @param teamName
-	 *            the team name
-	 * @param color
-	 *            the color
-	 * @param captainID
-	 *            the captain ID
-	 * @return the int teamID
-	 */
-	public int addTeam(int quizID, String teamName, Color color, int captainID) {
-		if (quizMap.containsKey(quizID) && userMap.containsKey(captainID)) {
-			Quiz q = quizMap.get(quizID);
-
-			int newID;
-			boolean unique;
-			do {
-				unique = true;
-				newID = (int) (Math.random() * Integer.MAX_VALUE);
-				for (Team t : q.getTeamMap().values())
-					if (t.getTeamID() == newID)
-						unique = false;
-			} while (!unique);
-
-			Team team = new Team(newID, teamName, color, captainID, userMap.get(captainID).getUsername());
-			team.setPlayers(q.getPlayers());
-			q.addTeam(team);
-			quizMap.put(quizID, q);
-
-			return newID;
-		}
-
-		return -1;
 	}
 
 	// Methods
