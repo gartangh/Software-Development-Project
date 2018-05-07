@@ -78,7 +78,7 @@ final public class ChatController extends EventPublisher {
 					message = null;
 			}
 
-			if ((MainContext.getContext().getTeam().getTeamID() == -1))
+			if ((MainContext.getContext().getTeam() == null))
 				team = false;
 
 			if (message.length() > 0) {

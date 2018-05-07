@@ -80,11 +80,11 @@ public class User {
 	// TODO Move this to a new controller
 	/*public int setPassword(String password1, String password2) {
 		if (!password1.equals(password2)) {
-			// TODO: Go back and show error
+			// TODO Go back and show error
 
 			return 1;
 		} else if (!password1.matches(PASSWORDREGEX)) {
-			// TODO: Go back and show error
+			// TODO Go back and show error
 
 			return 2;
 		}

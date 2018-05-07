@@ -6,6 +6,7 @@ import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
+import eventbroker.clientevent.ClientEndQuizEvent;
 import eventbroker.clientevent.ClientScoreboardDataEvent;
 import eventbroker.serverevent.ServerScoreboardDataEvent;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -67,23 +68,22 @@ public class ScoreboardController extends EventPublisher {
 	}
 
 	/**
-	 * Called when the user clicks on the rematch button.
-	 */
-	@FXML
-	private void handleRematchButton() {
-		// TODO Clear quiz, go back to join team scene
-		EventBroker.getEventBroker().removeEventListener(scoreboardDataHandler);
-
-		main.showJoinTeamScene();
-	}
-
-	/**
 	 * Called when the user clicks on the quit button.
 	 */
 	@FXML
-	private void handleQuitButton() {
-		// TODO Clear quiz, show List of Available quizzes
-		EventBroker.getEventBroker().removeEventListener(scoreboardDataHandler);
+	private void handleBack() {
+		EventBroker eventBroker = EventBroker.getEventBroker();
+		eventBroker.removeEventListener(scoreboardDataHandler);
+		
+		MainContext context = MainContext.getContext();
+		if (context.getQuiz().getHostID() == context.getUser().getUserID()) {
+			ClientEndQuizEvent cEQE = new ClientEndQuizEvent();
+			publishEvent(cEQE);
+		}
+			
+		context.setQuestion(null);
+		context.setTeam(null);
+		context.setQuiz(null);
 
 		main.showJoinQuizScene();
 	}

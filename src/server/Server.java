@@ -25,6 +25,7 @@ import eventbroker.clientevent.ClientNewQuestionEvent;
 import eventbroker.clientevent.ClientScoreboardDataEvent;
 import eventbroker.clientevent.ClientVoteEvent;
 import eventbroker.clientevent.ClientCreateTeamEvent;
+import eventbroker.clientevent.ClientEndQuizEvent;
 import eventbroker.serverevent.ServerVoteAnswerEvent;
 import eventbroker.serverevent.ServerAlreadyLoggedInEvent;
 import eventbroker.serverevent.ServerChangeTeamEvent;
@@ -83,6 +84,7 @@ public class Server extends EventPublisher {
 	private static CreateTeamHandler newTeamHandler = new CreateTeamHandler();
 	private static ChangeTeamHandler changeTeamHandler = new ChangeTeamHandler();
 	private static HostReadyHandler hostReadyHandler = new HostReadyHandler();
+	private static EndQuizHandler endQuizHandler = new EndQuizHandler();
 
 	/**
 	 * The main method.
@@ -129,6 +131,7 @@ public class Server extends EventPublisher {
 		eventBroker.addEventListener(ClientCreateTeamEvent.EVENTTYPE, newTeamHandler);
 		eventBroker.addEventListener(ClientChangeTeamEvent.EVENTTYPE, changeTeamHandler);
 		eventBroker.addEventListener(ClientHostReadyEvent.EVENTTYPE, hostReadyHandler);
+		eventBroker.addEventListener(ClientEndQuizEvent.EVENTTYPE, endQuizHandler);
 
 		// Start the EventBroker
 		eventBroker.start();
@@ -143,8 +146,7 @@ public class Server extends EventPublisher {
 		context.getNetwork().getUserIDConnectionIDMap().remove(userID);
 
 		// TODO if user was the host of a quiz or the captain of a team, remove
-		// the quiz
-		// or the team an notify its users
+		// the quiz or the team an notify its users
 	}
 
 	// Inner classes
@@ -543,8 +545,6 @@ public class Server extends EventPublisher {
 			ArrayList<Integer> destinations = new ArrayList<>();
 
 			if (chatMessage.getReceiverType().equals("TEAM")) {
-				// TODO Add all usernames of the team of the sender, excluding
-				// the sender
 				Map<Integer, Team> listOfTeams = ServerContext.getContext().getQuiz(chatMessage.getQuizID())
 						.getTeamMap();
 				for (Map.Entry<Integer, Team> teamEntry : listOfTeams.entrySet())
@@ -611,6 +611,23 @@ public class Server extends EventPublisher {
 			receivers.addAll(context.getUserMap().keySet());
 			sSQE.addRecipients(receivers);
 			server.publishEvent(sSQE);
+		}
+
+	}
+
+	private static class EndQuizHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ClientEndQuizEvent cEQE = (ClientEndQuizEvent) event;
+
+			int quizID = cEQE.getQuizID();
+
+			ServerContext context = ServerContext.getContext();
+			// Quiz has stopped
+			context.getQuiz(quizID).setRunning(false);
+			// Remove quiz from context
+			context.getQuizMap().remove(quizID);
 		}
 
 	}

@@ -291,8 +291,25 @@ public class JoinTeamController extends EventPublisher {
 	}
 
 	@FXML
-	private void hadleBack() {
-		MainContext.getContext().setQuiz(null);
+	private void handleBack() {
+		MainContext context = MainContext.getContext();
+		if (context.getQuiz().getHostID() == context.getUser().getUserID()) {
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("The host can't quit the quiz!");
+					alert.setContentText("Wait for players to create and join teams and continue by pressing 'Ready'.");
+					alert.showAndWait();
+				}
+			});
+			
+			return;
+		}
+			
+		
+		context.setQuiz(null);
 
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.removeEventListener(newTeamHandler);

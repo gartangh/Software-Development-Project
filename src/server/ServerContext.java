@@ -25,14 +25,9 @@ public class ServerContext {
 	private Map<Integer, User> userMap = new HashMap<Integer, User>();
 	private Map<Integer, Quiz> quizMap = new HashMap<Integer, Quiz>();
 
-	private Map<Integer, Map<Integer, Map<Integer, MCQuestion>>> orderedMCQuestionMap = new HashMap<Integer, Map<Integer, Map<Integer, MCQuestion>>>();
-	private Map<Integer, MCQuestion> allMCQuestions = new HashMap<Integer, MCQuestion>();
+	private Map<Integer, Map<Integer, Map<Integer, MCQuestion>>> orderedMCQuestionMap = new HashMap<>();
+	private Map<Integer, MCQuestion> allMCQuestions = new HashMap<>();
 	private Network network;
-
-	// Constructors
-	private ServerContext() {
-		// Empty default constructor
-	}
 
 	// Getters and setters
 	/**
