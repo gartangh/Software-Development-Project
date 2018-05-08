@@ -16,7 +16,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.JoinTeamController">
+<BorderPane xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.JoinTeamController">
 	<left>
 		<VBox spacing="5.0" BorderPane.alignment="CENTER">
 			<padding>
@@ -97,6 +97,7 @@
 				</GridPane>
 				<ButtonBar>
 					<buttons>
+                  <Button mnemonicParsing="false" onAction="#handleDeleteTeam" text="Delete team" />
 						<Button defaultButton="true" mnemonicParsing="false" onAction="#handleJoin" text="Join Team" />
 					</buttons>
 				</ButtonBar>
