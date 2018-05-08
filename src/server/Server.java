@@ -437,7 +437,7 @@ public class Server extends EventPublisher {
 			quiz.addPoints(teamID, questionID, answer);
 			ArrayList<Integer> receivers = new ArrayList<>();
 			receivers.addAll(context.getQuiz(quizID).getTeamMap().get(teamID).getPlayerMap().keySet());
-
+			receivers.add(context.getQuiz(quizID).getHostID());
 			MCQuestion mCQ = (MCQuestion) context.getQuestion(questionID);
 			ServerVoteAnswerEvent serverAnswer = new ServerVoteAnswerEvent(teamID, questionID, answer,
 					mCQ.getCorrectAnswer());
@@ -467,8 +467,9 @@ public class Server extends EventPublisher {
 							.getQuestion(quiz.getRoundList().get(quiz.getCurrentRound()).getNextQuestion());
 
 					ServerNewMCQuestionEvent sNQE = new ServerNewMCQuestionEvent(nQ.getQuestionID(), nQ.getQuestion(),
-							nQ.getAnswers());
+							nQ.getAnswers(), nQ.getCorrectAnswer());
 					sNQE.addRecipients(receivers);
+					receivers.add(context.getQuiz(quizID).getHostID());
 					server.publishEvent(sNQE);
 				} else {
 					if ((quiz.getCurrentRound() + 1) < quiz.getRounds()) {
@@ -524,7 +525,8 @@ public class Server extends EventPublisher {
 						.getQuestion(quiz.getRoundList().get(quiz.getCurrentRound()).getNextQuestion());
 
 				ServerNewMCQuestionEvent sNMCQE = new ServerNewMCQuestionEvent(mCQuestion.getQuestionID(),
-						mCQuestion.getQuestion(), mCQuestion.getAnswers());
+						mCQuestion.getQuestion(), mCQuestion.getAnswers(), mCQuestion.getCorrectAnswer());
+				receivers.add(context.getQuiz(quizID).getHostID());
 				sNMCQE.addRecipients(receivers);
 				server.publishEvent(sNMCQE);
 			}

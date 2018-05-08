@@ -15,7 +15,7 @@ public class WaitRoundController extends EventPublisher {
 
 	private StartRoundHandler startRoundHandler = new StartRoundHandler();
 	private NewQuestionHandler newQuestionHandler = new NewQuestionHandler();
-
+	
 	// Reference to the main application
 	private Main main;
 

@@ -66,3 +66,8 @@
 /WaitRoundController$NewQuestionHandler.class
 /WaitRoundController$StartRoundHandler.class
 /WaitRoundController.class
+/WaitHostController$1.class
+/WaitHostController$NewMCQuestionHandler.class
+/WaitHostController$UpdateTeamsHandler.class
+/WaitHostController$updateQuestionHandler.class
+/WaitHostController$UpdateQuestionHandler.class
