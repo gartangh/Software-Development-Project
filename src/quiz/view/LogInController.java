@@ -6,16 +6,19 @@ import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import eventbroker.clientevent.ClientCreateAccountEvent;
 import eventbroker.clientevent.ClientLogInEvent;
+import eventbroker.serverevent.ServerAlreadyLoggedInEvent;
 import eventbroker.serverevent.ServerCreateAccountFailEvent;
 import eventbroker.serverevent.ServerCreateAccountSuccesEvent;
 import eventbroker.serverevent.ServerLogInFailEvent;
 import eventbroker.serverevent.ServerLogInSuccesEvent;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import main.Main;
-import main.view.AlertBox;
 import quiz.model.User;
 
 public class LogInController extends EventPublisher {
@@ -29,10 +32,11 @@ public class LogInController extends EventPublisher {
 	@FXML
 	private Button mCreateAccount;
 
-	private CreateAccountFailHandler createAccountFailHandler;
-	private CreateAccountSuccesHandler createAccountSuccesHandler;
-	private LogInFailHandler logInFailHandler;
-	private LogInSuccesHandler logInSuccesHandler;
+	private CreateAccountFailHandler createAccountFailHandler = new CreateAccountFailHandler();
+	private CreateAccountSuccesHandler createAccountSuccesHandler = new CreateAccountSuccesHandler();
+	private LogInFailHandler logInFailHandler = new LogInFailHandler();
+	private AlreadyLoggedInHandler alreadyLoggedInHandler = new AlreadyLoggedInHandler();
+	private LogInSuccesHandler logInSuccesHandler = new LogInSuccesHandler();
 
 	// Reference to the main application
 	private Main main;
@@ -41,50 +45,47 @@ public class LogInController extends EventPublisher {
 		this.main = main;
 	}
 
-	// Getters
-	public CreateAccountFailHandler getCreateAccountFailHandler() {
-		return createAccountFailHandler;
-	}
-
-	public CreateAccountSuccesHandler getCreateAccountSuccesHandler() {
-		return createAccountSuccesHandler;
-	}
-
-	public LogInFailHandler getLogInFailHandler() {
-		return logInFailHandler;
-	}
-
-	public LogInSuccesHandler getLogInSuccesHandler() {
-		return logInSuccesHandler;
-	}
-
 	// Methods
 	@FXML
 	private void initialize() {
-		createAccountFailHandler = new CreateAccountFailHandler();
-		createAccountSuccesHandler = new CreateAccountSuccesHandler();
-		logInFailHandler = new LogInFailHandler();
-		logInSuccesHandler = new LogInSuccesHandler();
-
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerCreateAccountFailEvent.EVENTTYPE, createAccountFailHandler);
 		eventBroker.addEventListener(ServerCreateAccountSuccesEvent.EVENTTYPE, createAccountSuccesHandler);
 		eventBroker.addEventListener(ServerLogInFailEvent.EVENTTYPE, logInFailHandler);
+		eventBroker.addEventListener(ServerAlreadyLoggedInEvent.EVENTTYPE, alreadyLoggedInHandler);
 		eventBroker.addEventListener(ServerLogInSuccesEvent.EVENTTYPE, logInSuccesHandler);
 	}
 
 	@FXML
 	private void handleCreateAccount() {
 		String username = mUsername.getText();
-		String password = mPassword.getText();
-
-		if (!username.matches(User.USERNAMEREGEX)) {
-			AlertBox.display("Error", "Username is invalid!");
+		if (username == null || !username.matches(User.USERNAMEREGEX)) {
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("Username is invalid!");
+					alert.setContentText("Try again with a valid username.");
+					alert.showAndWait();
+				}
+			});
 
 			return;
 		}
-		if (!password.matches(User.PASSWORDREGEX)) {
-			AlertBox.display("Error", "Password is invalid!");
+
+		String password = mPassword.getText();
+		if (password == null || !password.matches(User.PASSWORDREGEX)) {
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("Password is invalid!");
+					alert.setContentText("Try again with a valid password.");
+					alert.showAndWait();
+				}
+			});
 
 			return;
 		}
@@ -97,15 +98,33 @@ public class LogInController extends EventPublisher {
 	@FXML
 	private void handleLogIn() {
 		String username = mUsername.getText();
-		String password = mPassword.getText();
-
-		if (!username.matches(User.USERNAMEREGEX)) {
-			AlertBox.display("Error", "Username is invalid!");
+		if (username == null || !username.matches(User.USERNAMEREGEX)) {
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("Username is invalid!");
+					alert.setContentText("Try again with a valid username.");
+					alert.showAndWait();
+				}
+			});
 
 			return;
 		}
-		if (!password.matches(User.PASSWORDREGEX)) {
-			AlertBox.display("Error", "Password is invalid!");
+
+		String password = mPassword.getText();
+		if (password == null || !password.matches(User.PASSWORDREGEX)) {
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("Password is invalid!");
+					alert.setContentText("Try again with a valid password.");
+					alert.showAndWait();
+				}
+			});
 
 			return;
 		}
@@ -122,8 +141,16 @@ public class LogInController extends EventPublisher {
 		public void handleEvent(Event event) {
 			@SuppressWarnings("unused")
 			ServerCreateAccountFailEvent sCAFE = (ServerCreateAccountFailEvent) event;
-
-			AlertBox.display("Error", "Create account failed!\nThe username already exists.");
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Error");
+					alert.setHeaderText("Account creation failed!");
+					alert.setContentText("The username already exists.");
+					alert.showAndWait();
+				}
+			});
 		}
 
 	}
@@ -133,7 +160,7 @@ public class LogInController extends EventPublisher {
 		@Override
 		public void handleEvent(Event event) {
 			ServerCreateAccountSuccesEvent sCASE = (ServerCreateAccountSuccesEvent) event;
-			
+
 			int userID = sCASE.getUserID();
 			String username = sCASE.getUsername();
 			String password = sCASE.getPassword();
@@ -144,6 +171,7 @@ public class LogInController extends EventPublisher {
 			eventBroker.removeEventListener(createAccountFailHandler);
 			eventBroker.removeEventListener(createAccountSuccesHandler);
 			eventBroker.removeEventListener(logInFailHandler);
+			eventBroker.removeEventListener(alreadyLoggedInHandler);
 			eventBroker.removeEventListener(logInSuccesHandler);
 
 			main.showJoinQuizScene();
@@ -158,9 +186,39 @@ public class LogInController extends EventPublisher {
 			@SuppressWarnings("unused")
 			ServerLogInFailEvent sLIFE = (ServerLogInFailEvent) event;
 
-			AlertBox.display("Error", "Log in failed!\nThe combination of this username and password does not exist.");
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Error");
+					alert.setHeaderText("Logging in failed!");
+					alert.setContentText("The combination of this username and password does not exist.");
+					alert.showAndWait();
+				}
+			});
 		}
 
+	}
+	
+	private class AlreadyLoggedInHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			@SuppressWarnings("unused")
+			ServerAlreadyLoggedInEvent sALIE = (ServerAlreadyLoggedInEvent) event;
+			
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Error");
+					alert.setHeaderText("Logging in failed!");
+					alert.setContentText("The user with this username is already logged in.");
+					alert.showAndWait();
+				}
+			});
+		}
+		
 	}
 
 	private class LogInSuccesHandler implements EventListener {
@@ -168,7 +226,7 @@ public class LogInController extends EventPublisher {
 		@Override
 		public void handleEvent(Event event) {
 			ServerLogInSuccesEvent sLISE = (ServerLogInSuccesEvent) event;
-			
+
 			int userID = sLISE.getUserID();
 			String username = sLISE.getUsername();
 			String password = sLISE.getPassword();
@@ -181,6 +239,7 @@ public class LogInController extends EventPublisher {
 			eventBroker.removeEventListener(createAccountFailHandler);
 			eventBroker.removeEventListener(createAccountSuccesHandler);
 			eventBroker.removeEventListener(logInFailHandler);
+			eventBroker.removeEventListener(alreadyLoggedInHandler);
 			eventBroker.removeEventListener(logInSuccesHandler);
 
 			main.showJoinQuizScene();

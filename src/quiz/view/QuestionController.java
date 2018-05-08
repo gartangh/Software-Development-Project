@@ -14,6 +14,7 @@ import eventbroker.serverevent.ServerNewMCQuestionEvent;
 import eventbroker.serverevent.ServerNewRoundEvent;
 import eventbroker.serverevent.ServerNotAllAnsweredEvent;
 import eventbroker.serverevent.ServerVoteEvent;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -23,7 +24,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-import main.Context;
+import main.MainContext;
 import main.Main;
 import quiz.model.AnswerVoteModel;
 import quiz.model.MCQuestion;
@@ -78,12 +79,12 @@ public class QuestionController extends EventPublisher {
 	private AnchorPane mPlaceholder;
 
 	private AnswerVoteModel answerVoteModel = new AnswerVoteModel();
-	private VoteHandler voteHandler;
-	private VoteAnwserHandler voteAnwserHandler;
-	private NewMCQuestionHandler newMCQuestionHandler;
-	private NotAllAnsweredHandler notAllAnsweredHandler;
-	private NewRoundHandler newRoundHandler;
-	private EndQuizHandler endQuizHandler;
+	private VoteHandler voteHandler = new VoteHandler();
+	private VoteAnswerHandler voteAnwserHandler = new VoteAnswerHandler();
+	private NewMCQuestionHandler newMCQuestionHandler = new NewMCQuestionHandler();
+	private NotAllAnsweredHandler notAllAnsweredHandler = new NotAllAnsweredHandler();
+	private NewRoundHandler newRoundHandler = new NewRoundHandler();
+	private EndQuizHandler endQuizHandler = new EndQuizHandler();
 
 	// Reference to the main application
 	private Main main;
@@ -95,13 +96,6 @@ public class QuestionController extends EventPublisher {
 	// Methods
 	@FXML
 	public void initialize() {
-		voteHandler = new VoteHandler();
-		voteAnwserHandler = new VoteAnwserHandler();
-		newMCQuestionHandler = new NewMCQuestionHandler();
-		notAllAnsweredHandler = new NotAllAnsweredHandler();
-		newRoundHandler = new NewRoundHandler();
-		endQuizHandler = new EndQuizHandler();
-
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerVoteEvent.EVENTTYPE, voteHandler);
 		eventBroker.addEventListener(ServerVoteAnswerEvent.EVENTTYPE, voteAnwserHandler);
@@ -138,7 +132,7 @@ public class QuestionController extends EventPublisher {
 		nextButton.disableProperty().bind(answerVoteModel.getNextDisableProperty());
 
 		answerVoteModel.updateQuestion();
-		answerVoteModel.updateVotes(Context.getContext().getTeamID());
+		answerVoteModel.updateVotes(MainContext.getContext().getTeam().getTeamID());
 
 		// ChatPanel (ChatModel and ChatController) are created
 		ChatPanel chatPanel = ChatPanel.createChatPanel();
@@ -191,7 +185,7 @@ public class QuestionController extends EventPublisher {
 
 	@FXML
 	private void handleVote() {
-		int vote = this.getChecked();
+		int vote = getChecked();
 		if (vote >= 0) {
 			ClientVoteEvent cVE = new ClientVoteEvent(vote);
 			publishEvent(cVE);
@@ -200,27 +194,34 @@ public class QuestionController extends EventPublisher {
 
 	@FXML
 	private void handleAnswer() {
-		Context context = Context.getContext();
-		int answer = this.getChecked();
-		if (context.getQuiz().getTeamMap().get(context.getTeamID()).getCaptainID() != Context.getContext().getUser()
-				.getUserID()) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.initOwner(main.getPrimaryStage());
-			alert.setTitle("QuizForm Error");
-			alert.setHeaderText("You can't submit an answer");
-			alert.setContentText("You are not the captain, so you can't submit an answer.");
-
-			alert.showAndWait();
+		MainContext context = MainContext.getContext();
+		int answer = getChecked();
+		if (context.getTeam().getCaptainID() != context.getUser().getUserID()) {
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.initOwner(main.getPrimaryStage());
+					alert.setTitle("Warning");
+					alert.setHeaderText("You can't submit an answer!");
+					alert.setContentText("You must be the captain of the team in order to submit the answer.");
+					alert.showAndWait();
+				}
+			});
 		} else if (answer < 0) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.initOwner(main.getPrimaryStage());
-			alert.setTitle("QuizForm Error");
-			alert.setHeaderText("You can't submit an empty answer");
-			alert.setContentText("Please select an answer to submit.");
-
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("You can't submit an empty answer!");
+					alert.setContentText("Please select a valid answer and try again.");
+					alert.showAndWait();
+				}
+			});
 		} else {
-			ClientAnswerEvent cAE = new ClientAnswerEvent(Context.getContext().getQuestion().getQuestionID(), answer);
+			ClientAnswerEvent cAE = new ClientAnswerEvent(MainContext.getContext().getQuestion().getQuestionID(),
+					answer);
 			publishEvent(cAE);
 			handleCheck(-1);
 		}
@@ -228,18 +229,22 @@ public class QuestionController extends EventPublisher {
 
 	@FXML
 	private void handleNext() {
-		if (Context.getContext().getQuiz().getTeamMap().get(Context.getContext().getTeamID()).getCaptainID() != Context
-				.getContext().getUser().getUserID()) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.initOwner(main.getPrimaryStage());
-			alert.setTitle("QuizForm Error");
-			alert.setHeaderText("You can't go to the next question");
-			alert.setContentText("You are not a team captain, so you can't proceed to the next question.");
-
-			alert.showAndWait();
+		MainContext context = MainContext.getContext();
+		if (context.getTeam().getCaptainID() != context.getUser().getUserID()) {
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("You can't go to the next question!");
+					alert.setContentText(
+							"You must be the captain of the team in order to proceed to the next question.");
+					alert.showAndWait();
+				}
+			});
 		} else {
-			ClientNewQuestionEvent cnqe = new ClientNewQuestionEvent();
-			this.publishEvent(cnqe);
+			ClientNewQuestionEvent cNQE = new ClientNewQuestionEvent();
+			publishEvent(cNQE);
 		}
 	}
 
@@ -254,13 +259,13 @@ public class QuestionController extends EventPublisher {
 			int teamID = sVE.getTeamID();
 			int vote = sVE.getVote();
 
-			Context.getContext().getQuiz().addVote(userID, teamID, vote);
+			MainContext.getContext().getQuiz().addVote(userID, teamID, vote);
 			answerVoteModel.updateVotes(teamID);
 		}
 
 	}
 
-	private class VoteAnwserHandler implements EventListener {
+	private class VoteAnswerHandler implements EventListener {
 
 		@Override
 		public void handleEvent(Event event) {
@@ -268,7 +273,7 @@ public class QuestionController extends EventPublisher {
 
 			int answer = sVAE.getAnswer();
 			int correctAnswer = sVAE.getCorrectAnswer();
-			
+
 			answerVoteModel.updateAnswer(answer, correctAnswer);
 		}
 
@@ -285,9 +290,9 @@ public class QuestionController extends EventPublisher {
 			String[] answers = sNMCQE.getAnswers();
 
 			MCQuestion q = new MCQuestion(questionID, question, answers);
-			Context.getContext().setQuestion(q);
+			MainContext.getContext().setQuestion(q);
 			answerVoteModel.updateQuestion();
-			answerVoteModel.updateVotes(Context.getContext().getTeamID());
+			answerVoteModel.updateVotes(MainContext.getContext().getTeam().getTeamID());
 		}
 
 	}
@@ -296,7 +301,16 @@ public class QuestionController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event event) {
-			// TODO: Alert
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("You can't go to the next question!");
+					alert.setContentText("Not all teams have answered this question.");
+					alert.showAndWait();
+				}
+			});
 		}
 
 	}

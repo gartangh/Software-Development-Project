@@ -1,18 +1,20 @@
 package quiz.model;
 
-import main.Context;
+import main.MainContext;
 import server.ServerContext;
 
 public class User {
 
-	public final static String USERNAMEREGEX = "^[a-zA-Z0-9._-]{3,}$";
-	public final static String PASSWORDREGEX = "^[a-zA-Z0-9._-]{3,}$";
+	public final static String USERNAMEREGEX = "^[a-zA-Z0-9._-]{3,10}$";
+	public final static String PASSWORDREGEX = "^[a-zA-Z0-9._-]{3,10}$";
 
 	private int userID;
 	private String username;
 	private String password;
 	private int level = 1;
 	private long xp = 0L;
+	// Only the server uses this
+	private boolean loggedIn = true;
 
 	// Constructors
 	private User(int userID, String username, String password) {
@@ -45,14 +47,14 @@ public class User {
 	
 	public static void createAccount(int userID, String username, String password) {
 		// Client side
-		Context context = Context.getContext();
+		MainContext context = MainContext.getContext();
 		context.setUser(new User(userID, username, password));
 		context.getNetwork().getUserIDConnectionIDMap().put(userID, 0);
 	}
 	
 	public static void logIn(int userID, String username, String password, int level, long xp) {
 		// Client side
-		Context context = Context.getContext();
+		MainContext context = MainContext.getContext();
 		context.setUser(new User(userID, username, password, level, xp));
 		context.getNetwork().getUserIDConnectionIDMap().put(userID, 0);
 	}
@@ -78,11 +80,11 @@ public class User {
 	// TODO Move this to a new controller
 	/*public int setPassword(String password1, String password2) {
 		if (!password1.equals(password2)) {
-			// TODO: Go back and show error
+			// TODO Go back and show error
 
 			return 1;
 		} else if (!password1.matches(PASSWORDREGEX)) {
-			// TODO: Go back and show error
+			// TODO Go back and show error
 
 			return 2;
 		}
@@ -98,6 +100,14 @@ public class User {
 
 	public long getXp() {
 		return xp;
+	}
+	
+	public boolean isLoggedIn() {
+		return loggedIn;
+	}
+	
+	public void setLoggedIn(boolean loggedIn) {
+		this.loggedIn = loggedIn;
 	}
 
 	// Methods

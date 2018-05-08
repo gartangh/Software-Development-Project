@@ -11,7 +11,6 @@ import quiz.model.User;
 public class Event implements Serializable {
 
 	protected String type = "EVENT";
-	protected String message = "";
 	private ArrayList<Integer> recipients = new ArrayList<>();
 
 	// Constructors
@@ -19,16 +18,7 @@ public class Event implements Serializable {
 		// Empty default constructor
 	}
 
-	public Event(String type, String message) {
-		this.type = type;
-		this.message = message;
-	}
-
 	// Getters and setters
-	public String getMessage() {
-		return message;
-	}
-
 	public String getType() {
 		return type;
 	}
@@ -47,8 +37,7 @@ public class Event implements Serializable {
 	}
 
 	public void addRecipients(ArrayList<Integer> destinations) {
-		for (Integer userID : destinations)
-			addRecipient(userID);
+		recipients.addAll(destinations);
 	}
 
 	public void addRecipients(Map<Integer, User> userMap) {
@@ -58,12 +47,6 @@ public class Event implements Serializable {
 	
 	public void removeAllRecipients() {
 		recipients.clear();
-	}
-
-	// Method
-	@Override
-	public String toString() {
-		return "[" + type + "] : " + message;
 	}
 
 }

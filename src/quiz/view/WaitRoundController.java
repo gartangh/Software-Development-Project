@@ -7,14 +7,14 @@ import eventbroker.EventPublisher;
 import eventbroker.serverevent.ServerNewMCQuestionEvent;
 import eventbroker.serverevent.ServerStartRoundEvent;
 import javafx.fxml.FXML;
-import main.Context;
+import main.MainContext;
 import main.Main;
 import quiz.model.MCQuestion;
 
 public class WaitRoundController extends EventPublisher {
 
-	private StartRoundHandler startRoundHandler;
-	private NewQuestionHandler newQuestionHandler;
+	private StartRoundHandler startRoundHandler = new StartRoundHandler();
+	private NewQuestionHandler newQuestionHandler = new NewQuestionHandler();
 
 	// Reference to the main application
 	private Main main;
@@ -25,9 +25,6 @@ public class WaitRoundController extends EventPublisher {
 
 	@FXML
 	public void initialize() {
-		startRoundHandler = new StartRoundHandler();
-		newQuestionHandler = new NewQuestionHandler();
-
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerStartRoundEvent.EVENTTYPE, startRoundHandler);
 		eventBroker.addEventListener(ServerNewMCQuestionEvent.EVENTTYPE, newQuestionHandler);
@@ -60,8 +57,9 @@ public class WaitRoundController extends EventPublisher {
 			String[] answers = sNQE.getAnswers();
 
 			MCQuestion q = new MCQuestion(questionID, question, answers);
-			Context.getContext().setQuestion(q);
+			MainContext.getContext().setQuestion(q);
 		}
 
 	}
+
 }

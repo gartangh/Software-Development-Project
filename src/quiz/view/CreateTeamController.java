@@ -1,81 +1,142 @@
 package quiz.view;
 
+import eventbroker.Event;
+import eventbroker.EventBroker;
+import eventbroker.EventListener;
+import eventbroker.EventPublisher;
 import eventbroker.clientevent.ClientCreateTeamEvent;
+import eventbroker.serverevent.ServerCreateTeamFailEvent;
+import eventbroker.serverevent.ServerCreateTeamSuccesEvent;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
+import javafx.scene.paint.Color;
+import main.Main;
+import main.MainContext;
+import quiz.model.Team;
 
-public class CreateTeamController {
+public class CreateTeamController extends EventPublisher {
+
 	@FXML
 	private TextField mTeamname;
 	@FXML
 	private ColorPicker mColor;
+	
+	private CreateTeamFailHandler createTeamFailHandler = new CreateTeamFailHandler();
+	private CreateTeamSuccesHandler createTeamSuccesHandler = new CreateTeamSuccesHandler();
 
-	private ClientCreateTeamEvent cNTE;
-	private Stage dialogStage;
-	private boolean okClicked = false;
+	// Reference to the main application
+	private Main main;
 
-	// Getters and setters
-	public void setTeamEvent(ClientCreateTeamEvent cNTE) {
-		this.cNTE = cNTE;
-	}
-
-	public void setDialogStage(Stage dialogStage) {
-		this.dialogStage = dialogStage;
-	}
-
-	public boolean isOkClicked() {
-		return okClicked;
+	public void setMain(Main main) {
+		this.main = main;
 	}
 
 	// Methods
 	@FXML
 	private void initialize() {
-		// Empty initialize
+		EventBroker eventBroker = EventBroker.getEventBroker();
+		eventBroker.addEventListener(ServerCreateTeamFailEvent.EVENTTYPE, createTeamFailHandler);
+		eventBroker.addEventListener(ServerCreateTeamSuccesEvent.EVENTTYPE, createTeamSuccesHandler);
 	}
 
 	@FXML
 	private void handleCreateTeam() {
-		if (isInputValid()) {
-			cNTE.setTeamName(mTeamname.getText());
-			cNTE.setColor(mColor.getValue());
+		String teamname = mTeamname.getText();
+		if (teamname == null || !teamname.matches(Team.TEAMNAMEREGEX)) {
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("Teamname is invalid!");
+					alert.setContentText("Try again with a valid teamname.");
+					alert.showAndWait();
+				}
+			});
 
-			okClicked = true;
-			dialogStage.close();
+			return;
 		}
+
+		Color color = mColor.getValue();
+		if (color == null) {
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("No color picked!");
+					alert.setContentText("Select a color and try again.");
+					alert.showAndWait();
+				}
+
+			});
+
+			return;
+		}
+
+		// Everything is valid
+		MainContext context = MainContext.getContext();
+		int quizID = context.getQuiz().getQuizID();
+		String captainname = context.getUser().getUsername();
+		ClientCreateTeamEvent cCTE = new ClientCreateTeamEvent(quizID, teamname, color, captainname);
+		publishEvent(cCTE);
 	}
 
 	@FXML
 	private void handleBack() {
-		dialogStage.close();
+		EventBroker eventBroker = EventBroker.getEventBroker();
+		eventBroker.removeEventListener(createTeamFailHandler);
+		eventBroker.removeEventListener(createTeamSuccesHandler);
 	}
-
-	private boolean isInputValid() {
-		String errorMessage = "";
-
-		if (mTeamname.getText() == null || mTeamname.getText().length() == 0)
-			errorMessage += "No valid teamname!\n";
+	
+	// Inner classes
+	private class CreateTeamFailHandler implements EventListener {
 		
-		if (mColor.getValue() == null)
-			errorMessage += "No color picked!\n";
-		
-		if (errorMessage.length() == 0)
-			return true;
-		else {
-			// Show the error message.
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.initOwner(dialogStage);
-			alert.setTitle("Invalid Fields");
-			alert.setHeaderText("Please correct invalid fields");
-			alert.setContentText(errorMessage);
-
-			alert.showAndWait();
-
-			return false;
+		@Override
+		public void handleEvent(Event event) {
+			@SuppressWarnings("unused")
+			ServerCreateTeamFailEvent sCTFE = (ServerCreateTeamFailEvent) event;
+			
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Error");
+					alert.setHeaderText("Team creation failed!");
+					alert.setContentText("The teamname already exists.");
+					alert.showAndWait();
+				}
+			});
 		}
+	}
+	
+	private class CreateTeamSuccesHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ServerCreateTeamSuccesEvent sCTSE = (ServerCreateTeamSuccesEvent) event;
+
+			int quizID = sCTSE.getQuizID();
+			int teamID = sCTSE.getTeamID();
+			String teamname = sCTSE.getTeamname();
+			Color color = sCTSE.getColor();
+			int captainID = sCTSE.getCaptainID();
+			String captainname = sCTSE.getCaptainname();
+			int players = sCTSE.getPlayers();
+
+			Team.createTeam(quizID, teamID, teamname, color, captainID, captainname, players);
+
+			EventBroker eventBroker = EventBroker.getEventBroker();
+			eventBroker.removeEventListener(createTeamFailHandler);
+			eventBroker.removeEventListener(createTeamSuccesHandler);
+
+			main.showJoinTeamScene();
+		}
+
 	}
 
 }

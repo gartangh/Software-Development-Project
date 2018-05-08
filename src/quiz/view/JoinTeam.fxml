@@ -28,11 +28,11 @@
                   <TableColumn fx:id="NameColumn" maxWidth="1.7976931348623157E308" minWidth="70.0" prefWidth="-1.0" text="Teams" />
                </columns>
 								</TableView>
-				<ButtonBar prefHeight="40.0" prefWidth="334.0">
+				<ButtonBar>
 					<buttons>
 						<Button defaultButton="true" mnemonicParsing="false" onAction="#handleCreateTeam" text="Create team" />
 						<Button mnemonicParsing="false" onAction="#handleReady" text="Ready" />
-                  <Button cancelButton="true" mnemonicParsing="false" onAction="#hadleBack" text="Back" />
+                  <Button cancelButton="true" mnemonicParsing="false" onAction="#handleBack" text="Back" />
 					</buttons>
 				</ButtonBar>
 			</children>

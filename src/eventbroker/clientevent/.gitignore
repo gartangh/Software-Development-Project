@@ -1,0 +1,16 @@
+/ClientAnswerEvent.class
+/ClientChangeTeamEvent.class
+/ClientCreateAccountEvent.class
+/ClientCreateQuizEvent.class
+/ClientCreateRoundEvent.class
+/ClientCreateTeamEvent.class
+/ClientEvent.class
+/ClientGetQuizzesEvent.class
+/ClientHostReadyEvent.class
+/ClientJoinQuizEvent.class
+/ClientLogInEvent.class
+/ClientNewQuestionEvent.class
+/ClientQuizzerEvent.class
+/ClientScoreboardDataEvent.class
+/ClientStartRoundEvent.class
+/ClientVoteEvent.class

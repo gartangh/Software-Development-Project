@@ -10,18 +10,34 @@ public class ChatMessage extends ClientEvent implements Serializable {
 	public final static String CLIENTTYPE = "CLIENT_CHAT";
 	public final static String SERVERTYPE = "SERVER_CHAT";
 
-	private String sender;
-
-	public ChatMessage(String sender, String message) {
-		super();
-		this.type = CLIENTTYPE;
+	private String username;
+	private String message;
+	private String receiverType;
+	private int quizID;
+	
+	public ChatMessage(String username, String message, String receiverType, int quizID) {
+		super.type = CLIENTTYPE;
+		this.username = username;
 		this.message = message;
-		this.sender = sender;
+		this.receiverType = receiverType;
+		this.quizID = quizID;
 	}
 
 	// Getter
-	public String getSender() {
-		return sender;
+	public String getUsername() {
+		return username;
+	}
+	
+	public String getMessage() {
+		return message;
+	}
+
+	public String getReceiverType() {
+		return receiverType;
+	}
+
+	public int getQuizID() {
+		return quizID;
 	}
 
 }
