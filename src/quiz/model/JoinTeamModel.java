@@ -18,18 +18,20 @@ import main.MainContext;
 
 public class JoinTeamModel {
 
-	private ObservableList<TeamNameID> teams = FXCollections.observableArrayList();
+	private ObservableList<TeamNameID> teams;
 	private int teamID = -1;
 	private StringProperty teamname;
 	private StringProperty captainname;
 	private ObjectProperty<Paint> color;
-	private ListProperty<String> members = new SimpleListProperty<>();
+	private ListProperty<String> members;
 
 	// Constructor
 	public JoinTeamModel() {
 		this.teamname = new SimpleStringProperty();
 		this.captainname = new SimpleStringProperty();
 		this.color = new SimpleObjectProperty<>(Color.TRANSPARENT);
+		this.teams = FXCollections.observableArrayList();
+		this.members = new SimpleListProperty<>();
 	}
 
 	public JoinTeamModel(Team team) {

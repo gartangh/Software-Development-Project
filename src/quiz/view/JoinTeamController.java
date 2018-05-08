@@ -77,8 +77,7 @@ public class JoinTeamController extends EventPublisher {
 	public void setMain(Main main) {
 		this.main = main;
 
-		quizRoomModel.updateTeams();
-		teamTable.setItems(quizRoomModel.getTeams());
+
 	}
 
 	// Methods
@@ -109,6 +108,9 @@ public class JoinTeamController extends EventPublisher {
 		// ChatPanel (ChatModel and ChatController) are created
 		ChatPanel chatPanel = ChatPanel.createChatPanel();
 		mPlaceholder.getChildren().add(chatPanel.getContent());
+
+		quizRoomModel.updateTeams();
+		teamTable.setItems(quizRoomModel.getTeams());
 	}
 
 	public void showTeamDetails(TeamNameID team) {
