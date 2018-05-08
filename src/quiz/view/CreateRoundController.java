@@ -97,6 +97,7 @@ public class CreateRoundController extends EventPublisher {
 
 		int numberOfQuestions = numberChoiceBox.getValue();
 
+		main.showWaitHostScene();
 		ClientCreateRoundEvent cCRE = new ClientCreateRoundEvent(roundType, theme, difficulty, numberOfQuestions);
 		publishEvent(cCRE);
 	}
@@ -117,7 +118,6 @@ public class CreateRoundController extends EventPublisher {
 			eventBroker.removeEventListener(startRoundHandler);
 			eventBroker.removeEventListener(newMCQuestionHandler);
 
-			main.showWaitHostScene();
 		}
 
 	}
