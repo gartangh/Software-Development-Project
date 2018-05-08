@@ -167,7 +167,7 @@ public class JoinTeamController extends EventPublisher {
 		int hostID = context.getQuiz().getHostID();
 		Team team = context.getTeam();
 
-		if (team == null) {
+		if (team == null && hostID != userID) {
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
@@ -439,15 +439,6 @@ public class JoinTeamController extends EventPublisher {
 			EventBroker.getEventBroker().removeEventListener(startQuizHandler);
 			EventBroker.getEventBroker().removeEventListener(quizNewPlayerHandler);
 
-			// All unassigned players
-			if (context.getTeam() == null) {
-				context.setQuiz(null);
-
-				main.showJoinQuizScene();
-
-				return;
-			}
-
 			// The host
 			if (context.getQuiz().getHostID() == context.getUser().getUserID()) {
 				context.getQuiz().setRunning(true);
@@ -456,7 +447,16 @@ public class JoinTeamController extends EventPublisher {
 
 				return;
 			}
+			
+			// All unassigned players
+			if (context.getTeam() == null) {
+				context.setQuiz(null);
 
+				main.showJoinQuizScene();
+
+				return;
+			}
+			
 			// Other users (normal players)
 			context.getQuiz().setRunning(true);
 

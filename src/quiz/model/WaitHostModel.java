@@ -44,7 +44,12 @@ public class WaitHostModel {
 				answerPropertyB.setValue(q.getAnswers()[1]);
 				answerPropertyC.setValue(q.getAnswers()[2]);
 				answerPropertyD.setValue(q.getAnswers()[3]);
-				correctAnswerProperty.setValue(q.getAnswers()[q.getCorrectAnswer()]);
+				String correctAnswer = q.getAnswers()[q.getCorrectAnswer()];
+				if(q.getCorrectAnswer() == 0) correctAnswer = correctAnswer.concat(" (A)");
+				else if(q.getCorrectAnswer() == 1) correctAnswer = correctAnswer.concat(" (B)");
+				else if(q.getCorrectAnswer() == 2) correctAnswer = correctAnswer.concat(" (C)");
+				else if(q.getCorrectAnswer() == 3) correctAnswer = correctAnswer.concat(" (D)");
+				correctAnswerProperty.setValue(correctAnswer);
 			}
 		});
 	}

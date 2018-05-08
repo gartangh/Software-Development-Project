@@ -71,3 +71,12 @@
 /WaitHostController$UpdateTeamsHandler.class
 /WaitHostController$updateQuestionHandler.class
 /WaitHostController$UpdateQuestionHandler.class
+/JoinTeamController$CreateTeamFailHandler$1.class
+/JoinTeamController$CreateTeamFailHandler.class
+/JoinTeamController$HostLeavesQuizHandler$1.class
+/JoinTeamController$HostLeavesQuizHandler.class
+/JoinTeamController$PlayerLeavesQuizHandler$1.class
+/JoinTeamController$PlayerLeavesQuizHandler$2.class
+/JoinTeamController$PlayerLeavesQuizHandler.class
+/JoinTeamController$QuizDeleteTeamHandler$1.class
+/JoinTeamController$QuizDeleteTeamHandler.class
