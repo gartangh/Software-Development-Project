@@ -6,6 +6,7 @@ public class TeamNameID {
 
 	StringProperty teamname;
 	int teamID;
+	StringProperty answer;
 
 	// Constructor
 	public TeamNameID(StringProperty teamname, int teamID) {
@@ -28,6 +29,14 @@ public class TeamNameID {
 
 	public void setTeamID(int teamID) {
 		this.teamID = teamID;
+	}
+	
+	public StringProperty getAnswer() {
+		return answer;
+	}
+
+	public void setAnswer(StringProperty answer) {
+		this.answer = answer;
 	}
 
 	// Method

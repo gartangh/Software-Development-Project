@@ -84,6 +84,11 @@ public class MainContext {
 		this.team = team;
 	}
 
+	public int getTeamID(){
+		if (team == null) return -1;
+		else return team.getTeamID();
+	}
+
 	/**
 	 * Gets the question.
 	 *

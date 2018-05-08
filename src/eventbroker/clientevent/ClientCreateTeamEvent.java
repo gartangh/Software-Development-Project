@@ -13,9 +13,10 @@ public class ClientCreateTeamEvent extends ClientEvent {
 	private int colorGreen;
 	private int colorBlue;
 	private int oldTeamID;
+	private String captainName;
 
 	// Constructor
-	public ClientCreateTeamEvent(int quizID, String teamname, Color color, int oldTeamID) {
+	public ClientCreateTeamEvent(int quizID, String teamname, Color color, int oldTeamID, String captainName) {
 		super.type = EVENTTYPE;
 		this.quizID = quizID;
 		this.teamname = teamname;
@@ -23,7 +24,7 @@ public class ClientCreateTeamEvent extends ClientEvent {
 		this.colorRed = (int) (color.getRed() * 255);
 		this.colorGreen = (int) (color.getGreen() * 255);
 		this.colorBlue = (int) (color.getBlue() * 255);
-		this.captainname = captainname;
+		this.captainName = captainName;
 	}
 
 	// Getters and setters
@@ -48,13 +49,18 @@ public class ClientCreateTeamEvent extends ClientEvent {
 		this.colorGreen = (int) (color.getGreen() * 255);
 		this.colorBlue = (int) (color.getBlue() * 255);
 	}
-	
+
 	public String getCaptainname() {
-		return captainname;
+		return captainName;
 	}
 
 	public int getOldTeamID() {
 		return oldTeamID;
+	}
+
+	public void setTeamName(String teamName) {
+		this.teamname=teamName;
+
 	}
 
 }
