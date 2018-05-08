@@ -9,6 +9,7 @@ import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import eventbroker.clientevent.ClientGetQuizzesEvent;
 import eventbroker.clientevent.ClientJoinQuizEvent;
+import eventbroker.clientevent.ClientLeaveQuizEvent;
 import eventbroker.serverevent.ServerGetQuizzesEvent;
 import eventbroker.serverevent.ServerJoinQuizEvent;
 import eventbroker.serverevent.ServerSendQuizEvent;
@@ -176,7 +177,7 @@ public class JoinQuizController extends EventPublisher {
 			int players = sSQE.getMaxAmountOfPlayersPerTeam();
 			int hostID = sSQE.getHostID();
 			String hostname = sSQE.getHostname();
-			
+
 			joinQuizModel.addQuiz(Quiz.createQuiz(quizID, quizname, rounds, teams, players, hostID, hostname));
 		}
 

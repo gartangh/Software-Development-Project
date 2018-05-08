@@ -81,4 +81,8 @@ public class Team implements Serializable {
 		this.quizScore += i;
 	}
 
+	public void setCaptainID(int captainID) {
+		this.captainID=captainID;
+	}
+
 }

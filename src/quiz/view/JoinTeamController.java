@@ -31,11 +31,14 @@ import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import eventbroker.clientevent.ClientChangeTeamEvent;
 import eventbroker.clientevent.ClientHostReadyEvent;
+import eventbroker.clientevent.ClientLeaveQuizEvent;
 import eventbroker.clientevent.ClientCreateTeamEvent;
 import eventbroker.clientevent.ClientDeleteTeamEvent;
 import eventbroker.serverevent.ServerChangeTeamEvent;
 import eventbroker.serverevent.ServerCreateTeamEvent;
 import eventbroker.serverevent.ServerDeleteTeamEvent;
+import eventbroker.serverevent.ServerHostLeavesQuizEvent;
+import eventbroker.serverevent.ServerPlayerLeavesQuizEvent;
 import eventbroker.serverevent.ServerQuizNewPlayerEvent;
 import eventbroker.serverevent.ServerStartQuizEvent;
 
@@ -62,6 +65,8 @@ public class JoinTeamController extends EventPublisher {
 	private StartQuizHandler startQuizHandler;
 	private QuizNewPlayerHandler quizNewPlayerHandler;
 	private QuizDeleteTeamHandler quizDeleteTeamHandler;
+	private HostLeavesQuizHandler hostLeavesQuizHandler;
+	private PlayerLeavesQuizHandler playerLeavesQuizHandler;
 	// Reference to the main application
 	private Main main;
 
@@ -79,7 +84,9 @@ public class JoinTeamController extends EventPublisher {
 		changeTeamHandler = new ChangeTeamHandler();
 		startQuizHandler = new StartQuizHandler();
 		quizNewPlayerHandler = new QuizNewPlayerHandler();
-		quizDeleteTeamHandler=new QuizDeleteTeamHandler();
+		quizDeleteTeamHandler = new QuizDeleteTeamHandler();
+		hostLeavesQuizHandler = new HostLeavesQuizHandler();
+		playerLeavesQuizHandler = new PlayerLeavesQuizHandler();
 
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerCreateTeamEvent.EVENTTYPE, newTeamHandler);
@@ -87,6 +94,8 @@ public class JoinTeamController extends EventPublisher {
 		eventBroker.addEventListener(ServerStartQuizEvent.EVENTTYPE, startQuizHandler);
 		eventBroker.addEventListener(ServerQuizNewPlayerEvent.EVENTTYPE, quizNewPlayerHandler);
 		eventBroker.addEventListener(ServerDeleteTeamEvent.EVENTTYPE, quizDeleteTeamHandler);
+		eventBroker.addEventListener(ServerHostLeavesQuizEvent.EVENTTYPE,hostLeavesQuizHandler);
+		eventBroker.addEventListener(ServerPlayerLeavesQuizEvent.EVENTTYPE,playerLeavesQuizHandler);
 
 		NameColumn.setCellValueFactory(cellData -> cellData.getValue().getTeamname());
 		teamTable.getSelectionModel().selectedItemProperty()
@@ -108,7 +117,7 @@ public class JoinTeamController extends EventPublisher {
 		if (team != null)
 			quizRoomModel.updateTeamDetail(team.getTeamID());
 		else {
-			quizRoomModel.updateTeams();
+			quizRoomModel.updateTeamDetail(-1);
 		}
 	}
 
@@ -222,13 +231,26 @@ public class JoinTeamController extends EventPublisher {
 
 	@FXML
 	private void hadleBack() {
-		EventBroker eventBroker = EventBroker.getEventBroker();
-		eventBroker.removeEventListener(newTeamHandler);
-		eventBroker.removeEventListener(changeTeamHandler);
-		eventBroker.removeEventListener(startQuizHandler);
-		eventBroker.removeEventListener(quizNewPlayerHandler);
-		//TODO handle players uit of quiz, delete the right teams... what if host leaves the quiz?
-		main.showJoinQuizScene();
+		Context context=Context.getContext();
+		//TODO: confirmation for host
+		boolean execute=true;
+		if (context.getQuiz().getHostID()==context.getUser().getUserID()){
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Confirmation Dialog");
+			alert.setHeaderText("You are going to end this quiz");
+			alert.setContentText("Are you sure you want to end this quiz?");
+
+			Optional<ButtonType> result = alert.showAndWait();
+			if (result.get() == ButtonType.CANCEL){
+				execute=false;
+			}
+		}
+
+		if (execute){
+			ClientLeaveQuizEvent cLQE = new ClientLeaveQuizEvent(context.getUser().getUserID(), context.getQuiz().getQuizID(),context.getTeamID());
+			publishEvent(cLQE);
+		}
+
 	}
 
 	@FXML
@@ -329,6 +351,9 @@ public class JoinTeamController extends EventPublisher {
 
 					quizRoomModel.updateTeamDetail(newteam.getTeamID());
 				}
+				else {
+
+				}
 
 				if (oldteam != null)
 					oldteam.removePlayer(userID);
@@ -419,7 +444,113 @@ public class JoinTeamController extends EventPublisher {
 			}
 
 		}
+	}
+
+	private class HostLeavesQuizHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ServerHostLeavesQuizEvent sHLQE =(ServerHostLeavesQuizEvent) event;
+			Context context=Context.getContext();
+			if (sHLQE.getQuizID()==context.getQuiz().getQuizID()){
+				final int quizHostID=context.getQuiz().getHostID();
+				context.setQuiz(null);
+				context.setTeamID(-1);
+
+				EventBroker eventBroker = EventBroker.getEventBroker();
+				eventBroker.removeEventListener(newTeamHandler);
+				eventBroker.removeEventListener(changeTeamHandler);
+				eventBroker.removeEventListener(startQuizHandler);
+				eventBroker.removeEventListener(quizNewPlayerHandler);
+				eventBroker.removeEventListener(quizDeleteTeamHandler);
+				eventBroker.removeEventListener(playerLeavesQuizHandler);
+
+				Platform.runLater(new Runnable() {
+					public void run() {
+						if (quizHostID!=context.getUser().getUserID()){
+							Alert alert = new Alert(AlertType.ERROR);
+							alert.initOwner(main.getPrimaryStage());
+							alert.setTitle("Quiz ended!");
+							alert.setHeaderText("The host ended the quiz.");
+							alert.setContentText("You can join another quiz or create a new one.");
+							alert.showAndWait();
+						}
+						main.showJoinQuizScene();
+						eventBroker.removeEventListener(hostLeavesQuizHandler);
+					}
+				});
+
+			}
+		}
+	}
+
+	private class PlayerLeavesQuizHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ServerPlayerLeavesQuizEvent sPLQE = (ServerPlayerLeavesQuizEvent) event;
+			Context context=Context.getContext();
+			if (context.getQuiz().getQuizID()==sPLQE.getQuizID()){
+				if (sPLQE.getTeamID() != -1){
+					if (sPLQE.getNewCaptainID() != -1 ){//to be sure
+						Team team= context.getQuiz().getTeamMap().get(sPLQE.getTeamID());
+						int oldCaptainID = team.getCaptainID();
+						team.setCaptainID(sPLQE.getNewCaptainID());//the captain can change or the captain can be the same
+						team.removePlayer(sPLQE.getUserID());
+
+						if (team.getPlayerMap().size()==0){
+							context.getQuiz().removeTeam(team.getTeamID());
+						}
+						else if (team.getCaptainID()==context.getUser().getUserID() && team.getCaptainID() != oldCaptainID){
+							Platform.runLater(new Runnable() {
+								public void run() {
+									Alert alert = new Alert(AlertType.INFORMATION);
+									alert.initOwner(main.getPrimaryStage());
+									alert.setTitle("Captain left quiz");
+									alert.setHeaderText(null);
+									alert.setContentText("Your captain left the quiz, you are the captain now");
+									alert.showAndWait();
+								}
+							});
+						}
+					}
+				}
+				else {
+					context.getQuiz().removeUnassignedPlayer(sPLQE.getUserID());
+
+				}
+
+				if (context.getUser().getUserID()==sPLQE.getUserID()){
+					context.setQuiz(null);
+					context.setTeamID(-1);
+
+					EventBroker eventBroker = EventBroker.getEventBroker();
+					eventBroker.removeEventListener(newTeamHandler);
+					eventBroker.removeEventListener(changeTeamHandler);
+					eventBroker.removeEventListener(startQuizHandler);
+					eventBroker.removeEventListener(quizNewPlayerHandler);
+					eventBroker.removeEventListener(quizDeleteTeamHandler);
+					eventBroker.removeEventListener(hostLeavesQuizHandler);
+
+					Platform.runLater(new Runnable() {
+						public void run() {
+							main.showJoinQuizScene();
+							eventBroker.removeEventListener(playerLeavesQuizHandler);
+						}
+					});
+
+				}
+				else {
+					TeamNameID selectedTeam = teamTable.getSelectionModel().getSelectedItem();
+					quizRoomModel.updateTeams();
+					showTeamDetails(selectedTeam);
+				}
+
+			}
+
+		}
 
 	}
+
 
 }

@@ -19,6 +19,7 @@ import eventbroker.clientevent.ClientCreateRoundEvent;
 import eventbroker.clientevent.ClientGetQuizzesEvent;
 import eventbroker.clientevent.ClientHostReadyEvent;
 import eventbroker.clientevent.ClientJoinQuizEvent;
+import eventbroker.clientevent.ClientLeaveQuizEvent;
 import eventbroker.clientevent.ClientLogInEvent;
 import eventbroker.clientevent.ClientNewQuestionEvent;
 import eventbroker.clientevent.ClientScoreboardDataEvent;
@@ -32,6 +33,7 @@ import eventbroker.serverevent.ServerCreateAccountSuccesEvent;
 import eventbroker.serverevent.ServerCreateQuizFailEvent;
 import eventbroker.serverevent.ServerEndQuizEvent;
 import eventbroker.serverevent.ServerGetQuizzesEvent;
+import eventbroker.serverevent.ServerHostLeavesQuizEvent;
 import eventbroker.serverevent.ServerJoinQuizEvent;
 import eventbroker.serverevent.ServerLogInFailEvent;
 import eventbroker.serverevent.ServerLogInSuccesEvent;
@@ -41,6 +43,7 @@ import eventbroker.serverevent.ServerNewRoundEvent;
 import eventbroker.serverevent.ServerCreateTeamEvent;
 import eventbroker.serverevent.ServerDeleteTeamEvent;
 import eventbroker.serverevent.ServerNotAllAnsweredEvent;
+import eventbroker.serverevent.ServerPlayerLeavesQuizEvent;
 import eventbroker.serverevent.ServerQuizNewPlayerEvent;
 import eventbroker.serverevent.ServerCreateQuizSuccesEvent;
 import eventbroker.serverevent.ServerScoreboardDataEvent;
@@ -80,6 +83,7 @@ public class Server extends EventPublisher {
 	private static ChangeTeamHandler changeTeamHandler = new ChangeTeamHandler();
 	private static HostReadyHandler hostReadyHandler = new HostReadyHandler();
 	private static DeleteTeamHandler deleteTeamHandler = new DeleteTeamHandler();
+	private static LeaveQuizHandler leaveQuizHandler = new LeaveQuizHandler();
 
 	public static void main(String[] args) {
 		// Create a network on port Main.SERVERPORT and type SERVER
@@ -120,6 +124,7 @@ public class Server extends EventPublisher {
 		eventBroker.addEventListener(ClientChangeTeamEvent.EVENTTYPE, changeTeamHandler);
 		eventBroker.addEventListener(ClientHostReadyEvent.EVENTTYPE, hostReadyHandler);
 		eventBroker.addEventListener(ClientDeleteTeamEvent.EVENTTYPE,deleteTeamHandler);
+		eventBroker.addEventListener(ClientLeaveQuizEvent.EVENTTYPE,leaveQuizHandler);
 
 		// Start the EventBroker
 		eventBroker.start();
@@ -553,6 +558,47 @@ public class Server extends EventPublisher {
 		}
 
 	}
+
+	private static class LeaveQuizHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ClientLeaveQuizEvent cLQE = (ClientLeaveQuizEvent) event;
+			ServerContext context = ServerContext.getContext();
+			Quiz quiz = context.getQuizMap().get(cLQE.getQuizID());
+			User user = context.getUserMap().get(cLQE.getUserID());
+			Team team = quiz.getTeamMap().get(cLQE.getTeamID());
+
+			if (user.getUserID()==quiz.getHostID()){
+				context.getQuizMap().remove(quiz.getQuizID());
+				ServerHostLeavesQuizEvent sHLQE= new ServerHostLeavesQuizEvent(quiz.getQuizID());
+				//ArrayList<Integer> receivers = context.getUsersFromQuiz(sHLQE.getQuizID());
+				sHLQE.addRecipients(context.getUserMap());
+				//TODO: handle event in joinquiz!!! good to send to everyone?
+				server.publishEvent(sHLQE);
+			}
+			else {
+				int captainID=-1;
+				ArrayList<Integer> receivers = context.getUsersFromQuiz(quiz.getQuizID());
+				if (team!=null){
+					context.changeTeam(quiz.getQuizID(),team.getTeamID(), user.getUserID(), 'd');
+					captainID=team.getCaptainID();
+				}
+				else {
+					quiz.removeUnassignedPlayer(user.getUserID());
+				}
+
+				ServerPlayerLeavesQuizEvent sPLQE=new ServerPlayerLeavesQuizEvent(quiz.getQuizID(),user.getUserID(),cLQE.getTeamID(),captainID);
+				sPLQE.addRecipients(receivers);
+				server.publishEvent(sPLQE);
+			}
+
+
+		}
+
+
+	}
+
 
 	private static class HostReadyHandler implements EventListener {
 

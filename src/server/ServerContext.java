@@ -5,7 +5,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javafx.scene.paint.Color;
 import main.Main;
@@ -76,7 +78,17 @@ public class ServerContext {
 					return user.getUsername();
 				} else if (type == 'd') {// Delete
 					team.removePlayer(user.getUserID());
-
+					if (team.getPlayerMap().size()>0){
+						if (team.getCaptainID()==user.getUserID()){
+							Random       random    = new Random();
+							List<Integer> keys      = new ArrayList<Integer>(team.getPlayerMap().keySet());
+							Integer       randomKey = keys.get( random.nextInt(keys.size()) );
+							team.setCaptainID(randomKey);
+						}
+					}
+					else {
+						quizMap.get(quizID).removeTeam(team.getTeamID());
+					}
 					return user.getUsername();
 				}
 			}
