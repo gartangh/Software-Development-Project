@@ -118,57 +118,43 @@ public class JoinTeamController extends EventPublisher {
 
 	@FXML
 	private void handleCreateTeam() {
-		MainContext context = MainContext.getContext();
-		int userID = context.getUser().getUserID();
-		int hostID = context.getQuiz().getHostID();
-		Team team = context.getTeam();
-		int captainID = -1;
-		if (team != null)
-			captainID = team.getCaptainID();
+			MainContext context = MainContext.getContext();
+			String errorMessage = "";
+			if (context.getQuiz().getHostID() != context.getUser().getUserID()) {
+				if (context.getQuiz().getAmountOfTeams() < context.getQuiz().getTeams()) {
+					User currUser = context.getUser();
+					int currTeamID = context.getTeamID();
+					int currCaptainID;
 
-		if (hostID == userID) {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					Alert alert = new Alert(AlertType.WARNING);
-					alert.setTitle("Warning");
-					alert.setHeaderText("You can't create a team!");
-					alert.setContentText("You're the host, click ready when you want to start the quiz.");
-					alert.showAndWait();
-				}
-			});
+					if (currTeamID != -1)
+						currCaptainID = context.getQuiz().getTeamMap().get(currTeamID).getCaptainID();
+					else
+						currCaptainID = -1;
 
-			return;
+					if (currCaptainID != currUser.getUserID()) {
+						ClientCreateTeamEvent cNTE = new ClientCreateTeamEvent(context.getQuiz().getQuizID(), "",
+								Color.TRANSPARENT,context.getTeamID(),context.getUser().getUsername());
+
+						boolean okClicked = main.showCreateTeamScene(cNTE);
+						if (okClicked)
+							publishEvent(cNTE);
+					} else
+						errorMessage = "You can't create a new team, because you are already a captain of an existing team";
+				} else
+					errorMessage = "The maximum of teams is already reached";
+			} else
+				errorMessage = "You can't create a team if you are the quizmaster, click ready when you want to start the quiz";
+
+			if (errorMessage != "") {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.initOwner(main.getPrimaryStage());
+				alert.setTitle("New Team error");
+				alert.setHeaderText("You can't create a new team");
+				alert.setContentText(errorMessage);
+
+				alert.showAndWait();
+			}
 		}
-		else if (captainID == userID) {
-			Platform.runLater(new Runnable() {
-				public void run() {
-					Alert alert = new Alert(AlertType.WARNING);
-					alert.setTitle("Warning");
-					alert.setHeaderText("You can't create a team!");
-					alert.setContentText("You're already captain of an existing team.");
-					alert.showAndWait();
-				}
-			});
-
-			return;
-		} else if (context.getQuiz().getAmountOfTeams() >= context.getQuiz().getTeams()) {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					Alert alert = new Alert(AlertType.WARNING);
-					alert.setTitle("Warning");
-					alert.setHeaderText("You can't create a team!");
-					alert.setContentText("The maximum amount of teams in this quiz is already reached.");
-					alert.showAndWait();
-				}
-			});
-			return;
-		}
-
-		// You can create a team
-		main.showCreateTeamScene();
-	}
 
 	@FXML
 	private void handleReady() {
