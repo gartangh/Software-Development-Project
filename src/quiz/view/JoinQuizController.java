@@ -8,6 +8,7 @@ import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import eventbroker.clientevent.ClientGetQuizzesEvent;
 import eventbroker.clientevent.ClientJoinQuizEvent;
+import eventbroker.clientevent.ClientLeaveQuizEvent;
 import eventbroker.clientevent.ClientLogOutEvent;
 import eventbroker.serverevent.ServerGetQuizzesEvent;
 import eventbroker.serverevent.ServerJoinQuizEvent;
@@ -174,7 +175,6 @@ public class JoinQuizController extends EventPublisher {
 			ServerGetQuizzesEvent sGQE = (ServerGetQuizzesEvent) event;
 
 			ArrayList<QuizModel> quizzes = sGQE.getQuizzes();
-
 			joinQuizModel.addQuizzes(quizzes);
 		}
 

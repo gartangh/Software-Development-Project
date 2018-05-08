@@ -148,7 +148,6 @@ public class Quiz implements Serializable {
 		if (teamMap.size() < teams) {
 			teamMap.put(team.getTeamID(), team);
 			team.setPlayers(players);
-
 			return true;
 		} else
 			return false;
@@ -157,7 +156,6 @@ public class Quiz implements Serializable {
 	public boolean removeTeam(int teamID) {
 		if (teamMap.get(teamID) != null) {
 			teamMap.remove(teamID);
-
 			return true;
 		} else
 			return false;
