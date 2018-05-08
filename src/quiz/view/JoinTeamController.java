@@ -34,6 +34,7 @@ import eventbroker.clientevent.ClientLeaveQuizEvent;
 import eventbroker.clientevent.ClientCreateTeamEvent;
 import eventbroker.clientevent.ClientDeleteTeamEvent;
 import eventbroker.serverevent.ServerChangeTeamEvent;
+import eventbroker.serverevent.ServerCreateTeamFailEvent;
 import eventbroker.serverevent.ServerDeleteTeamEvent;
 import eventbroker.serverevent.ServerHostLeavesQuizEvent;
 import eventbroker.serverevent.ServerPlayerLeavesQuizEvent;
@@ -67,7 +68,8 @@ public class JoinTeamController extends EventPublisher {
 	private QuizNewPlayerHandler quizNewPlayerHandler = new QuizNewPlayerHandler();
 	private QuizDeleteTeamHandler quizDeleteTeamHandler =  new QuizDeleteTeamHandler();
 	private HostLeavesQuizHandler hostLeavesQuizHandler = new HostLeavesQuizHandler();
-	private PlayerLeavesQuizHandler playerLeavesQuizHandler = new PlayerLeavesQuizHandler();;
+	private PlayerLeavesQuizHandler playerLeavesQuizHandler = new PlayerLeavesQuizHandler();
+	private CreateTeamFailHandler createTeamFailHandler = new CreateTeamFailHandler();
 
 	// Reference to the main application
 	private Main main;
@@ -91,6 +93,7 @@ public class JoinTeamController extends EventPublisher {
 		eventBroker.addEventListener(ServerDeleteTeamEvent.EVENTTYPE, quizDeleteTeamHandler);
 		eventBroker.addEventListener(ServerHostLeavesQuizEvent.EVENTTYPE,hostLeavesQuizHandler);
 		eventBroker.addEventListener(ServerPlayerLeavesQuizEvent.EVENTTYPE,playerLeavesQuizHandler);
+		eventBroker.addEventListener(ServerCreateTeamFailEvent.EVENTTYPE, createTeamFailHandler);
 
 		NameColumn.setCellValueFactory(cellData -> cellData.getValue().getTeamname());
 		teamTable.getSelectionModel().selectedItemProperty()
@@ -532,6 +535,7 @@ public class JoinTeamController extends EventPublisher {
 				eventBroker.removeEventListener(quizNewPlayerHandler);
 				eventBroker.removeEventListener(quizDeleteTeamHandler);
 				eventBroker.removeEventListener(playerLeavesQuizHandler);
+				eventBroker.removeEventListener(createTeamFailHandler);
 
 				Platform.runLater(new Runnable() {
 					public void run() {
@@ -599,6 +603,7 @@ public class JoinTeamController extends EventPublisher {
 					eventBroker.removeEventListener(quizNewPlayerHandler);
 					eventBroker.removeEventListener(quizDeleteTeamHandler);
 					eventBroker.removeEventListener(hostLeavesQuizHandler);
+					eventBroker.removeEventListener(createTeamFailHandler);
 
 					Platform.runLater(new Runnable() {
 						public void run() {
@@ -618,6 +623,27 @@ public class JoinTeamController extends EventPublisher {
 
 		}
 
+	}
+
+	// Inner classes
+	private class CreateTeamFailHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			@SuppressWarnings("unused")
+			ServerCreateTeamFailEvent sCTFE = (ServerCreateTeamFailEvent) event;
+
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Error");
+					alert.setHeaderText("Team creation failed!");
+					alert.setContentText("The teamname already exists.");
+					alert.showAndWait();
+				}
+			});
+		}
 	}
 
 

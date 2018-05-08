@@ -6,12 +6,14 @@ import java.net.UnknownHostException;
 import java.util.Random;
 
 import eventbroker.EventBroker;
+import eventbroker.clientevent.ClientCreateTeamEvent;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import network.Network;
 import quiz.view.CreateQuizController;
@@ -66,7 +68,7 @@ public class Main extends Application {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see javafx.application.Application#start(javafx.stage.Stage)
 	 */
 	@Override
@@ -236,21 +238,31 @@ public class Main extends Application {
 	/**
 	 * Show create team scene.
 	 */
-	public void showCreateTeamScene() {
+	public boolean showCreateTeamScene(ClientCreateTeamEvent teamevent) {
 		try {
-			FXMLLoader createTeamLoader = new FXMLLoader();
-			createTeamLoader.setLocation(Main.class.getResource("../quiz/view/CreateTeam.fxml"));
-			BorderPane createTeam = (BorderPane) createTeamLoader.load();
-			CreateTeamController createTeamController = createTeamLoader.getController();
-			createTeamController.setMain(this);
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(Main.class.getResource("../quiz/view/CreateTeam.fxml"));
+			BorderPane newteam = (BorderPane) loader.load();
+			Stage dialogStage = new Stage();
+			dialogStage.setTitle("New Team");
+			dialogStage.initModality(Modality.WINDOW_MODAL);
+			dialogStage.initOwner(primaryStage);
+			Scene scene = new Scene(newteam);
+			dialogStage.setScene(scene);
 
-			Platform.runLater(new Runnable() {
-				public void run() {
-					rootLayout.setCenter(createTeam);
-				}
-			});
+			// Set the person into the controller
+			CreateTeamController controller = loader.getController();
+			controller.setDialogStage(dialogStage);
+			controller.setTeamEvent(teamevent);
+
+			// Show the dialog and wait until the user closes it
+			dialogStage.showAndWait();
+
+			return controller.isOkClicked();
 		} catch (IOException e) {
 			e.printStackTrace();
+
+			return false;
 		}
 	}
 

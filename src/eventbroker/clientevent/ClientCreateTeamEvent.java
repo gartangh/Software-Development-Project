@@ -58,4 +58,9 @@ public class ClientCreateTeamEvent extends ClientEvent {
 		return oldTeamID;
 	}
 
+	public void setTeamName(String teamName) {
+		this.teamname=teamName;
+
+	}
+
 }
