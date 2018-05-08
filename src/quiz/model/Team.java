@@ -59,11 +59,14 @@ public class Team implements Serializable {
 			String captainname, int players) {
 		// Client side
 		Team team = new Team(teamID, teamname, color, captainID, captainname, players);
-		
+
 		// Update context
 		MainContext context = MainContext.getContext();
 		context.getQuiz().addTeam(team);
-		context.setTeam(team);
+		context.getQuiz().removeUnassignedPlayer(team.getCaptainID());
+
+		if (team.getCaptainID() == context.getUser().getUserID())
+			context.setTeam(team);
 
 		return team;
 	}

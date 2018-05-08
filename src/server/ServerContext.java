@@ -128,7 +128,6 @@ public class ServerContext {
 					return user.getUsername();
 				}
 			}
-		}
 
 		// Nothing to delete if teamID == -1
 		return null;

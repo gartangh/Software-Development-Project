@@ -24,7 +24,7 @@ public class CreateTeamController extends EventPublisher {
 	private TextField mTeamname;
 	@FXML
 	private ColorPicker mColor;
-	
+
 	private CreateTeamFailHandler createTeamFailHandler = new CreateTeamFailHandler();
 	private CreateTeamSuccesHandler createTeamSuccesHandler = new CreateTeamSuccesHandler();
 
@@ -82,7 +82,7 @@ public class CreateTeamController extends EventPublisher {
 		MainContext context = MainContext.getContext();
 		int quizID = context.getQuiz().getQuizID();
 		String captainname = context.getUser().getUsername();
-		ClientCreateTeamEvent cCTE = new ClientCreateTeamEvent(quizID, teamname, color, captainname);
+		ClientCreateTeamEvent cCTE = new ClientCreateTeamEvent(quizID, teamname, color, context.getTeamID(),captainname);
 		publishEvent(cCTE);
 	}
 
@@ -92,15 +92,15 @@ public class CreateTeamController extends EventPublisher {
 		eventBroker.removeEventListener(createTeamFailHandler);
 		eventBroker.removeEventListener(createTeamSuccesHandler);
 	}
-	
+
 	// Inner classes
 	private class CreateTeamFailHandler implements EventListener {
-		
+
 		@Override
 		public void handleEvent(Event event) {
 			@SuppressWarnings("unused")
 			ServerCreateTeamFailEvent sCTFE = (ServerCreateTeamFailEvent) event;
-			
+
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
@@ -113,7 +113,7 @@ public class CreateTeamController extends EventPublisher {
 			});
 		}
 	}
-	
+
 	private class CreateTeamSuccesHandler implements EventListener {
 
 		@Override
