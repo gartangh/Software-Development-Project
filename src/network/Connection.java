@@ -105,10 +105,12 @@ public class Connection {
 							network.publishEvent(event);
 					} catch (SocketException e) {
 						System.err.println("SocketException");
-						//if (serverside connection)
+						//if (server side connection)
 							//for (Entry<Integer, Integer> entry: network.getUserIDConnectionIDMap().entrySet())
 								//if (entry.getValue() == connectionID)
 									//Server.onConnectionLost(entry.getKey());
+						//else if (client side connection)
+							//main.onConnectionLost();
 						break;
 					} catch (ClassNotFoundException e) {
 						e.printStackTrace();

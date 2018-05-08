@@ -139,6 +139,11 @@ public class Server extends EventPublisher {
 		System.out.println("Server running ...");
 	}
 
+	/**
+	 * On connection lost.
+	 *
+	 * @param userID the user ID
+	 */
 	public static void onConnectionLost(int userID) {
 		ServerContext context = ServerContext.getContext();
 		// log user out

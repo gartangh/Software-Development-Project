@@ -10,6 +10,8 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -357,6 +359,36 @@ public class Main extends Application {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * On connection lost.
+	 *
+	 * @param userID
+	 *            the user ID
+	 */
+	public void onConnectionLost() {
+		// Reset everything
+		MainContext context = MainContext.getContext();
+		context.setQuestion(null);
+		context.setQuiz(null);
+		context.setTeam(null);
+		context.setUser(null);
+		
+		// TODO Remove all eventListeners
+
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Error");
+				alert.setHeaderText("Connection lost!");
+				alert.setContentText("You lost connection with the server. Please restore connection and try again.");
+				alert.showAndWait();
+			}
+		});
+		
+		showLogInScene();
 	}
 
 }
