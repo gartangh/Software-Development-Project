@@ -19,7 +19,6 @@ import quiz.model.Quiz;
 import quiz.model.Team;
 import quiz.model.TeamNameID;
 import quiz.model.User;
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Map.Entry;
 import chat.ChatPanel;
@@ -39,7 +38,6 @@ import eventbroker.serverevent.ServerDeleteTeamEvent;
 import eventbroker.serverevent.ServerHostLeavesQuizEvent;
 import eventbroker.serverevent.ServerPlayerLeavesQuizEvent;
 import eventbroker.clientevent.ClientPlayerReadyEvent;
-import eventbroker.serverevent.ServerChangeTeamEvent;
 import eventbroker.serverevent.ServerNewTeamEvent;
 import eventbroker.serverevent.ServerQuizNewPlayerEvent;
 import eventbroker.serverevent.ServerStartQuizEvent;
@@ -381,7 +379,7 @@ public class JoinTeamController extends EventPublisher {
 			MainContext context = MainContext.getContext();
 			// Extra check
 			if (quizID == context.getQuiz().getQuizID()) {
-				Team newTeam = Team.createTeam(quizID, teamID, teamname, color, captainID, captainname, players);
+				Team.createTeam(quizID, teamID, teamname, color, captainID, captainname, players);
 				quizRoomModel.updateTeams();
 			}
 		}

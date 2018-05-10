@@ -29,7 +29,7 @@ public class Connection {
 			this.objectOutputStream.flush();
 			this.objectInputStream = new ObjectInputStream(this.socket.getInputStream());
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println("IOException");
 		}
 
 		this.network = network;
@@ -43,7 +43,7 @@ public class Connection {
 				objectOutputStream.flush();
 			}
 		} catch (IOException e1) {
-			e1.printStackTrace();
+			System.err.println("IOException");
 		}
 	}
 
@@ -52,8 +52,7 @@ public class Connection {
 		new Thread(new ReceiverThread()).start();
 	}
 
-	// Package local would be safer
-	public void close() {
+	protected void close() {
 		synchronized (this) {
 			try {
 				objectInputStream.close();
@@ -62,7 +61,7 @@ public class Connection {
 			} catch (SocketException e) {
 				System.err.println("SocketException");
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.err.println("IOException");
 			}
 		}
 
@@ -105,15 +104,17 @@ public class Connection {
 							network.publishEvent(event);
 					} catch (SocketException e) {
 						System.err.println("SocketException");
-						//if (server side connection)
-							//for (Entry<Integer, Integer> entry: network.getUserIDConnectionIDMap().entrySet())
-								//if (entry.getValue() == connectionID)
-									//Server.onConnectionLost(entry.getKey());
-						//else if (client side connection)
-							//main.onConnectionLost();
+
+						if (network.getType() == Network.SERVERTYPE) {
+							for (Entry<Integer, Integer> entry : network.getUserIDConnectionIDMap().entrySet())
+								if (entry.getValue() == connectionID)
+									Server.onConnectionLost(entry.getKey());
+						} else if (network.getType() == Network.CLIENTTYPE)
+							network.getMainApp().onConnectionLost();
+						
 						break;
 					} catch (ClassNotFoundException e) {
-						e.printStackTrace();
+						System.err.println("ClassNotFoundException");
 					} catch (IOException e) {
 						System.err.println("IOException");
 						break;

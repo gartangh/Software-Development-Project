@@ -13,6 +13,10 @@ import eventbroker.EventPublisher;
 import eventbroker.serverevent.ServerAlreadyLoggedInEvent;
 import eventbroker.serverevent.ServerCreateAccountFailEvent;
 import eventbroker.serverevent.ServerLogInFailEvent;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import main.Main;
 
 // TODO End ReceiverThread Connection Chat
 public class Network extends EventPublisher implements EventListener {
@@ -27,6 +31,17 @@ public class Network extends EventPublisher implements EventListener {
 	private Map<Integer, Integer> UserIDConnectionIDMap = new HashMap<>();
 	private ConnectionListener connectionListener;
 	private InetAddress networkAddress;
+	
+	// Reference to the main application
+	private Main main;
+
+	public void setMainApp(Main main) {
+		this.main = main;
+	}
+	
+	public Main getMainApp() {
+		return main;
+	}
 
 	// Constructors
 	public Network() {
@@ -42,6 +57,10 @@ public class Network extends EventPublisher implements EventListener {
 	}
 
 	// Getters
+	public String getType() {
+		return type;
+	}
+	
 	public Map<Integer, Integer> getUserIDConnectionIDMap() {
 		return UserIDConnectionIDMap;
 	}
@@ -82,7 +101,21 @@ public class Network extends EventPublisher implements EventListener {
 				connectionMap.put(connectionID, connection);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println("IOException");
+			
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Error");
+					alert.setHeaderText("Could not connect to network!");
+					alert.setContentText("Please restart the app and try again.");
+					alert.showAndWait();
+					
+					// Exit the app
+					System.exit(0);
+				}
+			});
 		}
 	}
 
@@ -110,9 +143,37 @@ public class Network extends EventPublisher implements EventListener {
 				connectionMap.put(connectionID, connection);
 			}
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			System.err.println("UnknownHostException");
+
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Error");
+					alert.setHeaderText("Could not connect to network!");
+					alert.setContentText("We could not find the host. Please restart the app and try again.");
+					alert.showAndWait();
+					
+					// Exit the app
+					System.exit(0);
+				}
+			});
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println("IOException");
+			
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Error");
+					alert.setHeaderText("Could not connect to network!");
+					alert.setContentText("Please restart the app and try again.");
+					alert.showAndWait();
+					
+					// Exit the app
+					System.exit(0);
+				}
+			});
 		}
 	}
 
