@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.QuestionController">
+<BorderPane stylesheets="@../../css/root.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.QuestionController">
    <left>
 				<VBox alignment="CENTER" BorderPane.alignment="CENTER">
 					<children>
@@ -36,9 +36,10 @@
 										<Text fx:id="questionText" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
 									</children>
 								</TextFlow>
-								<GridPane>
+								<GridPane prefHeight="210.0" prefWidth="667.0">
 									<columnConstraints>
-										<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+										<ColumnConstraints hgrow="SOMETIMES" maxWidth="309.0" minWidth="10.0" prefWidth="79.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="548.0" minWidth="10.0" prefWidth="548.0" />
 									</columnConstraints>
 									<rowConstraints>
 										<RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -52,29 +53,13 @@
 												<Insets />
 											</GridPane.margin>
 										</CheckBox>
-										<Label fx:id="answerB" text="Answer B" GridPane.rowIndex="1">
-											<GridPane.margin>
-												<Insets left="40.0" />
-											</GridPane.margin>
-										</Label>
 										<CheckBox fx:id="checkC" layoutX="45.0" layoutY="52.0" mnemonicParsing="false" onAction="#handleCheckC" text="C:" GridPane.rowIndex="2" />
-										<Label fx:id="answerC" layoutX="85.0" layoutY="52.0" text="Answer C" GridPane.rowIndex="2">
-											<GridPane.margin>
-												<Insets left="40.0" />
-											</GridPane.margin>
-										</Label>
 										<CheckBox fx:id="checkA" layoutX="45.0" layoutY="82.0" mnemonicParsing="false" onAction="#handleCheckA" text="A:" />
-										<Label fx:id="answerA" layoutX="45.0" layoutY="82.0" text="Answer A">
-											<GridPane.margin>
-												<Insets left="40.0" />
-											</GridPane.margin>
-										</Label>
 										<CheckBox fx:id="checkD" layoutX="45.0" layoutY="22.0" mnemonicParsing="false" onAction="#handleCheckD" text="D:" GridPane.rowIndex="3" />
-										<Label fx:id="answerD" layoutX="45.0" layoutY="22.0" text="Answer D" GridPane.rowIndex="3">
-											<GridPane.margin>
-												<Insets left="40.0" />
-											</GridPane.margin>
-										</Label>
+                  <Label fx:id="answerA" text="Answer A" GridPane.columnIndex="1" />
+                  <Label fx:id="answerB" text="Answer B" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label fx:id="answerC" text="Answer C" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label fx:id="answerD" text="Answer D" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 									</children>
 									<padding>
 										<Insets bottom="5.0" left="35.0" right="5.0" top="5.0" />
@@ -101,7 +86,7 @@
 										<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
 									</padding>
 								</Label>
-								<GridPane minWidth="200.0">
+								<GridPane minWidth="200.0" prefHeight="215.0" prefWidth="627.0">
 									<columnConstraints>
 										<ColumnConstraints hgrow="NEVER" minWidth="30.0" />
 										<ColumnConstraints hgrow="NEVER" minWidth="30.0" />

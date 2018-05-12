@@ -15,6 +15,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import network.Network;
@@ -57,7 +58,8 @@ public class Main extends Application {
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
-
+	private static final String MEDIA_URL = "BackgroundGrass.mp4";
+	
 	/**
 	 * The main method.
 	 *
@@ -77,7 +79,9 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle(QUIZNAME);
-
+		this.primaryStage.setMaximized(true);
+		this.primaryStage.setResizable(false);
+		
 		// Connect to network with randomly generated client port between
 		// SERVERPORT + 1 and 65535 (2^16 - 1) and type CLIENT
 		Network network = new Network(new Random().nextInt(65535 - SERVERPORT + 2) + 1026, Network.CLIENTTYPE);
@@ -131,11 +135,13 @@ public class Main extends Application {
 			FXMLLoader rootLayoutloader = new FXMLLoader();
 			rootLayoutloader.setLocation(Main.class.getResource("../quiz/view/RootLayout.fxml"));
 			rootLayout = (BorderPane) rootLayoutloader.load();
-
+			rootLayout.getStylesheets().add("css/root.css");
+			rootLayout.getStyleClass().add("root");
+			
 			// Show the scene containing the root layout
 			Scene scene = new Scene(rootLayout);
 			primaryStage.setScene(scene);
-
+			
 			FXMLLoader menuLoader = new FXMLLoader();
 			menuLoader.setLocation(Main.class.getResource("../quiz/view/Menu.fxml"));
 			AnchorPane menu = (AnchorPane) menuLoader.load();
@@ -160,9 +166,11 @@ public class Main extends Application {
 		try {
 			FXMLLoader logInloader = new FXMLLoader();
 			logInloader.setLocation(Main.class.getResource("../quiz/view/LogIn.fxml"));
-			BorderPane logIn = (BorderPane) logInloader.load();
+			StackPane logIn = (StackPane) logInloader.load();
 			LogInController logInController = logInloader.getController();
 			logInController.setMainApp(this);
+			logIn.getStylesheets().add("css/root.css");
+		    logIn.getStyleClass().add("root");
 
 			Platform.runLater(new Runnable() {
 				public void run() {
@@ -184,7 +192,9 @@ public class Main extends Application {
 			BorderPane joinQuiz = (BorderPane) joinQuizLoader.load();
 			JoinQuizController joinQuizController = joinQuizLoader.getController();
 			joinQuizController.setMain(this);
-
+			joinQuiz.getStylesheets().add("css/root.css");
+			joinQuiz.getStyleClass().add("root");
+		    
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(joinQuiz);
@@ -205,6 +215,8 @@ public class Main extends Application {
 			BorderPane createQuiz = (BorderPane) createQuizLoader.load();
 			CreateQuizController createQuizController = createQuizLoader.getController();
 			createQuizController.setMainApp(this);
+			createQuiz.getStylesheets().add("css/root.css");
+			createQuiz.getStyleClass().add("root");
 
 			Platform.runLater(new Runnable() {
 				public void run() {
@@ -226,7 +238,9 @@ public class Main extends Application {
 			BorderPane joinTeam = (BorderPane) joinTeamLoader.load();
 			JoinTeamController joinTeamController = joinTeamLoader.getController();
 			joinTeamController.setMain(this);
-
+			joinTeam.getStylesheets().add("css/root.css");
+			joinTeam.getStyleClass().add("root");
+			
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(joinTeam);
@@ -251,6 +265,8 @@ public class Main extends Application {
 			dialogStage.initOwner(primaryStage);
 			Scene scene = new Scene(newteam);
 			dialogStage.setScene(scene);
+			newteam.getStylesheets().add("css/root.css");
+			newteam.getStyleClass().add("root");
 
 			// Set the person into the controller
 			CreateTeamController controller = loader.getController();
@@ -278,7 +294,9 @@ public class Main extends Application {
 			BorderPane scoreboard = (BorderPane) scoreboardLoader.load();
 			ScoreboardController scoreboardController = scoreboardLoader.getController();
 			scoreboardController.setMainApp(this);
-
+			scoreboard.getStylesheets().add("css/root.css");
+			scoreboard.getStyleClass().add("root");
+			
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(scoreboard);
@@ -299,7 +317,9 @@ public class Main extends Application {
 			BorderPane questionFormRoot = (BorderPane) questionFormLoader.load();
 			QuestionController questionFormController = questionFormLoader.getController();
 			questionFormController.setMainApp(this);
-
+			questionFormRoot.getStylesheets().add("css/root.css");
+			questionFormRoot.getStyleClass().add("root");
+			
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(questionFormRoot);
@@ -320,7 +340,9 @@ public class Main extends Application {
 			BorderPane waitRoundRoot = (BorderPane) waitRoundLoader.load();
 			WaitRoundController waitRoundController = waitRoundLoader.getController();
 			waitRoundController.setMain(this);
-
+			waitRoundRoot.getStylesheets().add("css/root.css");
+			waitRoundRoot.getStyleClass().add("root");
+			
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(waitRoundRoot);
@@ -341,7 +363,9 @@ public class Main extends Application {
 			BorderPane waitHostRoot = (BorderPane) waitHostLoader.load();
 			WaitHostController waitHostController = waitHostLoader.getController();
 			waitHostController.setMain(this);
-
+			waitHostRoot.getStylesheets().add("css/root.css");
+			waitHostRoot.getStyleClass().add("root");
+			
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(waitHostRoot);
@@ -362,7 +386,9 @@ public class Main extends Application {
 			BorderPane roundMakerRoot = (BorderPane) roundMakerLoader.load();
 			CreateRoundController roundMakerController = roundMakerLoader.getController();
 			roundMakerController.setMain(this);
-
+			roundMakerRoot.getStylesheets().add("css/root.css");
+			roundMakerRoot.getStyleClass().add("root");
+			
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(roundMakerRoot);
