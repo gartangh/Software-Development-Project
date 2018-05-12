@@ -80,3 +80,11 @@
 /JoinTeamController$PlayerLeavesQuizHandler.class
 /JoinTeamController$QuizDeleteTeamHandler$1.class
 /JoinTeamController$QuizDeleteTeamHandler.class
+/JoinQuizController$NewQuizHandler.class
+/LogInController$AlreadyLoggedInHandler$1.class
+/LogInController$AlreadyLoggedInHandler.class
+/MenuController$1.class
+/MenuController$2.class
+/MenuController.class
+/QuestionController$VoteAnswerHandler.class
+/RootLayoutController.class

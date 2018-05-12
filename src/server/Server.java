@@ -595,11 +595,14 @@ public class Server extends EventPublisher {
 		public void handleEvent(Event event) {
 			ClientScoreboardDataEvent cSDE = (ClientScoreboardDataEvent) event;
 
-			int userID = cSDE.getUserID();
 			int quizID = cSDE.getQuizID();
 
 			ServerScoreboardDataEvent sSDE = new ServerScoreboardDataEvent(quizID);
-			sSDE.addRecipient(userID);
+			Quiz quiz = ServerContext.getContext().getQuiz(quizID);
+			for(Team team : quiz.getTeamMap().values())
+				for(int userid : team.getPlayerMap().keySet())
+					sSDE.addRecipient(userid);
+			sSDE.addRecipient(quiz.getHostID());
 			server.publishEvent(sSDE);
 		}
 

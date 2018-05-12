@@ -26,3 +26,7 @@
 /ServerDeleteTeamEvent.class
 /ServerHostLeavesQuizEvent.class
 /ServerPlayerLeavesQuizEvent.class
+/ServerCreateTeamFailEvent.class
+/ServerCreateTeamSuccesEvent.class
+/ServerNewQuizEvent.class
+/ServerNewTeamEvent.class
