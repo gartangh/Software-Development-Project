@@ -513,7 +513,10 @@ public class JoinTeamController extends EventPublisher {
 				TeamNameID selectedTeam=teamTable.getSelectionModel().getSelectedItem();
 				showTeamDetails(selectedTeam);
 				quizRoomModel.updateUnassignedPlayers();
-				if (userID==context.getUser().getUserID()) quizRoomModel.updateTeams();
+				if (userID==context.getUser().getUserID()) {
+					quizRoomModel.updateTeams();
+					//TODO: find way to showteamdetails of selectedteam
+				}
 
 			}
 		}

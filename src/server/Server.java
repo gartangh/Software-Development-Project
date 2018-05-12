@@ -173,9 +173,7 @@ public class Server extends EventPublisher {
 		if (user.getUserID()==quiz.getHostID()){
 			context.getQuizMap().remove(quiz.getQuizID());
 			ServerHostLeavesQuizEvent sHLQE= new ServerHostLeavesQuizEvent(quiz.getQuizID());
-			//ArrayList<Integer> receivers = context.getUsersFromQuiz(sHLQE.getQuizID());
 			sHLQE.addRecipients(context.getUserMap());
-			//TODO: handle event in joinquiz!!! good to send to everyone?
 			server.publishEvent(sHLQE);
 		}
 		else {

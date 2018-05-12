@@ -71,6 +71,16 @@ public class Team implements Serializable {
 		return team;
 	}
 
+	public Team(Team team){
+		this.teamID = team.getTeamID();
+		this.teamname = team.getTeamname();
+		this.captainID = team.getCaptainID();
+		this.colorRed = (int) (team.getColor().getRed() * 255);
+		this.colorGreen = (int) (team.getColor().getGreen() * 255);
+		this.colorBlue = (int) (team.getColor().getBlue() * 255);
+		this.players = team.getPlayers();
+	}
+
 	// Getters and setter
 	public int getTeamID() {
 		return teamID;
