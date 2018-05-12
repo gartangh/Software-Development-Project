@@ -67,6 +67,7 @@ public class LogInController extends EventPublisher {
 		eventBroker.addEventListener(ServerAlreadyLoggedInEvent.EVENTTYPE, alreadyLoggedInHandler);
 		eventBroker.addEventListener(ServerLogInSuccesEvent.EVENTTYPE, logInSuccesHandler);
 		
+		// Uncomment this to show video at login
 		/*
 		String filePath = new File(path).getAbsolutePath();
 		media = new Media(new File(path).toURI().toString());
@@ -74,10 +75,6 @@ public class LogInController extends EventPublisher {
 		mediaView.setMediaPlayer(mediaPlayer);
 		mediaPlayer.setAutoPlay(true);
 		mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-		DoubleProperty width = mediaView.fitWidthProperty();
-		DoubleProperty height = mediaView.fitHeightProperty();
-		width.bind(Bindings.selectDouble(mediaView.sceneProperty(), "width"));
-		height.bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
 		*/
 	}
 
