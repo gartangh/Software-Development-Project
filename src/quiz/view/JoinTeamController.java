@@ -514,8 +514,7 @@ public class JoinTeamController extends EventPublisher {
 				showTeamDetails(selectedTeam);
 				quizRoomModel.updateUnassignedPlayers();
 				if (userID==context.getUser().getUserID()) {
-					quizRoomModel.updateTeams();
-					//TODO: find way to showteamdetails of selectedteam
+					quizRoomModel.tiggerTeams();//To change my team to bold
 				}
 
 			}

@@ -92,6 +92,39 @@ public class JoinTeamModel {
 		});
 	}
 
+	public void tiggerTeams() {
+		Quiz quiz = MainContext.getContext().getQuiz();
+		Platform.runLater(new Runnable() {
+			public void run() {
+				TeamNameID teamNameID = new TeamNameID(new SimpleStringProperty(""),
+						-1,new SimpleStringProperty(""));
+				teams.add(teamNameID);
+				teams.remove(teamNameID);
+			}
+		});
+	}
+
+	//TODO: check if it has to be this way to have a cleaner selectionmodel
+	public void addTeam(Team team) {
+		Platform.runLater(new Runnable() {
+			public void run() {
+				TeamNameID teamNameID = new TeamNameID(new SimpleStringProperty(team.getTeamname()),
+							team.getTeamID(),new SimpleStringProperty(team.getPlayerMap().get(team.getCaptainID())));
+				teams.add(teamNameID);
+				}
+		});
+	}
+
+	public void deleteTeam(Team team) {
+		Platform.runLater(new Runnable() {
+			public void run() {
+				for (int i=0;i<teams.size();i++){
+					if (teams.get(i).getTeamID()==team.getTeamID()) teams.remove(i);
+				}
+			}
+		});
+	}
+
 	public void updateUnassignedPlayers(){
 		Quiz quiz = MainContext.getContext().getQuiz();
 		Platform.runLater(new Runnable() {
