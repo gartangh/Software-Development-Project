@@ -163,6 +163,39 @@ public class Server extends EventPublisher {
 		// the quiz or the team an notify its users
 	}
 
+
+	public void playerLeavesQuiz(int quizID,int userID,int teamID){
+		ServerContext context=ServerContext.getContext();
+		Quiz quiz = context.getQuizMap().get(quizID);
+		User user = context.getUserMap().get(userID);
+		Team team = quiz.getTeamMap().get(teamID);
+
+		if (user.getUserID()==quiz.getHostID()){
+			context.getQuizMap().remove(quiz.getQuizID());
+			ServerHostLeavesQuizEvent sHLQE= new ServerHostLeavesQuizEvent(quiz.getQuizID());
+			//ArrayList<Integer> receivers = context.getUsersFromQuiz(sHLQE.getQuizID());
+			sHLQE.addRecipients(context.getUserMap());
+			//TODO: handle event in joinquiz!!! good to send to everyone?
+			server.publishEvent(sHLQE);
+		}
+		else {
+			int captainID=-1;
+			ArrayList<Integer> receivers = context.getUsersFromQuiz(quiz.getQuizID());
+			if (team!=null){
+				context.changeTeam(quiz.getQuizID(),team.getTeamID(), user.getUserID(), 'd');
+				captainID=team.getCaptainID();
+			}
+			else {
+				quiz.removeUnassignedPlayer(user.getUserID());
+			}
+
+			ServerPlayerLeavesQuizEvent sPLQE=new ServerPlayerLeavesQuizEvent(quiz.getQuizID(),user.getUserID(),teamID,captainID);
+			sPLQE.addRecipients(receivers);
+			server.publishEvent(sPLQE);
+		}
+
+	}
+
 	// Inner classes
 	private static class CreateAccountHandler implements EventListener {
 
@@ -652,35 +685,7 @@ public class Server extends EventPublisher {
 		public void handleEvent(Event event) {
 			ClientLeaveQuizEvent cLQE = (ClientLeaveQuizEvent) event;
 			ServerContext context = ServerContext.getContext();
-			Quiz quiz = context.getQuizMap().get(cLQE.getQuizID());
-			User user = context.getUserMap().get(cLQE.getUserID());
-			Team team = quiz.getTeamMap().get(cLQE.getTeamID());
-
-			if (user.getUserID()==quiz.getHostID()){
-				context.getQuizMap().remove(quiz.getQuizID());
-				ServerHostLeavesQuizEvent sHLQE= new ServerHostLeavesQuizEvent(quiz.getQuizID());
-				//ArrayList<Integer> receivers = context.getUsersFromQuiz(sHLQE.getQuizID());
-				sHLQE.addRecipients(context.getUserMap());
-				//TODO: handle event in joinquiz!!! good to send to everyone?
-				server.publishEvent(sHLQE);
-			}
-			else {
-				int captainID=-1;
-				ArrayList<Integer> receivers = context.getUsersFromQuiz(quiz.getQuizID());
-				if (team!=null){
-					context.changeTeam(quiz.getQuizID(),team.getTeamID(), user.getUserID(), 'd');
-					captainID=team.getCaptainID();
-				}
-				else {
-					quiz.removeUnassignedPlayer(user.getUserID());
-				}
-
-				ServerPlayerLeavesQuizEvent sPLQE=new ServerPlayerLeavesQuizEvent(quiz.getQuizID(),user.getUserID(),cLQE.getTeamID(),captainID);
-				sPLQE.addRecipients(receivers);
-				server.publishEvent(sPLQE);
-			}
-
-
+			server.playerLeavesQuiz(cLQE.getQuizID(),cLQE.getUserID(),cLQE.getTeamID());
 		}
 
 
