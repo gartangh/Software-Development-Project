@@ -63,8 +63,10 @@ public class ScoreboardController extends EventPublisher {
 		scoreColumn.setCellValueFactory(
 				cellData -> (new SimpleIntegerProperty(cellData.getValue().getScore()).asObject()));
 
-		ClientScoreboardDataEvent cSDE = new ClientScoreboardDataEvent();
-		publishEvent(cSDE);
+		if(MainContext.getContext().getUser().getUserID() == MainContext.getContext().getQuiz().getHostID()) {
+			ClientScoreboardDataEvent cSDE = new ClientScoreboardDataEvent();
+			publishEvent(cSDE);
+		}
 	}
 
 	/**
@@ -99,24 +101,29 @@ public class ScoreboardController extends EventPublisher {
 
 			scoreboardModel.addScoreboardTeams(scoreboardTeams);
 
+			
+			
 			MainContext context = MainContext.getContext();
-			if (scoreboardTeams.size() > 0) {
-				int curTeamID = context.getTeam().getTeamID();
-				ScoreboardTeam curTeam = null;
-				for (ScoreboardTeam team : scoreboardTeams) {
-					if (team.getTeamID() == curTeamID) {
-						curTeam = team;
-						break;
+			if (context.getQuiz().getHostID() == context.getUser().getUserID())
+				scoreboardModel.updateWinnerLoser("HOST");
+			else {
+				if (scoreboardTeams.size() > 0) {
+					int curTeamID = context.getTeam().getTeamID();
+					ScoreboardTeam curTeam = null;
+					for (ScoreboardTeam team : scoreboardTeams) {
+						if (team.getTeamID() == curTeamID) {
+							curTeam = team;
+							break;
+						}
 					}
-				}
-
-				if (context.getQuiz().getHostID() == context.getUser().getUserID())
-					scoreboardModel.updateWinnerLoser("HOST");
-				else if (curTeam != null) {
-					if (scoreboardTeams.get(0).getTeamID() == curTeamID)
-						scoreboardModel.updateWinnerLoser("WINNER WINNER CHICKEN DINNER");
-					else
-						scoreboardModel.updateWinnerLoser(curTeam.getTeamname() + ": LOSER");
+	
+	
+					if (curTeam != null) {
+						if (scoreboardTeams.get(0).getTeamID() == curTeamID)
+							scoreboardModel.updateWinnerLoser("WINNER WINNER CHICKEN DINNER");
+						else
+							scoreboardModel.updateWinnerLoser(curTeam.getTeamname() + ": LOSER");
+					}
 				}
 			}
 		}

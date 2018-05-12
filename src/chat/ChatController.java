@@ -41,7 +41,7 @@ final public class ChatController extends EventPublisher {
 	@FXML
 	private void initialize() {
 		EventBroker.getEventBroker().addEventListener(ChatMessage.SERVERTYPE, chatHandler);
-
+		chatTextField.setPromptText("Use '*' to send to all players");
 		chatTextArea.textProperty().bind(chatModel.getChatText());
 		// chatTextArea.setFont(Font.loadFont(Paths.get(".").toAbsolutePath().normalize().toString()
 		// + "\\Files\\OpenSansEmoji.ttf", 15));

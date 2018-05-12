@@ -14,3 +14,7 @@
 /Server$VoteHandler.class
 /Server.class
 /ServerContext.class
+/Server$DeleteTeamHandler.class
+/Server$LeaveQuizHandler.class
+/Server$EndQuizHandler.class
+/Server$LogOutHandler.class

@@ -23,6 +23,13 @@ public class MCQuestion extends Question {
 		this.answers = answers;
 		this.correctAnswer = correctAnswer;
 	}
+	
+	public MCQuestion(int questionID, String question, String[] answers, int correctAnswer) {
+		super(questionID);
+		this.question = question;
+		this.answers = answers;
+		this.correctAnswer = correctAnswer;
+	}
 
 	// Getters
 	public String getQuestion() {
@@ -35,6 +42,10 @@ public class MCQuestion extends Question {
 
 	public int getCorrectAnswer() {
 		return correctAnswer;
+	}
+	
+	public void setCorrectAnswer(int correctAnswer) {
+		this.correctAnswer = correctAnswer;
 	}
 
 	// Method

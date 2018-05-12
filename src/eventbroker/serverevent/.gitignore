@@ -23,3 +23,10 @@
 /ServerStartRoundEvent.class
 /ServerVoteAnswerEvent.class
 /ServerVoteEvent.class
+/ServerDeleteTeamEvent.class
+/ServerHostLeavesQuizEvent.class
+/ServerPlayerLeavesQuizEvent.class
+/ServerCreateTeamFailEvent.class
+/ServerCreateTeamSuccesEvent.class
+/ServerNewQuizEvent.class
+/ServerNewTeamEvent.class

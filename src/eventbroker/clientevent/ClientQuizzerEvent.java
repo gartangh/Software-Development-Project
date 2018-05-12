@@ -14,7 +14,8 @@ public class ClientQuizzerEvent extends ClientEvent {
 	public ClientQuizzerEvent() {
 		super.type = EVENTTYPE;
 		this.quizID = MainContext.getContext().getQuiz().getQuizID();
-		this.teamID = MainContext.getContext().getTeam().getTeamID();
+		if(MainContext.getContext().getTeam() != null)
+			this.teamID = MainContext.getContext().getTeam().getTeamID();
 	}
 
 	// Getters
