@@ -19,6 +19,7 @@ public class ServerJoinQuizEvent extends ServerEvent {
 	// Constructor
 	public ServerJoinQuizEvent(Quiz q) {
 		super.type = EVENTTYPE;
+		//It has to be like this or the object can't be serializiable again, java takes old value!!!!!!
 		this.quiz = Quiz.createQuiz(q.getQuizID(),q.getQuizname(),q.getRounds(),q.getPlayers(),q.getHostID(),q.getHostID(),q.getHostname());
 
 		for (Entry<Integer,String> entry : q.getUnassignedPlayers().entrySet()){
@@ -31,7 +32,7 @@ public class ServerJoinQuizEvent extends ServerEvent {
 				team.getPlayerMap().put(user.getKey(),user.getValue());
 			quiz.getTeamMap().put(oldTeam.getKey(),team);
 		}
-		//has to be like this or the object can't be serializiable again, java takes old value
+
 	}
 
 	// Getter

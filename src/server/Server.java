@@ -387,6 +387,7 @@ public class Server extends EventPublisher {
 			if (exists) {
 				// Teamname is already in use
 				ServerCreateTeamFailEvent sCTFE = new ServerCreateTeamFailEvent();
+				sCTFE.addRecipient(userID);
 				server.publishEvent(sCTFE);
 			} else {
 				// Teamname is not yet in use
