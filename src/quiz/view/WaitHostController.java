@@ -26,7 +26,7 @@ import quiz.model.TeamNameID;
 import quiz.model.WaitHostModel;
 
 public class WaitHostController extends EventPublisher {
-	
+
 	@FXML
 	private TableView<TeamNameID> answeredTeamsTable;
 	@FXML
@@ -49,7 +49,7 @@ public class WaitHostController extends EventPublisher {
 	private Label correctAnswer;
 	@FXML
 	private AnchorPane mPlaceholder;
-	
+
 	private WaitHostModel waitHostModel = new WaitHostModel();
 	private NewMCQuestionHandler newMCQuestionHandler = new NewMCQuestionHandler();
 	private UpdateTeamsHandler updateTeamsHandler = new UpdateTeamsHandler();
@@ -61,10 +61,10 @@ public class WaitHostController extends EventPublisher {
 
 	public void setMain(Main main) {
 		this.main = main;
-		
+
 		answeredTeamsTable.setItems(waitHostModel.getTeams());
 	}
-	
+
 	@FXML
 	private void initialize() {
 		EventBroker eventBroker = EventBroker.getEventBroker();
@@ -72,7 +72,7 @@ public class WaitHostController extends EventPublisher {
 		eventBroker.addEventListener(ServerNewMCQuestionEvent.EVENTTYPE, newMCQuestionHandler);
 		eventBroker.addEventListener(ServerVoteAnswerEvent.EVENTTYPE, updateTeamsHandler);
 		eventBroker.addEventListener(ServerEndQuizEvent.EVENTTYPE, endQuizHandler);
-		
+
 		teamnameColumn.setCellValueFactory(cellData -> cellData.getValue().getTeamname());
 		answerColumn.setCellValueFactory(cellData -> cellData.getValue().getAnswer());
 		questionTitle.textProperty().bind(waitHostModel.getQuestionTitleProperty());
@@ -84,7 +84,7 @@ public class WaitHostController extends EventPublisher {
 		answerD.textProperty().bind(waitHostModel.getAnswerPropertyD());
 		// TODO (also WaitHostModel: 47)
 		correctAnswer.textProperty().bind(waitHostModel.getCorrectAnswerProperty());
-		
+
 		// ChatPanel (ChatModel and ChatController) are created
 		ChatPanel chatPanel = ChatPanel.createChatPanel();
 		mPlaceholder.getChildren().add(chatPanel.getContent());
@@ -108,7 +108,7 @@ public class WaitHostController extends EventPublisher {
 		}
 
 	}
-	
+
 	private class NewMCQuestionHandler implements EventListener {
 
 		@Override
@@ -120,16 +120,16 @@ public class WaitHostController extends EventPublisher {
 			String question = sNMCQE.getQuestion();
 			String[] answers = sNMCQE.getAnswers();
 			int correctAnswer = sNMCQE.getCorrectAnswer();
-			
+
 			waitHostModel.clearTeams();
-			
+
 			MCQuestion q = new MCQuestion(questionID, question, answers, correctAnswer);
 			MainContext.getContext().setQuestion(q);
 			waitHostModel.updateQuestion();
 		}
 
 	}
-	
+
 	private class UpdateTeamsHandler implements EventListener {
 
 		@Override
@@ -137,7 +137,7 @@ public class WaitHostController extends EventPublisher {
 			// TODO: add received team to table
 			ServerVoteAnswerEvent cAE = (ServerVoteAnswerEvent) event;
 			Team team = MainContext.getContext().getQuiz().getTeamMap().get(cAE.getTeamID());
-			TeamNameID teamNameID = new TeamNameID(new SimpleStringProperty(team.getTeamname()), team.getTeamID());
+			TeamNameID teamNameID = new TeamNameID(new SimpleStringProperty(team.getTeamname()), team.getTeamID(),new SimpleStringProperty(team.getPlayerMap().get(team.getCaptainID())));
 			int answerID = cAE.getAnswer();
 			StringProperty answer = null;
 			if(answerID == 0) answer = new SimpleStringProperty("A");

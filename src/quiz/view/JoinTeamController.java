@@ -4,14 +4,20 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.util.Callback;
 import main.MainContext;
 import main.Main;
 import quiz.model.JoinTeamModel;
@@ -49,7 +55,11 @@ public class JoinTeamController extends EventPublisher {
 	@FXML
 	private TableView<TeamNameID> teamTable;
 	@FXML
-	private TableColumn<TeamNameID, String> NameColumn;
+	private TableColumn<TeamNameID, String> teamNameColumn;
+	@FXML
+	private TableColumn<TeamNameID, String> captainNameColumn;
+	@FXML
+	private ListView<String> unassignedPlayerList;
 	@FXML
 	private Label TeamnameLabel;
 	@FXML
@@ -60,6 +70,8 @@ public class JoinTeamController extends EventPublisher {
 	private Circle circle;
 	@FXML
 	private AnchorPane mPlaceholder;
+	@FXML
+	private Button readyButton;
 
 	private JoinTeamModel quizRoomModel = new JoinTeamModel();
 	private NewTeamHandler newTeamHandler = new NewTeamHandler();
@@ -94,23 +106,95 @@ public class JoinTeamController extends EventPublisher {
 		eventBroker.addEventListener(ServerPlayerLeavesQuizEvent.EVENTTYPE,playerLeavesQuizHandler);
 		eventBroker.addEventListener(ServerCreateTeamFailEvent.EVENTTYPE, createTeamFailHandler);
 
-		NameColumn.setCellValueFactory(cellData -> cellData.getValue().getTeamname());
+		teamNameColumn.setCellValueFactory(cellData -> cellData.getValue().getTeamname());
+		captainNameColumn.setCellValueFactory(cellData -> cellData.getValue().getCaptainName());
 		teamTable.getSelectionModel().selectedItemProperty()
 				.addListener((observable, oldValue, newValue) -> showTeamDetails(newValue));
 		quizRoomModel = new JoinTeamModel();
 		showTeamDetails(null);
 
+		teamTable.setRowFactory(new Callback<TableView<TeamNameID>, TableRow<TeamNameID>>() {
+	        @Override
+	        public TableRow<TeamNameID> call(TableView<TeamNameID> param) {
+	            return new TableRow<TeamNameID>() {
+	            	@Override
+	            	protected void updateItem(TeamNameID item, boolean empty) {
+	            	    super.updateItem(item, empty);
+	            	    Team team =MainContext.getContext().getTeam();
+	            	    if (team != null && item !=null){
+		            	    if (item.getTeamID()==team.getTeamID()) {
+		            	        setStyle("-fx-font-weight: bold");
+		            	    } else  {
+		            	        setStyle("");
+		            	    }
+	            	    }
+	            	    else setStyle("");
+	            	}
+	            };
+	        }
+	    });
+
+		readyButton.textProperty().bind(quizRoomModel.getStartButtonText());
 		CaptainLabel.textProperty().bind(quizRoomModel.getCaptainname());
 		TeamnameLabel.textProperty().bind(quizRoomModel.getTeamname());
 		circle.fillProperty().bind(quizRoomModel.getColor());
 		teammemberslist.itemsProperty().bind(quizRoomModel.getMembers());
+		unassignedPlayerList.itemsProperty().bind(quizRoomModel.getUnassignedPlayers());
+
+
+		unassignedPlayerList.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+	        @Override
+	        public ListCell<String> call(ListView<String> param) {
+	            return new ListCell<String>() {
+	            	@Override
+	            	protected void updateItem(String playerName, boolean empty) {
+	            	    super.updateItem(playerName, empty);
+	            	    User user =MainContext.getContext().getUser();
+	            	    if (user != null && playerName != null){
+		            	    if (user.getUsername().equals(playerName)) {
+		            	    	setStyle("-fx-font-weight: bold");
+		            	    } else  {
+		            	        setStyle("");
+		            	    }
+	            	    }
+	            	    else setStyle("");
+	            	    setText(playerName);
+	            	}
+	            };
+	        }
+	    });
+
+		teammemberslist.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+	        @Override
+	        public ListCell<String> call(ListView<String> param) {
+	            return new ListCell<String>() {
+	            	@Override
+	            	protected void updateItem(String playerName, boolean empty) {
+	            	    super.updateItem(playerName, empty);
+	            	    User user =MainContext.getContext().getUser();
+	            	    if (user != null && playerName != null){
+		            	    if (user.getUsername().equals(playerName)) {
+		            	    	setStyle("-fx-font-weight: bold");
+		            	    } else  {
+		            	        setStyle("");
+		            	    }
+	            	    }
+	            	    else setStyle("");
+	            	    setText(playerName);
+	            	}
+	            };
+	        }
+	    });
 
 		// ChatPanel (ChatModel and ChatController) are created
 		ChatPanel chatPanel = ChatPanel.createChatPanel();
 		mPlaceholder.getChildren().add(chatPanel.getContent());
 
 		quizRoomModel.updateTeams();
+		quizRoomModel.updateUnassignedPlayers();
+		quizRoomModel.setStartButtonText(MainContext.getContext());
 		teamTable.setItems(quizRoomModel.getTeams());
+
 	}
 
 	public void showTeamDetails(TeamNameID team) {
@@ -187,13 +271,20 @@ public class JoinTeamController extends EventPublisher {
 		// The EventListeners should not yet be deleted!
 
 		if (hostID == userID) {
-			// The host is ready
-			// TODO Only press ready as a host, when there are at least
-			// Quiz.MINTEAMS teams ready
-			ClientHostReadyEvent cHRE = new ClientHostReadyEvent(quizID);
-			publishEvent(cHRE);
+			Quiz quiz=MainContext.getContext().getQuiz();
 
-			main.showCreateRoundScene();
+			if (quiz.getTeamMap().size()>=quiz.MINTEAMS){
+				ClientHostReadyEvent cHRE = new ClientHostReadyEvent(quizID);
+				publishEvent(cHRE);
+				main.showCreateRoundScene();
+			}
+			else {
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("Warning");
+				alert.setHeaderText("Not enough teams!");
+				alert.setContentText("There have to be at least" + quiz.MINTEAMS + " teams before you can start the quiz. Please wait until there are enough teams");
+				alert.showAndWait();
+			}
 		} else if (team.getCaptainID() == userID) {
 			// The captain is ready
 			// TODO Only press ready as a captain, when there are at least
@@ -385,6 +476,7 @@ public class JoinTeamController extends EventPublisher {
 			if (quizID == context.getQuiz().getQuizID()) {
 				Team newTeam = Team.createTeam(quizID, teamID, teamname, color, captainID, captainname, players);
 				quizRoomModel.updateTeams();
+				quizRoomModel.updateUnassignedPlayers();
 			}
 		}
 
@@ -411,15 +503,18 @@ public class JoinTeamController extends EventPublisher {
 					newTeam.addPlayer(userID, userName);
 					if (context.getUser().getUserID() == userID)
 						context.setTeam(newTeam);
-
-					quizRoomModel.updateTeamDetail(newTeam.getTeamID());
 				}
 
 				if (oldTeam != null)
 					oldTeam.removePlayer(userID);
 				else
-					// Remove player from the unassigned players list
 					context.getQuiz().removeUnassignedPlayer(userID);
+
+				TeamNameID selectedTeam=teamTable.getSelectionModel().getSelectedItem();
+				showTeamDetails(selectedTeam);
+				quizRoomModel.updateUnassignedPlayers();
+				if (userID==context.getUser().getUserID()) quizRoomModel.updateTeams();
+
 			}
 		}
 
@@ -449,7 +544,7 @@ public class JoinTeamController extends EventPublisher {
 
 				return;
 			}
-			
+
 			// All unassigned players
 			if (context.getTeam() == null) {
 				context.setQuiz(null);
@@ -458,7 +553,7 @@ public class JoinTeamController extends EventPublisher {
 
 				return;
 			}
-			
+
 			// Other users (normal players)
 			context.getQuiz().setRunning(true);
 
@@ -477,6 +572,7 @@ public class JoinTeamController extends EventPublisher {
 			String username = sQNPE.getUsername();
 
 			MainContext.getContext().getQuiz().addUnassignedPlayer(userID, username);
+			quizRoomModel.updateUnassignedPlayers();
 		}
 
 	}
@@ -489,6 +585,7 @@ public class JoinTeamController extends EventPublisher {
 
 			Quiz quiz=MainContext.getContext().getQuiz();
 			Team team=quiz.getTeamMap().get(sDTE.getTeamID());
+			TeamNameID selectedTeam=teamTable.getSelectionModel().getSelectedItem();
 
 			if (team!=null){
 				for (Entry <Integer,String> entry : team.getPlayerMap().entrySet()){
@@ -501,8 +598,9 @@ public class JoinTeamController extends EventPublisher {
 				}
 				Platform.runLater(new Runnable() {
 					public void run() {
+						showTeamDetails(selectedTeam);
 						quizRoomModel.updateTeams();
-						quizRoomModel.updateTeamDetail(-1);
+						quizRoomModel.updateUnassignedPlayers();
 						if (oldTeamID==team.getTeamID() && team.getCaptainID() != MainContext.getContext().getUser().getUserID()){
 							Alert alert = new Alert(AlertType.WARNING);
 							alert.initOwner(main.getPrimaryStage());
@@ -618,6 +716,7 @@ public class JoinTeamController extends EventPublisher {
 				else {
 					TeamNameID selectedTeam = teamTable.getSelectionModel().getSelectedItem();
 					quizRoomModel.updateTeams();
+					quizRoomModel.updateUnassignedPlayers();
 					showTeamDetails(selectedTeam);
 				}
 

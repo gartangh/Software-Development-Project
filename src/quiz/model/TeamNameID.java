@@ -1,20 +1,28 @@
 package quiz.model;
 
 import javafx.beans.property.StringProperty;
+import javafx.scene.paint.Color;
 
 public class TeamNameID {
 
 	StringProperty teamname;
+	StringProperty captainName;
+
 	int teamID;
 	StringProperty answer;
 
 	// Constructor
-	public TeamNameID(StringProperty teamname, int teamID) {
+	public TeamNameID(StringProperty teamname, int teamID,StringProperty captainName) {
 		this.teamname = teamname;
 		this.teamID = teamID;
+		this.captainName = captainName;
 	}
 
 	// Getters and setters
+	public StringProperty getCaptainName() {
+		return captainName;
+	}
+
 	public StringProperty getTeamname() {
 		return teamname;
 	}
@@ -30,7 +38,7 @@ public class TeamNameID {
 	public void setTeamID(int teamID) {
 		this.teamID = teamID;
 	}
-	
+
 	public StringProperty getAnswer() {
 		return answer;
 	}
@@ -47,7 +55,7 @@ public class TeamNameID {
 			if (other2.getTeamID() == this.teamID)
 				return true;
 		}
-		
+
 		return false;
 	}
 }
