@@ -1,5 +1,7 @@
 package quiz.view;
 
+import java.awt.image.BufferedImage;
+
 import chat.ChatPanel;
 import eventbroker.Event;
 import eventbroker.EventBroker;
@@ -10,7 +12,9 @@ import eventbroker.clientevent.ClientNewQuestionEvent;
 import eventbroker.clientevent.ClientVoteEvent;
 import eventbroker.serverevent.ServerVoteAnswerEvent;
 import eventbroker.serverevent.ServerEndQuizEvent;
+import eventbroker.serverevent.ServerNewIPQuestionEvent;
 import eventbroker.serverevent.ServerNewMCQuestionEvent;
+import eventbroker.serverevent.ServerNewPixelSizeEvent;
 import eventbroker.serverevent.ServerNewRoundEvent;
 import eventbroker.serverevent.ServerNotAllAnsweredEvent;
 import eventbroker.serverevent.ServerVoteEvent;
@@ -21,19 +25,29 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import main.Context;
 import main.Main;
 import quiz.model.AnswerVoteModel;
+import quiz.model.IPQuestion;
 import quiz.model.MCQuestion;
+import quiz.model.Question;
+import quiz.util.RoundType;
 
 public class QuestionController extends EventPublisher {
 
 	@FXML
+	private VBox leftVBox;
+	@FXML
 	private Label questionTitle;
 	@FXML
 	private Text questionText;
+	@FXML
+	private ImageView imageView;
 	@FXML
 	private CheckBox checkA;
 	@FXML
@@ -81,6 +95,8 @@ public class QuestionController extends EventPublisher {
 	private VoteHandler voteHandler;
 	private VoteAnwserHandler voteAnwserHandler;
 	private NewMCQuestionHandler newMCQuestionHandler;
+	private NewIPQuestionHandler newIPQuestionHandler;
+	private NewPixelSizeHandler newPixelSizeHandler;
 	private NotAllAnsweredHandler notAllAnsweredHandler;
 	private NewRoundHandler newRoundHandler;
 	private EndQuizHandler endQuizHandler;
@@ -98,6 +114,8 @@ public class QuestionController extends EventPublisher {
 		voteHandler = new VoteHandler();
 		voteAnwserHandler = new VoteAnwserHandler();
 		newMCQuestionHandler = new NewMCQuestionHandler();
+		newIPQuestionHandler = new NewIPQuestionHandler();
+		newPixelSizeHandler = new NewPixelSizeHandler();
 		notAllAnsweredHandler = new NotAllAnsweredHandler();
 		newRoundHandler = new NewRoundHandler();
 		endQuizHandler = new EndQuizHandler();
@@ -106,12 +124,15 @@ public class QuestionController extends EventPublisher {
 		eventBroker.addEventListener(ServerVoteEvent.EVENTTYPE, voteHandler);
 		eventBroker.addEventListener(ServerVoteAnswerEvent.EVENTTYPE, voteAnwserHandler);
 		eventBroker.addEventListener(ServerNewMCQuestionEvent.EVENTTYPE, newMCQuestionHandler);
+		eventBroker.addEventListener(ServerNewIPQuestionEvent.EVENTTYPE, newIPQuestionHandler);
+		eventBroker.addEventListener(ServerNewPixelSizeEvent.EVENTTYPE, newPixelSizeHandler);
 		eventBroker.addEventListener(ServerNotAllAnsweredEvent.EVENTTYPE, notAllAnsweredHandler);
 		eventBroker.addEventListener(ServerNewRoundEvent.EVENTTYPE, newRoundHandler);
 		eventBroker.addEventListener(ServerEndQuizEvent.EVENTTYPE, endQuizHandler);
 
 		questionTitle.textProperty().bind(answerVoteModel.getQuestionTitleProperty());
 		questionText.textProperty().bind(answerVoteModel.getQuestionTextProperty());
+		imageView.imageProperty().bind(answerVoteModel.getImageProperty());
 
 		answerA.textProperty().bind(answerVoteModel.getAnswerPropertyA());
 		answerB.textProperty().bind(answerVoteModel.getAnswerPropertyB());
@@ -137,12 +158,26 @@ public class QuestionController extends EventPublisher {
 		confirmButton.disableProperty().bind(answerVoteModel.getConfirmDisableProperty());
 		nextButton.disableProperty().bind(answerVoteModel.getNextDisableProperty());
 
-		answerVoteModel.updateQuestion();
-		answerVoteModel.updateVotes(Context.getContext().getTeamID());
-
+		//answerVoteModel.updateVotes(Context.getContext().getTeamID());
+		
 		// ChatPanel (ChatModel and ChatController) are created
 		ChatPanel chatPanel = ChatPanel.createChatPanel();
 		mPlaceholder.getChildren().add(chatPanel.getContent());
+	}
+	
+	public void setRoundType(RoundType roundType) {
+		answerVoteModel.setRoundType(roundType);
+		switch(roundType) {
+		case IP:
+			leftVBox.getChildren().remove(1);
+			imageView.imageProperty().bind(answerVoteModel.getImageProperty());
+			break;
+		case MC:
+			leftVBox.getChildren().remove(2);
+			questionText.textProperty().bind(answerVoteModel.getQuestionTextProperty());
+			break;
+		}
+		//answerVoteModel.updateQuestion();
 	}
 
 	private void handleCheck(int answer) {
@@ -220,7 +255,18 @@ public class QuestionController extends EventPublisher {
 
 			alert.showAndWait();
 		} else {
-			ClientAnswerEvent cAE = new ClientAnswerEvent(Context.getContext().getQuestion().getQuestionID(), answer);
+			RoundType roundType = context.getRoundType();
+			ClientAnswerEvent cAE = null;
+			switch(roundType) {
+			case IP:
+				IPQuestion ipQ = (IPQuestion) Context.getContext().getQuestion();
+				cAE = new ClientAnswerEvent(ipQ.getQuestionID(), ipQ.getPixelSize(), answer);
+				break;
+			case MC:
+				cAE = new ClientAnswerEvent(Context.getContext().getQuestion().getQuestionID(), answer);
+				break;
+			}
+			 
 			publishEvent(cAE);
 			handleCheck(-1);
 		}
@@ -268,7 +314,7 @@ public class QuestionController extends EventPublisher {
 
 			int answer = sVAE.getAnswer();
 			int correctAnswer = sVAE.getCorrectAnswer();
-			
+			Context.getContext().setAnswered(true);
 			answerVoteModel.updateAnswer(answer, correctAnswer);
 		}
 
@@ -286,10 +332,53 @@ public class QuestionController extends EventPublisher {
 
 			MCQuestion q = new MCQuestion(questionID, question, answers);
 			Context.getContext().setQuestion(q);
+			Context.getContext().setRoundType(RoundType.MC);
+			Context.getContext().setAnswered(false);
 			answerVoteModel.updateQuestion();
 			answerVoteModel.updateVotes(Context.getContext().getTeamID());
 		}
+	}
+	
+	private class NewIPQuestionHandler implements EventListener {
 
+		@Override
+		public void handleEvent(Event event) {
+			ServerNewIPQuestionEvent sNIPQE = (ServerNewIPQuestionEvent) event;
+
+			int questionID = sNIPQE.getQuestionID();
+			BufferedImage bufImage = sNIPQE.getImage();
+			int pixelSize = sNIPQE.getPixelSize();
+			String[] answers = sNIPQE.getAnswers();
+
+			IPQuestion q = new IPQuestion(questionID, bufImage, true, answers);
+			q.setPixelSize(pixelSize);
+			Context.getContext().setQuestion(q);
+			Context.getContext().setRoundType(RoundType.IP);
+			Context.getContext().setAnswered(false);
+			answerVoteModel.updateQuestion();
+			answerVoteModel.updateVotes(Context.getContext().getTeamID());
+		}
+	}
+	
+	private class NewPixelSizeHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			System.out.println("Receiver ServerNewPixelSizeEvent");
+			ServerNewPixelSizeEvent sNPSE = (ServerNewPixelSizeEvent) event;
+
+			int questionID = sNPSE.getQuestionID();
+			int pixelSize = sNPSE.getPixelSize();
+
+			if(Context.getContext().isAnswered() == false) {
+				IPQuestion q = (IPQuestion) Context.getContext().getQuestion();
+				if(q.getQuestionID() == questionID) {
+					q.setPixelSize(pixelSize);
+				}
+				
+				answerVoteModel.updateImage();
+			}
+		}
 	}
 
 	private class NotAllAnsweredHandler implements EventListener {
@@ -312,6 +401,8 @@ public class QuestionController extends EventPublisher {
 			eventBroker.removeEventListener(voteHandler);
 			eventBroker.removeEventListener(voteAnwserHandler);
 			eventBroker.removeEventListener(newMCQuestionHandler);
+			eventBroker.removeEventListener(newIPQuestionHandler);
+			eventBroker.removeEventListener(newPixelSizeHandler);
 			eventBroker.removeEventListener(notAllAnsweredHandler);
 			eventBroker.removeEventListener(newRoundHandler);
 			eventBroker.removeEventListener(endQuizHandler);
@@ -332,6 +423,8 @@ public class QuestionController extends EventPublisher {
 			eventBroker.removeEventListener(voteHandler);
 			eventBroker.removeEventListener(voteAnwserHandler);
 			eventBroker.removeEventListener(newMCQuestionHandler);
+			eventBroker.removeEventListener(newIPQuestionHandler);
+			eventBroker.removeEventListener(newPixelSizeHandler);
 			eventBroker.removeEventListener(notAllAnsweredHandler);
 			eventBroker.removeEventListener(newRoundHandler);
 			eventBroker.removeEventListener(endQuizHandler);

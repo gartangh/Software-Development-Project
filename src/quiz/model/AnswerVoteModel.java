@@ -11,14 +11,19 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import main.Context;
+import quiz.util.RoundType;
 
 public class AnswerVoteModel {
 	// Question properties
 	private StringProperty questionTitleProperty;
 	private StringProperty questionTextProperty;
+	private ObjectProperty<Image> imageProperty;
+
 
 	// Answer properties
 	private StringProperty answerPropertyA, answerPropertyB, answerPropertyC, answerPropertyD;
@@ -31,12 +36,14 @@ public class AnswerVoteModel {
 
 	// Button properties
 	private BooleanProperty voteDisableProperty, confirmDisableProperty, nextDisableProperty;
+	private RoundType roundType;
 
 	// Constructor
 	public AnswerVoteModel() {
 		// Question properties
 		questionTitleProperty = new SimpleStringProperty("Question");
 		questionTextProperty = new SimpleStringProperty();
+		imageProperty = new SimpleObjectProperty<Image>();
 
 		// Answer properties
 		answerPropertyA = new SimpleStringProperty();
@@ -63,6 +70,7 @@ public class AnswerVoteModel {
 		voteDisableProperty = new SimpleBooleanProperty(false);
 		confirmDisableProperty = new SimpleBooleanProperty(false);
 		nextDisableProperty = new SimpleBooleanProperty(true);
+		
 	}
 
 	public void updateVotes(int teamID) {
@@ -164,31 +172,68 @@ public class AnswerVoteModel {
 				voteDisableProperty.setValue(true);
 				confirmDisableProperty.setValue(true);
 				nextDisableProperty.setValue(false);
+				
+				if(roundType == RoundType.IP) {
+					IPQuestion ipQ = (IPQuestion) Context.getContext().getQuestion();
+					imageProperty.setValue(ipQ.getFullFXImage());
+				}
 			}
 		});
 	}
 
 	public void updateQuestion() {
-		MCQuestion q = (MCQuestion) Context.getContext().getQuestion();
-		System.out.println(q.getQuestion());
+		switch(this.roundType) {
+		case IP:
+			IPQuestion ipQ = (IPQuestion) Context.getContext().getQuestion();
+			Platform.runLater(new Runnable() {
+				public void run() {
+					imageProperty.setValue(ipQ.getPixelatedFXImage());
+
+					answerPropertyA.setValue(ipQ.getAnswers()[0]);
+					answerPropertyB.setValue(ipQ.getAnswers()[1]);
+					answerPropertyC.setValue(ipQ.getAnswers()[2]);
+					answerPropertyD.setValue(ipQ.getAnswers()[3]);
+				}
+			});			
+			break;
+		case MC:
+			MCQuestion mcQ = (MCQuestion) Context.getContext().getQuestion();
+			Platform.runLater(new Runnable() {
+				public void run() {
+					questionTextProperty.setValue(mcQ.getQuestion());
+
+					answerPropertyA.setValue(mcQ.getAnswers()[0]);
+					answerPropertyB.setValue(mcQ.getAnswers()[1]);
+					answerPropertyC.setValue(mcQ.getAnswers()[2]);
+					answerPropertyD.setValue(mcQ.getAnswers()[3]);
+				}
+			});
+			break;
+		}
 		Platform.runLater(new Runnable() {
 			public void run() {
-				questionTextProperty.setValue(q.getQuestion());
-
-				answerPropertyA.setValue(q.getAnswers()[0]);
-				answerPropertyB.setValue(q.getAnswers()[1]);
-				answerPropertyC.setValue(q.getAnswers()[2]);
-				answerPropertyD.setValue(q.getAnswers()[3]);
 				paintPropertyA.setValue(Color.BLACK);
 				paintPropertyB.setValue(Color.BLACK);
 				paintPropertyC.setValue(Color.BLACK);
 				paintPropertyD.setValue(Color.BLACK);
-
+				
 				voteDisableProperty.setValue(false);
 				confirmDisableProperty.setValue(false);
 				nextDisableProperty.setValue(true);
 			}
 		});
+	}
+	
+	public void updateImage() {
+		if(this.roundType == RoundType.IP) {
+			IPQuestion iPQ = (IPQuestion) Context.getContext().getQuestion();
+			Platform.runLater(new Runnable() {
+				public void run() {
+					imageProperty.setValue(iPQ.getPixelatedFXImage());
+				}
+			});
+		}
+		
 	}
 
 	public StringProperty getNumberOfVotesProperty() {
@@ -235,6 +280,10 @@ public class AnswerVoteModel {
 		return questionTextProperty;
 	}
 
+	public ObjectProperty<Image> getImageProperty() {
+		return imageProperty;
+	}
+	
 	public StringProperty getAnswerPropertyA() {
 		return answerPropertyA;
 	}
@@ -279,4 +328,11 @@ public class AnswerVoteModel {
 		return nextDisableProperty;
 	}
 
+	public RoundType getRoundType() {
+		return this.roundType;
+	}
+	
+	public void setRoundType(RoundType roundType) {
+		this.roundType = roundType;
+	}
 }

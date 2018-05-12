@@ -1,20 +1,39 @@
 package eventbroker.serverevent;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+import javafx.scene.image.Image;
+
 @SuppressWarnings("serial")
 public class ServerNewIPQuestionEvent extends ServerEvent {
 
 	public final static String EVENTTYPE = "SERVER_NEW_IP_QUESTION";
 
 	private int questionID;
-	private String question;
+	private int pixelSize;
+	private byte[] bytesImage;
 	private String[] answers;
 
 	// Constructor
-	public ServerNewIPQuestionEvent(int questionID, String question, String[] answers) {
+	public ServerNewIPQuestionEvent(int questionID, BufferedImage img, int pixelSize,String[] answers) {
 		super.type = EVENTTYPE;
 		this.questionID = questionID;
-		this.question = question;
+		this.pixelSize = pixelSize;
 		this.answers = answers;
+		
+		ByteArrayOutputStream bAOS = new ByteArrayOutputStream();
+		try {
+			ImageIO.write(img, "jpg", bAOS);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		this.bytesImage = bAOS.toByteArray();
 	}
 
 	// Getters
@@ -22,8 +41,20 @@ public class ServerNewIPQuestionEvent extends ServerEvent {
 		return questionID;
 	}
 
-	public String getQuestion() {
-		return question;
+	public BufferedImage getImage() {
+		ByteArrayInputStream bAIS = new ByteArrayInputStream(bytesImage);
+		BufferedImage bufImage = null;
+		try {
+			bufImage = ImageIO.read(bAIS);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return bufImage;
+	}
+	
+	public int getPixelSize() {
+		return pixelSize;
 	}
 
 	public String[] getAnswers() {

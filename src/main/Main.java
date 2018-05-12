@@ -16,6 +16,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import network.Network;
+import quiz.util.RoundType;
 import quiz.view.CreateQuizController;
 import quiz.view.JoinQuizController;
 import quiz.view.LogInController;
@@ -33,7 +34,7 @@ public class Main extends Application {
 	public final static boolean DEBUG = true;
 	public final static boolean LOCAL = true;
 	// public final static String SERVERADDRESS = "10.10.131.52";
-	public final static String SERVERADDRESS = "192.168.1.30";
+	public final static String SERVERADDRESS = "192.168.0.114";
 	public final static int SERVERPORT = 1025;
 
 	private Stage primaryStage;
@@ -235,12 +236,13 @@ public class Main extends Application {
 		}
 	}
 
-	public void showQuestionScene() {
+	public void showQuestionScene(RoundType roundType) {
 		try {
 			FXMLLoader questionFormLoader = new FXMLLoader();
 			questionFormLoader.setLocation(Main.class.getResource("../quiz/view/Question.fxml"));
 			BorderPane questionFormRoot = (BorderPane) questionFormLoader.load();
 			QuestionController questionFormController = questionFormLoader.getController();
+			questionFormController.setRoundType(roundType);
 			questionFormController.setMainApp(this);
 
 			Platform.runLater(new Runnable() {
