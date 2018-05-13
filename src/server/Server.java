@@ -728,16 +728,17 @@ public class Server extends EventPublisher {
 			ArrayList<Integer> destinations = new ArrayList<>();
 
 			if (chatMessage.getReceiverType().equals("TEAM")) {
-				Map<Integer, Team> listOfTeams = ServerContext.getContext().getQuiz(chatMessage.getQuizID())
-						.getTeamMap();
+				Map<Integer, Team> listOfTeams = ServerContext.getContext().getQuiz(chatMessage.getQuizID()).getTeamMap();
 				for (Map.Entry<Integer, Team> teamEntry : listOfTeams.entrySet())
 					if (teamEntry.getValue().getPlayerMap().containsKey(chatMessage.getUserID()))
 						for (Map.Entry<Integer, String> playerEntry : teamEntry.getValue().getPlayerMap().entrySet())
 							destinations.add(playerEntry.getKey());
 			} else if (chatMessage.getReceiverType().equals("ALL")) {
-				for (Map.Entry<Integer, Integer> entry : ServerContext.getContext().getNetwork()
-						.getUserIDConnectionIDMap().entrySet())
-					destinations.add(entry.getKey());
+				Map<Integer, Team> listOfTeams = ServerContext.getContext().getQuiz(chatMessage.getQuizID()).getTeamMap();
+				for (Map.Entry<Integer, Team> teamEntry : listOfTeams.entrySet())
+					for (Map.Entry<Integer, String> playerEntry : teamEntry.getValue().getPlayerMap().entrySet())
+						destinations.add(playerEntry.getKey());
+				destinations.add(ServerContext.getContext().getQuiz(chatMessage.getQuizID()).getHostID());
 			}
 
 			chatMessage.addRecipients(destinations);

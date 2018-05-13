@@ -88,3 +88,11 @@
 /MenuController.class
 /QuestionController$VoteAnswerHandler.class
 /RootLayoutController.class
+/JoinQuizController$HostLeftQuizHandler.class
+/JoinTeamController$1$1.class
+/JoinTeamController$2$1.class
+/JoinTeamController$3$1.class
+/JoinTeamController$9.class
+/QuestionController$NewIPQuestionHandler.class
+/QuestionController$NewPixelSizeHandler.class
+/WaitHostController$NewIPQuestionHandler.class
