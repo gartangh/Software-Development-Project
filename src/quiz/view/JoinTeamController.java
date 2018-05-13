@@ -64,7 +64,7 @@ public class JoinTeamController extends EventPublisher {
 	private ChangeTeamHandler changeTeamHandler = new ChangeTeamHandler();
 	private StartQuizHandler startQuizHandler = new StartQuizHandler();
 	private QuizNewPlayerHandler quizNewPlayerHandler = new QuizNewPlayerHandler();
-	private QuizDeleteTeamHandler quizDeleteTeamHandler =  new QuizDeleteTeamHandler();
+	private QuizDeleteTeamHandler quizDeleteTeamHandler = new QuizDeleteTeamHandler();
 	private HostLeavesQuizHandler hostLeavesQuizHandler = new HostLeavesQuizHandler();
 	private PlayerLeavesQuizHandler playerLeavesQuizHandler = new PlayerLeavesQuizHandler();
 	private CreateTeamFailHandler createTeamFailHandler = new CreateTeamFailHandler();
@@ -89,8 +89,8 @@ public class JoinTeamController extends EventPublisher {
 		eventBroker.addEventListener(ServerStartQuizEvent.EVENTTYPE, startQuizHandler);
 		eventBroker.addEventListener(ServerQuizNewPlayerEvent.EVENTTYPE, quizNewPlayerHandler);
 		eventBroker.addEventListener(ServerDeleteTeamEvent.EVENTTYPE, quizDeleteTeamHandler);
-		eventBroker.addEventListener(ServerHostLeavesQuizEvent.EVENTTYPE,hostLeavesQuizHandler);
-		eventBroker.addEventListener(ServerPlayerLeavesQuizEvent.EVENTTYPE,playerLeavesQuizHandler);
+		eventBroker.addEventListener(ServerHostLeavesQuizEvent.EVENTTYPE, hostLeavesQuizHandler);
+		eventBroker.addEventListener(ServerPlayerLeavesQuizEvent.EVENTTYPE, playerLeavesQuizHandler);
 		eventBroker.addEventListener(ServerCreateTeamFailEvent.EVENTTYPE, createTeamFailHandler);
 
 		NameColumn.setCellValueFactory(cellData -> cellData.getValue().getTeamname());
@@ -119,43 +119,43 @@ public class JoinTeamController extends EventPublisher {
 
 	@FXML
 	private void handleCreateTeam() {
-			MainContext context = MainContext.getContext();
-			String errorMessage = "";
-			if (context.getQuiz().getHostID() != context.getUser().getUserID()) {
-				if (context.getQuiz().getAmountOfTeams() < context.getQuiz().getTeams()) {
-					User currUser = context.getUser();
-					int currTeamID = context.getTeamID();
-					int currCaptainID;
+		MainContext context = MainContext.getContext();
+		String errorMessage = "";
+		if (context.getQuiz().getHostID() != context.getUser().getUserID()) {
+			if (context.getQuiz().getAmountOfTeams() < context.getQuiz().getTeams()) {
+				User currUser = context.getUser();
+				int currTeamID = context.getTeamID();
+				int currCaptainID;
 
-					if (currTeamID != -1)
-						currCaptainID = context.getQuiz().getTeamMap().get(currTeamID).getCaptainID();
-					else
-						currCaptainID = -1;
+				if (currTeamID != -1)
+					currCaptainID = context.getQuiz().getTeamMap().get(currTeamID).getCaptainID();
+				else
+					currCaptainID = -1;
 
-					if (currCaptainID != currUser.getUserID()) {
-						ClientCreateTeamEvent cNTE = new ClientCreateTeamEvent(context.getQuiz().getQuizID(), "",
-								Color.TRANSPARENT,context.getTeamID(),context.getUser().getUsername());
+				if (currCaptainID != currUser.getUserID()) {
+					ClientCreateTeamEvent cNTE = new ClientCreateTeamEvent(context.getQuiz().getQuizID(), "",
+							Color.TRANSPARENT, context.getTeamID(), context.getUser().getUsername());
 
-						boolean okClicked = main.showCreateTeamScene(cNTE);
-						if (okClicked)
-							publishEvent(cNTE);
-					} else
-						errorMessage = "You can't create a new team, because you are already a captain of an existing team";
+					boolean okClicked = main.showCreateTeamScene(cNTE);
+					if (okClicked)
+						publishEvent(cNTE);
 				} else
-					errorMessage = "The maximum of teams is already reached";
+					errorMessage = "You can't create a new team, because you are already a captain of an existing team";
 			} else
-				errorMessage = "You can't create a team if you are the quizmaster, click ready when you want to start the quiz";
+				errorMessage = "The maximum of teams is already reached";
+		} else
+			errorMessage = "You can't create a team if you are the quizmaster, click ready when you want to start the quiz";
 
-			if (errorMessage != "") {
-				Alert alert = new Alert(AlertType.ERROR);
-				alert.initOwner(main.getPrimaryStage());
-				alert.setTitle("New Team error");
-				alert.setHeaderText("You can't create a new team");
-				alert.setContentText(errorMessage);
+		if (errorMessage != "") {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.initOwner(main.getPrimaryStage());
+			alert.setTitle("New Team error");
+			alert.setHeaderText("You can't create a new team");
+			alert.setContentText(errorMessage);
 
-				alert.showAndWait();
-			}
+			alert.showAndWait();
 		}
+	}
 
 	@FXML
 	private void handleReady() {
@@ -237,6 +237,7 @@ public class JoinTeamController extends EventPublisher {
 			return;
 		} else if (selectedTeam == null) {
 			Platform.runLater(new Runnable() {
+
 				@Override
 				public void run() {
 					Alert alert = new Alert(AlertType.WARNING);
@@ -261,7 +262,9 @@ public class JoinTeamController extends EventPublisher {
 			});
 
 			return;
-		} else if (captainID == userID) {
+		} else if (captainID == userID)
+
+		{
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
@@ -293,61 +296,58 @@ public class JoinTeamController extends EventPublisher {
 			cCTE = new ClientChangeTeamEvent(quizID, selectedTeam.getTeamID(), -1);
 		else
 			cCTE = new ClientChangeTeamEvent(quizID, selectedTeam.getTeamID(), team.getTeamID());
+
 		publishEvent(cCTE);
 	}
 
 	@FXML
 	private void handleBack() {
-		MainContext context=MainContext.getContext();
-		//TODO: confirmation for host
-		boolean execute=true;
-		if (context.getQuiz().getHostID()==context.getUser().getUserID()){
+		MainContext context = MainContext.getContext();
+
+		if (context.getQuiz().getHostID() == context.getUser().getUserID()) {
+			// You are the host
 			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.setTitle("Confirmation Dialog");
-			alert.setHeaderText("You are going to end this quiz");
-			alert.setContentText("Are you sure you want to end this quiz?");
-
+			alert.setTitle("Confirmation");
+			alert.setHeaderText("You are going to end the quiz!");
+			alert.setContentText("Are you sure you want to end the quiz?");
 			Optional<ButtonType> result = alert.showAndWait();
-			if (result.get() == ButtonType.CANCEL){
-				execute=false;
-			}
+
+			if (result.get() == ButtonType.CANCEL)
+				return;
 		}
 
-		if (execute){
-			ClientLeaveQuizEvent cLQE = new ClientLeaveQuizEvent(context.getUser().getUserID(), context.getQuiz().getQuizID(),context.getTeamID());
-			publishEvent(cLQE);
-		}
-
+		ClientLeaveQuizEvent cLQE = new ClientLeaveQuizEvent(context.getUser().getUserID(),
+				context.getQuiz().getQuizID(), context.getTeamID());
+		publishEvent(cLQE);
 	}
 
 	@FXML
-	private void handleDeleteTeam(){
+	private void handleDeleteTeam() {
 		String errorMessage = "";
 		MainContext context = MainContext.getContext();
-		if (context.getQuiz().getHostID() != context.getUser().getUserID()){
+		if (context.getQuiz().getHostID() != context.getUser().getUserID()) {
 			TeamNameID selectedTeam = teamTable.getSelectionModel().getSelectedItem();
-			if (selectedTeam !=null){
-				if (context.getUser().getUserID()==context.getQuiz().getTeamMap().get(selectedTeam.getTeamID()).getCaptainID()){
+			if (selectedTeam != null) {
+				if (context.getUser().getUserID() == context.getQuiz().getTeamMap().get(selectedTeam.getTeamID())
+						.getCaptainID()) {
 					Alert alert = new Alert(AlertType.CONFIRMATION);
 					alert.setTitle("Confirmation Dialog");
 					alert.setHeaderText("You are going to delete this team");
 					alert.setContentText("Are you sure you want to delete this team?");
 
 					Optional<ButtonType> result = alert.showAndWait();
-					if (result.get() == ButtonType.OK){
-						ClientDeleteTeamEvent cDTE=new ClientDeleteTeamEvent(selectedTeam.getTeamID(),context.getQuiz().getQuizID());
+					if (result.get() == ButtonType.OK) {
+						ClientDeleteTeamEvent cDTE = new ClientDeleteTeamEvent(selectedTeam.getTeamID(),
+								context.getQuiz().getQuizID());
 						publishEvent(cDTE);
 					}
+				} else {
+					errorMessage = "You can't delete a team if you're not the captain!";
 				}
-				else {
-					errorMessage="You can't delete a team if you're not the captain!";
-				}
+			} else {
+				errorMessage = "Please select a team if you want to delete it. You can only delete a team if you are the captain!";
 			}
-			else {
-				errorMessage="Please select a team if you want to delete it. You can only delete a team if you are the captain!";
-			}
-		}
-		else {
+		} else {
 			errorMessage = "You are the quizmaster, you can't delete teams. Only captains can delete teams!";
 		}
 
@@ -445,7 +445,7 @@ public class JoinTeamController extends EventPublisher {
 
 				return;
 			}
-			
+
 			// All unassigned players
 			if (context.getTeam() == null) {
 				context.setQuiz(null);
@@ -454,7 +454,7 @@ public class JoinTeamController extends EventPublisher {
 
 				return;
 			}
-			
+
 			// Other users (normal players)
 			context.getQuiz().setRunning(true);
 
@@ -481,25 +481,26 @@ public class JoinTeamController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event event) {
-			ServerDeleteTeamEvent sDTE=(ServerDeleteTeamEvent) event;
+			ServerDeleteTeamEvent sDTE = (ServerDeleteTeamEvent) event;
 
-			Quiz quiz=MainContext.getContext().getQuiz();
-			Team team=quiz.getTeamMap().get(sDTE.getTeamID());
+			Quiz quiz = MainContext.getContext().getQuiz();
+			Team team = quiz.getTeamMap().get(sDTE.getTeamID());
 
-			if (team!=null){
-				for (Entry <Integer,String> entry : team.getPlayerMap().entrySet()){
-					quiz.addUnassignedPlayer(entry.getKey(),entry.getValue());
+			if (team != null) {
+				for (Entry<Integer, String> entry : team.getPlayerMap().entrySet()) {
+					quiz.addUnassignedPlayer(entry.getKey(), entry.getValue());
 				}
 				quiz.removeTeam(team.getTeamID());
-				int oldTeamID=MainContext.getContext().getTeamID();
-				if (oldTeamID==team.getTeamID()){
+				int oldTeamID = MainContext.getContext().getTeamID();
+				if (oldTeamID == team.getTeamID()) {
 					MainContext.getContext().setTeam(null);
 				}
 				Platform.runLater(new Runnable() {
 					public void run() {
 						quizRoomModel.updateTeams();
 						quizRoomModel.updateTeamDetail(-1);
-						if (oldTeamID==team.getTeamID() && team.getCaptainID() != MainContext.getContext().getUser().getUserID()){
+						if (oldTeamID == team.getTeamID()
+								&& team.getCaptainID() != MainContext.getContext().getUser().getUserID()) {
 							Alert alert = new Alert(AlertType.WARNING);
 							alert.initOwner(main.getPrimaryStage());
 							alert.setTitle("Team deleted!");
@@ -519,10 +520,10 @@ public class JoinTeamController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event event) {
-			ServerHostLeavesQuizEvent sHLQE =(ServerHostLeavesQuizEvent) event;
-			MainContext context=MainContext.getContext();
-			if (sHLQE.getQuizID()==context.getQuiz().getQuizID()){
-				final int quizHostID=context.getQuiz().getHostID();
+			ServerHostLeavesQuizEvent sHLQE = (ServerHostLeavesQuizEvent) event;
+			MainContext context = MainContext.getContext();
+			if (sHLQE.getQuizID() == context.getQuiz().getQuizID()) {
+				final int quizHostID = context.getQuiz().getHostID();
 				context.setQuiz(null);
 				context.setTeam(null);
 
@@ -537,7 +538,7 @@ public class JoinTeamController extends EventPublisher {
 
 				Platform.runLater(new Runnable() {
 					public void run() {
-						if (quizHostID!=context.getUser().getUserID()){
+						if (quizHostID != context.getUser().getUserID()) {
 							Alert alert = new Alert(AlertType.ERROR);
 							alert.initOwner(main.getPrimaryStage());
 							alert.setTitle("Quiz ended!");
@@ -559,19 +560,20 @@ public class JoinTeamController extends EventPublisher {
 		@Override
 		public void handleEvent(Event event) {
 			ServerPlayerLeavesQuizEvent sPLQE = (ServerPlayerLeavesQuizEvent) event;
-			MainContext context=MainContext.getContext();
-			if (context.getQuiz().getQuizID()==sPLQE.getQuizID()){
-				if (sPLQE.getTeamID() != -1){
-					if (sPLQE.getNewCaptainID() != -1 ){//to be sure
-						Team team= context.getQuiz().getTeamMap().get(sPLQE.getTeamID());
+			MainContext context = MainContext.getContext();
+			if (context.getQuiz().getQuizID() == sPLQE.getQuizID()) {
+				if (sPLQE.getTeamID() != -1) {
+					if (sPLQE.getNewCaptainID() != -1) {// to be sure
+						Team team = context.getQuiz().getTeamMap().get(sPLQE.getTeamID());
 						int oldCaptainID = team.getCaptainID();
-						team.setCaptainID(sPLQE.getNewCaptainID());//the captain can change or the captain can be the same
+						team.setCaptainID(sPLQE.getNewCaptainID());// the captain can change or the captain can be the
+																	// same
 						team.removePlayer(sPLQE.getUserID());
 
-						if (team.getPlayerMap().size()==0){
+						if (team.getPlayerMap().size() == 0) {
 							context.getQuiz().removeTeam(team.getTeamID());
-						}
-						else if (team.getCaptainID()==context.getUser().getUserID() && team.getCaptainID() != oldCaptainID){
+						} else if (team.getCaptainID() == context.getUser().getUserID()
+								&& team.getCaptainID() != oldCaptainID) {
 							Platform.runLater(new Runnable() {
 								public void run() {
 									Alert alert = new Alert(AlertType.INFORMATION);
@@ -584,13 +586,12 @@ public class JoinTeamController extends EventPublisher {
 							});
 						}
 					}
-				}
-				else {
+				} else {
 					context.getQuiz().removeUnassignedPlayer(sPLQE.getUserID());
 
 				}
 
-				if (context.getUser().getUserID()==sPLQE.getUserID()){
+				if (context.getUser().getUserID() == sPLQE.getUserID()) {
 					context.setQuiz(null);
 					context.setTeam(null);
 
@@ -604,16 +605,18 @@ public class JoinTeamController extends EventPublisher {
 					eventBroker.removeEventListener(createTeamFailHandler);
 
 					Platform.runLater(new Runnable() {
+
 						public void run() {
 							main.showJoinQuizScene();
 							eventBroker.removeEventListener(playerLeavesQuizHandler);
 						}
 					});
 
-				}
-				else {
+				} else {
+
 					TeamNameID selectedTeam = teamTable.getSelectionModel().getSelectedItem();
 					quizRoomModel.updateTeams();
+
 					showTeamDetails(selectedTeam);
 				}
 
@@ -643,6 +646,5 @@ public class JoinTeamController extends EventPublisher {
 			});
 		}
 	}
-
 
 }

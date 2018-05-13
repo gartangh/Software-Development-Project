@@ -17,4 +17,5 @@ public class ServerReturnConnectionIDEvent extends ServerEvent {
 	public int getConnectionID() {
 		return this.connectionID;
 	}
+	
 }

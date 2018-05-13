@@ -138,8 +138,8 @@ public class Server extends EventPublisher {
 		eventBroker.addEventListener(ClientCreateTeamEvent.EVENTTYPE, newTeamHandler);
 		eventBroker.addEventListener(ClientChangeTeamEvent.EVENTTYPE, changeTeamHandler);
 		eventBroker.addEventListener(ClientHostReadyEvent.EVENTTYPE, hostReadyHandler);
-		eventBroker.addEventListener(ClientDeleteTeamEvent.EVENTTYPE,deleteTeamHandler);
-		eventBroker.addEventListener(ClientLeaveQuizEvent.EVENTTYPE,leaveQuizHandler);
+		eventBroker.addEventListener(ClientDeleteTeamEvent.EVENTTYPE, deleteTeamHandler);
+		eventBroker.addEventListener(ClientLeaveQuizEvent.EVENTTYPE, leaveQuizHandler);
 		eventBroker.addEventListener(ClientEndQuizEvent.EVENTTYPE, endQuizHandler);
 
 		// Start the EventBroker
@@ -151,16 +151,60 @@ public class Server extends EventPublisher {
 	/**
 	 * On connection lost.
 	 *
-	 * @param userID the user ID
+	 * @param userID
+	 *            the user ID
 	 */
 	public static void onConnectionLost(int userID) {
 		ServerContext context = ServerContext.getContext();
-		// log user out
-		context.getUserMap().get(userID).setLoggedIn(false);
+		// Log user out
+		User user = context.getUser(userID);
+		user.setLoggedIn(false);
 		context.getNetwork().getUserIDConnectionIDMap().remove(userID);
 
-		// TODO if user was the host of a quiz or the captain of a team, remove
-		// the quiz or the team an notify its users
+		for (Quiz quiz : context.getQuizMap().values()) {
+			for (Team team : quiz.getTeamMap().values()) {
+				if (userID == team.getCaptainID()) {
+					// The user is the captain of a team
+					// Remove the team
+					int teamID = team.getTeamID();
+					quiz.removeTeam(teamID);
+					
+					// Send an event to all player in the quiz
+					ServerDeleteTeamEvent sDTE = new ServerDeleteTeamEvent(teamID);
+					sDTE.addRecipients(context.getUsersFromQuiz(quiz.getQuizID()));
+					server.publishEvent(sDTE);
+				} else {
+					// The user is not the captain of the team
+					for (int playerID : team.getPlayerMap().keySet()) {
+						if (userID == playerID) {
+							// The user is in the team
+							// TODO Remove the user
+							team.removePlayer(userID);
+							
+							// TODO Send an event to all players in the quiz
+							ServerRemovePlayerEvent sRPE = new ServerRemovePlayerEvent(userID);
+							sRPE.addRecipients(context.getUsersFromQuiz(quiz.getQuizID()));
+							server.publishEvent(sRPE);
+						}
+					}
+				}
+			}
+
+			if (userID == quiz.getHostID()) {
+				// The user is the host of a quiz
+				// Remove the quiz
+				int quizID = quiz.getQuizID();
+				context.getQuizMap().remove(quizID);
+				
+				// Send an event to all users
+				ServerHostLeavesQuizEvent sHLQE = new ServerHostLeavesQuizEvent(quizID);
+				for (Entry<Integer, User> entry : context.getUserMap().entrySet()) {
+					if (entry.getValue().isLoggedIn())
+						sHLQE.addRecipient(entry.getKey());
+				}
+				server.publishEvent(sHLQE);
+			}
+		}
 	}
 
 	// Inner classes
@@ -341,7 +385,7 @@ public class Server extends EventPublisher {
 			ClientCreateTeamEvent cCTE = (ClientCreateTeamEvent) event;
 
 			int oldTeamID = cCTE.getOldTeamID();
-			int userID=cCTE.getUserID();
+			int userID = cCTE.getUserID();
 			int quizID = cCTE.getQuizID();
 			String teamname = cCTE.getTeamname();
 
@@ -369,7 +413,7 @@ public class Server extends EventPublisher {
 				ServerCreateTeamSuccesEvent sCTSE = new ServerCreateTeamSuccesEvent(quizID, teamID, teamname, color,
 						captainID, captainname, players);
 				sCTSE.addRecipient(captainID);
-				//server.publishEvent(sCTSE);
+				// server.publishEvent(sCTSE);
 
 				// Remove the captain from the list of unassigned players
 				context.getQuiz(quizID).removeUnassignedPlayer(captainID);
@@ -379,10 +423,10 @@ public class Server extends EventPublisher {
 				sNTE.addRecipients(context.getUsersFromQuiz(quizID));
 				server.publishEvent(sNTE);
 
-				if (oldTeamID != -1){
+				if (oldTeamID != -1) {
 					context.changeTeam(quizID, oldTeamID, userID, 'd');
-					String userName=context.getUserMap().get(userID).getUsername();
-					ServerChangeTeamEvent sCHTE = new ServerChangeTeamEvent(quizID,-1, oldTeamID, userID, userName);
+					String userName = context.getUserMap().get(userID).getUsername();
+					ServerChangeTeamEvent sCHTE = new ServerChangeTeamEvent(quizID, -1, oldTeamID, userID, userName);
 					sCHTE.addRecipients(context.getUsersFromQuiz(quizID));
 					server.publishEvent(sCHTE);
 				}
@@ -621,20 +665,21 @@ public class Server extends EventPublisher {
 	}
 
 	private static class DeleteTeamHandler implements EventListener {
+		
 		@Override
-		public void handleEvent(Event event){
+		public void handleEvent(Event event) {
 			ClientDeleteTeamEvent cDTE = (ClientDeleteTeamEvent) event;
 
-			ServerContext context =ServerContext.getContext();
-			Quiz quiz=context.getQuizMap().get(cDTE.getQuizID());
-			Team team =quiz.getTeamMap().get(cDTE.getTeamID());
+			ServerContext context = ServerContext.getContext();
+			Quiz quiz = context.getQuizMap().get(cDTE.getQuizID());
+			Team team = quiz.getTeamMap().get(cDTE.getTeamID());
 
-			if (team!=null){
-				for (Entry <Integer,String> entry : team.getPlayerMap().entrySet()){
-					quiz.addUnassignedPlayer(entry.getKey(),entry.getValue());
-				}
+			if (team != null) {
+				for (Entry<Integer, String> entry : team.getPlayerMap().entrySet())
+					quiz.addUnassignedPlayer(entry.getKey(), entry.getValue());
+
 				quiz.removeTeam(team.getTeamID());
-				ServerDeleteTeamEvent sDTE=new ServerDeleteTeamEvent(team.getTeamID());
+				ServerDeleteTeamEvent sDTE = new ServerDeleteTeamEvent(team.getTeamID());
 				ArrayList<Integer> receivers = context.getUsersFromQuiz(quiz.getQuizID());
 				sDTE.addRecipients(receivers);
 				server.publishEvent(sDTE);
@@ -642,47 +687,43 @@ public class Server extends EventPublisher {
 		}
 	}
 
-
 	private static class LeaveQuizHandler implements EventListener {
 
 		@Override
 		public void handleEvent(Event event) {
 			ClientLeaveQuizEvent cLQE = (ClientLeaveQuizEvent) event;
+
 			ServerContext context = ServerContext.getContext();
 			Quiz quiz = context.getQuizMap().get(cLQE.getQuizID());
 			User user = context.getUserMap().get(cLQE.getUserID());
 			Team team = quiz.getTeamMap().get(cLQE.getTeamID());
 
-			if (user.getUserID()==quiz.getHostID()){
+			if (user.getUserID() == quiz.getHostID()) {
+				// ArrayList<Integer> receivers = context.getUsersFromQuiz(sHLQE.getQuizID());
 				context.getQuizMap().remove(quiz.getQuizID());
-				ServerHostLeavesQuizEvent sHLQE= new ServerHostLeavesQuizEvent(quiz.getQuizID());
-				//ArrayList<Integer> receivers = context.getUsersFromQuiz(sHLQE.getQuizID());
+				ServerHostLeavesQuizEvent sHLQE = new ServerHostLeavesQuizEvent(quiz.getQuizID());
 				sHLQE.addRecipients(context.getUserMap());
-				//TODO: handle event in joinquiz!!! good to send to everyone?
+				// TODO Handle event in JoinQuizController! good to send to everyone?
 				server.publishEvent(sHLQE);
-			}
-			else {
-				int captainID=-1;
+			} else {
+				int captainID = -1;
 				ArrayList<Integer> receivers = context.getUsersFromQuiz(quiz.getQuizID());
-				if (team!=null){
-					context.changeTeam(quiz.getQuizID(),team.getTeamID(), user.getUserID(), 'd');
-					captainID=team.getCaptainID();
-				}
-				else {
+				if (team != null) {
+					context.changeTeam(quiz.getQuizID(), team.getTeamID(), user.getUserID(), 'd');
+					captainID = team.getCaptainID();
+				} else {
 					quiz.removeUnassignedPlayer(user.getUserID());
 				}
 
-				ServerPlayerLeavesQuizEvent sPLQE=new ServerPlayerLeavesQuizEvent(quiz.getQuizID(),user.getUserID(),cLQE.getTeamID(),captainID);
+				ServerPlayerLeavesQuizEvent sPLQE = new ServerPlayerLeavesQuizEvent(quiz.getQuizID(), user.getUserID(),
+						cLQE.getTeamID(), captainID);
 				sPLQE.addRecipients(receivers);
 				server.publishEvent(sPLQE);
 			}
 
-
 		}
 
-
 	}
-
 
 	private static class HostReadyHandler implements EventListener {
 
