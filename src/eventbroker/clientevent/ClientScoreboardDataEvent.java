@@ -1,6 +1,6 @@
 package eventbroker.clientevent;
 
-import main.Context;
+import main.MainContext;
 
 @SuppressWarnings("serial")
 public class ClientScoreboardDataEvent extends ClientEvent {
@@ -12,7 +12,7 @@ public class ClientScoreboardDataEvent extends ClientEvent {
 	// Constructor
 	public ClientScoreboardDataEvent() {
 		super.type = EVENTTYPE;
-		this.quizID = Context.getContext().getQuiz().getQuizID();
+		this.quizID = MainContext.getContext().getQuiz().getQuizID();
 	}
 
 	// Getters

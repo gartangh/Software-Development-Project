@@ -8,15 +8,13 @@ public class ClientChangeTeamEvent extends ClientEvent {
 	private int quizID;
 	private int newTeamID;
 	private int oldTeamID;
-	private int userID;
 
 	// Constructor
-	public ClientChangeTeamEvent(int quizID, int newTeamID, int oldTeamID, int userID) {
+	public ClientChangeTeamEvent(int quizID, int newTeamID, int oldTeamID) {
 		super.type = EVENTTYPE;
 		this.quizID = quizID;
 		this.newTeamID = newTeamID;
 		this.oldTeamID = oldTeamID;
-		this.userID = userID;
 	}
 
 	// Getters and setters
@@ -42,14 +40,6 @@ public class ClientChangeTeamEvent extends ClientEvent {
 
 	public void setOldTeamID(int oldTeamID) {
 		this.oldTeamID = oldTeamID;
-	}
-
-	public int getUserID() {
-		return userID;
-	}
-
-	public void setUserID(int userID) {
-		this.userID = userID;
 	}
 
 }

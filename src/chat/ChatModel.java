@@ -44,9 +44,9 @@ public class ChatModel {
 		// Add the latest message to chatTextArea
 		ChatMessage chatMessage = messages.poll();
 		if (chatText.getValue() == null)
-			chatText.setValue(chatMessage.getSender() + ": " + chatMessage.getMessage() + "\n");
+			chatText.setValue(chatMessage.getUsername() + ": " + chatMessage.getMessage() + "\n");
 		else
-			chatText.setValue(chatText.getValue() + chatMessage.getSender() + ": " + chatMessage.getMessage() + "\n");
+			chatText.setValue(chatText.getValue() + chatMessage.getUsername() + ": " + chatMessage.getMessage() + "\n");
 	}
 
 }

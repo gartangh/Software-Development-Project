@@ -5,38 +5,38 @@ public class ClientCreateQuizEvent extends ClientEvent {
 
 	public final static String EVENTTYPE = "CLIENT_CREATE_QUIZ";
 
-	private String quizName;
-	private int maxAmountOfTeams;
-	private int maxAmountOfPlayersPerTeam;
-	private int maxAmountOfRounds;
+	private String quizname;
+	private int teams;
+	private int players;
+	private int rounds;
 	private String hostname;
 
 	// Constructor
-	public ClientCreateQuizEvent(String quizName, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam,
+	public ClientCreateQuizEvent(String quizname, int maxAmountOfTeams, int maxAmountOfPlayersPerTeam,
 			int maxAmountOfRounds, String hostname) {
 		super.type = EVENTTYPE;
-		this.quizName = quizName;
-		this.maxAmountOfTeams = maxAmountOfTeams;
-		this.maxAmountOfPlayersPerTeam = maxAmountOfPlayersPerTeam;
-		this.maxAmountOfRounds = maxAmountOfRounds;
+		this.quizname = quizname;
+		this.teams = maxAmountOfTeams;
+		this.players = maxAmountOfPlayersPerTeam;
+		this.rounds = maxAmountOfRounds;
 		this.hostname = hostname;
 	}
 
 	// Getters
 	public String getQuizname() {
-		return quizName;
+		return quizname;
 	}
 
-	public int getMaxAmountOfTeams() {
-		return maxAmountOfTeams;
+	public int getTeams() {
+		return teams;
 	}
 
-	public int getMaxAmountOfPlayersPerTeam() {
-		return maxAmountOfPlayersPerTeam;
+	public int getPlayers() {
+		return players;
 	}
 
-	public int getMaxAmountOfRounds() {
-		return maxAmountOfRounds;
+	public int getRounds() {
+		return rounds;
 	}
 
 	public String getHostname() {

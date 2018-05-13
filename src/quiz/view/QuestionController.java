@@ -18,6 +18,7 @@ import eventbroker.serverevent.ServerNewPixelSizeEvent;
 import eventbroker.serverevent.ServerNewRoundEvent;
 import eventbroker.serverevent.ServerNotAllAnsweredEvent;
 import eventbroker.serverevent.ServerVoteEvent;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -30,7 +31,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import main.Context;
+import main.MainContext;
 import main.Main;
 import quiz.model.AnswerVoteModel;
 import quiz.model.IPQuestion;
@@ -93,14 +94,13 @@ public class QuestionController extends EventPublisher {
 
 	private AnswerVoteModel answerVoteModel = new AnswerVoteModel();
 	private VoteHandler voteHandler;
-	private VoteAnwserHandler voteAnwserHandler;
+	private VoteAnswerHandler voteAnswerHandler;
 	private NewMCQuestionHandler newMCQuestionHandler;
 	private NewIPQuestionHandler newIPQuestionHandler;
 	private NewPixelSizeHandler newPixelSizeHandler;
 	private NotAllAnsweredHandler notAllAnsweredHandler;
 	private NewRoundHandler newRoundHandler;
 	private EndQuizHandler endQuizHandler;
-
 	// Reference to the main application
 	private Main main;
 
@@ -112,7 +112,7 @@ public class QuestionController extends EventPublisher {
 	@FXML
 	public void initialize() {
 		voteHandler = new VoteHandler();
-		voteAnwserHandler = new VoteAnwserHandler();
+		voteAnswerHandler = new VoteAnswerHandler();
 		newMCQuestionHandler = new NewMCQuestionHandler();
 		newIPQuestionHandler = new NewIPQuestionHandler();
 		newPixelSizeHandler = new NewPixelSizeHandler();
@@ -122,7 +122,7 @@ public class QuestionController extends EventPublisher {
 
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerVoteEvent.EVENTTYPE, voteHandler);
-		eventBroker.addEventListener(ServerVoteAnswerEvent.EVENTTYPE, voteAnwserHandler);
+		eventBroker.addEventListener(ServerVoteAnswerEvent.EVENTTYPE, voteAnswerHandler);
 		eventBroker.addEventListener(ServerNewMCQuestionEvent.EVENTTYPE, newMCQuestionHandler);
 		eventBroker.addEventListener(ServerNewIPQuestionEvent.EVENTTYPE, newIPQuestionHandler);
 		eventBroker.addEventListener(ServerNewPixelSizeEvent.EVENTTYPE, newPixelSizeHandler);
@@ -158,8 +158,8 @@ public class QuestionController extends EventPublisher {
 		confirmButton.disableProperty().bind(answerVoteModel.getConfirmDisableProperty());
 		nextButton.disableProperty().bind(answerVoteModel.getNextDisableProperty());
 
-		//answerVoteModel.updateVotes(Context.getContext().getTeamID());
-		
+		answerVoteModel.updateVotes(MainContext.getContext().getTeam().getTeamID());
+
 		// ChatPanel (ChatModel and ChatController) are created
 		ChatPanel chatPanel = ChatPanel.createChatPanel();
 		mPlaceholder.getChildren().add(chatPanel.getContent());
@@ -177,7 +177,6 @@ public class QuestionController extends EventPublisher {
 			questionText.textProperty().bind(answerVoteModel.getQuestionTextProperty());
 			break;
 		}
-		//answerVoteModel.updateQuestion();
 	}
 
 	private void handleCheck(int answer) {
@@ -226,7 +225,7 @@ public class QuestionController extends EventPublisher {
 
 	@FXML
 	private void handleVote() {
-		int vote = this.getChecked();
+		int vote = getChecked();
 		if (vote >= 0) {
 			ClientVoteEvent cVE = new ClientVoteEvent(vote);
 			publishEvent(cVE);
@@ -235,38 +234,42 @@ public class QuestionController extends EventPublisher {
 
 	@FXML
 	private void handleAnswer() {
-		Context context = Context.getContext();
-		int answer = this.getChecked();
-		if (context.getQuiz().getTeamMap().get(context.getTeamID()).getCaptainID() != Context.getContext().getUser()
-				.getUserID()) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.initOwner(main.getPrimaryStage());
-			alert.setTitle("QuizForm Error");
-			alert.setHeaderText("You can't submit an answer");
-			alert.setContentText("You are not the captain, so you can't submit an answer.");
-
-			alert.showAndWait();
+		MainContext context = MainContext.getContext();
+		int answer = getChecked();
+		if (context.getTeam().getCaptainID() != context.getUser().getUserID()) {
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.initOwner(main.getPrimaryStage());
+					alert.setTitle("Warning");
+					alert.setHeaderText("You can't submit an answer!");
+					alert.setContentText("You must be the captain of the team in order to submit the answer.");
+					alert.showAndWait();
+				}
+			});
 		} else if (answer < 0) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.initOwner(main.getPrimaryStage());
-			alert.setTitle("QuizForm Error");
-			alert.setHeaderText("You can't submit an empty answer");
-			alert.setContentText("Please select an answer to submit.");
-
-			alert.showAndWait();
+			Platform.runLater(new Runnable() {
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("You can't submit an empty answer!");
+					alert.setContentText("Please select a valid answer and try again.");
+					alert.showAndWait();
+				}
+			});
 		} else {
 			RoundType roundType = context.getRoundType();
 			ClientAnswerEvent cAE = null;
 			switch(roundType) {
 			case IP:
-				IPQuestion ipQ = (IPQuestion) Context.getContext().getQuestion();
+				IPQuestion ipQ = (IPQuestion) MainContext.getContext().getQuestion();
 				cAE = new ClientAnswerEvent(ipQ.getQuestionID(), ipQ.getPixelSize(), answer);
 				break;
 			case MC:
-				cAE = new ClientAnswerEvent(Context.getContext().getQuestion().getQuestionID(), answer);
+				cAE = new ClientAnswerEvent(MainContext.getContext().getQuestion().getQuestionID(), answer);
 				break;
 			}
-			 
 			publishEvent(cAE);
 			handleCheck(-1);
 		}
@@ -274,18 +277,22 @@ public class QuestionController extends EventPublisher {
 
 	@FXML
 	private void handleNext() {
-		if (Context.getContext().getQuiz().getTeamMap().get(Context.getContext().getTeamID()).getCaptainID() != Context
-				.getContext().getUser().getUserID()) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.initOwner(main.getPrimaryStage());
-			alert.setTitle("QuizForm Error");
-			alert.setHeaderText("You can't go to the next question");
-			alert.setContentText("You are not a team captain, so you can't proceed to the next question.");
-
-			alert.showAndWait();
+		MainContext context = MainContext.getContext();
+		if (context.getTeam().getCaptainID() != context.getUser().getUserID()) {
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("You can't go to the next question!");
+					alert.setContentText(
+							"You must be the captain of the team in order to proceed to the next question.");
+					alert.showAndWait();
+				}
+			});
 		} else {
-			ClientNewQuestionEvent cnqe = new ClientNewQuestionEvent();
-			this.publishEvent(cnqe);
+			ClientNewQuestionEvent cNQE = new ClientNewQuestionEvent();
+			publishEvent(cNQE);
 		}
 	}
 
@@ -300,13 +307,13 @@ public class QuestionController extends EventPublisher {
 			int teamID = sVE.getTeamID();
 			int vote = sVE.getVote();
 
-			Context.getContext().getQuiz().addVote(userID, teamID, vote);
+			MainContext.getContext().getQuiz().addVote(userID, teamID, vote);
 			answerVoteModel.updateVotes(teamID);
 		}
 
 	}
 
-	private class VoteAnwserHandler implements EventListener {
+	private class VoteAnswerHandler implements EventListener {
 
 		@Override
 		public void handleEvent(Event event) {
@@ -314,7 +321,7 @@ public class QuestionController extends EventPublisher {
 
 			int answer = sVAE.getAnswer();
 			int correctAnswer = sVAE.getCorrectAnswer();
-			Context.getContext().setAnswered(true);
+			MainContext.getContext().setAnswered(true);
 			answerVoteModel.updateAnswer(answer, correctAnswer);
 		}
 
@@ -331,11 +338,12 @@ public class QuestionController extends EventPublisher {
 			String[] answers = sNMCQE.getAnswers();
 
 			MCQuestion q = new MCQuestion(questionID, question, answers);
-			Context.getContext().setQuestion(q);
-			Context.getContext().setRoundType(RoundType.MC);
-			Context.getContext().setAnswered(false);
+
+			MainContext.getContext().setQuestion(q);
+			MainContext.getContext().setRoundType(RoundType.MC);
+			MainContext.getContext().setAnswered(false);
 			answerVoteModel.updateQuestion();
-			answerVoteModel.updateVotes(Context.getContext().getTeamID());
+			answerVoteModel.updateVotes(MainContext.getContext().getTeamID());
 		}
 	}
 	
@@ -352,11 +360,12 @@ public class QuestionController extends EventPublisher {
 
 			IPQuestion q = new IPQuestion(questionID, bufImage, true, answers);
 			q.setPixelSize(pixelSize);
-			Context.getContext().setQuestion(q);
-			Context.getContext().setRoundType(RoundType.IP);
-			Context.getContext().setAnswered(false);
+			
+			MainContext.getContext().setQuestion(q);
+			MainContext.getContext().setRoundType(RoundType.IP);
+			MainContext.getContext().setAnswered(false);
 			answerVoteModel.updateQuestion();
-			answerVoteModel.updateVotes(Context.getContext().getTeamID());
+			answerVoteModel.updateVotes(MainContext.getContext().getTeam().getTeamID());
 		}
 	}
 	
@@ -370,8 +379,8 @@ public class QuestionController extends EventPublisher {
 			int questionID = sNPSE.getQuestionID();
 			int pixelSize = sNPSE.getPixelSize();
 
-			if(Context.getContext().isAnswered() == false) {
-				IPQuestion q = (IPQuestion) Context.getContext().getQuestion();
+			if(MainContext.getContext().isAnswered() == false) {
+				IPQuestion q = (IPQuestion) MainContext.getContext().getQuestion();
 				if(q.getQuestionID() == questionID) {
 					q.setPixelSize(pixelSize);
 				}
@@ -385,7 +394,16 @@ public class QuestionController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event event) {
-			// TODO: Alert
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning");
+					alert.setHeaderText("You can't go to the next question!");
+					alert.setContentText("Not all teams have answered this question.");
+					alert.showAndWait();
+				}
+			});
 		}
 
 	}
@@ -399,7 +417,7 @@ public class QuestionController extends EventPublisher {
 
 			EventBroker eventBroker = EventBroker.getEventBroker();
 			eventBroker.removeEventListener(voteHandler);
-			eventBroker.removeEventListener(voteAnwserHandler);
+			eventBroker.removeEventListener(voteAnswerHandler);
 			eventBroker.removeEventListener(newMCQuestionHandler);
 			eventBroker.removeEventListener(newIPQuestionHandler);
 			eventBroker.removeEventListener(newPixelSizeHandler);
@@ -421,7 +439,7 @@ public class QuestionController extends EventPublisher {
 
 			EventBroker eventBroker = EventBroker.getEventBroker();
 			eventBroker.removeEventListener(voteHandler);
-			eventBroker.removeEventListener(voteAnwserHandler);
+			eventBroker.removeEventListener(voteAnswerHandler);
 			eventBroker.removeEventListener(newMCQuestionHandler);
 			eventBroker.removeEventListener(newIPQuestionHandler);
 			eventBroker.removeEventListener(newPixelSizeHandler);

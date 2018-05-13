@@ -18,13 +18,15 @@ public class ServerNewIPQuestionEvent extends ServerEvent {
 	private int pixelSize;
 	private byte[] bytesImage;
 	private String[] answers;
+	private int correctAnswer;
 
 	// Constructor
-	public ServerNewIPQuestionEvent(int questionID, BufferedImage img, int pixelSize,String[] answers) {
+	public ServerNewIPQuestionEvent(int questionID, BufferedImage img, int pixelSize,String[] answers, int correctAnswer) {
 		super.type = EVENTTYPE;
 		this.questionID = questionID;
 		this.pixelSize = pixelSize;
 		this.answers = answers;
+		this.correctAnswer = correctAnswer;
 		
 		ByteArrayOutputStream bAOS = new ByteArrayOutputStream();
 		try {
@@ -60,5 +62,8 @@ public class ServerNewIPQuestionEvent extends ServerEvent {
 	public String[] getAnswers() {
 		return answers;
 	}
-
+	
+	public int getCorrectAnswer() {
+		return this.correctAnswer;
+	}
 }

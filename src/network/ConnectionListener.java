@@ -27,16 +27,14 @@ public class ConnectionListener implements Runnable {
 	@Override
 	public void run() {
 		try {
-			// Server 3
 			listen = new ServerSocket(serverPort);
 			while (!stop) {
-				// Server 4.1
 				Socket client = listen.accept();
-				// Server 4.2
 				network.connect(client);
 			}
 		} catch (SocketException e) {
 			//e.printStackTrace();
+			System.err.println("SocketException");
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {

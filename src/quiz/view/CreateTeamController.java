@@ -58,10 +58,10 @@ public class CreateTeamController {
 
 		if (mTeamname.getText() == null || mTeamname.getText().length() == 0)
 			errorMessage += "No valid teamname!\n";
-		
+
 		if (mColor.getValue() == null)
 			errorMessage += "No color picked!\n";
-		
+
 		if (errorMessage.length() == 0)
 			return true;
 		else {

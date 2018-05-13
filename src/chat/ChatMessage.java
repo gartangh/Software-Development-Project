@@ -7,21 +7,37 @@ import eventbroker.clientevent.ClientEvent;
 @SuppressWarnings("serial")
 public class ChatMessage extends ClientEvent implements Serializable {
 
-	public final static String EVENTTYPE = "CLIENT_CHAT";
-	public final static String EVENTTYPESERVER = "SERVER_CHAT";
-	
-	private String sender;
+	public final static String CLIENTTYPE = "CLIENT_CHAT";
+	public final static String SERVERTYPE = "SERVER_CHAT";
 
-	public ChatMessage(String sender, String message) {
-		super();
-		this.type = EVENTTYPE;
+	private String username;
+	private String message;
+	private String receiverType;
+	private int quizID;
+	
+	public ChatMessage(String username, String message, String receiverType, int quizID) {
+		super.type = CLIENTTYPE;
+		this.username = username;
 		this.message = message;
-		this.sender = sender;
+		this.receiverType = receiverType;
+		this.quizID = quizID;
 	}
 
-	// Getters
-	public String getSender() {
-		return sender;
+	// Getter
+	public String getUsername() {
+		return username;
+	}
+	
+	public String getMessage() {
+		return message;
+	}
+
+	public String getReceiverType() {
+		return receiverType;
+	}
+
+	public int getQuizID() {
+		return quizID;
 	}
 
 }

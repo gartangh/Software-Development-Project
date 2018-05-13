@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import eventbroker.Event;
 import eventbroker.EventBroker;
@@ -15,7 +16,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import main.Context;
+import main.MainContext;
 import main.Main;
 
 final public class ChatController extends EventPublisher {
@@ -28,9 +29,8 @@ final public class ChatController extends EventPublisher {
 	private Button chatSendButton;
 
 	private ChatModel chatModel = new ChatModel();
-	private ChatHandler chatHandler;
-
-	ArrayList<String> prohibitedWords = new ArrayList<>();
+	private ChatHandler chatHandler = new ChatHandler();
+	private ArrayList<String> prohibitedWords = new ArrayList<>();
 
 	// Getters
 	public ChatModel getChatModel() {
@@ -38,57 +38,96 @@ final public class ChatController extends EventPublisher {
 	}
 
 	// Methods
-	/**
-	 * Called when the user clicks on the send button.
-	 */
+	@FXML
+	private void initialize() {
+		EventBroker.getEventBroker().addEventListener(ChatMessage.SERVERTYPE, chatHandler);
+		chatTextField.setPromptText("Use '*' to send to all players");
+		chatTextArea.textProperty().bind(chatModel.getChatText());
+		// chatTextArea.setFont(Font.loadFont(Paths.get(".").toAbsolutePath().normalize().toString()
+		// + "\\Files\\OpenSansEmoji.ttf", 15));
+
+		try {
+			// Substring is to remove "file:/" before resource
+			BufferedReader bufferedReader = new BufferedReader(
+					new FileReader(Main.class.getResource("../chat/swearWords.txt").toString().substring(6)));
+
+			String line;
+			while ((line = bufferedReader.readLine()) != null)
+				prohibitedWords.add(line);
+
+			bufferedReader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	@FXML
 	public void handle(ActionEvent e) {
 		// Get message from chatTextField
 		String message = chatTextField.getText();
 
-		if (message != null && message.length() > 0)
-			sendMessage(checkMessage(message));
+		if (message != null) {
+			boolean team = true;
+			if (message.length() > 1) {
+				if (message.charAt(0) == '*') {
+					message = message.substring(1);
+					team = false;
+				}
+			} else if (message.length() == 1) {
+				if (message.charAt(0) == '*')
+					message = null;
+			}
+
+			if ((MainContext.getContext().getTeam() == null))
+				team = false;
+
+			if (message.length() > 0) {
+				message = checkMessage(message);
+				String finalMessage = null;
+				if (message.contains(":)")) {
+					for (int i = 0; i < message.length() - 1; i++) {
+						if (message.charAt(i) == ':' && message.charAt(i + 1) == ')') {
+							finalMessage = message.substring(0, i);
+							finalMessage += '\u263A';
+							if (i + 2 < message.length())
+								finalMessage += message.substring(i + 2);
+						}
+					}
+				}
+
+				if (finalMessage != null)
+					sendMessage(finalMessage, team);
+				else
+					sendMessage(message, team);
+			}
+		}
 	}
 
-	// TODO: Change: for all prohibitedWords do: if contains, loop! else next
-	// word => faster!
 	private String checkMessage(String message) {
-		int lengthMessage = message.length();
-		
-		String oldMessage = message;
-		String newMessage = message.toLowerCase();
-		
-		for (int k = 0; k < prohibitedWords.size(); k++) {
-			if (newMessage.contains(prohibitedWords.get(k)))
-				for (int i = 0; i < lengthMessage - 1; i++)
-					for (int j = i + 1; j <= lengthMessage; j++)
-						if (newMessage.substring(i, j).equals(prohibitedWords.get(k))) {
-							newMessage = oldMessage.substring(0, i);
-							for (int l = 0; l < j - i; l++)
-								newMessage += "*";
-							
-							if (j < lengthMessage)
-								newMessage += oldMessage.substring(j);
-							
-							oldMessage = newMessage;
-						}
+		String[] words = message.toLowerCase().split(" ");
+		String censored = "";
+		for (int i = 0; i < words.length; i++) {
+			if (prohibitedWords.contains(words[i]))
+				// Found a prohibited word
+				words[i] = String.join("", Collections.nCopies(words[i].length(), "*"));
+
+			censored += words[i] + " ";
 		}
 
-		String tempMessage = newMessage;
-		newMessage = newMessage.substring(0, 1).toUpperCase();
-		if (tempMessage.length() > 1)
-			newMessage += tempMessage.substring(1);
-
-		return newMessage;
+		return censored;
 	}
 
-	public void sendMessage(String message) {
+	public void sendMessage(String message, boolean team) {
 		// Publish to the event broker
-		publishEvent(new ChatMessage(Context.getContext().getUser().getUsername(), message));
+		if (team)
+			publishEvent(new ChatMessage(MainContext.getContext().getUser().getUsername(), message, "TEAM",
+					MainContext.getContext().getQuiz().getQuizID()));
+		else
+			publishEvent(new ChatMessage(MainContext.getContext().getUser().getUsername(), message, "ALL",
+					MainContext.getContext().getQuiz().getQuizID()));
 
 		// Update local GUI
 		Platform.runLater(new Runnable() {
-
 			@Override
 			public void run() {
 				// Clear chatTextField
@@ -100,29 +139,6 @@ final public class ChatController extends EventPublisher {
 		synchronized (eventBroker) {
 			eventBroker.setProceed(true);
 			eventBroker.notifyAll();
-		}
-	}
-
-	@FXML
-	private void initialize() {
-		this.chatHandler = new ChatHandler();
-		
-		EventBroker.getEventBroker().addEventListener(ChatMessage.EVENTTYPESERVER, chatHandler);
-
-		chatTextArea.textProperty().bind(chatModel.getChatText());
-		
-		try {
-			// Substring is to remove file:/ before resource
-			BufferedReader bufferedReader = new BufferedReader(
-					new FileReader(Main.class.getResource("../chat/swearWords.txt").toString().substring(6)));
-
-			String line;
-			while ((line = bufferedReader.readLine()) != null)
-				prohibitedWords.add(line);
-			
-			bufferedReader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 

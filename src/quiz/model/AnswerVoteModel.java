@@ -12,11 +12,10 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
-import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import main.Context;
 import quiz.util.RoundType;
+import main.MainContext;
 
 public class AnswerVoteModel {
 	// Question properties
@@ -74,7 +73,7 @@ public class AnswerVoteModel {
 	}
 
 	public void updateVotes(int teamID) {
-		Map<Integer, Map<Integer, Integer>> allVotes = Context.getContext().getQuiz().getVotes();
+		Map<Integer, Map<Integer, Integer>> allVotes = MainContext.getContext().getQuiz().getVotes();
 		if (allVotes != null) {
 			Map<Integer, Integer> teamVotes = allVotes.get(teamID);
 			if (teamVotes != null) {
@@ -151,7 +150,7 @@ public class AnswerVoteModel {
 				}
 				else {
 					// TODO Make xp depend on difficulty
-					Context.getContext().getUser().addXp(10);
+					MainContext.getContext().getUser().addXp(10);
 				}
 
 				switch (correctAnswer) {
@@ -174,7 +173,7 @@ public class AnswerVoteModel {
 				nextDisableProperty.setValue(false);
 				
 				if(roundType == RoundType.IP) {
-					IPQuestion ipQ = (IPQuestion) Context.getContext().getQuestion();
+					IPQuestion ipQ = (IPQuestion) MainContext.getContext().getQuestion();
 					imageProperty.setValue(ipQ.getFullFXImage());
 				}
 			}
@@ -184,7 +183,7 @@ public class AnswerVoteModel {
 	public void updateQuestion() {
 		switch(this.roundType) {
 		case IP:
-			IPQuestion ipQ = (IPQuestion) Context.getContext().getQuestion();
+			IPQuestion ipQ = (IPQuestion) MainContext.getContext().getQuestion();
 			Platform.runLater(new Runnable() {
 				public void run() {
 					imageProperty.setValue(ipQ.getPixelatedFXImage());
@@ -197,7 +196,7 @@ public class AnswerVoteModel {
 			});			
 			break;
 		case MC:
-			MCQuestion mcQ = (MCQuestion) Context.getContext().getQuestion();
+			MCQuestion mcQ = (MCQuestion) MainContext.getContext().getQuestion();
 			Platform.runLater(new Runnable() {
 				public void run() {
 					questionTextProperty.setValue(mcQ.getQuestion());
@@ -226,7 +225,7 @@ public class AnswerVoteModel {
 	
 	public void updateImage() {
 		if(this.roundType == RoundType.IP) {
-			IPQuestion iPQ = (IPQuestion) Context.getContext().getQuestion();
+			IPQuestion iPQ = (IPQuestion) MainContext.getContext().getQuestion();
 			Platform.runLater(new Runnable() {
 				public void run() {
 					imageProperty.setValue(iPQ.getPixelatedFXImage());

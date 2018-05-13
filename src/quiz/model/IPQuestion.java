@@ -34,6 +34,19 @@ public class IPQuestion extends Question {
 		this.answers = answers;
 	}
 	
+	public IPQuestion(int questionID, BufferedImage bufImage, boolean asFX, String[] answers, int correctAnswer) {
+		super(questionID);
+		if(asFX) {
+			this.fxImage = SwingFXUtils.toFXImage(bufImage, null);
+			this.bufImage = null;
+		} else {
+			this.bufImage = bufImage;
+			this.fxImage = null;
+		}
+		this.answers = answers;
+		this.correctAnswer = correctAnswer;
+	}
+	
 	public IPQuestion(int questionID, Theme theme, Difficulty difficulty, BufferedImage bufImage, boolean asFX, String[] answers, int correctAnswer) {
 		super(questionID, theme, difficulty);
 		

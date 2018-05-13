@@ -7,12 +7,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
-
 import javax.imageio.ImageIO;
+import java.util.Random;
 
-import javafx.scene.paint.Color;
 import main.Main;
 import network.Network;
 import quiz.model.IPQuestion;
@@ -39,28 +39,49 @@ public class ServerContext {
 	private Map<Integer, Integer> questionTypeMap = new HashMap<Integer, Integer>();
 	private Network network;
 
-	// Constructors
-	private ServerContext() {
-		// Empty default constructor
-	}
-
 	// Getters and setters
+	/**
+	 * Gets the context.
+	 *
+	 * @return the context
+	 */
 	public static ServerContext getContext() {
 		return context;
 	}
 
+	/**
+	 * Gets the network.
+	 *
+	 * @return the network
+	 */
 	public Network getNetwork() {
 		return network;
 	}
 
+	/**
+	 * Sets the network.
+	 *
+	 * @param network
+	 *            the new network
+	 */
 	public void setNetwork(Network network) {
 		this.network = network;
 	}
 
+	/**
+	 * Gets the user map.
+	 *
+	 * @return the user map
+	 */
 	public Map<Integer, User> getUserMap() {
 		return userMap;
 	}
 
+	/**
+	 * Gets the quiz map.
+	 *
+	 * @return the quiz map
+	 */
 	public Map<Integer, Quiz> getQuizMap() {
 		return quizMap;
 	}
@@ -78,65 +99,77 @@ public class ServerContext {
 	}
 
 	// Methods
-	// Return username for serverEventHandler
+	/**
+	 * Change team.
+	 *
+	 * @param quizID
+	 *            the quiz ID
+	 * @param teamID
+	 *            the team ID
+	 * @param userID
+	 *            the user ID
+	 * @param type
+	 *            the type
+	 * @return the string username for server event handler
+	 */
 	public String changeTeam(int quizID, int teamID, int userID, char type) {
-		// Nothing to delete if teamID == -1
 		if (quizMap.containsKey(quizID) && userMap.containsKey(userID) && teamID != -1) {
 			Quiz quiz = quizMap.get(quizID);
 			User user = userMap.get(userID);
 			Team team = quiz.getTeamMap().get(teamID);
 
 			if (team != null) {
-				if (type == 'a') {// add
+				if (type == 'a')
+					// Add
 					team.addPlayer(user.getUserID(), user.getUsername());
-
-					return user.getUsername();
-				} else if (type == 'd') {// Delete
+				else if (type == 'd')
+					// Delete
 					team.removePlayer(user.getUserID());
-
+					if (team.getPlayerMap().size()>0){
+						if (team.getCaptainID()==user.getUserID()){
+							Random       random    = new Random();
+							List<Integer> keys      = new ArrayList<Integer>(team.getPlayerMap().keySet());
+							Integer       randomKey = keys.get( random.nextInt(keys.size()) );
+							team.setCaptainID(randomKey);
+						}
+					}
+					else {
+						quizMap.get(quizID).removeTeam(team.getTeamID());
+					}
 					return user.getUsername();
 				}
 			}
-		}
 
+		// Nothing to delete if teamID == -1
 		return null;
 	}
 
-	public int addTeam(int quizID, String teamName, Color color, int captainID) {
-		if (quizMap.containsKey(quizID) && userMap.containsKey(captainID)) {
-			Quiz q = quizMap.get(quizID);
-
-			int newID;
-			boolean unique;
-			do {
-				unique = true;
-				newID = (int) (Math.random() * Integer.MAX_VALUE);
-				for (Team t : q.getTeamMap().values()) {
-					if (t.getTeamID() == newID)
-						unique = false;
-				}
-			} while (!unique);
-
-			Team team = new Team(newID, teamName, color, captainID, userMap.get(captainID).getUsername());
-			team.setPlayers(q.getPlayers());
-			q.addTeam(team);
-			quizMap.put(quizID, q);
-
-			return newID;
-		}
-
-		return -1;
-	}
-
 	// Methods
+	/**
+	 * Gets the user.
+	 *
+	 * @param userID
+	 *            the user ID
+	 * @return the user
+	 */
 	public User getUser(int userID) {
 		return userMap.get(userID);
 	}
 
+	/**
+	 * Gets the quiz.
+	 *
+	 * @param quizID
+	 *            the quiz ID
+	 * @return the quiz
+	 */
 	public Quiz getQuiz(int quizID) {
 		return quizMap.get(quizID);
 	}
 
+	/**
+	 * Load data.
+	 */
 	public void loadData() {
 		String[] themeFiles = { "QUESTIONS_CULTURE.txt", "QUESTIONS_SPORTS.txt" };
 		System.out.println("Loading questions ...");
@@ -174,6 +207,7 @@ public class ServerContext {
 
 					Theme theme = Theme.values()[themeFile];
 					Difficulty difficulty = Difficulty.values()[diff];
+					
 					// 4 question types, 256 possible themes and 4 difficulties with each max 2^19
 					// questions gives guaranteed unique ID
 					int questionID = (int) (themeFile * Math.pow(2, 22) + diff * Math.pow(2, 20));
@@ -228,6 +262,13 @@ public class ServerContext {
 		}
 	}
 
+	/**
+	 * Gets the users from quiz.
+	 *
+	 * @param quizID
+	 *            the quiz ID
+	 * @return the users from quiz
+	 */
 	public ArrayList<Integer> getUsersFromQuiz(int quizID) {
 		ArrayList<Integer> r = new ArrayList<>();
 		Quiz quiz = quizMap.get(quizID);
@@ -244,6 +285,13 @@ public class ServerContext {
 		return r;
 	}
 
+	/**
+	 * Gets the question.
+	 *
+	 * @param questionID
+	 *            the question ID
+	 * @return the question
+	 */
 	public Question getQuestion(int questionID) {
 		return allQuestions.get(questionID);
 	}

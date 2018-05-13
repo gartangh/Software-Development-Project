@@ -4,12 +4,9 @@ import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
-import eventbroker.serverevent.ServerNewMCQuestionEvent;
 import eventbroker.serverevent.ServerStartRoundEvent;
 import javafx.fxml.FXML;
-import main.Context;
 import main.Main;
-import quiz.model.MCQuestion;
 
 public class WaitRoundController extends EventPublisher {
 
@@ -25,7 +22,6 @@ public class WaitRoundController extends EventPublisher {
 	@FXML
 	public void initialize() {
 		startRoundHandler = new StartRoundHandler();
-
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerStartRoundEvent.EVENTTYPE, startRoundHandler);
 	}
@@ -44,5 +40,4 @@ public class WaitRoundController extends EventPublisher {
 		}
 
 	}
-
 }

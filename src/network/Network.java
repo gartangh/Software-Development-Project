@@ -6,15 +6,15 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import eventbroker.Event;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
+import eventbroker.serverevent.ServerAlreadyLoggedInEvent;
 import eventbroker.serverevent.ServerCreateAccountFailEvent;
 import eventbroker.serverevent.ServerLogInFailEvent;
 
-// TODO: End ReceiverThread Connection Chat
+// TODO End ReceiverThread Connection Chat
 public class Network extends EventPublisher implements EventListener {
 
 	public final static String CLIENTTYPE = "CLIENT";
@@ -28,13 +28,13 @@ public class Network extends EventPublisher implements EventListener {
 	private ConnectionListener connectionListener;
 	private InetAddress networkAddress;
 
+	// Constructors
 	public Network() {
 		// Empty default constructor
 	}
 
 	// A factory method would be a better solution
 	public Network(int serverPort, String type) {
-		// Server 2
 		// Not safe when multi-threaded
 		this.type = type;
 		this.connectionListener = new ConnectionListener(this, serverPort);
@@ -64,12 +64,8 @@ public class Network extends EventPublisher implements EventListener {
 		networkAddress = address;
 
 		try {
-			// Client 2.1
 			Socket socket = new Socket(address, port);
-			// Client 2.2
 			Connection connection = new Connection(socket, this);
-			// Client 2.3
-
 			connection.receive();
 
 			if (type.equals(CLIENTTYPE)) {
@@ -77,13 +73,13 @@ public class Network extends EventPublisher implements EventListener {
 				connection.setConnectionID(0);
 				connectionMap.put(0, connection);
 			} else if (type.equals(SERVERTYPE)) {
-				int newServerUserConnectionID;
+				int connectionID;
 				do
-					newServerUserConnectionID = (int) (Math.random() * Integer.MAX_VALUE);
-				while (connectionMap.containsKey(newServerUserConnectionID));
+					connectionID = (int) (Math.random() * Integer.MAX_VALUE);
+				while (connectionMap.containsKey(connectionID));
 
-				connection.setConnectionID(newServerUserConnectionID);
-				connectionMap.put(newServerUserConnectionID, connection);
+				connection.setConnectionID(connectionID);
+				connectionMap.put(connectionID, connection);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -96,12 +92,8 @@ public class Network extends EventPublisher implements EventListener {
 			// Parsing from String to InetAddress
 			networkAddress = InetAddress.getByName(address);
 
-			// Client 2.1
 			Socket socket = new Socket(address, port);
-			// Client 2.2
 			Connection connection = new Connection(socket, this);
-			// Client 2.3
-
 			connection.receive();
 
 			if (type.equals(CLIENTTYPE)) {
@@ -109,13 +101,13 @@ public class Network extends EventPublisher implements EventListener {
 				connection.setConnectionID(0);
 				connectionMap.put(0, connection);
 			} else if (type.equals(SERVERTYPE)) {
-				int newServerUserConnectionID;
+				int connectionID;
 				do
-					newServerUserConnectionID = (int) (Math.random() * Integer.MAX_VALUE);
-				while (connectionMap.containsKey(newServerUserConnectionID));
+					connectionID = (int) (Math.random() * Integer.MAX_VALUE);
+				while (connectionMap.containsKey(connectionID));
 
-				connection.setConnectionID(newServerUserConnectionID);
-				connectionMap.put(newServerUserConnectionID, connection);
+				connection.setConnectionID(connectionID);
+				connectionMap.put(connectionID, connection);
 			}
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -126,20 +118,20 @@ public class Network extends EventPublisher implements EventListener {
 
 	// Package local would be safer
 	public Connection connect(Socket socket) {
-		// Server 4.2.1
 		Connection connection = new Connection(socket, this);
-		// Server 4.2.2
 		connection.receive();
 
-		if (type == "CLIENT") {
+		if (type == "CLIENT")
 			connectionMap.put(connection.getConnectionID(), connection);
-		} else if (type == "SERVER") {
-			int newServerUserConnectionID;
-			do {
-				newServerUserConnectionID = (int) (Math.random() * Integer.MAX_VALUE);
-			} while (connectionMap.containsKey(newServerUserConnectionID));
-			connection.setConnectionID(newServerUserConnectionID);
-			connectionMap.put(newServerUserConnectionID, connection);
+		else if (type == "SERVER") {
+			// Generate random connectionID
+			int connectionID;
+			do
+				connectionID = (int) (Math.random() * Integer.MAX_VALUE);
+			while (connectionMap.containsKey(connectionID));
+
+			connection.setConnectionID(connectionID);
+			connectionMap.put(connectionID, connection);
 		}
 
 		return connection;
@@ -159,9 +151,9 @@ public class Network extends EventPublisher implements EventListener {
 
 				int connectionID = sCAFE.getConnectionID();
 
-				for (Entry<Integer, Connection> connection : connectionMap.entrySet())
-					if (connection.getValue().getConnectionID() == connectionID) {
-						connection.getValue().send(event);
+				for (Connection connection : connectionMap.values())
+					if (connection.getConnectionID() == connectionID) {
+						connection.send(event);
 						break;
 					}
 			} else if (event.getType().equals(ServerLogInFailEvent.EVENTTYPE)) {
@@ -169,9 +161,19 @@ public class Network extends EventPublisher implements EventListener {
 
 				int connectionID = sLIFE.getConnectionID();
 
-				for (Entry<Integer, Connection> connection : connectionMap.entrySet())
-					if (connection.getValue().getConnectionID() == connectionID) {
-						connection.getValue().send(event);
+				for (Connection connection : connectionMap.values())
+					if (connection.getConnectionID() == connectionID) {
+						connection.send(event);
+						break;
+					}
+			} else if (event.getType().equals(ServerAlreadyLoggedInEvent.EVENTTYPE)) {
+				ServerAlreadyLoggedInEvent sALIE = (ServerAlreadyLoggedInEvent) event;
+				
+				int connectionID = sALIE.getConnectionID();
+				
+				for (Connection connection : connectionMap.values())
+					if (connection.getConnectionID() == connectionID) {
+						connection.send(event);
 						break;
 					}
 			} else
@@ -184,10 +186,10 @@ public class Network extends EventPublisher implements EventListener {
 		if (connectionListener != null)
 			connectionListener.terminate();
 
+		for (Connection connection : connectionMap.values())
+			connection.close();
+		
 		System.out.println("Network closed");
-
-		for (Map.Entry<Integer, Connection> entry : connectionMap.entrySet())
-			entry.getValue().close();
 	}
 
 }

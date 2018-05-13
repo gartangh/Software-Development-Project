@@ -11,7 +11,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
-import main.Context;
+import main.MainContext;
 import main.Main;
 import quiz.model.MCQuestion;
 import quiz.model.Round;
@@ -30,11 +30,11 @@ public class CreateRoundController extends EventPublisher {
 	@FXML
 	ChoiceBox<Integer> numberChoiceBox;
 
-	private StartRoundHandler startRoundHandler;
-	private NewMCQuestionHandler newMCQuestionHandler;
+	private StartRoundHandler startRoundHandler = new StartRoundHandler();
+	private NewMCQuestionHandler newMCQuestionHandler = new NewMCQuestionHandler();
 
 	// Reference to the main application
-	Main main;
+	private Main main;
 
 	public void setMain(Main main) {
 		this.main = main;
@@ -43,9 +43,6 @@ public class CreateRoundController extends EventPublisher {
 	// Methods
 	@FXML
 	private void initialize() {
-		startRoundHandler = new StartRoundHandler();
-		newMCQuestionHandler = new NewMCQuestionHandler();
-
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerStartRoundEvent.EVENTTYPE, startRoundHandler);
 		eventBroker.addEventListener(ServerNewMCQuestionEvent.EVENTTYPE, newMCQuestionHandler);
@@ -100,6 +97,7 @@ public class CreateRoundController extends EventPublisher {
 
 		int numberOfQuestions = numberChoiceBox.getValue();
 
+		main.showWaitHostScene(roundType);
 		ClientCreateRoundEvent cCRE = new ClientCreateRoundEvent(roundType, theme, difficulty, numberOfQuestions);
 		publishEvent(cCRE);
 	}
@@ -120,7 +118,6 @@ public class CreateRoundController extends EventPublisher {
 			eventBroker.removeEventListener(startRoundHandler);
 			eventBroker.removeEventListener(newMCQuestionHandler);
 
-			main.showWaitHostScene();
 		}
 
 	}
@@ -136,7 +133,7 @@ public class CreateRoundController extends EventPublisher {
 			String[] answers = sNQE.getAnswers();
 
 			MCQuestion mCQuestion = new MCQuestion(questionID, question, answers);
-			Context.getContext().setQuestion(mCQuestion);
+			MainContext.getContext().setQuestion(mCQuestion);
 		}
 
 	}
