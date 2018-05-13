@@ -160,34 +160,53 @@ public class Server extends EventPublisher {
 		User user = context.getUser(userID);
 		user.setLoggedIn(false);
 		context.getNetwork().getUserIDConnectionIDMap().remove(userID);
-
+		
 		for (Quiz quiz : context.getQuizMap().values()) {
+			boolean foundTeam = false;
+			
 			for (Team team : quiz.getTeamMap().values()) {
 				if (userID == team.getCaptainID()) {
 					// The user is the captain of a team
+					foundTeam = true;
+					
 					// Remove the team
-					int teamID = team.getTeamID();
-					quiz.removeTeam(teamID);
+					//int teamID = team.getTeamID();
+					//quiz.removeTeam(teamID);
 					
 					// Send an event to all player in the quiz
-					ServerDeleteTeamEvent sDTE = new ServerDeleteTeamEvent(teamID);
-					sDTE.addRecipients(context.getUsersFromQuiz(quiz.getQuizID()));
-					server.publishEvent(sDTE);
+					//ServerDeleteTeamEvent sDTE = new ServerDeleteTeamEvent(teamID);
+					//sDTE.addRecipients(context.getUsersFromQuiz(quiz.getQuizID()));
+					//server.publishEvent(sDTE);
+					context.changeTeam(quiz.getQuizID(),team.getTeamID(), user.getUserID(), 'd');
+					
+					ServerPlayerLeavesQuizEvent sPLQE=new ServerPlayerLeavesQuizEvent(quiz.getQuizID(),user.getUserID(),team.getTeamID(),userID);
+					sPLQE.addRecipients(context.getUsersFromQuiz(quiz.getQuizID()));
+					server.publishEvent(sPLQE);
 				} else {
 					// The user is not the captain of the team
 					for (int playerID : team.getPlayerMap().keySet()) {
 						if (userID == playerID) {
 							// The user is in the team
-							// TODO Remove the user
-							team.removePlayer(userID);
+							foundTeam = true;
+							
+							// Remove the user
+							//team.removePlayer(userID);
 							
 							// TODO Send an event to all players in the quiz
-							ServerRemovePlayerEvent sRPE = new ServerRemovePlayerEvent(userID);
-							sRPE.addRecipients(context.getUsersFromQuiz(quiz.getQuizID()));
-							server.publishEvent(sRPE);
+							ServerPlayerLeavesQuizEvent sPLQE = new ServerPlayerLeavesQuizEvent(quiz.getQuizID(),user.getUserID(),team.getTeamID(),team.getCaptainID());
+							sPLQE.addRecipients(context.getUsersFromQuiz(quiz.getQuizID()));
+							server.publishEvent(sPLQE);
 						}
 					}
 				}
+			}
+			
+			if (!foundTeam) {
+				quiz.removeUnassignedPlayer(user.getUserID());
+				
+				ServerPlayerLeavesQuizEvent sPLQE = new ServerPlayerLeavesQuizEvent(quiz.getQuizID(), userID, -1, -1);
+				sPLQE.addRecipients(context.getUsersFromQuiz(quiz.getQuizID()));
+				server.publishEvent(sPLQE);
 			}
 
 			if (userID == quiz.getHostID()) {
