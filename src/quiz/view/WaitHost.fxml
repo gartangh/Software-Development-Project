@@ -17,7 +17,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<BorderPane xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.WaitHostController">
+<BorderPane stylesheets="@../../css/root.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.WaitHostController">
    <right>
       <VBox fx:id="rightVBox" alignment="CENTER" BorderPane.alignment="CENTER">
          <children>
