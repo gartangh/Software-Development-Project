@@ -120,7 +120,7 @@ public class ScoreboardController extends EventPublisher {
 	
 					if (curTeam != null) {
 						if (scoreboardTeams.get(0).getTeamID() == curTeamID)
-							scoreboardModel.updateWinnerLoser("WINNER WINNER CHICKEN DINNER");
+							scoreboardModel.updateWinnerLoser(curTeam.getTeamname() + ": WINNER WINNER CHICKEN DINNER");
 						else
 							scoreboardModel.updateWinnerLoser(curTeam.getTeamname() + ": LOSER");
 					}

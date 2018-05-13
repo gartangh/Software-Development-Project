@@ -31,8 +31,8 @@
             </GridPane>
 								<TableView fx:id="teamTable" prefHeight="300.0" prefWidth="286.0" VBox.vgrow="ALWAYS">
                <columns>
-                  <TableColumn fx:id="teamNameColumn" maxWidth="1.7976931348623157E308" minWidth="70.0" prefWidth="140.79992991685867" text="Teamname" />
-                  <TableColumn fx:id="captainNameColumn" prefWidth="143.20008850097656" text="Captainname" />
+                  <TableColumn fx:id="teamNameColumn" maxWidth="1.7976931348623157E308" minWidth="70.0" prefWidth="258.0" text="Teamname" />
+                  <TableColumn fx:id="captainNameColumn" prefWidth="294.0" text="Captainname" />
                </columns>
 								</TableView>
             <Label text="Unassigned players:">

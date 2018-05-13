@@ -30,3 +30,4 @@
 /ServerCreateTeamSuccesEvent.class
 /ServerNewQuizEvent.class
 /ServerNewTeamEvent.class
+/ServerNewPixelSizeEvent.class
