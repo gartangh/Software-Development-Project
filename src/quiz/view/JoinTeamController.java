@@ -521,6 +521,7 @@ public class JoinTeamController extends EventPublisher {
 		@Override
 		public void handleEvent(Event event) {
 			ServerHostLeavesQuizEvent sHLQE = (ServerHostLeavesQuizEvent) event;
+			
 			MainContext context = MainContext.getContext();
 			if (sHLQE.getQuizID() == context.getQuiz().getQuizID()) {
 				final int quizHostID = context.getQuiz().getHostID();
@@ -546,6 +547,7 @@ public class JoinTeamController extends EventPublisher {
 							alert.setContentText("You can join another quiz or create a new one.");
 							alert.showAndWait();
 						}
+						
 						main.showJoinQuizScene();
 						eventBroker.removeEventListener(hostLeavesQuizHandler);
 					}
