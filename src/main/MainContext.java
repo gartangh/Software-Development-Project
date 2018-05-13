@@ -106,7 +106,9 @@ public class MainContext {
 	 */
 	public void setQuestion(Question question) {
 		this.question = question;
-		this.quiz.resetVotes();
+		
+		if (this.quiz != null)
+			this.quiz.resetVotes();
 	}
 
 	/**

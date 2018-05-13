@@ -5,8 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import main.MainContext;
-import quiz.model.User;
-
 public class MenuController {
 
 	// Methods
@@ -20,18 +18,27 @@ public class MenuController {
 	 */
 	@FXML
 	private void handleProfile() {
-		User user = MainContext.getContext().getUser();
+		MainContext context = MainContext.getContext();
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Information");
 				alert.setHeaderText("Profile");
-				if (user == null)
+				if (context.getUser() == null)
 					alert.setContentText("No user is logged in at the moment.");
-				else
-					alert.setContentText("Username: " + user.getUsername() + "\nLevel: "
-							+ Integer.toString(user.getLevel()) + "\nXP: " + Long.toString(user.getXp()));
+				else {
+					String message = "Username: " + context.getUser().getUsername() + "\nLevel: "
+							+ Integer.toString(context.getUser().getLevel()) + "\nXP: "
+							+ Long.toString(context.getUser().getXp());
+					if (context.getQuiz() != null) {
+						message += "\nQuiz: " + context.getQuiz().getQuizname();
+						if (context.getTeam() != null)
+							message += "\nTeam: " + context.getTeam().getTeamname();
+					}
+					alert.setContentText(message);
+				}
+
 				alert.showAndWait();
 			}
 		});

@@ -122,9 +122,9 @@ public class ServerContext {
 							team.setCaptainID(randomKey);
 						}
 					}
-					else {
+					else
 						quizMap.get(quizID).removeTeam(team.getTeamID());
-					}
+
 					return user.getUsername();
 				}
 			}
