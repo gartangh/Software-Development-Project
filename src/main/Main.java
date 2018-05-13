@@ -19,6 +19,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import network.Network;
+import quiz.util.RoundType;
 import quiz.view.CreateQuizController;
 import quiz.view.JoinQuizController;
 import quiz.view.LogInController;
@@ -49,11 +50,11 @@ public class Main extends Application {
 	/** The Constant SERVERADDRESS represents the IP address of the server. */
 	// On the iVisitor network at iGent
 	// public final static String SERVERADDRESS = "10.10.131.52";
+	public final static String SERVERADDRESS = "192.168.0.114";
 	// On the Proximus network at Emiel
-	public final static String SERVERADDRESS = "192.168.1.30";
+	// public final static String SERVERADDRESS = "192.168.1.30";
 
 	/** The Constant SERVERPORT represents the port on the server. */
-
 	public final static int SERVERPORT = 1025;
 
 	private Stage primaryStage;
@@ -86,6 +87,7 @@ public class Main extends Application {
 		// SERVERPORT + 1 and 65535 (2^16 - 1) and type CLIENT
 		Network network = new Network(new Random().nextInt(65535 - SERVERPORT + 2) + 1026, Network.CLIENTTYPE);
 		MainContext.getContext().setNetwork(network);
+		network.setMainApp(this);
 
 		// Close button
 		this.primaryStage.setOnCloseRequest(e -> {
@@ -94,17 +96,21 @@ public class Main extends Application {
 		});
 
 		try {
+			// Print own address
 			if (Main.LOCAL) {
 				System.out.println(InetAddress.getLocalHost());
+				
 				network.connect(InetAddress.getLocalHost(), Main.SERVERPORT);
 			} else {
 				System.out.println(InetAddress.getLocalHost().getHostAddress());
+				
 				network.connect(SERVERADDRESS, Main.SERVERPORT);
 			}
 
+			// Print own port
 			System.out.println(Integer.toString(network.getConnectionListener().getServerPort()));
 
-			// Send event over network
+			// Add the network as event listener
 			EventBroker.getEventBroker().addEventListener(network);
 
 			// Start event broker
@@ -114,7 +120,18 @@ public class Main extends Application {
 
 			showLogInScene();
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			System.err.println("UnknownHostException");
+			
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Error");
+					alert.setHeaderText("Could not connect to network!");
+					alert.setContentText("Could not find local host. Please restart the app and try again.");
+					alert.showAndWait();
+				}
+			});
 		}
 	}
 
@@ -158,6 +175,35 @@ public class Main extends Application {
 		}
 	}
 
+	/**
+	 * On connection lost.
+	 *
+	 * @param userID
+	 *            the user ID
+	 */
+	public void onConnectionLost() {
+		// Reset everything
+		MainContext context = MainContext.getContext();
+		context.setQuestion(null);
+		context.setQuiz(null);
+		context.setTeam(null);
+		context.setUser(null);
+
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Error");
+				alert.setHeaderText("Connection lost!");
+				alert.setContentText("You lost connection with the server. Please restore connection and try again.");
+				alert.showAndWait();
+				
+				// Exit the app
+				System.exit(0);
+			}
+		});
+	}
+	
 	// Show scenes
 	/**
 	 * Show log in scene.
@@ -310,12 +356,13 @@ public class Main extends Application {
 	/**
 	 * Show question scene.
 	 */
-	public void showQuestionScene() {
+	public void showQuestionScene(RoundType roundType) {
 		try {
 			FXMLLoader questionFormLoader = new FXMLLoader();
 			questionFormLoader.setLocation(Main.class.getResource("../quiz/view/Question.fxml"));
 			BorderPane questionFormRoot = (BorderPane) questionFormLoader.load();
 			QuestionController questionFormController = questionFormLoader.getController();
+			questionFormController.setRoundType(roundType);
 			questionFormController.setMainApp(this);
 			questionFormRoot.getStylesheets().add("css/root.css");
 			questionFormRoot.getStyleClass().add("root");
@@ -356,12 +403,13 @@ public class Main extends Application {
 	/**
 	 * Show wait host scene.
 	 */
-	public void showWaitHostScene() {
+	public void showWaitHostScene(RoundType roundType) {
 		try {
 			FXMLLoader waitHostLoader = new FXMLLoader();
 			waitHostLoader.setLocation(Main.class.getResource("../quiz/view/WaitHost.fxml"));
 			BorderPane waitHostRoot = (BorderPane) waitHostLoader.load();
 			WaitHostController waitHostController = waitHostLoader.getController();
+			waitHostController.setRoundType(roundType);
 			waitHostController.setMain(this);
 			waitHostRoot.getStylesheets().add("css/root.css");
 			waitHostRoot.getStyleClass().add("root");
@@ -397,36 +445,6 @@ public class Main extends Application {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * On connection lost.
-	 *
-	 * @param userID
-	 *            the user ID
-	 */
-	public void onConnectionLost() {
-		// Reset everything
-		MainContext context = MainContext.getContext();
-		context.setQuestion(null);
-		context.setQuiz(null);
-		context.setTeam(null);
-		context.setUser(null);
-		
-		// TODO Remove all eventListeners
-
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				Alert alert = new Alert(AlertType.ERROR);
-				alert.setTitle("Error");
-				alert.setHeaderText("Connection lost!");
-				alert.setContentText("You lost connection with the server. Please restore connection and try again.");
-				alert.showAndWait();
-			}
-		});
-		
-		showLogInScene();
 	}
 
 }

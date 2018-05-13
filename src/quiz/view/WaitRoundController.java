@@ -4,18 +4,14 @@ import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
-import eventbroker.serverevent.ServerNewMCQuestionEvent;
 import eventbroker.serverevent.ServerStartRoundEvent;
 import javafx.fxml.FXML;
-import main.MainContext;
 import main.Main;
-import quiz.model.MCQuestion;
 
 public class WaitRoundController extends EventPublisher {
 
-	private StartRoundHandler startRoundHandler = new StartRoundHandler();
-	private NewQuestionHandler newQuestionHandler = new NewQuestionHandler();
-	
+	private StartRoundHandler startRoundHandler;
+
 	// Reference to the main application
 	private Main main;
 
@@ -25,9 +21,9 @@ public class WaitRoundController extends EventPublisher {
 
 	@FXML
 	public void initialize() {
+		startRoundHandler = new StartRoundHandler();
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerStartRoundEvent.EVENTTYPE, startRoundHandler);
-		eventBroker.addEventListener(ServerNewMCQuestionEvent.EVENTTYPE, newQuestionHandler);
 	}
 
 	private class StartRoundHandler implements EventListener {
@@ -39,27 +35,9 @@ public class WaitRoundController extends EventPublisher {
 
 			EventBroker eventBroker = EventBroker.getEventBroker();
 			eventBroker.removeEventListener(startRoundHandler);
-			eventBroker.removeEventListener(newQuestionHandler);
 
-			main.showQuestionScene();
+			main.showQuestionScene(sSRE.getRoundType());
 		}
 
 	}
-
-	public class NewQuestionHandler implements EventListener {
-
-		@Override
-		public void handleEvent(Event event) {
-			ServerNewMCQuestionEvent sNQE = (ServerNewMCQuestionEvent) event;
-
-			int questionID = sNQE.getQuestionID();
-			String question = sNQE.getQuestion();
-			String[] answers = sNQE.getAnswers();
-
-			MCQuestion q = new MCQuestion(questionID, question, answers);
-			MainContext.getContext().setQuestion(q);
-		}
-
-	}
-
 }

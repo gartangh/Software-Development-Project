@@ -23,15 +23,28 @@
 				<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
 			</padding>
 			<children>
-								<TableView fx:id="teamTable" VBox.vgrow="ALWAYS">
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+            </GridPane>
+								<TableView fx:id="teamTable" prefHeight="300.0" prefWidth="286.0" VBox.vgrow="ALWAYS">
                <columns>
-                  <TableColumn fx:id="NameColumn" maxWidth="1.7976931348623157E308" minWidth="70.0" prefWidth="-1.0" text="Teams" />
+                  <TableColumn fx:id="teamNameColumn" maxWidth="1.7976931348623157E308" minWidth="70.0" prefWidth="140.79992991685867" text="Teamname" />
+                  <TableColumn fx:id="captainNameColumn" prefWidth="143.20008850097656" text="Captainname" />
                </columns>
 								</TableView>
+            <Label text="Unassigned players:">
+               <font>
+                  <Font name="System Bold" size="17.0" />
+               </font>
+            </Label>
+            <ListView fx:id="unassignedPlayerList" prefHeight="202.0" prefWidth="286.0" />
 				<ButtonBar>
 					<buttons>
 						<Button defaultButton="true" mnemonicParsing="false" onAction="#handleCreateTeam" text="Create team" />
-						<Button mnemonicParsing="false" onAction="#handleReady" text="Ready" />
+						<Button fx:id="readyButton" mnemonicParsing="false" onAction="#handleReady" text="Ready" />
                   <Button cancelButton="true" mnemonicParsing="false" onAction="#handleBack" text="Back" />
 					</buttons>
 				</ButtonBar>
@@ -46,7 +59,7 @@
 			<children>
 				<Label text="Team Details:">
 					<font>
-						<Font size="15.0" />
+						<Font name="System Bold" size="15.0" />
 					</font>
 				</Label>
 				<GridPane>

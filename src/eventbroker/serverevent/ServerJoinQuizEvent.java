@@ -1,6 +1,13 @@
 package eventbroker.serverevent;
 
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import eventbroker.EventListener;
+import javafx.scene.paint.Color;
 import quiz.model.Quiz;
+import quiz.model.Team;
 
 @SuppressWarnings("serial")
 public class ServerJoinQuizEvent extends ServerEvent {
@@ -10,9 +17,22 @@ public class ServerJoinQuizEvent extends ServerEvent {
 	private Quiz quiz;
 
 	// Constructor
-	public ServerJoinQuizEvent(Quiz quiz) {
+	public ServerJoinQuizEvent(Quiz q) {
 		super.type = EVENTTYPE;
-		this.quiz = quiz;
+		//It has to be like this or the object can't be serializiable again, java takes old value!!!!!!
+		this.quiz = Quiz.createQuiz(q.getQuizID(),q.getQuizname(),q.getRounds(),q.getPlayers(),q.getHostID(),q.getHostID(),q.getHostname());
+
+		for (Entry<Integer,String> entry : q.getUnassignedPlayers().entrySet()){
+			 quiz.addUnassignedPlayer(entry.getKey(),entry.getValue());
+		}
+
+		for (Entry<Integer,Team> oldTeam : q.getTeamMap().entrySet()){
+			Team team=new Team(oldTeam.getValue());
+			for (Entry<Integer,String> user: oldTeam.getValue().getPlayerMap().entrySet())
+				team.getPlayerMap().put(user.getKey(),user.getValue());
+			quiz.getTeamMap().put(oldTeam.getKey(),team);
+		}
+
 	}
 
 	// Getter

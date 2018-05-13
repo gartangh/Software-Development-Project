@@ -11,6 +11,7 @@ import eventbroker.clientevent.ClientJoinQuizEvent;
 import eventbroker.clientevent.ClientLeaveQuizEvent;
 import eventbroker.clientevent.ClientLogOutEvent;
 import eventbroker.serverevent.ServerGetQuizzesEvent;
+import eventbroker.serverevent.ServerHostLeavesQuizEvent;
 import eventbroker.serverevent.ServerJoinQuizEvent;
 import eventbroker.serverevent.ServerNewQuizEvent;
 import eventbroker.serverevent.ServerStartQuizEvent;
@@ -47,11 +48,12 @@ public class JoinQuizController extends EventPublisher {
 	private Label mPlayers;
 
 	private QuizModel selectedQuiz;
-	private JoinQuizModel joinQuizModel = new JoinQuizModel();
-	private NewQuizHandler newQuizHandler = new NewQuizHandler();
-	private JoinQuizHandler joinQuizHandler = new JoinQuizHandler();
-	private GetQuizzesHandler getQuizzesHandler = new GetQuizzesHandler();
-	private StartQuizHandler startQuizHandler = new StartQuizHandler();
+	private JoinQuizModel joinQuizModel;
+	private NewQuizHandler newQuizHandler;
+	private JoinQuizHandler joinQuizHandler;
+	private GetQuizzesHandler getQuizzesHandler;
+	private StartQuizHandler startQuizHandler;
+	private HostLeftQuizHandler hostLeftQuizHandler;
 
 	// Reference to the main application
 	private Main main;
@@ -63,12 +65,21 @@ public class JoinQuizController extends EventPublisher {
 	// Methods
 	@FXML
 	private void initialize() {
+		joinQuizModel = new JoinQuizModel();
+		newQuizHandler = new NewQuizHandler();
+		joinQuizHandler = new JoinQuizHandler();
+		getQuizzesHandler = new GetQuizzesHandler();
+		startQuizHandler = new StartQuizHandler();
+		hostLeftQuizHandler = new HostLeftQuizHandler();
+
+
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerJoinQuizEvent.EVENTTYPE, joinQuizHandler);
 		eventBroker.addEventListener(ServerGetQuizzesEvent.EVENTTYPE, getQuizzesHandler);
 		eventBroker.addEventListener(ServerNewQuizEvent.EVENTTYPE, newQuizHandler);
 		eventBroker.addEventListener(ServerStartQuizEvent.EVENTTYPE, startQuizHandler);
-		
+		eventBroker.addEventListener(ServerHostLeavesQuizEvent.EVENTTYPE, hostLeftQuizHandler);
+
 		// Ask server for list of quizzes
 		ClientGetQuizzesEvent cGQE = new ClientGetQuizzesEvent();
 		publishEvent(cGQE);
@@ -94,7 +105,8 @@ public class JoinQuizController extends EventPublisher {
 		eventBroker.removeEventListener(getQuizzesHandler);
 		eventBroker.removeEventListener(newQuizHandler);
 		eventBroker.removeEventListener(startQuizHandler);
-		
+		eventBroker.removeEventListener(hostLeftQuizHandler);
+
 		main.showCreateQuizScene();
 	}
 
@@ -127,6 +139,7 @@ public class JoinQuizController extends EventPublisher {
 		eventBroker.removeEventListener(getQuizzesHandler);
 		eventBroker.removeEventListener(newQuizHandler);
 		eventBroker.removeEventListener(startQuizHandler);
+		eventBroker.removeEventListener(hostLeftQuizHandler);
 
 		main.showLogInScene();
 	}
@@ -141,6 +154,20 @@ public class JoinQuizController extends EventPublisher {
 			QuizModel quiz = sNQE.getQuiz();
 
 			joinQuizModel.addQuiz(quiz);
+		}
+
+	}
+
+	private class HostLeftQuizHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ServerHostLeavesQuizEvent sHLQE = (ServerHostLeavesQuizEvent) event;
+
+			int quizID = sHLQE.getQuizID();
+
+			joinQuizModel.removeQuiz(quizID);
+
 		}
 
 	}

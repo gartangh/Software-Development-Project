@@ -7,12 +7,19 @@ public class ClientAnswerEvent extends ClientQuizzerEvent {
 
 	private int answer;
 	private int questionID;
+	private int pixelSize = 0;
 
 	// Constructor
 	public ClientAnswerEvent(int questionID, int answer) {
 		super.type = EVENTTYPE;
 		this.answer = answer;
 		this.questionID = questionID;
+	}
+	public ClientAnswerEvent(int questionID, int pixelSize, int answer) {
+		super.type = EVENTTYPE;
+		this.answer = answer;
+		this.questionID = questionID;
+		this.pixelSize = pixelSize;
 	}
 
 	// Getters
@@ -22,6 +29,10 @@ public class ClientAnswerEvent extends ClientQuizzerEvent {
 
 	public int getQuestionID() {
 		return questionID;
+	}
+	
+	public int getPixelSize() {
+		return pixelSize;
 	}
 
 }

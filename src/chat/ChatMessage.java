@@ -23,7 +23,7 @@ public class ChatMessage extends ClientEvent implements Serializable {
 		this.quizID = quizID;
 	}
 
-	// Getter
+	// Getters
 	public String getUsername() {
 		return username;
 	}

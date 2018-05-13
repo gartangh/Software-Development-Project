@@ -18,25 +18,24 @@ import main.MainContext;
 
 public class JoinTeamModel {
 
-	private ObservableList<TeamNameID> teams = FXCollections.observableArrayList();
+	private ObservableList<TeamNameID> teams;
 	private int teamID = -1;
 	private StringProperty teamname;
 	private StringProperty captainname;
+	private StringProperty startButtonText;
 	private ObjectProperty<Paint> color;
-	private ListProperty<String> members = new SimpleListProperty<>();
+	private ListProperty<String> teamMembers;
+	private ListProperty<String> unassignedPlayers;
 
 	// Constructor
 	public JoinTeamModel() {
 		this.teamname = new SimpleStringProperty();
 		this.captainname = new SimpleStringProperty();
+		this.startButtonText= new SimpleStringProperty();
 		this.color = new SimpleObjectProperty<>(Color.TRANSPARENT);
-	}
-
-	public JoinTeamModel(Team team) {
-		this.teamname = new SimpleStringProperty(team.getTeamname());
-		this.captainname = new SimpleStringProperty(team.getPlayerMap().get(team.getCaptainID()));
-		this.color = new SimpleObjectProperty<>(team.getColor());
-		this.teamID = team.getTeamID();
+		this.teams = FXCollections.observableArrayList();
+		this.teamMembers = new SimpleListProperty<>();
+		this.unassignedPlayers  = new SimpleListProperty<>();
 	}
 
 	// Getters
@@ -61,9 +60,23 @@ public class JoinTeamModel {
 	}
 
 	public ListProperty<String> getMembers() {
-		return members;
+		return teamMembers;
 	}
 
+	public ListProperty<String> getUnassignedPlayers() {
+		return unassignedPlayers;
+	}
+
+	public void setStartButtonText(MainContext context){
+		if (context.getUser().getUserID()==context.getQuiz().getHostID()){
+			 startButtonText.setValue("Start");
+		}
+		else startButtonText.setValue("Ready");
+	}
+
+	public StringProperty getStartButtonText(){
+		return this.startButtonText;
+	}
 	// Methods
 	public void updateTeams() {
 		Quiz quiz = MainContext.getContext().getQuiz();
@@ -72,35 +85,79 @@ public class JoinTeamModel {
 				teams.clear();
 				for (Team team : quiz.getTeamMap().values()) {
 					TeamNameID teamNameID = new TeamNameID(new SimpleStringProperty(team.getTeamname()),
-							team.getTeamID());
+							team.getTeamID(),new SimpleStringProperty(team.getPlayerMap().get(team.getCaptainID())));
 					teams.add(teamNameID);
 				}
 			}
 		});
 	}
 
+	public void tiggerTeams() {
+		Quiz quiz = MainContext.getContext().getQuiz();
+		Platform.runLater(new Runnable() {
+			public void run() {
+				TeamNameID teamNameID = new TeamNameID(new SimpleStringProperty(""),
+						-1,new SimpleStringProperty(""));
+				teams.add(teamNameID);
+				teams.remove(teamNameID);
+			}
+		});
+	}
+
+	//TODO: check if it has to be this way to have a cleaner selectionmodel
+	public void addTeam(Team team) {
+		Platform.runLater(new Runnable() {
+			public void run() {
+				TeamNameID teamNameID = new TeamNameID(new SimpleStringProperty(team.getTeamname()),
+							team.getTeamID(),new SimpleStringProperty(team.getPlayerMap().get(team.getCaptainID())));
+				teams.add(teamNameID);
+				}
+		});
+	}
+
+	public void deleteTeam(Team team) {
+		Platform.runLater(new Runnable() {
+			public void run() {
+				for (int i=0;i<teams.size();i++){
+					if (teams.get(i).getTeamID()==team.getTeamID()) teams.remove(i);
+				}
+			}
+		});
+	}
+
+	public void updateUnassignedPlayers(){
+		Quiz quiz = MainContext.getContext().getQuiz();
+		Platform.runLater(new Runnable() {
+			public void run() {
+				unassignedPlayers.clear();
+				unassignedPlayers.set(FXCollections.observableArrayList());
+				unassignedPlayers.addAll(quiz.getUnassignedPlayers().values());
+			}
+		});
+	}
+
 	public void updateTeamDetail(int teamID) {
 		this.teamID = teamID;
+		Team team = MainContext.getContext().getQuiz().getTeamMap().get(teamID);
 
 		Platform.runLater(new Runnable() {
 			public void run() {
-				if (teamID != -1){
-					Team team = MainContext.getContext().getQuiz().getTeamMap().get(teamID);
+				if (team != null){
 					teamname.setValue(team.getTeamname());
 					captainname.setValue(team.getPlayerMap().get(team.getCaptainID()));
 					color.setValue(team.getColor());
 					Set<Entry<Integer, String>> r = team.getPlayerMap().entrySet();
-					members.clear();
-					members.set(FXCollections.observableArrayList());
+					teamMembers.clear();
+					teamMembers.set(FXCollections.observableArrayList());
 					for (Entry<Integer, String> entry : r)
-						members.add(entry.getValue());
+						teamMembers.add(entry.getValue());
 				}
 				else {
 					teamname.setValue("");
 					captainname.setValue("");
 					color.setValue(Color.TRANSPARENT);
-					members.clear();
-					members.set(FXCollections.observableArrayList());
+					teamMembers.clear();
+					teamMembers.set(FXCollections.observableArrayList());
 				}
 			}
 		});

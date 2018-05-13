@@ -210,10 +210,28 @@ public class Quiz implements Serializable {
 		roundList.get(currentRound).addAnswer(teamID, questionID, answer);
 	}
 
-	public void addPoints(int teamID, int questionID, int answer) {
-		MCQuestion q = (MCQuestion) ServerContext.getContext().getQuestion(questionID);
-		if (answer == q.getCorrectAnswer())
-			teamMap.get(teamID).addPoints(1);
+	public int addPoints(int teamID, int questionID, int pixelSize, int answer) {
+		int qType = ServerContext.getContext().getQuestionTypeMap().get(questionID);
+		int points = 0;
+		if(qType == RoundType.IP.ordinal()) {
+			IPQuestion iPQ = (IPQuestion) ServerContext.getContext().getQuestion(questionID);
+			if (answer == iPQ.getCorrectAnswer()) {
+				points = (int) Math.floor(Math.log(pixelSize) / Math.log(2.0)) + 1;
+				
+				if (pixelSize > 10 && pixelSize < 100) {
+					points = (int) Math.ceil(points * 1.25);
+				} else if (pixelSize >= 100){
+					points = (int) Math.ceil(points * 1.75);
+				}
+			}
+				
+		} else if(qType == RoundType.MC.ordinal()){
+			MCQuestion mCQ = (MCQuestion) ServerContext.getContext().getQuestion(questionID);
+			if (answer == mCQ.getCorrectAnswer())
+				points = 1;
+		}
+		
+		if(points > 0) teamMap.get(teamID).addPoints(points);
+		return points;
 	}
-
 }

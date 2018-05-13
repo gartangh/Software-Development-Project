@@ -9,14 +9,16 @@ public class ServerVoteAnswerEvent extends ServerEvent {
 	private int questionID;
 	private int answer;
 	private int correctAnswer;
+	private int points;
 
 	// Constructors
-	public ServerVoteAnswerEvent(int teamID, int questionID, int answer, int correctAnswer) {
+	public ServerVoteAnswerEvent(int teamID, int questionID, int answer, int correctAnswer, int points) {
 		super.type = EVENTTYPE;
 		this.teamID = teamID;
 		this.questionID = questionID;
 		this.answer = answer;
 		this.correctAnswer = correctAnswer;
+		this.points = points;
 	}
 
 	// Getters
@@ -33,6 +35,10 @@ public class ServerVoteAnswerEvent extends ServerEvent {
 	}
 
 	public int getCorrectAnswer() {
+		return correctAnswer;
+	}
+	
+	public int getPoints() {
 		return correctAnswer;
 	}
 
