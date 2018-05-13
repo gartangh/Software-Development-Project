@@ -18,6 +18,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import network.Network;
+import quiz.util.RoundType;
 import quiz.view.CreateQuizController;
 import quiz.view.JoinQuizController;
 import quiz.view.LogInController;
@@ -48,8 +49,9 @@ public class Main extends Application {
 	/** The Constant SERVERADDRESS represents the IP address of the server. */
 	// On the iVisitor network at iGent
 	// public final static String SERVERADDRESS = "10.10.131.52";
+	public final static String SERVERADDRESS = "192.168.0.114";
 	// On the Proximus network at Emiel
-	public final static String SERVERADDRESS = "192.168.1.30";
+	// public final static String SERVERADDRESS = "192.168.1.30";
 
 	/** The Constant SERVERPORT represents the port on the server. */
 	public final static int SERVERPORT = 1025;
@@ -336,12 +338,13 @@ public class Main extends Application {
 	/**
 	 * Show question scene.
 	 */
-	public void showQuestionScene() {
+	public void showQuestionScene(RoundType roundType) {
 		try {
 			FXMLLoader questionFormLoader = new FXMLLoader();
 			questionFormLoader.setLocation(Main.class.getResource("../quiz/view/Question.fxml"));
 			BorderPane questionFormRoot = (BorderPane) questionFormLoader.load();
 			QuestionController questionFormController = questionFormLoader.getController();
+			questionFormController.setRoundType(roundType);
 			questionFormController.setMainApp(this);
 
 			Platform.runLater(new Runnable() {
@@ -378,12 +381,13 @@ public class Main extends Application {
 	/**
 	 * Show wait host scene.
 	 */
-	public void showWaitHostScene() {
+	public void showWaitHostScene(RoundType roundType) {
 		try {
 			FXMLLoader waitHostLoader = new FXMLLoader();
 			waitHostLoader.setLocation(Main.class.getResource("../quiz/view/WaitHost.fxml"));
 			BorderPane waitHostRoot = (BorderPane) waitHostLoader.load();
 			WaitHostController waitHostController = waitHostLoader.getController();
+			waitHostController.setRoundType(roundType);
 			waitHostController.setMain(this);
 
 			Platform.runLater(new Runnable() {

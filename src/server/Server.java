@@ -1,10 +1,15 @@
 package server;
 
+import java.io.ByteArrayOutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.imageio.ImageIO;
 
 import chat.ChatMessage;
 import eventbroker.Event;
@@ -42,6 +47,7 @@ import eventbroker.serverevent.ServerLogInFailEvent;
 import eventbroker.serverevent.ServerLogInSuccesEvent;
 import eventbroker.serverevent.ServerNewIPQuestionEvent;
 import eventbroker.serverevent.ServerNewMCQuestionEvent;
+import eventbroker.serverevent.ServerNewPixelSizeEvent;
 import eventbroker.serverevent.ServerNewRoundEvent;
 import eventbroker.serverevent.ServerDeleteTeamEvent;
 import eventbroker.serverevent.ServerNewTeamEvent;
@@ -63,6 +69,7 @@ import quiz.model.User;
 import quiz.util.Difficulty;
 import quiz.util.RoundType;
 import quiz.util.Theme;
+import server.timertask.IPQuestionTimerTask;
 import network.Network;
 import quiz.model.IPQuestion;
 import quiz.model.MCQuestion;
@@ -553,13 +560,30 @@ public class Server extends EventPublisher {
 			ServerContext context = ServerContext.getContext();
 			Quiz quiz = context.getQuiz(quizID);
 			quiz.addAnswer(teamID, questionID, answer);
-			quiz.addPoints(teamID, questionID, answer);
+			int points = quiz.addPoints(teamID, questionID, cAE.getPixelSize(), answer);
 			ArrayList<Integer> receivers = new ArrayList<>();
 			receivers.addAll(context.getQuiz(quizID).getTeamMap().get(teamID).getPlayerMap().keySet());
 			receivers.add(context.getQuiz(quizID).getHostID());
-			MCQuestion mCQ = (MCQuestion) context.getQuestion(questionID);
-			ServerVoteAnswerEvent serverAnswer = new ServerVoteAnswerEvent(teamID, questionID, answer,
-					mCQ.getCorrectAnswer());
+			
+			int qType = ServerContext.getContext().getQuestionTypeMap().get(questionID);
+			int correctAnswer = 0;
+			if(qType == RoundType.IP.ordinal()) {
+				IPQuestion iPQ = (IPQuestion) ServerContext.getContext().getQuestion(questionID);
+				correctAnswer = iPQ.getCorrectAnswer();
+			} else if(qType == RoundType.MC.ordinal()){
+				MCQuestion mCQ = (MCQuestion) ServerContext.getContext().getQuestion(questionID);
+				correctAnswer = mCQ.getCorrectAnswer();
+			}
+			
+			if (quiz.isAnsweredByAll()) {
+				Timer t = ServerContext.getContext().getQuizTimerMap().get(quizID);
+				if(t != null) {
+					t.cancel();
+					ServerContext.getContext().getQuizTimerMap().put(quizID, null);
+				}
+			}
+			
+			ServerVoteAnswerEvent serverAnswer = new ServerVoteAnswerEvent(teamID, questionID, answer, correctAnswer, points);			
 			serverAnswer.addRecipients(receivers);
 			server.publishEvent(serverAnswer);
 		}
@@ -569,7 +593,7 @@ public class Server extends EventPublisher {
 	private static class NewQuestionHandler implements EventListener {
 
 		@Override
-		public void handleEvent(Event event) {
+		public void handleEvent(Event event) {			
 			ClientNewQuestionEvent cNQE = (ClientNewQuestionEvent) event;
 
 			int userID = cNQE.getUserID();
@@ -578,18 +602,44 @@ public class Server extends EventPublisher {
 			ServerContext context = ServerContext.getContext();
 			Quiz quiz = context.getQuiz(quizID);
 			if (quiz.isAnsweredByAll()) {
+				
 				ArrayList<Integer> receivers = context.getUsersFromQuiz(quizID);
+				receivers.add(context.getQuiz(quizID).getHostID());
 
 				if ((quiz.getRoundList().get(quiz.getCurrentRound()).getCurrentQuestion() + 1) < quiz.getRoundList()
 						.get(quiz.getCurrentRound()).getQuestions()) {
-					MCQuestion nQ = (MCQuestion) context
-							.getQuestion(quiz.getRoundList().get(quiz.getCurrentRound()).getNextQuestion());
+					switch(quiz.getRoundList().get(quiz.getCurrentRound()).getRoundType()) {
+					case IP:
+						Timer t = ServerContext.getContext().getQuizTimerMap().get(quizID);
+						if(t != null) {
+							t.cancel();
+							ServerContext.getContext().getQuizTimerMap().put(quizID, null);
+						}
+						
+						IPQuestion newIPQ = (IPQuestion) context
+						.getQuestion(quiz.getRoundList().get(quiz.getCurrentRound()).getNextQuestion());
 
-					ServerNewMCQuestionEvent sNQE = new ServerNewMCQuestionEvent(nQ.getQuestionID(), nQ.getQuestion(),
-							nQ.getAnswers(), nQ.getCorrectAnswer());
-					sNQE.addRecipients(receivers);
-					receivers.add(context.getQuiz(quizID).getHostID());
-					server.publishEvent(sNQE);
+						ServerNewIPQuestionEvent sNIPQE = new ServerNewIPQuestionEvent(newIPQ.getQuestionID(), newIPQ.getBufferedImage(),
+								newIPQ.getPixelSize(), newIPQ.getAnswers(), newIPQ.getCorrectAnswer());
+						sNIPQE.addRecipients(receivers);
+						server.publishEvent(sNIPQE);
+						
+						t = new Timer();
+						ServerContext.getContext().getQuizTimerMap().put(quizID, t);
+						IPQuestionTimerTask iPQTT = new IPQuestionTimerTask(quizID, newIPQ.getQuestionID(), newIPQ.getPixelSize());
+						t.scheduleAtFixedRate(iPQTT, 0, 1000);
+						
+						break;
+					case MC:
+						MCQuestion newMCQ = (MCQuestion) context
+						.getQuestion(quiz.getRoundList().get(quiz.getCurrentRound()).getNextQuestion());
+
+						ServerNewMCQuestionEvent sNMCQE = new ServerNewMCQuestionEvent(newMCQ.getQuestionID(), newMCQ.getQuestion(),
+								newMCQ.getAnswers(), newMCQ.getCorrectAnswer());
+						sNMCQE.addRecipients(receivers);
+						server.publishEvent(sNMCQE);
+						break;
+					}
 				} else {
 					if ((quiz.getCurrentRound() + 1) < quiz.getRounds()) {
 						ServerNewRoundEvent sNRE = new ServerNewRoundEvent(quiz.getCurrentRound() + 1);
@@ -629,30 +679,42 @@ public class Server extends EventPublisher {
 			quiz.addRound(roundType, theme, difficulty, questions);
 			ArrayList<Integer> receivers = context.getUsersFromQuiz(quizID);
 
+			ServerStartRoundEvent sSRE = new ServerStartRoundEvent(roundType);
+			sSRE.addRecipients(receivers);
+			server.publishEvent(sSRE);
+			
+			receivers.add(context.getQuiz(quizID).getHostID());
+			
 			switch (roundType) {
 			case IP:
-				IPQuestion iPQuestion = (IPQuestion) context
-						.getQuestion(quiz.getRoundList().get(quiz.getCurrentRound()).getNextQuestion());
-
-				ServerNewIPQuestionEvent sNIPQE = new ServerNewIPQuestionEvent(iPQuestion.getQuestionID(),
-						iPQuestion.getQuestion(), iPQuestion.getAnswers());
+				Timer t = ServerContext.getContext().getQuizTimerMap().get(quizID);
+				if(t != null) {
+					t.cancel();
+					ServerContext.getContext().getQuizTimerMap().put(quizID, null);
+				}
+				
+				IPQuestion newIPQ = (IPQuestion) context.getQuestion(quiz.getRoundList().get(quiz.getCurrentRound()).getNextQuestion());
+				ServerNewIPQuestionEvent sNIPQE = new ServerNewIPQuestionEvent(newIPQ.getQuestionID(),
+					newIPQ.getBufferedImage(), newIPQ.getPixelSize(), newIPQ.getAnswers(), newIPQ.getCorrectAnswer());
 				sNIPQE.addRecipients(receivers);
 				server.publishEvent(sNIPQE);
-
+				
+				t = ServerContext.getContext().getQuizTimerMap().get(quizID);
+				if(t == null) {
+					t = new Timer();
+					ServerContext.getContext().getQuizTimerMap().put(quizID, t);
+				}
+				IPQuestionTimerTask iPQTT = new IPQuestionTimerTask(quizID, newIPQ.getQuestionID(), newIPQ.getPixelSize());
+				t.scheduleAtFixedRate(iPQTT, 0, 1000);
+				
+				break;
 			default:
-				MCQuestion mCQuestion = (MCQuestion) context
-						.getQuestion(quiz.getRoundList().get(quiz.getCurrentRound()).getNextQuestion());
-
+				MCQuestion mCQuestion = (MCQuestion) context.getQuestion(quiz.getRoundList().get(quiz.getCurrentRound()).getNextQuestion());
 				ServerNewMCQuestionEvent sNMCQE = new ServerNewMCQuestionEvent(mCQuestion.getQuestionID(),
 						mCQuestion.getQuestion(), mCQuestion.getAnswers(), mCQuestion.getCorrectAnswer());
-				receivers.add(context.getQuiz(quizID).getHostID());
 				sNMCQE.addRecipients(receivers);
 				server.publishEvent(sNMCQE);
 			}
-
-			ServerStartRoundEvent sSRE = new ServerStartRoundEvent();
-			sSRE.addRecipients(receivers);
-			server.publishEvent(sSRE);
 		}
 
 	}

@@ -1,5 +1,6 @@
 package quiz.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,12 +57,12 @@ public class Round {
 
 	// Methods
 	public void addQuestions(int numberOfQuestions) {
-		Map<Integer, MCQuestion> questions = ServerContext.getContext().getOrderedMCQuestionMap().get(theme.ordinal())
-				.get(difficulty.ordinal());
+		ArrayList<Integer> questionIDs = ServerContext.getContext().getOrderedQuestionMap().get(theme.ordinal())
+				.get(difficulty.ordinal()).get(this.roundType.ordinal());
 		
 		while (numberOfQuestions > 0) {
-			int i = (int) Math.floor(Math.random() * questions.size());
-			int qID = (int) questions.keySet().toArray()[i];
+			int i = (int) Math.floor(Math.random() * questionIDs.size());
+			int qID = (int) questionIDs.get(i);
 			if (!answers.containsKey(qID)) {
 				answers.put(qID, new HashMap<Integer, Integer>());
 				numberOfQuestions--;

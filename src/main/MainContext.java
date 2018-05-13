@@ -4,6 +4,7 @@ import network.Network;
 import quiz.model.Quiz;
 import quiz.model.Team;
 import quiz.model.User;
+import quiz.util.RoundType;
 import quiz.model.Question;
 
 public class MainContext {
@@ -15,6 +16,8 @@ public class MainContext {
 	private Quiz quiz;
 	private Team team;
 	private Question question;
+	private boolean answered = false;
+	private RoundType roundType;
 	private Network network;
 
 	// Getters and setters
@@ -109,6 +112,22 @@ public class MainContext {
 		
 		if (this.quiz != null)
 			this.quiz.resetVotes();
+	}
+	
+	public boolean isAnswered() {
+		return this.answered;
+	}
+	
+	public void setAnswered(boolean answered) {
+		this.answered = answered;
+	}
+	
+	public RoundType getRoundType() {
+		return roundType;
+	}
+	
+	public void setRoundType(RoundType roundType) {
+		this.roundType = roundType;
 	}
 
 	/**

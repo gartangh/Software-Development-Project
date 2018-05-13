@@ -1,22 +1,28 @@
 package server;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import javax.imageio.ImageIO;
 import java.util.Random;
 
 import main.Main;
 import network.Network;
+import quiz.model.IPQuestion;
 import quiz.model.MCQuestion;
 import quiz.model.Question;
 import quiz.model.Quiz;
 import quiz.model.Team;
 import quiz.model.User;
 import quiz.util.Difficulty;
+import quiz.util.RoundType;
 import quiz.util.Theme;
 
 public class ServerContext {
@@ -26,9 +32,11 @@ public class ServerContext {
 
 	private Map<Integer, User> userMap = new HashMap<Integer, User>();
 	private Map<Integer, Quiz> quizMap = new HashMap<Integer, Quiz>();
+	private Map<Integer, Timer> quizTimerMap = new HashMap<Integer, Timer>();
 
-	private Map<Integer, Map<Integer, Map<Integer, MCQuestion>>> orderedMCQuestionMap = new HashMap<>();
-	private Map<Integer, MCQuestion> allMCQuestions = new HashMap<>();
+	private Map<Integer, Map<Integer, Map<Integer, ArrayList<Integer>>>> orderedQuestionMap = new HashMap<Integer, Map<Integer, Map<Integer, ArrayList<Integer>>>>(); // Theme -> Diff -> Type -> QuestionID
+	private Map<Integer, Question> allQuestions = new HashMap<Integer, Question>();
+	private Map<Integer, Integer> questionTypeMap = new HashMap<Integer, Integer>();
 	private Network network;
 
 	// Getters and setters
@@ -77,14 +85,17 @@ public class ServerContext {
 	public Map<Integer, Quiz> getQuizMap() {
 		return quizMap;
 	}
+	
+	public Map<Integer, Timer> getQuizTimerMap() {
+		return quizTimerMap;
+	}
 
-	/**
-	 * Gets the ordered MC question map.
-	 *
-	 * @return the ordered MC question map
-	 */
-	public Map<Integer, Map<Integer, Map<Integer, MCQuestion>>> getOrderedMCQuestionMap() {
-		return orderedMCQuestionMap;
+	public Map<Integer, Map<Integer, Map<Integer, ArrayList<Integer>>>> getOrderedQuestionMap() {
+		return orderedQuestionMap;
+	}
+	
+	public Map<Integer, Integer> getQuestionTypeMap(){
+		return questionTypeMap;
 	}
 
 	// Methods
@@ -161,57 +172,92 @@ public class ServerContext {
 	 */
 	public void loadData() {
 		String[] themeFiles = { "QUESTIONS_CULTURE.txt", "QUESTIONS_SPORTS.txt" };
-
+		System.out.println("Loading questions ...");
 		try {
 			for (int themeFile = 0; themeFile < themeFiles.length; themeFile++) {
-				Map<Integer, Map<Integer, MCQuestion>> themeMap = new HashMap<>();
-				orderedMCQuestionMap.put(themeFile, themeMap);
+				Map<Integer, Map<Integer, ArrayList<Integer>>> themeMap = new HashMap<>();
+				orderedQuestionMap.put(themeFile, themeMap);
 
 				// Substring is to remove file:/ before resource
 				BufferedReader bufferedReader = new BufferedReader(new FileReader(
-						Main.class.getResource("../server/" + themeFiles[themeFile]).toString().substring(6)));
+						Main.class.getResource("../server/files/" + themeFiles[themeFile]).toString().substring(6)));
 				String line = bufferedReader.readLine();
-				int i = 0;
+				int [] count = new int[RoundType.values().length];
 				int diff = -1;
-				Map<Integer, MCQuestion> diffMap = null;
+				Map<Integer, ArrayList<Integer>> diffMap = null;
 				while (line != null) {
 					// Skip gaps between difficulties
 					if (line.startsWith("-----")) {
-						i = 0;
+						count = new int[RoundType.values().length];
 						diff++;
-						diffMap = new HashMap<Integer, MCQuestion>();
+						diffMap = new HashMap<Integer, ArrayList<Integer>>();
 						themeMap.put(diff, diffMap);
 						bufferedReader.readLine();
 						bufferedReader.readLine();
 					}
-
-					String question = bufferedReader.readLine();
-					if (question == null)
+					String questionType = bufferedReader.readLine();
+					if (questionType == null)
 						break;
-
+					
+					
+					String questionImageString = bufferedReader.readLine();
 					String answers[] = { bufferedReader.readLine(), bufferedReader.readLine(),
 							bufferedReader.readLine(), bufferedReader.readLine() };
 					int correctAnswer = Integer.parseInt(bufferedReader.readLine());
 
 					Theme theme = Theme.values()[themeFile];
 					Difficulty difficulty = Difficulty.values()[diff];
-					// 256 possible themes and 4 difficulties with each 2^21
-					// questions gives unique ID
-					int questionID = themeFile * (2 ^ 24) + diff * (2 ^ 22) + i;
-					MCQuestion mCQuestion = new MCQuestion(questionID, theme, difficulty, question, answers,
-							correctAnswer);
-
-					diffMap.put(questionID, mCQuestion);
-					allMCQuestions.put(questionID, mCQuestion);
+					
+					// 4 question types, 256 possible themes and 4 difficulties with each max 2^19
+					// questions gives guaranteed unique ID
+					int questionID = (int) (themeFile * Math.pow(2, 22) + diff * Math.pow(2, 20));
+					Question q = null;
+					int roundType = 0;
+					
+					switch(questionType) {
+					case "IP":
+						roundType = RoundType.IP.ordinal();
+						questionID += RoundType.IP.ordinal()*Math.pow(2, 30) + count[RoundType.IP.ordinal()];
+						String imgPath = ".\\files\\"+questionImageString;
+						BufferedImage bufImage = ImageIO.read(getClass().getResourceAsStream(imgPath));
+						q = new IPQuestion(questionID, theme, difficulty, bufImage, false, answers, correctAnswer);
+						if(diffMap.containsKey(RoundType.IP.ordinal())) {
+							diffMap.get(RoundType.IP.ordinal()).add(questionID);
+						}
+						else {
+							ArrayList<Integer> IPList = new ArrayList<Integer>();
+							IPList.add(questionID);
+							diffMap.put(RoundType.IP.ordinal(), IPList);
+						}
+						count[RoundType.IP.ordinal()]++;
+						break;
+					case "MC":
+						roundType = RoundType.MC.ordinal();
+						questionID += RoundType.MC.ordinal()*Math.pow(2, 30) + count[RoundType.MC.ordinal()];
+						q = new MCQuestion(questionID, theme, difficulty, questionImageString, answers, correctAnswer);
+						if(diffMap.containsKey(RoundType.MC.ordinal())) {
+							diffMap.get(RoundType.MC.ordinal()).add(questionID);
+						}
+						else {
+							ArrayList<Integer> MCList = new ArrayList<Integer>();
+							MCList.add(questionID);
+							diffMap.put(RoundType.MC.ordinal(), MCList);
+						}
+						count[RoundType.MC.ordinal()]++;
+						break;
+					}
+					allQuestions.put(questionID, q);
+					questionTypeMap.put(questionID, roundType);
 
 					// Read next line
-					i++;
 					line = bufferedReader.readLine();
 				}
 
 				bufferedReader.close();
 			}
+			System.out.println("Questions loaded.");
 		} catch (IOException e) {
+			System.out.println("Failed to load all questions.");
 			e.printStackTrace();
 		}
 	}
@@ -247,7 +293,7 @@ public class ServerContext {
 	 * @return the question
 	 */
 	public Question getQuestion(int questionID) {
-		return allMCQuestions.get(questionID);
+		return allQuestions.get(questionID);
 	}
 
 }
