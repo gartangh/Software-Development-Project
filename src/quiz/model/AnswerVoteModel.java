@@ -28,7 +28,7 @@ public class AnswerVoteModel {
 	private DoubleProperty progressPropertyA, progressPropertyB, progressPropertyC, progressPropertyD;
 	private StringProperty percentagePropertyA, percentagePropertyB, percentagePropertyC, percentagePropertyD;
 	private StringProperty numberOfVotesProperty;
-
+	
 	// Button properties
 	private BooleanProperty voteDisableProperty, confirmDisableProperty, nextDisableProperty;
 

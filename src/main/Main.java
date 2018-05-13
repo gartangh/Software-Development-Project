@@ -80,7 +80,7 @@ public class Main extends Application {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle(QUIZNAME);
 		this.primaryStage.setMaximized(true);
-		this.primaryStage.setResizable(false);
+		//this.primaryStage.setResizable(false);
 		
 		// Connect to network with randomly generated client port between
 		// SERVERPORT + 1 and 65535 (2^16 - 1) and type CLIENT
