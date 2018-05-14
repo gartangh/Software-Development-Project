@@ -3,6 +3,7 @@ package main;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Optional;
 import java.util.Random;
 
 import eventbroker.EventBroker;
@@ -13,6 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
@@ -44,7 +46,7 @@ public class Main extends Application {
 	 * The Constant LOCAL. True is for local development. False is for network
 	 * development and releases.
 	 */
-	public final static boolean LOCAL = true;
+	public final static boolean LOCAL = false;
 
 	/** The Constant SERVERADDRESS represents the IP address of the server. */
 	// On the iVisitor network at iGent
@@ -58,7 +60,7 @@ public class Main extends Application {
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
-	
+
 	/**
 	 * The main method.
 	 *
@@ -78,7 +80,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle(QUIZNAME);
-		
+
 		// Connect to network with randomly generated client port between
 		// SERVERPORT + 1 and 65535 (2^16 - 1) and type CLIENT
 		Network network = new Network(new Random().nextInt(65535 - SERVERPORT + 2) + 1026, Network.CLIENTTYPE);
@@ -95,13 +97,44 @@ public class Main extends Application {
 			// Print own address
 			if (Main.LOCAL) {
 				System.out.println(InetAddress.getLocalHost());
-				
+
 				network.connect(InetAddress.getLocalHost(), Main.SERVERPORT);
 			} else {
 				System.out.println(InetAddress.getLocalHost().getHostAddress());
-				
-				network.connect(SERVERADDRESS, Main.SERVERPORT);
-			}
+
+				boolean valid=false;
+				Optional<String> result=null;
+				while (!valid){
+					TextInputDialog dialog = new TextInputDialog("xxx.yyy.zzz.www");
+					dialog.setTitle("Text Input");
+					dialog.setHeaderText("Connect to the server");
+					dialog.setContentText("IP address server:");
+
+					result = dialog.showAndWait();
+					if (result.isPresent()){
+						try {
+							InetAddress a = InetAddress.getByName(result.get());
+							valid=true;
+						} catch(UnknownHostException uhe) {
+							valid = false;
+						} catch(NumberFormatException nfe) {
+							valid = false;
+						}
+					} else {
+						System.exit(0);
+					}
+					if (!valid){
+						Alert alert = new Alert(AlertType.WARNING);
+						alert.setTitle("Warning");
+						alert.setHeaderText("Invalid IP address!");
+						alert.setContentText("Please type a valid IP adress and try again.");
+						alert.showAndWait();
+					}
+				}
+					network.connect(result.get(), Main.SERVERPORT);
+				}
+
+				// The Java 8 way to get the response value (with lambda expression).
 
 			// Print own port
 			System.out.println(Integer.toString(network.getConnectionListener().getServerPort()));
@@ -117,7 +150,7 @@ public class Main extends Application {
 			showLogInScene();
 		} catch (UnknownHostException e) {
 			System.err.println("UnknownHostException");
-			
+
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
@@ -148,11 +181,11 @@ public class Main extends Application {
 			FXMLLoader rootLayoutloader = new FXMLLoader();
 			rootLayoutloader.setLocation(Main.class.getResource("../quiz/view/RootLayout.fxml"));
 			rootLayout = (BorderPane) rootLayoutloader.load();
-			
+
 			// Show the scene containing the root layout
 			Scene scene = new Scene(rootLayout);
 			primaryStage.setScene(scene);
-			
+
 			FXMLLoader menuLoader = new FXMLLoader();
 			menuLoader.setLocation(Main.class.getResource("../quiz/view/Menu.fxml"));
 			AnchorPane menu = (AnchorPane) menuLoader.load();
@@ -191,13 +224,13 @@ public class Main extends Application {
 				alert.setHeaderText("Connection lost!");
 				alert.setContentText("You lost connection with the server. Please restore connection and try again.");
 				alert.showAndWait();
-				
+
 				// Exit the app
 				System.exit(0);
 			}
 		});
 	}
-	
+
 	// Show scenes
 	/**
 	 * Show log in scene.
@@ -230,7 +263,7 @@ public class Main extends Application {
 			BorderPane joinQuiz = (BorderPane) joinQuizLoader.load();
 			JoinQuizController joinQuizController = joinQuizLoader.getController();
 			joinQuizController.setMain(this);
-		    
+
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(joinQuiz);
@@ -272,7 +305,7 @@ public class Main extends Application {
 			BorderPane joinTeam = (BorderPane) joinTeamLoader.load();
 			JoinTeamController joinTeamController = joinTeamLoader.getController();
 			joinTeamController.setMain(this);
-			
+
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(joinTeam);
@@ -324,7 +357,7 @@ public class Main extends Application {
 			BorderPane scoreboard = (BorderPane) scoreboardLoader.load();
 			ScoreboardController scoreboardController = scoreboardLoader.getController();
 			scoreboardController.setMainApp(this);
-			
+
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(scoreboard);
@@ -346,7 +379,7 @@ public class Main extends Application {
 			QuestionController questionFormController = questionFormLoader.getController();
 			questionFormController.setRoundType(roundType);
 			questionFormController.setMainApp(this);
-			
+
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(questionFormRoot);
@@ -367,7 +400,7 @@ public class Main extends Application {
 			BorderPane waitRoundRoot = (BorderPane) waitRoundLoader.load();
 			WaitRoundController waitRoundController = waitRoundLoader.getController();
 			waitRoundController.setMain(this);
-			
+
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(waitRoundRoot);
@@ -389,7 +422,7 @@ public class Main extends Application {
 			WaitHostController waitHostController = waitHostLoader.getController();
 			waitHostController.setRoundType(roundType);
 			waitHostController.setMain(this);
-			
+
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(waitHostRoot);
@@ -410,7 +443,7 @@ public class Main extends Application {
 			BorderPane roundMakerRoot = (BorderPane) roundMakerLoader.load();
 			CreateRoundController roundMakerController = roundMakerLoader.getController();
 			roundMakerController.setMain(this);
-			
+
 			Platform.runLater(new Runnable() {
 				public void run() {
 					rootLayout.setCenter(roundMakerRoot);
