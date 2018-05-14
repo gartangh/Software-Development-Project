@@ -161,7 +161,7 @@ Traditional fishing boat
 Louvre
 Opera House
 Panda Sanctuary
-1
+2
 ----------
 HARD
 ----------

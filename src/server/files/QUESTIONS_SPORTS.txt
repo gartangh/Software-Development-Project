@@ -40,6 +40,46 @@ At what number does one begin when playing Darts?
 551
 601
 1
+
+IP
+climbing.jpeg
+Baseball
+Street Basketball
+Skateboarding
+Rock Climbing
+3
+
+IP
+surfing.jpeg
+Wakeboarding
+Swimming
+Surfing
+Ice Skating
+2
+
+IP
+cycling.jpeg
+Cricket
+Mini Golf
+Cycling
+Chess
+2
+
+IP
+skiing.jpeg
+Ice Skating
+Swimming
+Surfing
+Skiing
+3
+
+IP
+soccer.jpeg
+Ultimate Frisbee
+American Football
+Rugby
+Soccer
+3
 ----------
 AVERAGE
 ----------
@@ -82,6 +122,46 @@ Athens
 Atlanta
 Peking
 0
+
+IP
+tennis.jpeg
+Tennis
+Golf
+Baseball
+Lacrosse
+0
+
+IP
+skateboarding.jpeg
+Zumba
+Roller Blading
+Skateboarding
+Trail Biking
+2
+
+IP
+baseball.jpeg
+Baseball
+American Football
+Rugby
+Soccer
+0
+
+IP
+swimming.jpeg
+Scuba Diving
+Water Polo
+Rafting
+Swimming
+3
+
+IP
+snowmobile.jpeg
+Jetskiing
+Snowmobile
+Snowboarding
+Mountain Climbing
+1
 ----------
 HARD
 ----------
@@ -124,3 +204,43 @@ How many minutes is a rugby match?
 80 minutes
 90 minutes
 2
+
+IP
+weightlifting.jpeg
+Surfing
+WeightLifting
+Paintball
+Freerunning
+1
+
+IP
+wakeboarding.jpeg
+Wakeboarding
+Skateboarding
+Roller Blading
+Kitesurfing
+0
+
+IP
+parapente.jpeg
+Surfing
+Parapente
+Snowmobiling
+Skiing
+1
+
+IP
+lacrosse.jpeg
+Lacrosse
+Horse Polo
+Field Hockey
+Bowling
+0
+
+IP
+archery.jpeg
+Basketball
+Archery
+Surfing
+Ice Skating
+1

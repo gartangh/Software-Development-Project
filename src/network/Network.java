@@ -239,7 +239,8 @@ public class Network extends EventPublisher implements EventListener {
 					}
 			} else
 				for (int userID : event.getRecipients())
-					connectionMap.get(UserIDConnectionIDMap.get(userID)).send(event);
+					if (UserIDConnectionIDMap.containsKey(userID) && connectionMap.containsKey(UserIDConnectionIDMap.get(userID)))
+						connectionMap.get(UserIDConnectionIDMap.get(userID)).send(event);
 		}
 	}
 
