@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+import main.MainContext;
+import network.Network;
+
 final public class EventBroker implements Runnable {
 
 	private final static EventBroker broker = new EventBroker(); // Singleton
@@ -47,6 +50,17 @@ final public class EventBroker implements Runnable {
 
 	public void removeEventListener(EventListener el) {
 		toRemoveListeners.add(el);
+	}
+	
+	void removeEventListeners() {
+		Network network = MainContext.getContext().getNetwork();
+		for (ArrayList<EventListener> topicListeners : listeners.values())
+			if (!topicListeners.contains(network))
+				toRemoveListeners.addAll(topicListeners);
+			else
+				for (EventListener listener : topicListeners)
+					if (listener != network)
+					toRemoveListeners.add(listener);
 	}
 
 	public void addEvent(EventPublisher source, Event event) {

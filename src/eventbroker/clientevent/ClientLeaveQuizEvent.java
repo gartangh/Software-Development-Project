@@ -1,5 +1,6 @@
 package eventbroker.clientevent;
 
+@SuppressWarnings("serial")
 public class ClientLeaveQuizEvent extends ClientEvent {
 
 	public final static String EVENTTYPE = "CLIENT_LEAVE_QUIZ";
