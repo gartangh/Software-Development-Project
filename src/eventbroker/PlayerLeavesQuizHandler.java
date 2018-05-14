@@ -74,18 +74,13 @@ public class PlayerLeavesQuizHandler implements EventListener {
 							Alert alert = new Alert(AlertType.INFORMATION);
 							alert.initOwner(main.getPrimaryStage());
 							alert.setTitle("Quiz ended");
-							alert.setHeaderText("There are not enough teams left to continue");
-							alert.setContentText("Please select another quiz if you want to continue");
+							alert.setHeaderText("There are not enough teams left to continue.");
+							alert.setContentText("Please select another quiz if you want to continue.");
 							alert.showAndWait();
+							main.showJoinQuizScene();
 						}
 					});
 				}
-
-				Platform.runLater(new Runnable() {
-					public void run() {
-						main.showJoinQuizScene();
-					}
-				});
 
 			}else if (!sPLQE.isRunning()){
 				joinTeamController.updateViews();
