@@ -63,6 +63,17 @@ final public class EventBroker implements Runnable {
 					toRemoveListeners.add(listener);
 	}
 
+	void removeEventListeners() {
+        Network network = MainContext.getContext().getNetwork();
+        for (ArrayList<EventListener> topicListeners : listeners.values())
+            if (!topicListeners.contains(network))
+                toRemoveListeners.addAll(topicListeners);
+            else
+                for (EventListener listener : topicListeners)
+                    if (listener != network)
+                    toRemoveListeners.add(listener);
+    }
+
 	public void addEvent(EventPublisher source, Event event) {
 		QueueItem qI = new QueueItem(source, event);
 		synchronized (this) {
