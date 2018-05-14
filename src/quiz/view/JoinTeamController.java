@@ -30,6 +30,8 @@ import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
+import eventbroker.HostLeavesQuizHandler;
+import eventbroker.PlayerLeavesQuizHandler;
 import eventbroker.clientevent.ClientCaptainReadyEvent;
 import eventbroker.clientevent.ClientChangeTeamEvent;
 import eventbroker.clientevent.ClientHostReadyEvent;
@@ -84,7 +86,12 @@ public class JoinTeamController extends EventPublisher {
 
 	public void setMain(Main main) {
 		this.main = main;
-
+		hostLeavesQuizHandler.setMain(main);
+		playerLeavesQuizHandler.setMain(main);
+		playerLeavesQuizHandler.setJoinTeamController(this);
+		EventBroker eventBroker = EventBroker.getEventBroker();
+		eventBroker.addEventListener(ServerPlayerLeavesQuizEvent.EVENTTYPE, playerLeavesQuizHandler);
+		eventBroker.addEventListener(ServerHostLeavesQuizEvent.EVENTTYPE, hostLeavesQuizHandler);
 
 	}
 
@@ -98,8 +105,6 @@ public class JoinTeamController extends EventPublisher {
 		eventBroker.addEventListener(ServerStartQuizEvent.EVENTTYPE, startQuizHandler);
 		eventBroker.addEventListener(ServerQuizNewPlayerEvent.EVENTTYPE, quizNewPlayerHandler);
 		eventBroker.addEventListener(ServerDeleteTeamEvent.EVENTTYPE, quizDeleteTeamHandler);
-		eventBroker.addEventListener(ServerHostLeavesQuizEvent.EVENTTYPE, hostLeavesQuizHandler);
-		eventBroker.addEventListener(ServerPlayerLeavesQuizEvent.EVENTTYPE, playerLeavesQuizHandler);
 		eventBroker.addEventListener(ServerCreateTeamFailEvent.EVENTTYPE, createTeamFailHandler);
 
 		teamNameColumn.setCellValueFactory(cellData -> cellData.getValue().getTeamname());
@@ -199,6 +204,13 @@ public class JoinTeamController extends EventPublisher {
 		else {
 			quizRoomModel.updateTeamDetail(-1);
 		}
+	}
+
+	public void updateViews(){
+		TeamNameID selectedTeam = teamTable.getSelectionModel().getSelectedItem();
+		quizRoomModel.updateTeams();
+		quizRoomModel.updateUnassignedPlayers();
+		showTeamDetails(selectedTeam);
 	}
 
 	@FXML
@@ -533,6 +545,8 @@ public class JoinTeamController extends EventPublisher {
 			EventBroker.getEventBroker().removeEventListener(changeTeamHandler);
 			EventBroker.getEventBroker().removeEventListener(startQuizHandler);
 			EventBroker.getEventBroker().removeEventListener(quizNewPlayerHandler);
+			EventBroker.getEventBroker().removeEventListener(createTeamFailHandler);
+			EventBroker.getEventBroker().removeEventListener(quizDeleteTeamHandler);
 
 			// The host
 			if (context.getQuiz().getHostID() == context.getUser().getUserID()) {
@@ -599,7 +613,7 @@ public class JoinTeamController extends EventPublisher {
 						showTeamDetails(selectedTeam);
 						quizRoomModel.updateTeams();
 						quizRoomModel.updateUnassignedPlayers();
-						
+
 						if (oldTeamID==team.getTeamID() && team.getCaptainID() != MainContext.getContext().getUser().getUserID()){
 							Alert alert = new Alert(AlertType.WARNING);
 							alert.initOwner(main.getPrimaryStage());
@@ -615,13 +629,13 @@ public class JoinTeamController extends EventPublisher {
 
 		}
 	}
-
+	/*
 	private class HostLeavesQuizHandler implements EventListener {
 
 		@Override
 		public void handleEvent(Event event) {
 			ServerHostLeavesQuizEvent sHLQE = (ServerHostLeavesQuizEvent) event;
-			
+
 			MainContext context = MainContext.getContext();
 			if (sHLQE.getQuizID() == context.getQuiz().getQuizID()) {
 				final int quizHostID = context.getQuiz().getHostID();
@@ -647,7 +661,7 @@ public class JoinTeamController extends EventPublisher {
 							alert.setContentText("You can join another quiz or create a new one.");
 							alert.showAndWait();
 						}
-						
+
 						main.showJoinQuizScene();
 						eventBroker.removeEventListener(hostLeavesQuizHandler);
 					}
@@ -727,7 +741,7 @@ public class JoinTeamController extends EventPublisher {
 
 		}
 
-	}
+	}*/
 
 	// Inner classes
 	private class CreateTeamFailHandler implements EventListener {
