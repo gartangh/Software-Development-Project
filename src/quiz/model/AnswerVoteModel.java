@@ -148,10 +148,8 @@ public class AnswerVoteModel {
 						break;
 					}
 				}
-				else {
-					// TODO Make xp depend on difficulty
-					MainContext.getContext().getUser().addXp(10);
-				}
+				else
+					MainContext.getContext().getUser().addXp(100 * (MainContext.getContext().getQuestion().getDifficulty().ordinal() + 1));
 
 				switch (correctAnswer) {
 				case 0:

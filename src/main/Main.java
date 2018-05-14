@@ -115,7 +115,7 @@ public class Main extends Application {
 					result = dialog.showAndWait();
 					if (result.isPresent()){
 						try {
-							InetAddress a = InetAddress.getByName(result.get());
+							InetAddress.getByName(result.get());
 							valid=true;
 						} catch(UnknownHostException uhe) {
 							valid = false;

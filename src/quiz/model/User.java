@@ -76,24 +76,6 @@ public class User {
 		return password;
 	}
 
-	// Password cannot be changed for the moment
-	// TODO Move this to a new controller
-	/*public int setPassword(String password1, String password2) {
-		if (!password1.equals(password2)) {
-			// TODO Go back and show error
-
-			return 1;
-		} else if (!password1.matches(PASSWORDREGEX)) {
-			// TODO Go back and show error
-
-			return 2;
-		}
-
-		this.password = password1;
-
-		return 0;
-	}*/
-
 	public int getLevel() {
 		return level;
 	}

@@ -172,7 +172,6 @@ public class Server extends EventPublisher {
 						// The user is in the team
 						foundTeam = true;
 
-						// TODO Send an event to all players in the quiz
 						ArrayList<Integer> receivers = context.getUsersFromQuiz(quiz.getQuizID());
 						context.changeTeam(quiz.getQuizID(),team.getTeamID(), user.getUserID(), 'd');
 						if (quiz.getTeamMap().size()<Quiz.MINTEAMS && quiz.isRunning()) {

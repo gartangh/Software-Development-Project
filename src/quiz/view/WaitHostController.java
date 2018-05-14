@@ -95,17 +95,16 @@ public class WaitHostController extends EventPublisher {
 		answerB.textProperty().bind(waitHostModel.getAnswerPropertyB());
 		answerC.textProperty().bind(waitHostModel.getAnswerPropertyC());
 		answerD.textProperty().bind(waitHostModel.getAnswerPropertyD());
-		// TODO (also WaitHostModel: 47)
 		correctAnswer.textProperty().bind(waitHostModel.getCorrectAnswerProperty());
 
 		// ChatPanel (ChatModel and ChatController) are created
 		ChatPanel chatPanel = ChatPanel.createChatPanel();
 		mPlaceholder.getChildren().add(chatPanel.getContent());
 	}
-	
+
 	public void setRoundType(RoundType roundType) {
 		waitHostModel.setRoundType(roundType);
-		switch(roundType) {
+		switch (roundType) {
 		case IP:
 			rightVBox.getChildren().remove(1);
 			imageView.imageProperty().bind(waitHostModel.getImageProperty());
@@ -127,7 +126,7 @@ public class WaitHostController extends EventPublisher {
 			eventBroker.removeEventListener(newIPQuestionHandler);
 			eventBroker.removeEventListener(updateTeamsHandler);
 			eventBroker.removeEventListener(endQuizHandler);
-			
+
 			MainContext.getContext().setQuestion(null);
 
 			main.showCreateRoundScene();
@@ -139,7 +138,6 @@ public class WaitHostController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event event) {
-			// TODO: clear the table
 			ServerNewMCQuestionEvent sNMCQE = (ServerNewMCQuestionEvent) event;
 
 			int questionID = sNMCQE.getQuestionID();
@@ -149,16 +147,16 @@ public class WaitHostController extends EventPublisher {
 
 			waitHostModel.clearTeams();
 			waitHostModel.setRoundType(RoundType.MC);
-			
-			MCQuestion q = new MCQuestion(questionID, question, answers, correctAnswer);
-			
-			MainContext.getContext().setQuestion(q);
-			MainContext.getContext().setRoundType(RoundType.MC);
+
+			MainContext context = MainContext.getContext();
+			context.setQuestion(new MCQuestion(questionID, question, answers, correctAnswer));
+			context.setRoundType(RoundType.MC);
+
 			waitHostModel.updateQuestion();
 		}
 
 	}
-	
+
 	private class NewIPQuestionHandler implements EventListener {
 
 		@Override
@@ -169,13 +167,13 @@ public class WaitHostController extends EventPublisher {
 			BufferedImage bufImage = sNIPQE.getImage();
 			String[] answers = sNIPQE.getAnswers();
 			int correctAnswer = sNIPQE.getCorrectAnswer();
-			
+
 			waitHostModel.clearTeams();
 			waitHostModel.setRoundType(RoundType.IP);
 
 			IPQuestion q = new IPQuestion(questionID, bufImage, true, answers, correctAnswer);
 			q.setPixelSize(1);
-			
+
 			MainContext.getContext().setQuestion(q);
 			MainContext.getContext().setRoundType(RoundType.IP);
 			waitHostModel.updateQuestion();
@@ -187,17 +185,24 @@ public class WaitHostController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event event) {
-			// TODO: add received team to table
 			ServerVoteAnswerEvent cAE = (ServerVoteAnswerEvent) event;
-			Team team = MainContext.getContext().getQuiz().getTeamMap().get(cAE.getTeamID());
-			TeamNameID teamNameID = new TeamNameID(new SimpleStringProperty(team.getTeamname()), team.getTeamID(),new SimpleStringProperty(team.getPlayerMap().get(team.getCaptainID())));
+
 			int answerID = cAE.getAnswer();
+
+			Team team = MainContext.getContext().getQuiz().getTeamMap().get(cAE.getTeamID());
+			TeamNameID teamNameID = new TeamNameID(new SimpleStringProperty(team.getTeamname()), team.getTeamID(),
+					new SimpleStringProperty(team.getPlayerMap().get(team.getCaptainID())));
+
 			StringProperty answer = null;
-			if(answerID == 0) answer = new SimpleStringProperty("A");
-			else if(answerID == 1) answer = new SimpleStringProperty("B");
-			else if(answerID == 2) answer = new SimpleStringProperty("C");
-			else if(answerID == 3) answer = new SimpleStringProperty("D");
-			if(answer != null) {
+			if (answerID == 0)
+				answer = new SimpleStringProperty("A");
+			else if (answerID == 1)
+				answer = new SimpleStringProperty("B");
+			else if (answerID == 2)
+				answer = new SimpleStringProperty("C");
+			else if (answerID == 3)
+				answer = new SimpleStringProperty("D");
+			if (answer != null) {
 				teamNameID.setAnswer(answer);
 				waitHostModel.addTeam(teamNameID);
 			}
@@ -208,10 +213,9 @@ public class WaitHostController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event event) {
-			EventBroker.getEventBroker().removeEventListener(newRoundHandler);
-			//EventBroker.getEventBroker().removeEventListener(newMCQuestionHandler);
-			//EventBroker.getEventBroker().removeEventListener(newIPQuestionHandler);
-			EventBroker.getEventBroker().removeEventListener(endQuizHandler);
+			EventBroker eventBroker = EventBroker.getEventBroker();
+			eventBroker.removeEventListener(newRoundHandler);
+			eventBroker.removeEventListener(endQuizHandler);
 
 			main.showScoreboardScene();
 		}

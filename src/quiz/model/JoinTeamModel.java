@@ -102,8 +102,7 @@ public class JoinTeamModel {
 			}
 		});
 	}
-
-	//TODO Check if it has to be this way to have a cleaner selectionmodel
+	
 	public void addTeam(Team team) {
 		Platform.runLater(new Runnable() {
 			public void run() {
