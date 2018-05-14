@@ -165,7 +165,7 @@ public class Server extends EventPublisher {
 
 		for (Quiz quiz : context.getQuizMap().values()) {
 			boolean foundTeam = false;
-
+			boolean quizRemoved=false;
 			for (Team team : quiz.getTeamMap().values()) {
 				for (int playerID : team.getPlayerMap().keySet()) {
 					if (userID == playerID) {
@@ -178,7 +178,7 @@ public class Server extends EventPublisher {
 						if (quiz.getTeamMap().size()<Quiz.MINTEAMS && quiz.isRunning()) {
 							context.getQuizMap().remove(quiz.getQuizID());
 							context.terminateTimers(quiz.getQuizID());
-
+							quizRemoved=true;
 						}
 
 						ServerPlayerLeavesQuizEvent sPLQE=new ServerPlayerLeavesQuizEvent(quiz.getQuizID(),user.getUserID(),team.getTeamID(),team.getCaptainID(), quiz.isRunning());
@@ -186,6 +186,7 @@ public class Server extends EventPublisher {
 						server.publishEvent(sPLQE);
 					}
 				}
+				if (foundTeam) break;
 			}
 
 			if (!foundTeam) {
@@ -208,6 +209,8 @@ public class Server extends EventPublisher {
 				sHLQE.addRecipients(context.getUserMap());
 				server.publishEvent(sHLQE);
 			}
+
+			if (quizRemoved) break;
 		}
 	}
 
