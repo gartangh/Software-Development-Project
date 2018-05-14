@@ -40,6 +40,8 @@ public class WaitHostController extends EventPublisher {
 	@FXML
 	private TableColumn<TeamNameID, String> answerColumn;
 	@FXML
+	private TableColumn<TeamNameID, String> pointsColumn;
+	@FXML
 	private VBox rightVBox;
 	@FXML
 	private Label questionTitle;
@@ -87,16 +89,17 @@ public class WaitHostController extends EventPublisher {
 
 		teamnameColumn.setCellValueFactory(cellData -> cellData.getValue().getTeamname());
 		answerColumn.setCellValueFactory(cellData -> cellData.getValue().getAnswer());
+		pointsColumn.setCellValueFactory(cellData -> cellData.getValue().getPoints());
 		questionTitle.textProperty().bind(waitHostModel.getQuestionTitleProperty());
 		questionText.textProperty().bind(waitHostModel.getQuestionTextProperty());
 		imageView.imageProperty().bind(waitHostModel.getImageProperty());
-
+		
 		answerA.textProperty().bind(waitHostModel.getAnswerPropertyA());
 		answerB.textProperty().bind(waitHostModel.getAnswerPropertyB());
 		answerC.textProperty().bind(waitHostModel.getAnswerPropertyC());
 		answerD.textProperty().bind(waitHostModel.getAnswerPropertyD());
 		correctAnswer.textProperty().bind(waitHostModel.getCorrectAnswerProperty());
-
+		
 		// ChatPanel (ChatModel and ChatController) are created
 		ChatPanel chatPanel = ChatPanel.createChatPanel();
 		mPlaceholder.getChildren().add(chatPanel.getContent());
@@ -204,6 +207,7 @@ public class WaitHostController extends EventPublisher {
 				answer = new SimpleStringProperty("D");
 			if (answer != null) {
 				teamNameID.setAnswer(answer);
+				teamNameID.setPoints(new SimpleStringProperty(Integer.toString(cAE.getPoints())));
 				waitHostModel.addTeam(teamNameID);
 			}
 		}

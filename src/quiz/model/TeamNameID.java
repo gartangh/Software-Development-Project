@@ -1,12 +1,14 @@
 package quiz.model;
 
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.StringProperty;
 
 public class TeamNameID {
 
 	StringProperty teamname;
 	StringProperty captainName;
-
+	StringProperty points;
+	
 	int teamID;
 	StringProperty answer;
 
@@ -44,6 +46,14 @@ public class TeamNameID {
 
 	public void setAnswer(StringProperty answer) {
 		this.answer = answer;
+	}
+
+	public StringProperty getPoints() {
+		return points;
+	}
+
+	public void setPoints(StringProperty points) {
+		this.points = points;
 	}
 
 	// Method

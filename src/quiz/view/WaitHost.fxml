@@ -17,7 +17,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.WaitHostController">
+<BorderPane xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.WaitHostController">
    <right>
       <VBox fx:id="rightVBox" alignment="CENTER" BorderPane.alignment="CENTER">
          <children>
@@ -110,6 +110,7 @@
         <columns>
           <TableColumn fx:id="teamnameColumn" prefWidth="100.0" resizable="false" text="Team name" />
           <TableColumn fx:id="answerColumn" prefWidth="75.0" resizable="false" text="Answer" />
+            <TableColumn fx:id="pointsColumn" prefWidth="75.0" text="Points" />
         </columns>
       </TableView>
    </center>
