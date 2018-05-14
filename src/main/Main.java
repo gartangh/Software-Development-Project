@@ -46,7 +46,7 @@ public class Main extends Application {
 	 * The Constant LOCAL. True is for local development. False is for network
 	 * development and releases.
 	 */
-	public final static boolean LOCAL = false;
+	public final static boolean LOCAL = true;
 
 	/** The Constant SERVERADDRESS represents the IP address of the server. */
 	// On the iVisitor network at iGent
