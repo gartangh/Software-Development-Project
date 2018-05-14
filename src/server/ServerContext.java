@@ -84,7 +84,7 @@ public class ServerContext {
 	public Map<Integer, Quiz> getQuizMap() {
 		return quizMap;
 	}
-	
+
 	public Map<Integer, Timer> getQuizTimerMap() {
 		return quizTimerMap;
 	}
@@ -92,7 +92,7 @@ public class ServerContext {
 	public Map<Integer, Map<Integer, Map<Integer, ArrayList<Integer>>>> getOrderedQuestionMap() {
 		return orderedQuestionMap;
 	}
-	
+
 	public Map<Integer, Integer> getQuestionTypeMap(){
 		return questionTypeMap;
 	}
@@ -141,6 +141,10 @@ public class ServerContext {
 
 		// Nothing to delete if teamID == -1
 		return null;
+	}
+
+	public void terminateTimers(int quizID){
+
 	}
 
 	// Methods
@@ -197,8 +201,8 @@ public class ServerContext {
 					String questionType = bufferedReader.readLine();
 					if (questionType == null)
 						break;
-					
-					
+
+
 					String questionImageString = bufferedReader.readLine();
 					String answers[] = { bufferedReader.readLine(), bufferedReader.readLine(),
 							bufferedReader.readLine(), bufferedReader.readLine() };
@@ -206,13 +210,13 @@ public class ServerContext {
 
 					Theme theme = Theme.values()[themeFile];
 					Difficulty difficulty = Difficulty.values()[diff];
-					
+
 					// 4 question types, 256 possible themes and 4 difficulties with each max 2^19
 					// questions gives guaranteed unique ID
 					int questionID = (int) (themeFile * Math.pow(2, 22) + diff * Math.pow(2, 20));
 					Question q = null;
 					int roundType = 0;
-					
+
 					switch(questionType) {
 					case "IP":
 						roundType = RoundType.IP.ordinal();

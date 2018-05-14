@@ -175,7 +175,11 @@ public class Server extends EventPublisher {
 						// TODO Send an event to all players in the quiz
 						ArrayList<Integer> receivers = context.getUsersFromQuiz(quiz.getQuizID());
 						context.changeTeam(quiz.getQuizID(),team.getTeamID(), user.getUserID(), 'd');
-						if (quiz.getTeamMap().size()<Quiz.MINTEAMS) context.getQuizMap().remove(quiz.getQuizID());
+						if (quiz.getTeamMap().size()<Quiz.MINTEAMS) {
+							context.getQuizMap().remove(quiz.getQuizID());
+							context.terminateTimers(quiz.getQuizID());
+
+						}
 
 						ServerPlayerLeavesQuizEvent sPLQE=new ServerPlayerLeavesQuizEvent(quiz.getQuizID(),user.getUserID(),team.getTeamID(),team.getCaptainID(), quiz.isRunning());
 						sPLQE.addRecipients(receivers);
@@ -197,6 +201,7 @@ public class Server extends EventPublisher {
 				// Remove the quiz
 				int quizID = quiz.getQuizID();
 				context.getQuizMap().remove(quizID);
+				context.terminateTimers(quiz.getQuizID());
 
 				// Send an event to all users
 				ServerHostLeavesQuizEvent sHLQE = new ServerHostLeavesQuizEvent(quizID);
@@ -214,6 +219,7 @@ public class Server extends EventPublisher {
 
 		if (user.getUserID() == quiz.getHostID()) {
 			context.getQuizMap().remove(quiz.getQuizID());
+			context.terminateTimers(quiz.getQuizID());
 			ServerHostLeavesQuizEvent sHLQE = new ServerHostLeavesQuizEvent(quiz.getQuizID());
 			sHLQE.addRecipients(context.getUserMap());
 			server.publishEvent(sHLQE);
