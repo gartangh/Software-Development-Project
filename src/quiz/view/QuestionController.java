@@ -17,6 +17,7 @@ import eventbroker.serverevent.ServerNewMCQuestionEvent;
 import eventbroker.serverevent.ServerNewPixelSizeEvent;
 import eventbroker.serverevent.ServerNewRoundEvent;
 import eventbroker.serverevent.ServerNotAllAnsweredEvent;
+import eventbroker.serverevent.ServerQuestionTimeEvent;
 import eventbroker.serverevent.ServerVoteEvent;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -36,6 +37,7 @@ import quiz.model.AnswerVoteModel;
 import quiz.model.IPQuestion;
 import quiz.model.MCQuestion;
 import quiz.util.RoundType;
+import server.timertask.QuestionDurationTimerTask;
 
 public class QuestionController extends EventPublisher {
 
@@ -47,6 +49,10 @@ public class QuestionController extends EventPublisher {
 	private Text questionText;
 	@FXML
 	private ImageView imageView;
+	@FXML
+	private ProgressBar timeProgressBar;
+	@FXML
+	private Label timeLabel;
 	@FXML
 	private CheckBox checkA;
 	@FXML
@@ -96,6 +102,7 @@ public class QuestionController extends EventPublisher {
 	private NewMCQuestionHandler newMCQuestionHandler;
 	private NewIPQuestionHandler newIPQuestionHandler;
 	private NewPixelSizeHandler newPixelSizeHandler;
+	private QuestionTimerHandler questionTimerHandler;
 	private NotAllAnsweredHandler notAllAnsweredHandler;
 	private NewRoundHandler newRoundHandler;
 	private EndQuizHandler endQuizHandler;
@@ -114,6 +121,7 @@ public class QuestionController extends EventPublisher {
 		newMCQuestionHandler = new NewMCQuestionHandler();
 		newIPQuestionHandler = new NewIPQuestionHandler();
 		newPixelSizeHandler = new NewPixelSizeHandler();
+		questionTimerHandler = new QuestionTimerHandler();
 		notAllAnsweredHandler = new NotAllAnsweredHandler();
 		newRoundHandler = new NewRoundHandler();
 		endQuizHandler = new EndQuizHandler();
@@ -124,6 +132,7 @@ public class QuestionController extends EventPublisher {
 		eventBroker.addEventListener(ServerNewMCQuestionEvent.EVENTTYPE, newMCQuestionHandler);
 		eventBroker.addEventListener(ServerNewIPQuestionEvent.EVENTTYPE, newIPQuestionHandler);
 		eventBroker.addEventListener(ServerNewPixelSizeEvent.EVENTTYPE, newPixelSizeHandler);
+		eventBroker.addEventListener(ServerQuestionTimeEvent.EVENTTYPE, questionTimerHandler);
 		eventBroker.addEventListener(ServerNotAllAnsweredEvent.EVENTTYPE, notAllAnsweredHandler);
 		eventBroker.addEventListener(ServerNewRoundEvent.EVENTTYPE, newRoundHandler);
 		eventBroker.addEventListener(ServerEndQuizEvent.EVENTTYPE, endQuizHandler);
@@ -131,6 +140,9 @@ public class QuestionController extends EventPublisher {
 		questionTitle.textProperty().bind(answerVoteModel.getQuestionTitleProperty());
 		questionText.textProperty().bind(answerVoteModel.getQuestionTextProperty());
 		imageView.imageProperty().bind(answerVoteModel.getImageProperty());
+		
+		timeProgressBar.progressProperty().bind(answerVoteModel.getTimeProgressProperty());
+		timeLabel.textProperty().bind(answerVoteModel.getTimeProperty());
 
 		answerA.textProperty().bind(answerVoteModel.getAnswerPropertyA());
 		answerB.textProperty().bind(answerVoteModel.getAnswerPropertyB());
@@ -342,6 +354,7 @@ public class QuestionController extends EventPublisher {
 			MainContext.getContext().setRoundType(RoundType.MC);
 			MainContext.getContext().setAnswered(false);
 			answerVoteModel.updateQuestion();
+			answerVoteModel.updateTimeBar(0, QuestionDurationTimerTask.MAX_DURATION);
 			answerVoteModel.updateVotes(MainContext.getContext().getTeamID());
 		}
 	}
@@ -364,6 +377,7 @@ public class QuestionController extends EventPublisher {
 			MainContext.getContext().setRoundType(RoundType.IP);
 			MainContext.getContext().setAnswered(false);
 			answerVoteModel.updateQuestion();
+			answerVoteModel.updateTimeBar(0, QuestionDurationTimerTask.MAX_DURATION);
 			answerVoteModel.updateVotes(MainContext.getContext().getTeam().getTeamID());
 		}
 	}
@@ -372,7 +386,6 @@ public class QuestionController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event event) {
-			System.out.println("Receiver ServerNewPixelSizeEvent");
 			ServerNewPixelSizeEvent sNPSE = (ServerNewPixelSizeEvent) event;
 
 			int questionID = sNPSE.getQuestionID();
@@ -386,6 +399,19 @@ public class QuestionController extends EventPublisher {
 				
 				answerVoteModel.updateImage();
 			}
+		}
+	}
+	
+	private class QuestionTimerHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ServerQuestionTimeEvent sQTE = (ServerQuestionTimeEvent) event;
+
+			int maxTime = sQTE.getMaxTime();
+			int currentTime = sQTE.getCurrentTime();
+
+			answerVoteModel.updateTimeBar(currentTime, maxTime);
 		}
 	}
 
@@ -420,6 +446,7 @@ public class QuestionController extends EventPublisher {
 			eventBroker.removeEventListener(newMCQuestionHandler);
 			eventBroker.removeEventListener(newIPQuestionHandler);
 			eventBroker.removeEventListener(newPixelSizeHandler);
+			eventBroker.removeEventListener(questionTimerHandler);
 			eventBroker.removeEventListener(notAllAnsweredHandler);
 			eventBroker.removeEventListener(newRoundHandler);
 			eventBroker.removeEventListener(endQuizHandler);
@@ -442,6 +469,7 @@ public class QuestionController extends EventPublisher {
 			eventBroker.removeEventListener(newMCQuestionHandler);
 			eventBroker.removeEventListener(newIPQuestionHandler);
 			eventBroker.removeEventListener(newPixelSizeHandler);
+			eventBroker.removeEventListener(questionTimerHandler);
 			eventBroker.removeEventListener(notAllAnsweredHandler);
 			eventBroker.removeEventListener(newRoundHandler);
 			eventBroker.removeEventListener(endQuizHandler);

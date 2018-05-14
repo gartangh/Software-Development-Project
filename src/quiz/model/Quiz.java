@@ -209,6 +209,10 @@ public class Quiz implements Serializable {
 	public void addAnswer(int teamID, int questionID, int answer) {
 		roundList.get(currentRound).addAnswer(teamID, questionID, answer);
 	}
+	
+	public void fillWrongAnswers(int questionID) {
+		roundList.get(currentRound).fillWrongAnswers(questionID, teamMap.keySet());
+	}
 
 	public int addPoints(int teamID, int questionID, int pixelSize, int answer) {
 		int qType = ServerContext.getContext().getQuestionTypeMap().get(questionID);

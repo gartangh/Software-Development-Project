@@ -3,6 +3,7 @@ package quiz.model;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import quiz.util.Difficulty;
 import quiz.util.Theme;
@@ -74,6 +75,18 @@ public class Round {
 		Map<Integer, Integer> questionAnswers = answers.get(questionID);
 		questionAnswers.put(teamID, answer);
 		answers.put(questionID, questionAnswers);
+	}
+	
+	public void fillWrongAnswers(int questionID, Set<Integer> teamIDList) {
+		Map<Integer, Integer> questionAnswers = answers.get(questionID);
+		
+		for(int teamID : teamIDList) {
+			if(!questionAnswers.containsKey(teamID)) {
+				questionAnswers.put(teamID, -1);
+				answers.put(questionID, questionAnswers);
+			}
+		}
+		
 	}
 	
 	public int getNextQuestion() {

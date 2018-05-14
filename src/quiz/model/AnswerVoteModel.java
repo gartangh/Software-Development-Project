@@ -23,6 +23,8 @@ public class AnswerVoteModel {
 	private StringProperty questionTextProperty;
 	private ObjectProperty<Image> imageProperty;
 
+	private StringProperty timeProperty;
+	private DoubleProperty timeProgressProperty;
 
 	// Answer properties
 	private StringProperty answerPropertyA, answerPropertyB, answerPropertyC, answerPropertyD;
@@ -43,6 +45,9 @@ public class AnswerVoteModel {
 		questionTitleProperty = new SimpleStringProperty("Question");
 		questionTextProperty = new SimpleStringProperty();
 		imageProperty = new SimpleObjectProperty<Image>();
+		
+		timeProperty = new SimpleStringProperty("0");
+		timeProgressProperty = new SimpleDoubleProperty(0.0);
 
 		// Answer properties
 		answerPropertyA = new SimpleStringProperty();
@@ -177,6 +182,24 @@ public class AnswerVoteModel {
 			}
 		});
 	}
+	
+	public void updateTimeBar(int currentTime, int maxTime) {
+		
+		Platform.runLater(new Runnable() {
+			public void run() {
+				int timeLeft = maxTime - currentTime;
+				double decimalTime = ((double) currentTime)/((double) maxTime);
+				timeProperty.setValue(Integer.toString(timeLeft));
+				timeProgressProperty.setValue(decimalTime);
+				
+				if(maxTime == currentTime) {
+					voteDisableProperty.setValue(true);
+					confirmDisableProperty.setValue(true);
+					nextDisableProperty.setValue(false);
+				}
+			}
+		});
+	}
 
 	public void updateQuestion() {
 		switch(this.roundType) {
@@ -279,6 +302,14 @@ public class AnswerVoteModel {
 
 	public ObjectProperty<Image> getImageProperty() {
 		return imageProperty;
+	}
+	
+	public StringProperty getTimeProperty() {
+		return timeProperty;
+	}
+	
+	public DoubleProperty getTimeProgressProperty() {
+		return timeProgressProperty;
 	}
 	
 	public StringProperty getAnswerPropertyA() {

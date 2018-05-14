@@ -32,6 +32,8 @@ public class ServerContext {
 	private Map<Integer, User> userMap = new HashMap<Integer, User>();
 	private Map<Integer, Quiz> quizMap = new HashMap<Integer, Quiz>();
 	private Map<Integer, Timer> quizTimerMap = new HashMap<Integer, Timer>();
+	private Map<Integer, Timer> quizPixelTimerMap = new HashMap<Integer, Timer>();
+
 
 	private Map<Integer, Map<Integer, Map<Integer, ArrayList<Integer>>>> orderedQuestionMap = new HashMap<Integer, Map<Integer, Map<Integer, ArrayList<Integer>>>>(); // Theme -> Diff -> Type -> QuestionID
 	private Map<Integer, Question> allQuestions = new HashMap<Integer, Question>();
@@ -87,6 +89,10 @@ public class ServerContext {
 
 	public Map<Integer, Timer> getQuizTimerMap() {
 		return quizTimerMap;
+	}
+	
+	public Map<Integer, Timer> getQuizPixelTimerMap() {
+		return quizPixelTimerMap;
 	}
 
 	public Map<Integer, Map<Integer, Map<Integer, ArrayList<Integer>>>> getOrderedQuestionMap() {
