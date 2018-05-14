@@ -9,14 +9,16 @@ public class ServerPlayerLeavesQuizEvent extends ServerEvent {
 	private int userID;
 	private int teamID;
 	private int newCaptainID;
+	private boolean running;
 
 	// Constructor
-	public ServerPlayerLeavesQuizEvent(int quizID, int userID, int teamID, int newCaptainID) {
+	public ServerPlayerLeavesQuizEvent(int quizID, int userID, int teamID, int newCaptainID, boolean running) {
 		super.type = EVENTTYPE;
 		this.quizID = quizID;
 		this.userID = userID;
 		this.teamID = teamID;
 		this.newCaptainID = newCaptainID;
+		this.running = running;
 	}
 
 	// Getters
@@ -34,6 +36,10 @@ public class ServerPlayerLeavesQuizEvent extends ServerEvent {
 
 	public int getTeamID() {
 		return teamID;
+	}
+	
+	public boolean isRunning() {
+		return running;
 	}
 
 }

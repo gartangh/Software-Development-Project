@@ -59,7 +59,6 @@ public class Main extends Application {
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
-	private static final String MEDIA_URL = "BackgroundGrass.mp4";
 	
 	/**
 	 * The main method.

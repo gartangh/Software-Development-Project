@@ -1,6 +1,5 @@
 package quiz.view;
 
-import java.io.File;
 
 import eventbroker.Event;
 import eventbroker.EventBroker;
@@ -14,17 +13,12 @@ import eventbroker.serverevent.ServerCreateAccountSuccesEvent;
 import eventbroker.serverevent.ServerLogInFailEvent;
 import eventbroker.serverevent.ServerLogInSuccesEvent;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.DoubleBinding;
-import javafx.beans.property.DoubleProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import main.Main;
 import quiz.model.User;
@@ -47,8 +41,6 @@ public class LogInController extends EventPublisher {
 	private LogInFailHandler logInFailHandler = new LogInFailHandler();
 	private AlreadyLoggedInHandler alreadyLoggedInHandler = new AlreadyLoggedInHandler();
 	private LogInSuccesHandler logInSuccesHandler = new LogInSuccesHandler();
-	private MediaPlayer mediaPlayer;
-	private Media media;
 	private static final String path = "src/quiz/view/BackgroundGrass.mp4";
 	// Reference to the main application
 	private Main main;
@@ -66,16 +58,6 @@ public class LogInController extends EventPublisher {
 		eventBroker.addEventListener(ServerLogInFailEvent.EVENTTYPE, logInFailHandler);
 		eventBroker.addEventListener(ServerAlreadyLoggedInEvent.EVENTTYPE, alreadyLoggedInHandler);
 		eventBroker.addEventListener(ServerLogInSuccesEvent.EVENTTYPE, logInSuccesHandler);
-		
-		// Uncomment this to show video at login
-		/*
-		String filePath = new File(path).getAbsolutePath();
-		media = new Media(new File(path).toURI().toString());
-		mediaPlayer = new MediaPlayer(media);
-		mediaView.setMediaPlayer(mediaPlayer);
-		mediaPlayer.setAutoPlay(true);
-		mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-		*/
 	}
 
 	@FXML
