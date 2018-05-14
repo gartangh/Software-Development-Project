@@ -1,7 +1,6 @@
 package quiz.model;
 
 import javafx.beans.property.StringProperty;
-import javafx.scene.paint.Color;
 
 public class TeamNameID {
 

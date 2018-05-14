@@ -39,7 +39,7 @@ public class ServerVoteAnswerEvent extends ServerEvent {
 	}
 	
 	public int getPoints() {
-		return correctAnswer;
+		return points;
 	}
 
 }
