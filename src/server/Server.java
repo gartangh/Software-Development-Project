@@ -166,7 +166,7 @@ public class Server extends EventPublisher {
 
 		for (Quiz quiz : context.getQuizMap().values()) {
 			boolean foundTeam = false;
-			boolean quizRemoved=false;
+			boolean quizRemoved = false;
 			for (Team team : quiz.getTeamMap().values()) {
 				for (int playerID : team.getPlayerMap().keySet()) {
 					if (userID == playerID) {
@@ -209,7 +209,7 @@ public class Server extends EventPublisher {
 				sHLQE.addRecipients(context.getUserMap());
 				server.publishEvent(sHLQE);
 			}
-
+			
 			if (quizRemoved) break;
 		}
 	}
@@ -568,6 +568,7 @@ public class Server extends EventPublisher {
 					ServerContext.getContext().getQuizTimerMap().put(quizID, null);
 				}
 			}
+			
 			ServerVoteAnswerEvent serverAnswer = new ServerVoteAnswerEvent(teamID, questionID, answer, correctAnswer, points);
 			serverAnswer.addRecipients(receivers);
 			server.publishEvent(serverAnswer);
@@ -767,16 +768,12 @@ public class Server extends EventPublisher {
 						for (Map.Entry<Integer, String> playerEntry : teamEntry.getValue().getPlayerMap().entrySet())
 							destinations.add(playerEntry.getKey());
 			} else if (chatMessage.getReceiverType().equals("ALL")) {
-				destinations.addAll(ServerContext.getContext().getUsersFromQuiz(chatMessage.getQuizID()));
-				/*Map<Integer, Team> listOfTeams = ServerContext.getContext().getQuiz(chatMessage.getQuizID())
-						.getTeamMap();
 				Map<Integer, Team> listOfTeams = ServerContext.getContext().getQuiz(chatMessage.getQuizID())
 						.getTeamMap();
 				for (Map.Entry<Integer, Team> teamEntry : listOfTeams.entrySet())
 					for (Map.Entry<Integer, String> playerEntry : teamEntry.getValue().getPlayerMap().entrySet())
 						destinations.add(playerEntry.getKey());
-
-				destinations.add(ServerContext.getContext().getQuiz(chatMessage.getQuizID()).getHostID());*/
+				destinations.add(ServerContext.getContext().getQuiz(chatMessage.getQuizID()).getHostID());
 			}
 
 			chatMessage.addRecipients(destinations);

@@ -150,7 +150,8 @@ public class ServerContext {
 	}
 
 	public void terminateTimers(int quizID){
-
+		if(this.quizTimerMap.get(quizID) != null) this.quizTimerMap.get(quizID).cancel();
+		if(this.quizPixelTimerMap.get(quizID) != null) this.quizPixelTimerMap.get(quizID).cancel();
 	}
 
 	// Methods
@@ -279,17 +280,20 @@ public class ServerContext {
 	 * @return the users from quiz
 	 */
 	public ArrayList<Integer> getUsersFromQuiz(int quizID) {
-		ArrayList<Integer> r = new ArrayList<>();
+		ArrayList<Integer> r = null;
 		Quiz quiz = quizMap.get(quizID);
+		
+		if(quiz != null) {
+			r = new ArrayList<>();
+			for (Team team : quiz.getTeamMap().values())
+				for (int userID : team.getPlayerMap().keySet())
+					r.add(userID);
 
-		for (Team team : quiz.getTeamMap().values())
-			for (int userID : team.getPlayerMap().keySet())
+			for (int userID : quiz.getUnassignedPlayers().keySet())
 				r.add(userID);
 
-		for (int userID : quiz.getUnassignedPlayers().keySet())
-			r.add(userID);
-
-		r.add(quiz.getHostID());
+			r.add(quiz.getHostID());
+		}
 
 		return r;
 	}
