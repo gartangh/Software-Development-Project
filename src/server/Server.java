@@ -175,7 +175,7 @@ public class Server extends EventPublisher {
 						// TODO Send an event to all players in the quiz
 						ArrayList<Integer> receivers = context.getUsersFromQuiz(quiz.getQuizID());
 						context.changeTeam(quiz.getQuizID(),team.getTeamID(), user.getUserID(), 'd');
-						if (quiz.getTeamMap().size()<Quiz.MINPLAYERS) context.getQuizMap().remove(quiz.getQuizID());
+						if (quiz.getTeamMap().size()<Quiz.MINTEAMS) context.getQuizMap().remove(quiz.getQuizID());
 
 						ServerPlayerLeavesQuizEvent sPLQE=new ServerPlayerLeavesQuizEvent(quiz.getQuizID(),user.getUserID(),team.getTeamID(),team.getCaptainID(), quiz.isRunning());
 						sPLQE.addRecipients(receivers);
