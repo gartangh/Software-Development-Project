@@ -17,7 +17,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<BorderPane stylesheets="@../../css/root.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.WaitHostController">
+<BorderPane xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.WaitHostController">
    <right>
       <VBox fx:id="rightVBox" alignment="CENTER" BorderPane.alignment="CENTER">
          <children>
@@ -100,7 +100,7 @@
                   <Insets left="20.0" />
                </VBox.margin>
             </HBox>
-            <Label prefHeight="36.0" prefWidth="490.0" text="Waiting for players to answer the question ..." />
+            <Label prefHeight="0.0" prefWidth="246.0" text="Waiting for players to answer the question ..." />
             <AnchorPane fx:id="mPlaceholder" prefHeight="200.0" prefWidth="200.0" />
          </children>
       </VBox>

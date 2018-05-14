@@ -8,7 +8,6 @@ import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import eventbroker.clientevent.ClientGetQuizzesEvent;
 import eventbroker.clientevent.ClientJoinQuizEvent;
-import eventbroker.clientevent.ClientLeaveQuizEvent;
 import eventbroker.clientevent.ClientLogOutEvent;
 import eventbroker.serverevent.ServerGetQuizzesEvent;
 import eventbroker.serverevent.ServerHostLeavesQuizEvent;

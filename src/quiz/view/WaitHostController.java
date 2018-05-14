@@ -7,7 +7,6 @@ import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
-import eventbroker.clientevent.ClientAnswerEvent;
 import eventbroker.serverevent.ServerEndQuizEvent;
 import eventbroker.serverevent.ServerNewIPQuestionEvent;
 import eventbroker.serverevent.ServerNewMCQuestionEvent;
@@ -116,10 +115,6 @@ public class WaitHostController extends EventPublisher {
 			questionText.textProperty().bind(waitHostModel.getQuestionTextProperty());
 			break;
 		}
-	}
-
-	private void pokeTeam(TeamNameID newValue) {
-		// TODO Send poke to team :)
 	}
 
 	private class NewRoundHandler implements EventListener {

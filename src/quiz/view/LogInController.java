@@ -1,6 +1,5 @@
 package quiz.view;
 
-
 import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
@@ -41,7 +40,7 @@ public class LogInController extends EventPublisher {
 	private LogInFailHandler logInFailHandler = new LogInFailHandler();
 	private AlreadyLoggedInHandler alreadyLoggedInHandler = new AlreadyLoggedInHandler();
 	private LogInSuccesHandler logInSuccesHandler = new LogInSuccesHandler();
-	private static final String path = "src/quiz/view/BackgroundGrass.mp4";
+	
 	// Reference to the main application
 	private Main main;
 

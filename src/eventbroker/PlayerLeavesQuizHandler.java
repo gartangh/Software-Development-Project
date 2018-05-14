@@ -8,7 +8,6 @@ import main.Main;
 import main.MainContext;
 import quiz.model.Quiz;
 import quiz.model.Team;
-import quiz.model.TeamNameID;
 import quiz.view.JoinTeamController;
 
 public class PlayerLeavesQuizHandler implements EventListener {
@@ -27,8 +26,6 @@ public class PlayerLeavesQuizHandler implements EventListener {
 	public void setJoinTeamController(JoinTeamController joinTeamController) {
 		this.joinTeamController = joinTeamController;
 	}
-
-
 
 	@Override
 	public void handleEvent(Event event) {
@@ -63,10 +60,8 @@ public class PlayerLeavesQuizHandler implements EventListener {
 						});
 					}
 				}
-			} else {
+			} else
 				context.getQuiz().removeUnassignedPlayer(sPLQE.getUserID());
-
-			}
 
 			if (context.getUser().getUserID() == sPLQE.getUserID() || !enoughTeamsLeft) {
 				context.setQuiz(null);
