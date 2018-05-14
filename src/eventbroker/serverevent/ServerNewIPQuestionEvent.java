@@ -7,8 +7,6 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import javafx.scene.image.Image;
-
 @SuppressWarnings("serial")
 public class ServerNewIPQuestionEvent extends ServerEvent {
 

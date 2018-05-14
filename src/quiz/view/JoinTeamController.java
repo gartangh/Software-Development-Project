@@ -290,7 +290,7 @@ public class JoinTeamController extends EventPublisher {
 				Alert alert = new Alert(AlertType.WARNING);
 				alert.setTitle("Warning");
 				alert.setHeaderText("Not enough teams!");
-				alert.setContentText("There have to be at least" + Quiz.MINTEAMS + " teams before you can start the quiz. Please wait until there are enough teams");
+				alert.setContentText("There have to be at least " + Quiz.MINTEAMS + " teams before you can start the quiz. Please wait until there are enough teams");
 				alert.showAndWait();
 			}
 		} else if (team.getCaptainID() == userID) {
@@ -522,7 +522,7 @@ public class JoinTeamController extends EventPublisher {
 				showTeamDetails(selectedTeam);
 				quizRoomModel.updateUnassignedPlayers();
 				if (userID==context.getUser().getUserID()) {
-					quizRoomModel.tiggerTeams();//To change my team to bold
+					quizRoomModel.triggerTeams();//To change my team to bold
 				}
 
 			}

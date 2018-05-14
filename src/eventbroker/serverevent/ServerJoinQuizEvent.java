@@ -1,11 +1,7 @@
 package eventbroker.serverevent;
 
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.Map.Entry;
 
-import eventbroker.EventListener;
-import javafx.scene.paint.Color;
 import quiz.model.Quiz;
 import quiz.model.Team;
 
