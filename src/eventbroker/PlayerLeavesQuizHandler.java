@@ -43,7 +43,7 @@ public class PlayerLeavesQuizHandler implements EventListener {
 
 					if (team.getPlayerMap().size() == 0) {
 						context.getQuiz().removeTeam(team.getTeamID());
-						if (sPLQE.isRunning() && context.getQuiz().getTeamMap().size()<Quiz.MINPLAYERS){
+						if (sPLQE.isRunning() && context.getQuiz().getTeamMap().size()<Quiz.MINTEAMS){
 							enoughTeamsLeft=false;
 						}
 					} else if (team.getCaptainID() == context.getUser().getUserID()
