@@ -15,10 +15,10 @@
 	<center>
 		<VBox spacing="5.0" BorderPane.alignment="CENTER">
 			<children>
-				<GridPane hgap="5.0">
+				<GridPane>
 					<columnConstraints>
-						<ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" />
-						<ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+						<ColumnConstraints fillWidth="false" hgrow="NEVER" />
+						<ColumnConstraints fillWidth="false" hgrow="NEVER" />
 					</columnConstraints>
 					<rowConstraints>
 						<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -36,15 +36,15 @@
 						<TextField fx:id="mPlayers" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 						<Label text="Maximum amount of players" GridPane.rowIndex="3" />
 					</children>
-					<padding>
-						<Insets left="5.0" right="5.0" />
-					</padding>
 				</GridPane>
 				<ButtonBar>
 					<buttons>
 						<Button defaultButton="true" mnemonicParsing="false" onAction="#handleCreateQuiz" text="Create Quiz" />
 						<Button cancelButton="true" mnemonicParsing="false" onAction="#handleBack" text="Back" />
 					</buttons>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
 				</ButtonBar>
 			</children>
 			<BorderPane.margin>

@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.CreateRoundController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.CreateRoundController">
 	<center>
 		<VBox spacing="5.0" BorderPane.alignment="CENTER">
 			<children>
@@ -26,8 +26,8 @@
 				</Label>
 				<GridPane>
 					<columnConstraints>
-						<ColumnConstraints hgrow="SOMETIMES" minWidth="130.0" prefWidth="100.0" />
-						<ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+						<ColumnConstraints />
+						<ColumnConstraints />
 					</columnConstraints>
 					<rowConstraints>
                   <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -39,11 +39,11 @@
 						<Label text="Theme" GridPane.rowIndex="1" />
 						<Label text="Difficulty" GridPane.rowIndex="2" />
 						<Label text="Questions" GridPane.rowIndex="3" />
-						<ChoiceBox fx:id="themeChoiceBox" minWidth="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-						<ChoiceBox fx:id="difficultyChoiceBox" minWidth="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-						<ChoiceBox fx:id="numberChoiceBox" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+						<ChoiceBox fx:id="themeChoiceBox" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+						<ChoiceBox fx:id="difficultyChoiceBox" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+						<ChoiceBox fx:id="numberChoiceBox" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                   <Label text="Type" />
-                  <ChoiceBox fx:id="roundTypeChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" />
+                  <ChoiceBox fx:id="roundTypeChoiceBox" GridPane.columnIndex="1" />
 					</children>
 					<padding>
 						<Insets left="15.0" />
