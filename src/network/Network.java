@@ -18,7 +18,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import main.Main;
 
-// TODO End ReceiverThread Connection Chat
 public class Network extends EventPublisher implements EventListener {
 
 	public final static String CLIENTTYPE = "CLIENT";

@@ -30,8 +30,7 @@ public class ServerNewIPQuestionEvent extends ServerEvent {
 		try {
 			ImageIO.write(img, "jpg", bAOS);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("IOException");
 		}
 		this.bytesImage = bAOS.toByteArray();
 	}
@@ -47,8 +46,7 @@ public class ServerNewIPQuestionEvent extends ServerEvent {
 		try {
 			bufImage = ImageIO.read(bAIS);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("IOException");
 		}
 		return bufImage;
 	}

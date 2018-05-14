@@ -319,6 +319,7 @@ public class QuestionController extends EventPublisher {
 
 			int answer = sVAE.getAnswer();
 			int correctAnswer = sVAE.getCorrectAnswer();
+						
 			MainContext.getContext().setAnswered(true);
 			answerVoteModel.updateAnswer(answer, correctAnswer);
 		}

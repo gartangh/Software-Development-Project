@@ -110,14 +110,9 @@ public class CreateRoundController extends EventPublisher {
 			@SuppressWarnings("unused")
 			ServerStartRoundEvent sSRE = (ServerStartRoundEvent) event;
 
-			// This is the roundHandler for a player. You need to show a
-			// Quizmaster screen here.
-			// TODO Make Special screen for Quizmaster. Now it is only a
-			// waiting screen until the round has finished
 			EventBroker eventBroker = EventBroker.getEventBroker();
 			eventBroker.removeEventListener(startRoundHandler);
 			eventBroker.removeEventListener(newMCQuestionHandler);
-
 		}
 
 	}

@@ -32,7 +32,6 @@ import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import eventbroker.HostLeavesQuizHandler;
 import eventbroker.PlayerLeavesQuizHandler;
-import eventbroker.clientevent.ClientCaptainReadyEvent;
 import eventbroker.clientevent.ClientChangeTeamEvent;
 import eventbroker.clientevent.ClientHostReadyEvent;
 import eventbroker.clientevent.ClientLeaveQuizEvent;
@@ -43,7 +42,6 @@ import eventbroker.serverevent.ServerCreateTeamFailEvent;
 import eventbroker.serverevent.ServerDeleteTeamEvent;
 import eventbroker.serverevent.ServerHostLeavesQuizEvent;
 import eventbroker.serverevent.ServerPlayerLeavesQuizEvent;
-import eventbroker.clientevent.ClientPlayerReadyEvent;
 import eventbroker.serverevent.ServerNewTeamEvent;
 import eventbroker.serverevent.ServerQuizNewPlayerEvent;
 import eventbroker.serverevent.ServerStartQuizEvent;
@@ -89,6 +87,7 @@ public class JoinTeamController extends EventPublisher {
 		hostLeavesQuizHandler.setMain(main);
 		playerLeavesQuizHandler.setMain(main);
 		playerLeavesQuizHandler.setJoinTeamController(this);
+		
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerPlayerLeavesQuizEvent.EVENTTYPE, playerLeavesQuizHandler);
 		eventBroker.addEventListener(ServerHostLeavesQuizEvent.EVENTTYPE, hostLeavesQuizHandler);
@@ -293,19 +292,8 @@ public class JoinTeamController extends EventPublisher {
 				alert.setContentText("There have to be at least " + Quiz.MINTEAMS + " teams before you can start the quiz. Please wait until there are enough teams");
 				alert.showAndWait();
 			}
-		} else if (team.getCaptainID() == userID) {
-			// The captain is ready
-			// TODO Only press ready as a captain, when there are at least
-			// Quiz.MINPLAYERS - 1 players (other than the captain) ready
-			ClientCaptainReadyEvent cCRE = new ClientCaptainReadyEvent(quizID, team.getTeamID());
-			publishEvent(cCRE);
-
-			main.showWaitRoundScene();
 		} else {
 			// A player is ready
-			ClientPlayerReadyEvent cPRE = new ClientPlayerReadyEvent(quizID, team.getTeamID());
-			publishEvent(cPRE);
-
 			main.showWaitRoundScene();
 		}
 

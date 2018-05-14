@@ -9,13 +9,11 @@ import main.MainContext;
 
 public class HostLeavesQuizHandler implements EventListener {
 
+	// Reference to the main application
 	private Main main;
 
-	public HostLeavesQuizHandler(){
-	}
-
-	public void setMain(Main main){
-		this.main=main;
+	public void setMain(Main main) {
+		this.main = main;
 	}
 
 	@Override
