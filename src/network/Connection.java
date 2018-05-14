@@ -102,21 +102,18 @@ public class Connection {
 							network.publishEvent(cLIE);
 						} else
 							network.publishEvent(event);
-					} catch (SocketException e) {
-						System.err.println("SocketException");
+					} catch (ClassNotFoundException | IOException e) {
+						System.err.println("Exception");
 
 						if (network.getType() == Network.SERVERTYPE) {
 							for (Entry<Integer, Integer> entry : network.getUserIDConnectionIDMap().entrySet())
-								if (entry.getValue() == connectionID)
+								if (entry.getValue() == connectionID){
 									Server.onConnectionLost(entry.getKey());
+									break;
+								}
 						} else if (network.getType() == Network.CLIENTTYPE)
 							network.getMainApp().onConnectionLost();
-						
-						break;
-					} catch (ClassNotFoundException e) {
-						System.err.println("ClassNotFoundException");
-					} catch (IOException e) {
-						System.err.println("IOException");
+
 						break;
 					}
 				}
