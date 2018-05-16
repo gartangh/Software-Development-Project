@@ -16,3 +16,5 @@
 /ClientVoteEvent.class
 /ClientDeleteTeamEvent.class
 /ClientLeaveQuizEvent.class
+/ClientEndQuizEvent.class
+/ClientLogOutEvent.class

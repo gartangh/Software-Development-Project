@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import main.MainContext;
 
 public class ChatModel {
 
@@ -44,10 +45,17 @@ public class ChatModel {
 		// Add the latest message to chatTextArea
 		ChatMessage chatMessage = messages.poll();
 
-		if (chatText.getValue() == null)
-			chatText.setValue("[" + chatMessage.getReceiverType() + "]" + chatMessage.getUsername() + ": " + chatMessage.getMessage() + "\n");
-		else
-			chatText.setValue(chatText.getValue() + "[" + chatMessage.getReceiverType() + "]" + chatMessage.getUsername() + ": " + chatMessage.getMessage() + "\n");
+		if(chatMessage.getUserID() == MainContext.getContext().getQuiz().getHostID())
+			if (chatText.getValue() == null)
+				chatText.setValue("[THE_ALMIGHTY_HOST] " + chatMessage.getUsername() + ": " + chatMessage.getMessage() + "\n");
+			else
+				chatText.setValue(chatText.getValue() + "[THE_ALMIGHTY_HOST] " + chatMessage.getUsername() + ": " + chatMessage.getMessage() + "\n");
+		else {
+			if (chatText.getValue() == null)
+				chatText.setValue("[" + chatMessage.getReceiverType() + "] " + chatMessage.getUsername() + ": " + chatMessage.getMessage() + "\n");
+			else
+				chatText.setValue(chatText.getValue() + "[" + chatMessage.getReceiverType() + "] " + chatMessage.getUsername() + ": " + chatMessage.getMessage() + "\n");
+		}
 	}
 
 }
