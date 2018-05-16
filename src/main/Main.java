@@ -295,6 +295,7 @@ public class Main extends Application {
 			FXMLLoader joinTeamLoader = new FXMLLoader();
 			joinTeamLoader.setLocation(Main.class.getResource("/quiz/view/JoinTeam.fxml"));
 			BorderPane joinTeam = (BorderPane) joinTeamLoader.load();
+
 			JoinTeamController joinTeamController = joinTeamLoader.getController();
 			joinTeamController.setMain(this);
 
