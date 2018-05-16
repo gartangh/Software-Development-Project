@@ -42,7 +42,7 @@ public class Main extends Application {
 	 * The Constant LOCAL. True is for local development. False is for network
 	 * development and releases.
 	 */
-	public final static boolean LOCAL = false;
+	public final static boolean LOCAL = true;
 
 	/** The Constant SERVERPORT represents the port on the server. */
 	public final static int SERVERPORT = 1025;
@@ -171,7 +171,7 @@ public class Main extends Application {
 		try {
 			// Load root layout from fxml file
 			FXMLLoader rootLayoutloader = new FXMLLoader();
-			rootLayoutloader.setLocation(Main.class.getResource("../quiz/view/RootLayout.fxml"));
+			rootLayoutloader.setLocation(Main.class.getResource("/quiz/view/RootLayout.fxml"));
 			rootLayout = (BorderPane) rootLayoutloader.load();
 
 			// Show the scene containing the root layout
@@ -179,7 +179,7 @@ public class Main extends Application {
 			primaryStage.setScene(scene);
 
 			FXMLLoader menuLoader = new FXMLLoader();
-			menuLoader.setLocation(Main.class.getResource("../quiz/view/Menu.fxml"));
+			menuLoader.setLocation(Main.class.getResource("/quiz/view/Menu.fxml"));
 			AnchorPane menu = (AnchorPane) menuLoader.load();
 
 			Platform.runLater(new Runnable() {
@@ -230,7 +230,7 @@ public class Main extends Application {
 	public void showLogInScene() {
 		try {
 			FXMLLoader logInloader = new FXMLLoader();
-			logInloader.setLocation(Main.class.getResource("../quiz/view/LogIn.fxml"));
+			logInloader.setLocation(Main.class.getResource("/quiz/view/LogIn.fxml"));
 			BorderPane logIn = (BorderPane) logInloader.load();
 			LogInController logInController = logInloader.getController();
 			logInController.setMainApp(this);
@@ -251,7 +251,7 @@ public class Main extends Application {
 	public void showJoinQuizScene() {
 		try {
 			FXMLLoader joinQuizLoader = new FXMLLoader();
-			joinQuizLoader.setLocation(Main.class.getResource("../quiz/view/JoinQuiz.fxml"));
+			joinQuizLoader.setLocation(Main.class.getResource("/quiz/view/JoinQuiz.fxml"));
 			BorderPane joinQuiz = (BorderPane) joinQuizLoader.load();
 			JoinQuizController joinQuizController = joinQuizLoader.getController();
 			joinQuizController.setMain(this);
@@ -272,7 +272,7 @@ public class Main extends Application {
 	public void showCreateQuizScene() {
 		try {
 			FXMLLoader createQuizLoader = new FXMLLoader();
-			createQuizLoader.setLocation(Main.class.getResource("../quiz/view/CreateQuiz.fxml"));
+			createQuizLoader.setLocation(Main.class.getResource("/quiz/view/CreateQuiz.fxml"));
 			BorderPane createQuiz = (BorderPane) createQuizLoader.load();
 			CreateQuizController createQuizController = createQuizLoader.getController();
 			createQuizController.setMainApp(this);
@@ -293,7 +293,7 @@ public class Main extends Application {
 	public void showJoinTeamScene() {
 		try {
 			FXMLLoader joinTeamLoader = new FXMLLoader();
-			joinTeamLoader.setLocation(Main.class.getResource("../quiz/view/JoinTeam.fxml"));
+			joinTeamLoader.setLocation(Main.class.getResource("/quiz/view/JoinTeam.fxml"));
 			BorderPane joinTeam = (BorderPane) joinTeamLoader.load();
 			JoinTeamController joinTeamController = joinTeamLoader.getController();
 			joinTeamController.setMain(this);
@@ -314,7 +314,7 @@ public class Main extends Application {
 	public boolean showCreateTeamScene(ClientCreateTeamEvent teamevent) {
 		try {
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(Main.class.getResource("../quiz/view/CreateTeam.fxml"));
+			loader.setLocation(Main.class.getResource("/quiz/view/CreateTeam.fxml"));
 			BorderPane newteam = (BorderPane) loader.load();
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("New Team");
@@ -345,7 +345,7 @@ public class Main extends Application {
 	public void showScoreboardScene() {
 		try {
 			FXMLLoader scoreboardLoader = new FXMLLoader();
-			scoreboardLoader.setLocation(Main.class.getResource("../quiz/view/Scoreboard.fxml"));
+			scoreboardLoader.setLocation(Main.class.getResource("/quiz/view/Scoreboard.fxml"));
 			BorderPane scoreboard = (BorderPane) scoreboardLoader.load();
 			ScoreboardController scoreboardController = scoreboardLoader.getController();
 			scoreboardController.setMainApp(this);
@@ -366,7 +366,7 @@ public class Main extends Application {
 	public void showQuestionScene(RoundType roundType) {
 		try {
 			FXMLLoader questionFormLoader = new FXMLLoader();
-			questionFormLoader.setLocation(Main.class.getResource("../quiz/view/Question.fxml"));
+			questionFormLoader.setLocation(Main.class.getResource("/quiz/view/Question.fxml"));
 			BorderPane questionFormRoot = (BorderPane) questionFormLoader.load();
 			QuestionController questionFormController = questionFormLoader.getController();
 			questionFormController.setRoundType(roundType);
@@ -388,7 +388,7 @@ public class Main extends Application {
 	public void showWaitRoundScene() {
 		try {
 			FXMLLoader waitRoundLoader = new FXMLLoader();
-			waitRoundLoader.setLocation(Main.class.getResource("../quiz/view/WaitRound.fxml"));
+			waitRoundLoader.setLocation(Main.class.getResource("/quiz/view/WaitRound.fxml"));
 			BorderPane waitRoundRoot = (BorderPane) waitRoundLoader.load();
 			WaitRoundController waitRoundController = waitRoundLoader.getController();
 			waitRoundController.setMain(this);
@@ -409,7 +409,7 @@ public class Main extends Application {
 	public void showWaitHostScene(RoundType roundType) {
 		try {
 			FXMLLoader waitHostLoader = new FXMLLoader();
-			waitHostLoader.setLocation(Main.class.getResource("../quiz/view/WaitHost.fxml"));
+			waitHostLoader.setLocation(Main.class.getResource("/quiz/view/WaitHost.fxml"));
 			BorderPane waitHostRoot = (BorderPane) waitHostLoader.load();
 			WaitHostController waitHostController = waitHostLoader.getController();
 			waitHostController.setRoundType(roundType);
@@ -431,7 +431,7 @@ public class Main extends Application {
 	public void showCreateRoundScene() {
 		try {
 			FXMLLoader roundMakerLoader = new FXMLLoader();
-			roundMakerLoader.setLocation(Main.class.getResource("../quiz/view/CreateRound.fxml"));
+			roundMakerLoader.setLocation(Main.class.getResource("/quiz/view/CreateRound.fxml"));
 			BorderPane roundMakerRoot = (BorderPane) roundMakerLoader.load();
 			CreateRoundController roundMakerController = roundMakerLoader.getController();
 			roundMakerController.setMain(this);

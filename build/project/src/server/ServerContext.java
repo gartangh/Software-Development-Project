@@ -190,7 +190,7 @@ public class ServerContext {
 
 				// Substring is to remove file:/ before resource
 				BufferedReader bufferedReader = new BufferedReader(new FileReader(
-						Main.class.getResource("../server/files/" + themeFiles[themeFile]).toString().substring(6)));
+						Main.class.getResource("/server/files/" + themeFiles[themeFile]).toString().substring(6)));
 				String line = bufferedReader.readLine();
 				int[] count = new int[RoundType.values().length];
 				int diff = -1;
@@ -227,7 +227,7 @@ public class ServerContext {
 					case "IP":
 						roundType = RoundType.IP.ordinal();
 						questionID += RoundType.IP.ordinal() * Math.pow(2, 30) + count[RoundType.IP.ordinal()];
-						String imgPath = ".\\files\\" + questionImageString;
+						String imgPath = "files/" + questionImageString;
 						BufferedImage bufImage = ImageIO.read(getClass().getResourceAsStream(imgPath));
 						q = new IPQuestion(questionID, theme, difficulty, bufImage, false, answers, correctAnswer);
 						if (diffMap.containsKey(RoundType.IP.ordinal())) {

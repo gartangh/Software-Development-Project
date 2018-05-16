@@ -49,7 +49,7 @@ final public class ChatController extends EventPublisher {
 		try {
 			// Substring is to remove "file:/" before resource
 			BufferedReader bufferedReader = new BufferedReader(
-					new FileReader(Main.class.getResource("../chat/swearWords.txt").toString().substring(6)));
+					new FileReader(Main.class.getResource("/chat/swearWords.txt").toString().substring(6)));
 
 			String line;
 			while ((line = bufferedReader.readLine()) != null)
