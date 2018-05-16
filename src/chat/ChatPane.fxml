@@ -9,25 +9,25 @@
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chat.ChatController">
-   <children>
-      <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <ScrollPane VBox.vgrow="ALWAYS">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0">
-                     <children>
-                        <TextArea fx:id="chatTextArea" editable="false" prefHeight="181.0" prefWidth="478.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                     </children>
-                  </AnchorPane>
-              </content>
-            </ScrollPane>
-            <HBox>
-               <children>
-                  <TextField fx:id="chatTextField" HBox.hgrow="ALWAYS" />
-                  <Button fx:id="chatSendButton" defaultButton="true" mnemonicParsing="false" onAction="#handle" text="Send" />
-               </children>
-            </HBox>
-         </children>
-      </VBox>
-   </children>
+	<children>
+		<VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+			<children>
+				<ScrollPane VBox.vgrow="ALWAYS">
+					<content>
+						<AnchorPane>
+							<children>
+								<TextArea fx:id="chatTextArea" editable="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+							</children>
+						</AnchorPane>
+					</content>
+				</ScrollPane>
+				<HBox>
+					<children>
+						<TextField fx:id="chatTextField" HBox.hgrow="ALWAYS" />
+						<Button fx:id="chatSendButton" defaultButton="true" mnemonicParsing="false" onAction="#handle" text="Send" />
+					</children>
+				</HBox>
+			</children>
+		</VBox>
+	</children>
 </AnchorPane>

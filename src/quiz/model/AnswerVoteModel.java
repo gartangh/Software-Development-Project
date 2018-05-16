@@ -11,32 +11,49 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import main.Context;
+import quiz.util.RoundType;
+import main.MainContext;
 
 public class AnswerVoteModel {
-	private StringProperty questionTitleProperty, questionTextProperty;	// Question properties
-	
-	private StringProperty answerPropertyA, answerPropertyB, answerPropertyC, answerPropertyD;	// Answer properties
+	// Question properties
+	private StringProperty questionTitleProperty;
+	private StringProperty questionTextProperty;
+	private ObjectProperty<Image> imageProperty;
+
+	private StringProperty timeProperty;
+	private DoubleProperty timeProgressProperty;
+
+	// Answer properties
+	private StringProperty answerPropertyA, answerPropertyB, answerPropertyC, answerPropertyD;
 	private ObjectProperty<Paint> paintPropertyA, paintPropertyB, paintPropertyC, paintPropertyD;
-	
-	private DoubleProperty progressPropertyA, progressPropertyB, progressPropertyC, progressPropertyD; 	// Vote properties
+
+	// Vote properties
+	private DoubleProperty progressPropertyA, progressPropertyB, progressPropertyC, progressPropertyD;
 	private StringProperty percentagePropertyA, percentagePropertyB, percentagePropertyC, percentagePropertyD;
 	private StringProperty numberOfVotesProperty;
 	
-	private BooleanProperty voteDisableProperty, confirmDisableProperty, nextDisableProperty; // Button properties
+	// Button properties
+	private BooleanProperty voteDisableProperty, confirmDisableProperty, nextDisableProperty;
+	private RoundType roundType;
 
 	// Constructor
 	public AnswerVoteModel() {
-		questionTitleProperty = new SimpleStringProperty("Question:");
-		questionTextProperty = new SimpleStringProperty("");
+		// Question properties
+		questionTitleProperty = new SimpleStringProperty("Question");
+		questionTextProperty = new SimpleStringProperty();
+		imageProperty = new SimpleObjectProperty<Image>();
+		
+		timeProperty = new SimpleStringProperty("0");
+		timeProgressProperty = new SimpleDoubleProperty(0.0);
 
 		// Answer properties
-		answerPropertyA = new SimpleStringProperty("");
-		answerPropertyB = new SimpleStringProperty("");
-		answerPropertyC = new SimpleStringProperty("");
-		answerPropertyD = new SimpleStringProperty("");
+		answerPropertyA = new SimpleStringProperty();
+		answerPropertyB = new SimpleStringProperty();
+		answerPropertyC = new SimpleStringProperty();
+		answerPropertyD = new SimpleStringProperty();
 		paintPropertyA = new SimpleObjectProperty<Paint>(Color.BLACK);
 		paintPropertyB = new SimpleObjectProperty<Paint>(Color.BLACK);
 		paintPropertyC = new SimpleObjectProperty<Paint>(Color.BLACK);
@@ -52,48 +69,52 @@ public class AnswerVoteModel {
 		percentagePropertyC = new SimpleStringProperty("0 %");
 		percentagePropertyD = new SimpleStringProperty("0 %");
 		numberOfVotesProperty = new SimpleStringProperty("0 votes");
-		
-		voteDisableProperty = new SimpleBooleanProperty(false);	// Button properties
+
+		// Button properties
+		voteDisableProperty = new SimpleBooleanProperty(false);
 		confirmDisableProperty = new SimpleBooleanProperty(false);
 		nextDisableProperty = new SimpleBooleanProperty(true);
+		
 	}
 
 	public void updateVotes(int teamID) {
-		Map<Integer, Map<Integer, Integer>> allVotes = Context.getContext().getQuiz().getVotes();
-		if(allVotes != null) {
+		Map<Integer, Map<Integer, Integer>> allVotes = MainContext.getContext().getQuiz().getVotes();
+		if (allVotes != null) {
 			Map<Integer, Integer> teamVotes = allVotes.get(teamID);
-			if(teamVotes != null) {
+			if (teamVotes != null) {
 				int total = teamVotes.size();
-				int [] votes = new int[4];
-				for(int vote : teamVotes.values()) {
+				int[] votes = new int[4];
+				for (int vote : teamVotes.values())
 					votes[vote]++;
-				}
-				if(total>0) {
-					double fA = (100.0*votes[0])/total;
-					double fB = (100.0*votes[1])/total;
-					double fC = (100.0*votes[2])/total;
-					double fD = (100.0*votes[3])/total;
-					
+
+				if (total > 0) {
+					double fA = (100.0 * votes[0]) / total;
+					double fB = (100.0 * votes[1]) / total;
+					double fC = (100.0 * votes[2]) / total;
+					double fD = (100.0 * votes[3]) / total;
+
 					long A = Math.round(fA);
 					long B = Math.round(fB);
 					long C = Math.round(fC);
 					long D = Math.round(fD);
-									
+
 					Platform.runLater(new Runnable() {
 						public void run() {
-							progressPropertyA.setValue((double) A/100);
-							progressPropertyB.setValue((double) B/100);
-							progressPropertyC.setValue((double) C/100);
-							progressPropertyD.setValue((double) D/100);
-							percentagePropertyA.setValue(A+"%");
-							percentagePropertyB.setValue(B+"%");
-							percentagePropertyC.setValue(C+"%");
-							percentagePropertyD.setValue(D+"%");
-							if(total == 1) numberOfVotesProperty.setValue(total+" vote");
-							else numberOfVotesProperty.setValue(total+" votes");
+							progressPropertyA.setValue((double) A / 100);
+							progressPropertyB.setValue((double) B / 100);
+							progressPropertyC.setValue((double) C / 100);
+							progressPropertyD.setValue((double) D / 100);
+							percentagePropertyA.setValue(A + "%");
+							percentagePropertyB.setValue(B + "%");
+							percentagePropertyC.setValue(C + "%");
+							percentagePropertyD.setValue(D + "%");
+							if (total == 1)
+								numberOfVotesProperty.setValue(total + " vote");
+							else
+								numberOfVotesProperty.setValue(total + " votes");
 						}
 					});
-					
+
 					return;
 				}
 			}
@@ -112,12 +133,12 @@ public class AnswerVoteModel {
 			}
 		});
 	}
-	
+
 	public void updateAnswer(int answer, int correctAnswer) {
 		Platform.runLater(new Runnable() {
 			public void run() {
-				if(answer != correctAnswer) {
-					switch(answer) {
+				if (answer != correctAnswer) {
+					switch (answer) {
 					case 0:
 						paintPropertyA.setValue(Color.RED);
 						break;
@@ -132,7 +153,11 @@ public class AnswerVoteModel {
 						break;
 					}
 				}
-				switch(correctAnswer) {
+				else {
+					//MainContext.getContext().getUser().addXp(100 * (MainContext.getContext().getQuestion().getDifficulty().ordinal() + 1));
+				}
+
+				switch (correctAnswer) {
 				case 0:
 					paintPropertyA.setValue(Color.GREEN);
 					break;
@@ -146,24 +171,68 @@ public class AnswerVoteModel {
 					paintPropertyD.setValue(Color.GREEN);
 					break;
 				}
+
 				voteDisableProperty.setValue(true);
 				confirmDisableProperty.setValue(true);
 				nextDisableProperty.setValue(false);
+				
+				if(roundType == RoundType.IP) {
+					IPQuestion ipQ = (IPQuestion) MainContext.getContext().getQuestion();
+					imageProperty.setValue(ipQ.getFullFXImage());
+				}
 			}
 		});
 	}
 	
-	public void updateQuestion() {
-		MCQuestion q = (MCQuestion) Context.getContext().getQuestion();
-		System.out.println(q.getQuestion());
+	public void updateTimeBar(int currentTime, int maxTime) {
+		
 		Platform.runLater(new Runnable() {
 			public void run() {
-				questionTextProperty.setValue(q.getQuestion());
+				int timeLeft = maxTime - currentTime;
+				double decimalTime = ((double) currentTime)/((double) maxTime);
+				timeProperty.setValue(Integer.toString(timeLeft));
+				timeProgressProperty.setValue(decimalTime);
 				
-				answerPropertyA.setValue(q.getAnswers()[0]);
-				answerPropertyB.setValue(q.getAnswers()[1]);
-				answerPropertyC.setValue(q.getAnswers()[2]);
-				answerPropertyD.setValue(q.getAnswers()[3]);
+				if(maxTime == currentTime) {
+					voteDisableProperty.setValue(true);
+					confirmDisableProperty.setValue(true);
+					nextDisableProperty.setValue(false);
+				}
+			}
+		});
+	}
+
+	public void updateQuestion() {
+		switch(this.roundType) {
+		case IP:
+			IPQuestion ipQ = (IPQuestion) MainContext.getContext().getQuestion();
+			Platform.runLater(new Runnable() {
+				public void run() {
+					imageProperty.setValue(ipQ.getPixelatedFXImage());
+
+					answerPropertyA.setValue(ipQ.getAnswers()[0]);
+					answerPropertyB.setValue(ipQ.getAnswers()[1]);
+					answerPropertyC.setValue(ipQ.getAnswers()[2]);
+					answerPropertyD.setValue(ipQ.getAnswers()[3]);
+				}
+			});			
+			break;
+		case MC:
+			MCQuestion mcQ = (MCQuestion) MainContext.getContext().getQuestion();
+			Platform.runLater(new Runnable() {
+				public void run() {
+					questionTextProperty.setValue(mcQ.getQuestion());
+
+					answerPropertyA.setValue(mcQ.getAnswers()[0]);
+					answerPropertyB.setValue(mcQ.getAnswers()[1]);
+					answerPropertyC.setValue(mcQ.getAnswers()[2]);
+					answerPropertyD.setValue(mcQ.getAnswers()[3]);
+				}
+			});
+			break;
+		}
+		Platform.runLater(new Runnable() {
+			public void run() {
 				paintPropertyA.setValue(Color.BLACK);
 				paintPropertyB.setValue(Color.BLACK);
 				paintPropertyC.setValue(Color.BLACK);
@@ -176,6 +245,18 @@ public class AnswerVoteModel {
 		});
 	}
 	
+	public void updateImage() {
+		if(this.roundType == RoundType.IP) {
+			IPQuestion iPQ = (IPQuestion) MainContext.getContext().getQuestion();
+			Platform.runLater(new Runnable() {
+				public void run() {
+					imageProperty.setValue(iPQ.getPixelatedFXImage());
+				}
+			});
+		}
+		
+	}
+
 	public StringProperty getNumberOfVotesProperty() {
 		return numberOfVotesProperty;
 	}
@@ -220,6 +301,18 @@ public class AnswerVoteModel {
 		return questionTextProperty;
 	}
 
+	public ObjectProperty<Image> getImageProperty() {
+		return imageProperty;
+	}
+	
+	public StringProperty getTimeProperty() {
+		return timeProperty;
+	}
+	
+	public DoubleProperty getTimeProgressProperty() {
+		return timeProgressProperty;
+	}
+	
 	public StringProperty getAnswerPropertyA() {
 		return answerPropertyA;
 	}
@@ -259,8 +352,16 @@ public class AnswerVoteModel {
 	public BooleanProperty getConfirmDisableProperty() {
 		return confirmDisableProperty;
 	}
-	
+
 	public BooleanProperty getNextDisableProperty() {
 		return nextDisableProperty;
+	}
+
+	public RoundType getRoundType() {
+		return this.roundType;
+	}
+	
+	public void setRoundType(RoundType roundType) {
+		this.roundType = roundType;
 	}
 }

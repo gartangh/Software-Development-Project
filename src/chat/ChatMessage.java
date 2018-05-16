@@ -1,23 +1,43 @@
 package chat;
 
 import java.io.Serializable;
-import quiz.util.UserEvent;
+
+import eventbroker.clientevent.ClientEvent;
 
 @SuppressWarnings("serial")
-public class ChatMessage extends UserEvent implements Serializable {
+public class ChatMessage extends ClientEvent implements Serializable {
 
-	private String sender;
+	public final static String CLIENTTYPE = "CLIENT_CHAT";
+	public final static String SERVERTYPE = "SERVER_CHAT";
 
-	public ChatMessage(String sender, String message) {
-		super();
-		this.type = "CLIENT_CHAT";
+	private String username;
+	private String message;
+	private String receiverType;
+	private int quizID;
+	
+	public ChatMessage(String username, String message, String receiverType, int quizID) {
+		super.type = CLIENTTYPE;
+		this.username = username;
 		this.message = message;
-		this.sender = sender;
+		this.receiverType = receiverType;
+		this.quizID = quizID;
 	}
 
 	// Getters
-	public String getSender() {
-		return sender;
+	public String getUsername() {
+		return username;
+	}
+	
+	public String getMessage() {
+		return message;
+	}
+
+	public String getReceiverType() {
+		return receiverType;
+	}
+
+	public int getQuizID() {
+		return quizID;
 	}
 
 }

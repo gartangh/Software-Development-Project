@@ -5,34 +5,20 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import user.model.User;
+import quiz.model.User;
 
 @SuppressWarnings("serial")
 public class Event implements Serializable {
 
-	private static long n = 0;
-
-	protected String type;
-	protected String message;
-	private long id = n++;
+	protected String type = "EVENT";
 	private ArrayList<Integer> recipients = new ArrayList<>();
 
 	// Constructors
 	public Event() {
-		this.type = ""; //no nullpointers
-		this.message = "";
-	}
-
-	public Event(String type, String message) {
-		this.type = type;
-		this.message = message;
+		// Empty default constructor
 	}
 
 	// Getters and setters
-	public String getMessage() {
-		return message;
-	}
-
 	public String getType() {
 		return type;
 	}
@@ -45,27 +31,20 @@ public class Event implements Serializable {
 		return recipients;
 	}
 
-	// Methods
-	@Override
-	public String toString() {
-		return "ID" + id + "[" + type + "] : " + message;
-	}
-
-	// Adders
+	// Adders and removers
 	public void addRecipient(Integer userID) {
 		recipients.add(userID);
 	}
 
 	public void addRecipients(ArrayList<Integer> destinations) {
-		for (Integer userID : destinations)
-			addRecipient(userID);
-	}
-	
-	public void addRecipients(Map<Integer, User> userMap) {
-		for(Entry<Integer, User> entry : userMap.entrySet())
-			addRecipient(entry.getValue().getUserID());
+		recipients.addAll(destinations);
 	}
 
+	public void addRecipients(Map<Integer, User> userMap) {
+		for (Entry<Integer, User> entry : userMap.entrySet())
+			addRecipient(entry.getValue().getUserID());
+	}
+	
 	public void removeAllRecipients() {
 		recipients.clear();
 	}

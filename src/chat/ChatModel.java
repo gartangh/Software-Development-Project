@@ -9,14 +9,15 @@ public class ChatModel {
 
 	private String name;
 	private LinkedList<ChatMessage> messages;
-	private StringProperty chatTextProperty;
+	private StringProperty chatText;
 
+	// Constructor
 	public ChatModel() {
 		this.messages = new LinkedList<ChatMessage>();
-		this.chatTextProperty = new SimpleStringProperty();
+		this.chatText = new SimpleStringProperty();
 	}
 
-	// Getters and setters
+	// Getters and setter
 	public String getName() {
 		return name;
 	}
@@ -25,26 +26,28 @@ public class ChatModel {
 		this.name = name;
 	}
 
+	public LinkedList<ChatMessage> getMessages() {
+		return messages;
+	}
+
+	public StringProperty getChatText() {
+		return chatText;
+	}
+
+	// Adder
 	public void addMessage(ChatMessage message) {
 		messages.add(message);
 	}
 
-	public LinkedList<ChatMessage> getMessages() {
-		return this.messages;
-	}
-
-	public StringProperty chatTextProperty() {
-		return chatTextProperty;
-	}
-
+	// Method
 	public void update() {
 		// Add the latest message to chatTextArea
-		
 		ChatMessage chatMessage = messages.poll();
-		if (chatTextProperty.getValue() == null)
-			chatTextProperty.setValue(chatMessage.getSender() + ": " + chatMessage.getMessage() + "\n");
+
+		if (chatText.getValue() == null)
+			chatText.setValue("[" + chatMessage.getReceiverType() + "]" + chatMessage.getUsername() + ": " + chatMessage.getMessage() + "\n");
 		else
-			chatTextProperty.setValue(chatTextProperty.getValue() + chatMessage.getSender() + ": " + chatMessage.getMessage() + "\n");
+			chatText.setValue(chatText.getValue() + "[" + chatMessage.getReceiverType() + "]" + chatMessage.getUsername() + ": " + chatMessage.getMessage() + "\n");
 	}
 
 }

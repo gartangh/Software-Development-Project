@@ -7,22 +7,31 @@ public class MCQuestion extends Question {
 
 	private String question;
 	private String[] answers;
-	private int correctAnswer;
-	
+	private int correctAnswer = -1;
+
+	// Constructors
 	public MCQuestion(int questionID, String question, String[] answers) {
 		super(questionID);
 		this.question = question;
 		this.answers = answers;
-		this.correctAnswer = -1;
+	}
+
+	public MCQuestion(int questionID, Theme theme, Difficulty difficulty, String question, String[] answers,
+			int correctAnswer) {
+		super(questionID, theme, difficulty);
+		this.question = question;
+		this.answers = answers;
+		this.correctAnswer = correctAnswer;
 	}
 	
-	public MCQuestion(Difficulty difficulty, Theme theme, int questionID, String question, String[] answers, int correctAnswer) {
-		super(difficulty, theme, questionID);
+	public MCQuestion(int questionID, String question, String[] answers, int correctAnswer) {
+		super(questionID);
 		this.question = question;
 		this.answers = answers;
 		this.correctAnswer = correctAnswer;
 	}
 
+	// Getters
 	public String getQuestion() {
 		return question;
 	}
@@ -34,8 +43,12 @@ public class MCQuestion extends Question {
 	public int getCorrectAnswer() {
 		return correctAnswer;
 	}
+	
+	public void setCorrectAnswer(int correctAnswer) {
+		this.correctAnswer = correctAnswer;
+	}
 
-	// Methods
+	// Method
 	public boolean checkCorrectAnswer(int answer) {
 		return correctAnswer == answer;
 	}

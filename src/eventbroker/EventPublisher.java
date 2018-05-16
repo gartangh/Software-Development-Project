@@ -2,8 +2,8 @@ package eventbroker;
 
 public class EventPublisher {
 
-	public void publishEvent(Event e) {
-		EventBroker.getEventBroker().addEvent(this, e);
+	public void publishEvent(Event event) {
+		EventBroker.getEventBroker().addEvent(this, event);
 	}
 
 }
