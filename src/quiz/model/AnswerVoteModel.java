@@ -38,7 +38,8 @@ public class AnswerVoteModel {
 	// Button properties
 	private BooleanProperty voteDisableProperty, confirmDisableProperty, nextDisableProperty;
 	private RoundType roundType;
-
+	private StringProperty receivedPointsProperty;
+	
 	// Constructor
 	public AnswerVoteModel() {
 		// Question properties
@@ -74,7 +75,7 @@ public class AnswerVoteModel {
 		voteDisableProperty = new SimpleBooleanProperty(false);
 		confirmDisableProperty = new SimpleBooleanProperty(false);
 		nextDisableProperty = new SimpleBooleanProperty(true);
-		
+		receivedPointsProperty = new SimpleStringProperty("");
 	}
 
 	public void updateVotes(int teamID) {
@@ -134,7 +135,7 @@ public class AnswerVoteModel {
 		});
 	}
 
-	public void updateAnswer(int answer, int correctAnswer) {
+	public void updateAnswer(int answer, int correctAnswer, int points) {
 		Platform.runLater(new Runnable() {
 			public void run() {
 				if (answer != correctAnswer) {
@@ -175,6 +176,7 @@ public class AnswerVoteModel {
 				voteDisableProperty.setValue(true);
 				confirmDisableProperty.setValue(true);
 				nextDisableProperty.setValue(false);
+				receivedPointsProperty.setValue(Integer.toString(points));
 				
 				if(roundType == RoundType.IP) {
 					IPQuestion ipQ = (IPQuestion) MainContext.getContext().getQuestion();
@@ -363,5 +365,9 @@ public class AnswerVoteModel {
 	
 	public void setRoundType(RoundType roundType) {
 		this.roundType = roundType;
+	}
+
+	public StringProperty getReceivedPointsProperty() {
+		return receivedPointsProperty;
 	}
 }
