@@ -5,7 +5,6 @@ import java.util.TimerTask;
 
 import eventbroker.EventPublisher;
 import eventbroker.serverevent.ServerQuestionTimeEvent;
-import eventbroker.serverevent.ServerVoteAnswerEvent;
 import server.ServerContext;
 
 public class QuestionDurationTimerTask extends TimerTask {
