@@ -1,11 +1,16 @@
 package server.timertask;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.TimerTask;
 
 import eventbroker.EventPublisher;
 import eventbroker.serverevent.ServerQuestionTimeEvent;
 import eventbroker.serverevent.ServerVoteAnswerEvent;
+import quiz.model.IPQuestion;
+import quiz.model.MCQuestion;
+import quiz.model.Team;
+import quiz.util.RoundType;
 import server.ServerContext;
 
 public class QuestionDurationTimerTask extends TimerTask {
@@ -41,7 +46,30 @@ public class QuestionDurationTimerTask extends TimerTask {
 			}
 			
 			if(seconds == MAX_DURATION) {
-				ServerContext.getContext().getQuiz(quizID).fillWrongAnswers(questionID);
+				ArrayList<Integer> unansweredTeams = ServerContext.getContext().getQuiz(quizID).fillWrongAnswers(questionID);
+				ArrayList<Integer> unansweredUsers = new ArrayList<Integer>();
+				
+				Map<Integer, Team> teamMap = ServerContext.getContext().getQuiz(quizID).getTeamMap();
+				int qType = ServerContext.getContext().getQuestionTypeMap().get(this.questionID);
+				int correctAnswer;
+				
+				if(qType == RoundType.IP.ordinal()) {
+					IPQuestion ipQ = (IPQuestion) ServerContext.getContext().getQuestion(this.questionID);
+					correctAnswer = ipQ.getCorrectAnswer();
+				}
+				else {
+					MCQuestion mcQ = (MCQuestion) ServerContext.getContext().getQuestion(this.questionID);
+					correctAnswer = mcQ.getCorrectAnswer();
+				}
+				
+				for(int teamID : unansweredTeams) {
+					unansweredUsers.clear();
+					unansweredUsers.addAll(teamMap.get(teamID).getPlayerMap().keySet());
+					ServerVoteAnswerEvent sVAE =new ServerVoteAnswerEvent(teamID, this.questionID, -1, correctAnswer, 0);
+					sVAE.addRecipients(unansweredUsers);
+					this.eventPublisher.publishEvent(sVAE);
+				}
+				
 			}
 			
 			eventPublisher.publishEvent(sQTE);

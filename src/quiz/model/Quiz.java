@@ -210,8 +210,8 @@ public class Quiz implements Serializable {
 		roundList.get(currentRound).addAnswer(teamID, questionID, answer);
 	}
 	
-	public void fillWrongAnswers(int questionID) {
-		roundList.get(currentRound).fillWrongAnswers(questionID, teamMap.keySet());
+	public ArrayList<Integer> fillWrongAnswers(int questionID) {
+		return roundList.get(currentRound).fillWrongAnswers(questionID, teamMap.keySet());
 	}
 
 	public int addPoints(int teamID, int questionID, int pixelSize, int answer) {
