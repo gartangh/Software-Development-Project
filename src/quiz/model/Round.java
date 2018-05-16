@@ -77,16 +77,18 @@ public class Round {
 		answers.put(questionID, questionAnswers);
 	}
 	
-	public void fillWrongAnswers(int questionID, Set<Integer> teamIDList) {
+	public ArrayList<Integer> fillWrongAnswers(int questionID, Set<Integer> teamIDList) {
 		Map<Integer, Integer> questionAnswers = answers.get(questionID);
+		ArrayList<Integer> unAnsweredTeams = new ArrayList<Integer>();
 		
 		for(int teamID : teamIDList) {
 			if(!questionAnswers.containsKey(teamID)) {
 				questionAnswers.put(teamID, -1);
 				answers.put(questionID, questionAnswers);
+				unAnsweredTeams.add(teamID);
 			}
 		}
-		
+		return unAnsweredTeams;
 	}
 	
 	public int getNextQuestion() {
