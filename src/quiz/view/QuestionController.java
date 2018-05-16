@@ -95,7 +95,9 @@ public class QuestionController extends EventPublisher {
 	private ProgressBar voteProgressD;
 	@FXML
 	private AnchorPane mPlaceholder;
-
+	@FXML
+	private Label receivedPoints;
+	
 	private AnswerVoteModel answerVoteModel = new AnswerVoteModel();
 	private VoteHandler voteHandler;
 	private VoteAnswerHandler voteAnswerHandler;
@@ -163,13 +165,14 @@ public class QuestionController extends EventPublisher {
 		percentageC.textProperty().bind(answerVoteModel.getPercentagePropertyC());
 		percentageD.textProperty().bind(answerVoteModel.getPercentagePropertyD());
 		numberOfVotes.textProperty().bind(answerVoteModel.getNumberOfVotesProperty());
-
+		receivedPoints.textProperty().bind(answerVoteModel.getReceivedPointsProperty());
+		
 		voteButton.disableProperty().bind(answerVoteModel.getVoteDisableProperty());
 		confirmButton.disableProperty().bind(answerVoteModel.getConfirmDisableProperty());
 		nextButton.disableProperty().bind(answerVoteModel.getNextDisableProperty());
 
 		answerVoteModel.updateVotes(MainContext.getContext().getTeam().getTeamID());
-
+		
 		// ChatPanel (ChatModel and ChatController) are created
 		ChatPanel chatPanel = ChatPanel.createChatPanel();
 		mPlaceholder.getChildren().add(chatPanel.getContent());
@@ -331,9 +334,10 @@ public class QuestionController extends EventPublisher {
 
 			int answer = sVAE.getAnswer();
 			int correctAnswer = sVAE.getCorrectAnswer();
-						
+			int points = sVAE.getPoints();
+			
 			MainContext.getContext().setAnswered(true);
-			answerVoteModel.updateAnswer(answer, correctAnswer);
+			answerVoteModel.updateAnswer(answer, correctAnswer, points);
 		}
 
 	}
