@@ -163,6 +163,8 @@ public class Server extends EventPublisher {
 		User user = context.getUser(userID);
 		user.setLoggedIn(false);
 		context.getNetwork().getUserIDConnectionIDMap().remove(userID);
+		int toRemoveTeamID=-1;
+		int toRemoveQuizID=-1;
 
 		for (Quiz quiz : context.getQuizMap().values()) {
 			boolean foundTeam = false;
@@ -172,8 +174,10 @@ public class Server extends EventPublisher {
 					if (userID == playerID) {
 						// The user is in the team
 						foundTeam = true;
+						toRemoveTeamID=team.getTeamID();
+						toRemoveQuizID=quiz.getQuizID();
 
-						ArrayList<Integer> receivers = context.getUsersFromQuiz(quiz.getQuizID());
+						/*ArrayList<Integer> receivers = context.getUsersFromQuiz(quiz.getQuizID());
 						context.changeTeam(quiz.getQuizID(),team.getTeamID(), user.getUserID(), 'd');
 						if (quiz.getTeamMap().size()<Quiz.MINTEAMS && quiz.isRunning()) {
 							context.getQuizMap().remove(quiz.getQuizID());
@@ -183,13 +187,14 @@ public class Server extends EventPublisher {
 
 						ServerPlayerLeavesQuizEvent sPLQE=new ServerPlayerLeavesQuizEvent(quiz.getQuizID(),user.getUserID(),team.getTeamID(),team.getCaptainID(), quiz.isRunning());
 						sPLQE.addRecipients(receivers);
-						server.publishEvent(sPLQE);
+						server.publishEvent(sPLQE);*/
+						break;
 					}
 				}
 				if (foundTeam) break;
 			}
 
-			if (!foundTeam) {
+			/*if (!foundTeam) {
 				quiz.removeUnassignedPlayer(user.getUserID());
 				ServerPlayerLeavesQuizEvent sPLQE = new ServerPlayerLeavesQuizEvent(quiz.getQuizID(), userID, -1, -1,
 						quiz.isRunning());
@@ -208,13 +213,17 @@ public class Server extends EventPublisher {
 				ServerHostLeavesQuizEvent sHLQE = new ServerHostLeavesQuizEvent(quizID);
 				sHLQE.addRecipients(context.getUserMap());
 				server.publishEvent(sHLQE);
-			}
+			}*/
 
 			if (quizRemoved) break;
 		}
+
+		if (toRemoveQuizID ==-1){
+			playerLeavesQuiz(toRemoveQuizID, userID, toRemoveTeamID);
+		}
 	}
 
-	public void playerLeavesQuiz(int quizID, int userID, int teamID) {
+	public static void playerLeavesQuiz(int quizID, int userID, int teamID) {
 		ServerContext context = ServerContext.getContext();
 		Quiz quiz = context.getQuizMap().get(quizID);
 		User user = context.getUserMap().get(userID);
@@ -390,6 +399,7 @@ public class Server extends EventPublisher {
 			if (exists) {
 				// Quizname is already in use
 				ServerCreateQuizFailEvent sCQFE = new ServerCreateQuizFailEvent();
+				sCQFE.addRecipient(cCQE.getUserID());
 				server.publishEvent(sCQFE);
 			} else {
 				// Quizname is not yet in use
@@ -840,7 +850,7 @@ public class Server extends EventPublisher {
 		public void handleEvent(Event event) {
 			ClientLeaveQuizEvent cLQE = (ClientLeaveQuizEvent) event;
 
-			server.playerLeavesQuiz(cLQE.getQuizID(), cLQE.getUserID(), cLQE.getTeamID());
+			Server.playerLeavesQuiz(cLQE.getQuizID(), cLQE.getUserID(), cLQE.getTeamID());
 		}
 
 	}

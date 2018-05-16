@@ -90,11 +90,6 @@ public class PlayerLeavesQuizHandler implements EventListener {
 				}
 
 
-
-
-
-
-
 			}else if (!sPLQE.isRunning()){
 				joinTeamController.updateViews();
 			}
