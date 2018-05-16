@@ -15,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
@@ -35,7 +36,7 @@ import quiz.view.WaitRoundController;
 public class Main extends Application {
 
 	/** The Constant QUIZNAME represents the name of the quiz. */
-	public final static String QUIZNAME = "Quiz";
+	public final static String QUIZNAME = "InstaPixel";
 
 	/**
 	 * The Constant LOCAL. True is for local development. False is for network
@@ -67,7 +68,10 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
+		// Set the application title
 		this.primaryStage.setTitle(QUIZNAME);
+		// Set the application icon
+	    this.primaryStage.getIcons().add(new Image("file:src/main/logo.png"));
 
 		// Connect to network with randomly generated client port between
 		// SERVERPORT + 1 and 65535 (2^16 - 1) and type CLIENT

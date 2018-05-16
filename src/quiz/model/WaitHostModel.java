@@ -23,7 +23,7 @@ public class WaitHostModel {
 	private ObjectProperty<Image> imageProperty;
 		
 	// Answer properties
-	private StringProperty answerPropertyA, answerPropertyB, answerPropertyC, answerPropertyD, correctAnswerProperty, pointsProperty;
+	private StringProperty answerPropertyA, answerPropertyB, answerPropertyC, answerPropertyD, correctAnswerProperty;
 	private RoundType roundType;
 		
 	public WaitHostModel() {
@@ -39,7 +39,6 @@ public class WaitHostModel {
 		answerPropertyC = new SimpleStringProperty();
 		answerPropertyD = new SimpleStringProperty();
 		correctAnswerProperty = new SimpleStringProperty();
-		pointsProperty = new SimpleStringProperty();
 	}
 	
 	public void updateQuestion() {

@@ -81,6 +81,14 @@ public class PlayerLeavesQuizHandler implements EventListener {
 						}
 					});
 				}
+				else {
+					Platform.runLater(new Runnable() {
+						public void run() {
+							main.showJoinQuizScene();
+						}
+					});
+				}
+
 
 			}else if (!sPLQE.isRunning()){
 				joinTeamController.updateViews();

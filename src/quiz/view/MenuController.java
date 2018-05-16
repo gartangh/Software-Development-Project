@@ -25,20 +25,26 @@ public class MenuController {
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Information");
 				alert.setHeaderText("Profile");
+				String content = "";
+				
 				if (context.getUser() == null)
-					alert.setContentText("No user is logged in at the moment.");
+					content += "No user is logged in at the moment.";
 				else {
-					String message = "Username: " + context.getUser().getUsername() + "\nLevel: "
+					content += "Username: " + context.getUser().getUsername() + "\nLevel: "
 							+ Integer.toString(context.getUser().getLevel()) + "\nXP: "
 							+ Long.toString(context.getUser().getXp());
 					if (context.getQuiz() != null) {
-						message += "\nQuiz: " + context.getQuiz().getQuizname();
-						if (context.getTeam() != null)
-							message += "\nTeam: " + context.getTeam().getTeamname();
+						content += "\nQuiz: " + context.getQuiz().getQuizname();
+						if (context.getQuiz().getHostID() == context.getUser().getUserID())
+							content += " [Host]";
+						if (context.getTeam() != null) {
+							content += "\nTeam: " + context.getTeam().getTeamname();
+							if (context.getTeam().getCaptainID() == context.getUser().getUserID())
+								content += " [Captain]";
+						}
 					}
-					alert.setContentText(message);
 				}
-
+				alert.setContentText(content);
 				alert.showAndWait();
 			}
 		});
@@ -60,5 +66,22 @@ public class MenuController {
 			}
 		});
 	}
-
+	
+	
+	/**
+	 * Opens Rules dialog.
+	 */
+	@FXML
+	private void handleRules() {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Information");
+				alert.setHeaderText("Rules");
+				alert.setContentText("The rules of the quiz.");
+				alert.showAndWait();
+			}
+		});
+	}
 }
