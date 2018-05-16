@@ -30,9 +30,15 @@ public class QuestionDurationTimerTask extends TimerTask {
 			ServerQuestionTimeEvent sQTE = new ServerQuestionTimeEvent(questionID, seconds, MAX_DURATION);
 			
 			ArrayList<Integer> receivers = new ArrayList<>();
-			receivers.addAll(ServerContext.getContext().getUsersFromQuiz(quizID));
-			receivers.add(ServerContext.getContext().getQuiz(quizID).getHostID());
-			sQTE.addRecipients(receivers);
+			ArrayList <Integer> users = ServerContext.getContext().getUsersFromQuiz(quizID);
+			if(users != null) {
+				receivers.addAll(ServerContext.getContext().getUsersFromQuiz(quizID));
+				receivers.add(ServerContext.getContext().getQuiz(quizID).getHostID());
+				sQTE.addRecipients(receivers);
+			}
+			else {
+				this.cancel();
+			}
 			
 			if(seconds == MAX_DURATION) {
 				ServerContext.getContext().getQuiz(quizID).fillWrongAnswers(questionID);
