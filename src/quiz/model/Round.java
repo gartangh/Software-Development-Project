@@ -95,4 +95,7 @@ public class Round {
 		return (int) answers.keySet().toArray()[++currentQuestion];
 	}
 
+	public int getQuestionID() {
+		return (int) answers.keySet().toArray()[currentQuestion];
+	}
 }
