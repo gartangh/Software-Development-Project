@@ -20,7 +20,7 @@ public class Quiz implements Serializable {
 	public final static int MAXTEAMS = 5;
 	public final static int MINPLAYERS = 1;
 	public final static int MAXPLAYERS = 5;
-	public final static String QUIZNAMEREGEX = "^[a-zA-Z0-9._-]{3,10}$";
+	public final static String QUIZNAMEREGEX = "^[a-zA-Z0-9._-]{3,16}$";
 
 	private int quizID;
 	private String quizname;

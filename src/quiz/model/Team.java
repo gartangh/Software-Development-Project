@@ -11,7 +11,7 @@ import server.ServerContext;
 @SuppressWarnings("serial")
 public class Team implements Serializable {
 
-	public final static String TEAMNAMEREGEX = "^[a-zA-Z0-9._-]{3,10}$";
+	public final static String TEAMNAMEREGEX = "^[a-zA-Z0-9._-]{3,16}$";
 
 	private int teamID;
 	private String teamname;

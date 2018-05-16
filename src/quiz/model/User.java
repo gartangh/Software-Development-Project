@@ -5,8 +5,8 @@ import server.ServerContext;
 
 public class User {
 
-	public final static String USERNAMEREGEX = "^[a-zA-Z0-9._-]{3,10}$";
-	public final static String PASSWORDREGEX = "^[a-zA-Z0-9._-]{3,10}$";
+	public final static String USERNAMEREGEX = "^[a-zA-Z0-9._-]{3,16}$";
+	public final static String PASSWORDREGEX = "^[a-zA-Z0-9._-]{3,16}$";
 
 	private int userID;
 	private String username;
