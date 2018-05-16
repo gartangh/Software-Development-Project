@@ -1,0 +1,246 @@
+----------
+EASY
+----------
+MC
+Who did the Mona Lisa paint?
+Da Vinci
+Van Gogh
+Monet
+Manet
+0
+
+MC
+In which city is the famous Manneken Pis fountain?
+Amsterdam
+London
+Paris
+Brussels
+3
+
+MC
+What is the first book of the Old Testament?
+The Book of Love
+Exodus
+Genesis
+The Bible
+2
+
+MC
+In which city can you see Michelangelo’s David?
+Rome
+Florence
+Naples
+Venice
+1
+
+MC
+Which artist was often referred to as "The King of Pop"?
+Elvis Presley
+Michael Jackson
+2Pac
+Prince
+0
+
+IP
+barackobama.jpeg
+Barack Obama
+Dalai Lama
+Donald Trump
+Martin Luther King
+0
+
+IP
+colosseum.jpeg
+Acropolis
+Colosseum
+Pyramids of Gizeh
+Table Mountain
+1
+
+IP
+eiffeltower.jpeg
+Flagpole
+Ancient Building Crane
+Washington D.C.
+Eiffel Tower
+3
+
+IP
+pyramids.jpeg
+Pyramids of Gizeh
+Sahara sand dunes
+Prehistoric cave paintings
+Table Mountain
+0
+
+IP
+louvre.jpeg
+Iglo
+Snowball
+Illuminati
+Louvre
+3
+----------
+MEDIUM
+----------
+MC
+In which city did Romeo and Julia live?
+Venice
+Milan
+Rome
+Verona
+3
+
+MC
+Who was the original author of Dracula?
+Dan Brown
+Bram Stoker
+Leo Tolstoj
+William Shakespeare
+1
+
+MC
+Which Italian artist painted the Birth of Venus?
+Botticelli
+Da Vinci
+Caravaggio
+Rafael
+0
+
+MC
+Which engineer designed two bridges for the city of Porto?
+David M Childs
+Caliph Abd al-Malik
+Gustave Eiffel
+Santiago Calatrava
+2
+
+MC
+In which city is the composer Frédéric Chopin buried?
+Marseille
+Lyon
+Paris
+Strasbourgh
+2
+
+IP
+chinesewall.jpeg
+Silk Road
+Rocky Mountains
+Chinese Wall
+Road to Rome
+2
+
+IP
+bigben.jpeg
+Eiffel Tower
+Big Ben
+Tower of Babel
+Tower of Pisa
+1
+
+IP
+trevifountain.jpeg
+Disney World Orlando
+Flag of Argentina
+Manneken Pis
+Trevi Fountain
+3
+
+IP
+statueofliberty.jpeg
+World Trade Center Towers
+Cristiano Ronaldo
+Statue of Christ the Redeemer
+Statue of Liberty
+3
+
+IP
+operahouse.jpeg
+Traditional fishing boat
+Louvre
+Opera House
+Panda Sanctuary
+2
+----------
+HARD
+----------
+MC
+In which Spanish city did the Joan Miro museum open in 1975?
+Madrid
+Valencia
+Barcelona
+Granada
+2
+
+MC
+What color are often the domes of churches in Russia?
+Red
+Blue
+Silver
+Gold
+3
+
+MC
+In which English town did Adolf Hitler study art?
+Liverpool
+London
+Oxford
+Cambridge
+0
+
+MC
+What is the Kabbalah?
+Tower of a mosque
+System of Jewish mystical beliefs
+Ancient arabic contract
+Egyptian dagger
+1
+
+MC
+What is called the Jewish candlestick with special religious meaning?
+Goy
+Menorah
+Kibbitz
+Mazel Tov
+1
+
+IP
+londoneye.jpeg
+London Eye
+Big Apple
+Rou de Paris
+Disney's Tron Legacy Bike
+0
+
+IP
+mannekenpis.jpeg
+Bust of Cristiano Ronaldo
+Trevi Fountain
+Chinese Soldier
+Manneken Pis
+3
+
+IP
+parthenon.jpeg
+Buddhist Temple
+Colosseum
+Parthenon
+Sahara Sand Dunes
+2
+
+IP
+timessquare.jpeg
+Sydney
+New York
+Tokio
+Shangai
+1
+
+IP
+sagradafamilia.jpeg
+Basilic of Koekelberg
+Mont Martre
+Sagrada Familia
+Colosseum
+2
