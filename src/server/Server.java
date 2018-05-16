@@ -865,10 +865,11 @@ public class Server extends EventPublisher {
 
 			ServerContext context = ServerContext.getContext();
 			context.getQuizMap().get(quizID).setRunning(true);
-			context.getQuizMap().get(quizID).clearUnassignedPlayers();
 
 			ServerStartQuizEvent sSQE = new ServerStartQuizEvent(quizID);
 			sSQE.addRecipients(context.getUsersFromQuiz(quizID));
+
+			context.getQuizMap().get(quizID).clearUnassignedPlayers();
 			server.publishEvent(sSQE);
 		}
 
