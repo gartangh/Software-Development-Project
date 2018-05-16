@@ -128,7 +128,7 @@ public class ScoreboardController extends EventPublisher {
 						else {
 							if(scoreboardTeams.get(0).getScore() == curTeam.getScore())
 								scoreboardModel.updateWinnerLoser(curTeam.getTeamname() + ": TIED");
-							scoreboardModel.updateWinnerLoser(curTeam.getTeamname() + ": LOSER");
+							else scoreboardModel.updateWinnerLoser(curTeam.getTeamname() + ": LOSER");
 						}
 					}
 				}

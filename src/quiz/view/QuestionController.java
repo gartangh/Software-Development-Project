@@ -304,7 +304,7 @@ public class QuestionController extends EventPublisher {
 				}
 			});
 		} else {
-			ClientNewQuestionEvent cNQE = new ClientNewQuestionEvent();
+			ClientNewQuestionEvent cNQE = new ClientNewQuestionEvent(MainContext.getContext().getQuestion().getQuestionID());
 			publishEvent(cNQE);
 		}
 	}
