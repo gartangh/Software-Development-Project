@@ -868,9 +868,7 @@ public class Server extends EventPublisher {
 			context.getQuizMap().get(quizID).clearUnassignedPlayers();
 
 			ServerStartQuizEvent sSQE = new ServerStartQuizEvent(quizID);
-			ArrayList<Integer> receivers = new ArrayList<>();
-			receivers.addAll(context.getUserMap().keySet());
-			sSQE.addRecipients(receivers);
+			sSQE.addRecipients(context.getUsersFromQuiz(quizID));
 			server.publishEvent(sSQE);
 		}
 
