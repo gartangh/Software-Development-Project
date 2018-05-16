@@ -12,7 +12,6 @@ import java.util.Timer;
 import javax.imageio.ImageIO;
 import java.util.Random;
 
-import main.Main;
 import network.Network;
 import quiz.model.IPQuestion;
 import quiz.model.MCQuestion;
@@ -190,7 +189,7 @@ public class ServerContext {
 
 				// Substring is to remove file:/ before resource
 				BufferedReader bufferedReader = new BufferedReader(new FileReader(
-						Main.class.getResource("/server/files/" + themeFiles[themeFile]).toString().substring(6)));
+						Server.class.getResource("files/" + themeFiles[themeFile]).toString().substring(6)));
 				String line = bufferedReader.readLine();
 				int[] count = new int[RoundType.values().length];
 				int diff = -1;

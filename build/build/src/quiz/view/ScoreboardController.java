@@ -119,10 +119,17 @@ public class ScoreboardController extends EventPublisher {
 	
 	
 					if (curTeam != null) {
-						if (scoreboardTeams.get(0).getTeamID() == curTeamID)
-							scoreboardModel.updateWinnerLoser(curTeam.getTeamname() + ": WINNER WINNER CHICKEN DINNER");
-						else
-							scoreboardModel.updateWinnerLoser(curTeam.getTeamname() + ": LOSER");
+						if (scoreboardTeams.get(0).getTeamID() == curTeamID) {
+							if(scoreboardTeams.get(1).getScore() == curTeam.getScore())
+								scoreboardModel.updateWinnerLoser(curTeam.getTeamname() + ": TIED");
+							else
+								scoreboardModel.updateWinnerLoser(curTeam.getTeamname() + ": WINNER WINNER CHICKEN DINNER");
+						}
+						else {
+							if(scoreboardTeams.get(0).getScore() == curTeam.getScore())
+								scoreboardModel.updateWinnerLoser(curTeam.getTeamname() + ": TIED");
+							else scoreboardModel.updateWinnerLoser(curTeam.getTeamname() + ": LOSER");
+						}
 					}
 				}
 			}

@@ -8,216 +8,230 @@
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<BorderPane xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.QuestionController">
-   <left>
-				<VBox fx:id="leftVBox" alignment="CENTER" BorderPane.alignment="CENTER">
-					<children>
-								<Label fx:id="questionTitle" text="Question X:">
-									<padding>
-										<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-									</padding>
-									<font>
-										<Font name="System Bold" size="12.0" />
-									</font>
-								</Label>
-								<TextFlow prefWidth="350.0">
-									<padding>
-										<Insets bottom="5.0" left="20.0" right="5.0" top="5.0" />
-									</padding>
-               <children>
-      										<Text fx:id="questionText" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-               </children>
-								</TextFlow>
-            <ImageView fx:id="imageView" fitHeight="320.0" fitWidth="450.0" pickOnBounds="true" preserveRatio="true">
-               <VBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </VBox.margin></ImageView>
-            <GridPane>
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="230.0" minWidth="10.0" prefWidth="131.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="390.0" minWidth="10.0" prefWidth="339.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <Label text="Received points: ">
-                     <GridPane.margin>
-                        <Insets bottom="5.0" left="35.0" right="5.0" top="5.0" />
-                     </GridPane.margin>
-                  </Label>
-                  <Label fx:id="receivedPoints" text="0" GridPane.columnIndex="1" />
-               </children>
-            </GridPane>
-            <AnchorPane>
-               <children>
-                  <ProgressBar fx:id="timeProgressBar" layoutX="29.0" layoutY="50.0" progress="0.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="10.0" />
-                  <Label fx:id="timeLabel" layoutX="428.0" layoutY="11.0" text="30" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-                     <padding>
-                        <Insets left="10.0" />
-                     </padding>
-                  </Label>
-               </children>
-            </AnchorPane>
-								<GridPane>
-									<columnConstraints>
-										<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-									</columnConstraints>
-									<rowConstraints>
-										<RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-										<RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-										<RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-										<RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-									</rowConstraints>
-									<children>
-										<CheckBox fx:id="checkB" mnemonicParsing="false" onAction="#handleCheckB" text="B:" GridPane.rowIndex="1">
-											<GridPane.margin>
-												<Insets />
-											</GridPane.margin>
-										</CheckBox>
-										<Label fx:id="answerB" text="Answer B" GridPane.rowIndex="1">
-											<GridPane.margin>
-												<Insets left="40.0" />
-											</GridPane.margin>
-										</Label>
-										<CheckBox fx:id="checkC" layoutX="45.0" layoutY="52.0" mnemonicParsing="false" onAction="#handleCheckC" text="C:" GridPane.rowIndex="2" />
-										<Label fx:id="answerC" layoutX="85.0" layoutY="52.0" text="Answer C" GridPane.rowIndex="2">
-											<GridPane.margin>
-												<Insets left="40.0" />
-											</GridPane.margin>
-										</Label>
-										<CheckBox fx:id="checkA" layoutX="45.0" layoutY="82.0" mnemonicParsing="false" onAction="#handleCheckA" text="A:" />
-										<Label fx:id="answerA" layoutX="45.0" layoutY="82.0" text="Answer A">
-											<GridPane.margin>
-												<Insets left="40.0" />
-											</GridPane.margin>
-										</Label>
-										<CheckBox fx:id="checkD" layoutX="45.0" layoutY="22.0" mnemonicParsing="false" onAction="#handleCheckD" text="D:" GridPane.rowIndex="3" />
-										<Label fx:id="answerD" layoutX="45.0" layoutY="22.0" text="Answer D" GridPane.rowIndex="3">
-											<GridPane.margin>
-												<Insets left="40.0" />
-											</GridPane.margin>
-										</Label>
-									</children>
-									<padding>
-										<Insets bottom="5.0" left="35.0" right="5.0" top="5.0" />
-									</padding>
-								</GridPane>
-								<ButtonBar minWidth="360.0" prefHeight="40.0">
-									<buttons>
-										<Button fx:id="voteButton" defaultButton="true" mnemonicParsing="false" onAction="#handleVote" text="Vote" />
-										<Button fx:id="confirmButton" mnemonicParsing="false" onAction="#handleAnswer" text="Confirm answer" />
-										<Button fx:id="nextButton" mnemonicParsing="false" onAction="#handleNext" text="Next question" />
-									</buttons>
-									<padding>
-										<Insets right="5.0" />
-									</padding>
-								</ButtonBar>
-					</children>
-				</VBox>
-   </left>
-   <right>
-				<VBox alignment="CENTER" BorderPane.alignment="CENTER">
-					<children>
-								<Label text="Team votes">
-									<padding>
-										<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-									</padding>
-								</Label>
-								<GridPane minWidth="200.0">
-									<columnConstraints>
-										<ColumnConstraints hgrow="NEVER" minWidth="30.0" />
-										<ColumnConstraints hgrow="NEVER" minWidth="30.0" />
-										<ColumnConstraints hgrow="NEVER" minWidth="40.0" />
-									</columnConstraints>
-									<rowConstraints>
-										<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-										<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-										<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-										<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-									</rowConstraints>
-									<padding>
-										<Insets left="35.0" right="5.0" top="5.0" />
-									</padding>
-									<children>
-										<Label text="A:">
-											<GridPane.margin>
-												<Insets right="10.0" />
-											</GridPane.margin>
-										</Label>
-										<Label text="B:" GridPane.rowIndex="1">
-											<GridPane.margin>
-												<Insets right="10.0" />
-											</GridPane.margin>
-										</Label>
-										<Label text="C:" GridPane.rowIndex="2">
-											<GridPane.margin>
-												<Insets right="10.0" />
-											</GridPane.margin>
-										</Label>
-										<Label text="D:" GridPane.rowIndex="3">
-											<GridPane.margin>
-												<Insets right="10.0" />
-											</GridPane.margin>
-										</Label>
-										<ProgressBar fx:id="voteProgressA" prefWidth="500.0" progress="0.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
-											<GridPane.margin>
-												<Insets right="10.0" />
-											</GridPane.margin>
-										</ProgressBar>
-										<ProgressBar fx:id="voteProgressB" prefWidth="500.0" progress="0.65" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
-											<GridPane.margin>
-												<Insets right="10.0" />
-											</GridPane.margin>
-										</ProgressBar>
-										<ProgressBar fx:id="voteProgressC" prefWidth="500.0" progress="0.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2">
-											<GridPane.margin>
-												<Insets right="10.0" />
-											</GridPane.margin>
-										</ProgressBar>
-										<ProgressBar fx:id="voteProgressD" prefWidth="500.0" progress="0.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
-											<GridPane.margin>
-												<Insets right="10.0" />
-											</GridPane.margin>
-										</ProgressBar>
-										<Label fx:id="percentageA" text="0%" GridPane.columnIndex="2">
-											<GridPane.margin>
-												<Insets right="10.0" />
-											</GridPane.margin>
-										</Label>
-										<Label fx:id="percentageB" text="0%" GridPane.columnIndex="2" GridPane.rowIndex="1">
-											<GridPane.margin>
-												<Insets right="10.0" />
-											</GridPane.margin>
-										</Label>
-										<Label fx:id="percentageC" text="0%" GridPane.columnIndex="2" GridPane.rowIndex="2">
-											<GridPane.margin>
-												<Insets right="10.0" />
-											</GridPane.margin>
-										</Label>
-										<Label fx:id="percentageD" text="0%" GridPane.columnIndex="2" GridPane.rowIndex="3">
-											<GridPane.margin>
-												<Insets right="10.0" />
-											</GridPane.margin>
-										</Label>
-									</children>
-								</GridPane>
-								<Label fx:id="numberOfVotes" text="0 votes">
-									<padding>
-										<Insets bottom="5.0" left="5.0" right="55.0" />
-									</padding>
-								</Label>
-						<AnchorPane fx:id="mPlaceholder" prefHeight="200.0" prefWidth="400.0" VBox.vgrow="ALWAYS" />
-					</children>
-				</VBox>
-   </right>
-</BorderPane>
+<AnchorPane prefHeight="200.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.QuestionController">
+   <children>
+      <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+      				<VBox fx:id="leftVBox" alignment="CENTER" HBox.hgrow="ALWAYS">
+      					<children>
+      								<Label fx:id="questionTitle" text="Question X:" VBox.vgrow="NEVER">
+      									<padding>
+      										<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+      									</padding>
+      									<font>
+      										<Font name="System Bold" size="12.0" />
+      									</font>
+      								</Label>
+      								<TextFlow prefWidth="350.0" VBox.vgrow="NEVER">
+      									<padding>
+      										<Insets bottom="5.0" left="20.0" right="5.0" top="5.0" />
+      									</padding>
+                     <children>
+            										<Text fx:id="questionText" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                     </children>
+      								</TextFlow>
+                  <StackPane fx:id="imageStackPane" minHeight="150.0" minWidth="200.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <ImageView fx:id="imageView" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER" />
+                     </children>
+                  </StackPane>
+                  <GridPane VBox.vgrow="NEVER">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="NEVER" maxWidth="230.0" minWidth="140.0" prefWidth="140.0" />
+                      <ColumnConstraints hgrow="ALWAYS" maxWidth="390.0" minWidth="10.0" prefWidth="339.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label text="Received points: ">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="35.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <Label fx:id="receivedPoints" text="0" GridPane.columnIndex="1" />
+                     </children>
+                  </GridPane>
+                  <AnchorPane VBox.vgrow="NEVER">
+                     <children>
+                        <ProgressBar fx:id="timeProgressBar" layoutX="29.0" layoutY="50.0" progress="0.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="10.0" />
+                        <Label fx:id="timeLabel" layoutX="428.0" layoutY="11.0" text="30" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+      								<GridPane VBox.vgrow="NEVER">
+      									<columnConstraints>
+      										<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+      									</columnConstraints>
+      									<rowConstraints>
+      										<RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      										<RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      										<RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      										<RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      									</rowConstraints>
+      									<children>
+      										<CheckBox fx:id="checkB" mnemonicParsing="false" onAction="#handleCheckB" text="B:" GridPane.rowIndex="1">
+      											<GridPane.margin>
+      												<Insets />
+      											</GridPane.margin>
+      										</CheckBox>
+      										<Label fx:id="answerB" text="Answer B" GridPane.rowIndex="1">
+      											<GridPane.margin>
+      												<Insets left="40.0" />
+      											</GridPane.margin>
+      										</Label>
+      										<CheckBox fx:id="checkC" layoutX="45.0" layoutY="52.0" mnemonicParsing="false" onAction="#handleCheckC" text="C:" GridPane.rowIndex="2" />
+      										<Label fx:id="answerC" layoutX="85.0" layoutY="52.0" text="Answer C" GridPane.rowIndex="2">
+      											<GridPane.margin>
+      												<Insets left="40.0" />
+      											</GridPane.margin>
+      										</Label>
+      										<CheckBox fx:id="checkA" layoutX="45.0" layoutY="82.0" mnemonicParsing="false" onAction="#handleCheckA" text="A:" />
+      										<Label fx:id="answerA" layoutX="45.0" layoutY="82.0" text="Answer A">
+      											<GridPane.margin>
+      												<Insets left="40.0" />
+      											</GridPane.margin>
+      										</Label>
+      										<CheckBox fx:id="checkD" layoutX="45.0" layoutY="22.0" mnemonicParsing="false" onAction="#handleCheckD" text="D:" GridPane.rowIndex="3" />
+      										<Label fx:id="answerD" layoutX="45.0" layoutY="22.0" text="Answer D" GridPane.rowIndex="3">
+      											<GridPane.margin>
+      												<Insets left="40.0" />
+      											</GridPane.margin>
+      										</Label>
+      									</children>
+      									<padding>
+      										<Insets bottom="5.0" left="35.0" right="5.0" top="5.0" />
+      									</padding>
+      								</GridPane>
+                  <AnchorPane VBox.vgrow="SOMETIMES">
+                     <children>
+            								<ButtonBar minWidth="360.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            									<buttons>
+            										<Button fx:id="voteButton" defaultButton="true" mnemonicParsing="false" onAction="#handleVote" text="Vote" />
+            										<Button fx:id="confirmButton" mnemonicParsing="false" onAction="#handleAnswer" text="Confirm answer" />
+            										<Button fx:id="nextButton" mnemonicParsing="false" onAction="#handleNext" text="Next question" />
+            									</buttons>
+            									<padding>
+            										<Insets bottom="5.0" />
+            									</padding>
+            								</ButtonBar>
+                     </children>
+                  </AnchorPane>
+      					</children>
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </HBox.margin>
+      				</VBox>
+      				<VBox alignment="CENTER" HBox.hgrow="SOMETIMES">
+      					<children>
+      								<Label text="Team votes">
+      									<padding>
+      										<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+      									</padding>
+      								</Label>
+      								<GridPane minWidth="200.0">
+      									<columnConstraints>
+      										<ColumnConstraints hgrow="NEVER" minWidth="30.0" />
+      										<ColumnConstraints hgrow="NEVER" minWidth="30.0" />
+      										<ColumnConstraints hgrow="NEVER" minWidth="30.0" />
+      									</columnConstraints>
+      									<rowConstraints>
+      										<RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      										<RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      										<RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      										<RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      									</rowConstraints>
+      									<padding>
+      										<Insets left="20.0" right="5.0" top="5.0" />
+      									</padding>
+      									<children>
+      										<Label text="A:">
+      											<GridPane.margin>
+      												<Insets right="10.0" />
+      											</GridPane.margin>
+      										</Label>
+      										<Label text="B:" GridPane.rowIndex="1">
+      											<GridPane.margin>
+      												<Insets right="10.0" />
+      											</GridPane.margin>
+      										</Label>
+      										<Label text="C:" GridPane.rowIndex="2">
+      											<GridPane.margin>
+      												<Insets right="10.0" />
+      											</GridPane.margin>
+      										</Label>
+      										<Label text="D:" GridPane.rowIndex="3">
+      											<GridPane.margin>
+      												<Insets right="10.0" />
+      											</GridPane.margin>
+      										</Label>
+      										<ProgressBar fx:id="voteProgressA" prefWidth="500.0" progress="0.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
+      											<GridPane.margin>
+      												<Insets right="10.0" />
+      											</GridPane.margin>
+      										</ProgressBar>
+      										<ProgressBar fx:id="voteProgressB" prefWidth="500.0" progress="0.65" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
+      											<GridPane.margin>
+      												<Insets right="10.0" />
+      											</GridPane.margin>
+      										</ProgressBar>
+      										<ProgressBar fx:id="voteProgressC" prefWidth="500.0" progress="0.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2">
+      											<GridPane.margin>
+      												<Insets right="10.0" />
+      											</GridPane.margin>
+      										</ProgressBar>
+      										<ProgressBar fx:id="voteProgressD" prefWidth="500.0" progress="0.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+      											<GridPane.margin>
+      												<Insets right="10.0" />
+      											</GridPane.margin>
+      										</ProgressBar>
+      										<Label fx:id="percentageA" text="0%" GridPane.columnIndex="2">
+      											<GridPane.margin>
+      												<Insets right="10.0" />
+      											</GridPane.margin>
+      										</Label>
+      										<Label fx:id="percentageB" text="0%" GridPane.columnIndex="2" GridPane.rowIndex="1">
+      											<GridPane.margin>
+      												<Insets right="10.0" />
+      											</GridPane.margin>
+      										</Label>
+      										<Label fx:id="percentageC" text="0%" GridPane.columnIndex="2" GridPane.rowIndex="2">
+      											<GridPane.margin>
+      												<Insets right="10.0" />
+      											</GridPane.margin>
+      										</Label>
+      										<Label fx:id="percentageD" text="0%" GridPane.columnIndex="2" GridPane.rowIndex="3">
+      											<GridPane.margin>
+      												<Insets right="10.0" />
+      											</GridPane.margin>
+      										</Label>
+      									</children>
+      								</GridPane>
+      								<Label fx:id="numberOfVotes" text="0 votes">
+      									<padding>
+      										<Insets bottom="5.0" left="5.0" right="55.0" />
+      									</padding>
+      								</Label>
+      						<AnchorPane fx:id="mPlaceholder" prefHeight="200.0" prefWidth="400.0" VBox.vgrow="ALWAYS" />
+      					</children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+      				</VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

@@ -20,6 +20,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import main.Main;
@@ -49,6 +50,8 @@ public class WaitHostController extends EventPublisher {
 	private Text questionText;
 	@FXML
 	private ImageView imageView;
+	@FXML
+	private StackPane imageStackPane;
 	@FXML
 	private Label answerA;
 	@FXML
@@ -93,6 +96,9 @@ public class WaitHostController extends EventPublisher {
 		questionTitle.textProperty().bind(waitHostModel.getQuestionTitleProperty());
 		questionText.textProperty().bind(waitHostModel.getQuestionTextProperty());
 		imageView.imageProperty().bind(waitHostModel.getImageProperty());
+		
+		imageView.fitWidthProperty().bind(imageStackPane.widthProperty());
+		imageView.fitHeightProperty().bind(imageStackPane.heightProperty());
 		
 		answerA.textProperty().bind(waitHostModel.getAnswerPropertyA());
 		answerB.textProperty().bind(waitHostModel.getAnswerPropertyB());

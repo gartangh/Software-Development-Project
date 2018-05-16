@@ -29,6 +29,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import main.MainContext;
@@ -49,6 +50,8 @@ public class QuestionController extends EventPublisher {
 	private Text questionText;
 	@FXML
 	private ImageView imageView;
+	@FXML
+	private StackPane imageStackPane;
 	@FXML
 	private ProgressBar timeProgressBar;
 	@FXML
@@ -142,6 +145,9 @@ public class QuestionController extends EventPublisher {
 		questionTitle.textProperty().bind(answerVoteModel.getQuestionTitleProperty());
 		questionText.textProperty().bind(answerVoteModel.getQuestionTextProperty());
 		imageView.imageProperty().bind(answerVoteModel.getImageProperty());
+		
+		imageView.fitWidthProperty().bind(imageStackPane.widthProperty());
+		imageView.fitHeightProperty().bind(imageStackPane.heightProperty());
 		
 		timeProgressBar.progressProperty().bind(answerVoteModel.getTimeProgressProperty());
 		timeLabel.textProperty().bind(answerVoteModel.getTimeProperty());
@@ -304,7 +310,7 @@ public class QuestionController extends EventPublisher {
 				}
 			});
 		} else {
-			ClientNewQuestionEvent cNQE = new ClientNewQuestionEvent();
+			ClientNewQuestionEvent cNQE = new ClientNewQuestionEvent(MainContext.getContext().getQuestion().getQuestionID());
 			publishEvent(cNQE);
 		}
 	}
