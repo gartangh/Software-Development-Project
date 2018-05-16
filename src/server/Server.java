@@ -168,57 +168,34 @@ public class Server extends EventPublisher {
 
 		for (Quiz quiz : context.getQuizMap().values()) {
 			boolean foundTeam = false;
-			boolean quizRemoved = false;
+			boolean foundQuiz = false;
 			for (Team team : quiz.getTeamMap().values()) {
 				for (int playerID : team.getPlayerMap().keySet()) {
 					if (userID == playerID) {
 						// The user is in the team
 						foundTeam = true;
+						foundQuiz = true;
 						toRemoveTeamID=team.getTeamID();
 						toRemoveQuizID=quiz.getQuizID();
-
-						/*ArrayList<Integer> receivers = context.getUsersFromQuiz(quiz.getQuizID());
-						context.changeTeam(quiz.getQuizID(),team.getTeamID(), user.getUserID(), 'd');
-						if (quiz.getTeamMap().size()<Quiz.MINTEAMS && quiz.isRunning()) {
-							context.getQuizMap().remove(quiz.getQuizID());
-							context.terminateTimers(quiz.getQuizID());
-							quizRemoved=true;
-						}
-
-						ServerPlayerLeavesQuizEvent sPLQE=new ServerPlayerLeavesQuizEvent(quiz.getQuizID(),user.getUserID(),team.getTeamID(),team.getCaptainID(), quiz.isRunning());
-						sPLQE.addRecipients(receivers);
-						server.publishEvent(sPLQE);*/
 						break;
 					}
 				}
 				if (foundTeam) break;
 			}
 
-			/*if (!foundTeam) {
-				quiz.removeUnassignedPlayer(user.getUserID());
-				ServerPlayerLeavesQuizEvent sPLQE = new ServerPlayerLeavesQuizEvent(quiz.getQuizID(), userID, -1, -1,
-						quiz.isRunning());
-				sPLQE.addRecipients(context.getUsersFromQuiz(quiz.getQuizID()));
-				server.publishEvent(sPLQE);
+			for (int uPlayerID : quiz.getUnassignedPlayers().keySet()){
+				if (userID == uPlayerID) {
+					// The user is in the team
+					foundQuiz = true;
+					toRemoveQuizID=quiz.getQuizID();
+					break;
+				}
 			}
 
-			if (userID == quiz.getHostID()) {
-				// The user is the host of a quiz
-				// Remove the quiz
-				int quizID = quiz.getQuizID();
-				context.getQuizMap().remove(quizID);
-				context.terminateTimers(quiz.getQuizID());
-
-				// Send an event to all users
-				ServerHostLeavesQuizEvent sHLQE = new ServerHostLeavesQuizEvent(quizID);
-				sHLQE.addRecipients(context.getUserMap());
-				server.publishEvent(sHLQE);
-			}*/
-
-			if (quizRemoved) break;
+			if (foundQuiz) break;
 		}
 
-		if (toRemoveQuizID ==-1){
+		if (toRemoveQuizID != -1){
 			playerLeavesQuiz(toRemoveQuizID, userID, toRemoveTeamID);
 		}
 	}
@@ -241,6 +218,10 @@ public class Server extends EventPublisher {
 			if (team != null) {
 				context.changeTeam(quiz.getQuizID(), team.getTeamID(), user.getUserID(), 'd');
 				captainID = team.getCaptainID();
+				if (quiz.getTeamMap().size()<Quiz.MINTEAMS && quiz.isRunning()) {
+					context.getQuizMap().remove(quiz.getQuizID());
+					context.terminateTimers(quiz.getQuizID());
+				}
 			} else {
 				quiz.removeUnassignedPlayer(user.getUserID());
 			}
