@@ -22,6 +22,12 @@ public class ChatPanel {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(ChatPanel.class.getResource("ChatPane.fxml"));
 			chatPanel.content = (AnchorPane) loader.load();
+			
+			AnchorPane.setBottomAnchor(chatPanel.content, 0.0);
+			AnchorPane.setTopAnchor(chatPanel.content, 0.0);
+			AnchorPane.setLeftAnchor(chatPanel.content, 0.0);
+			AnchorPane.setRightAnchor(chatPanel.content, 0.0);
+			
 			chatPanel.chatController = loader.getController();
 			chatPanel.chatModel = chatPanel.chatController.getChatModel();
 		} catch (IOException e) {

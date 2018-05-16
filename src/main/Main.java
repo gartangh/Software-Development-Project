@@ -252,7 +252,7 @@ public class Main extends Application {
 		try {
 			FXMLLoader joinQuizLoader = new FXMLLoader();
 			joinQuizLoader.setLocation(Main.class.getResource("../quiz/view/JoinQuiz.fxml"));
-			BorderPane joinQuiz = (BorderPane) joinQuizLoader.load();
+			AnchorPane joinQuiz = (AnchorPane) joinQuizLoader.load();
 			JoinQuizController joinQuizController = joinQuizLoader.getController();
 			joinQuizController.setMain(this);
 
@@ -294,7 +294,7 @@ public class Main extends Application {
 		try {
 			FXMLLoader joinTeamLoader = new FXMLLoader();
 			joinTeamLoader.setLocation(Main.class.getResource("../quiz/view/JoinTeam.fxml"));
-			BorderPane joinTeam = (BorderPane) joinTeamLoader.load();
+			AnchorPane joinTeam = (AnchorPane) joinTeamLoader.load();
 			JoinTeamController joinTeamController = joinTeamLoader.getController();
 			joinTeamController.setMain(this);
 
@@ -367,7 +367,7 @@ public class Main extends Application {
 		try {
 			FXMLLoader questionFormLoader = new FXMLLoader();
 			questionFormLoader.setLocation(Main.class.getResource("../quiz/view/Question.fxml"));
-			BorderPane questionFormRoot = (BorderPane) questionFormLoader.load();
+			AnchorPane questionFormRoot = (AnchorPane) questionFormLoader.load();
 			QuestionController questionFormController = questionFormLoader.getController();
 			questionFormController.setRoundType(roundType);
 			questionFormController.setMainApp(this);
@@ -410,7 +410,7 @@ public class Main extends Application {
 		try {
 			FXMLLoader waitHostLoader = new FXMLLoader();
 			waitHostLoader.setLocation(Main.class.getResource("../quiz/view/WaitHost.fxml"));
-			BorderPane waitHostRoot = (BorderPane) waitHostLoader.load();
+			AnchorPane waitHostRoot = (AnchorPane) waitHostLoader.load();
 			WaitHostController waitHostController = waitHostLoader.getController();
 			waitHostController.setRoundType(roundType);
 			waitHostController.setMain(this);
