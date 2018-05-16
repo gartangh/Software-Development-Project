@@ -168,57 +168,34 @@ public class Server extends EventPublisher {
 
 		for (Quiz quiz : context.getQuizMap().values()) {
 			boolean foundTeam = false;
-			boolean quizRemoved = false;
+			boolean foundQuiz = false;
 			for (Team team : quiz.getTeamMap().values()) {
 				for (int playerID : team.getPlayerMap().keySet()) {
 					if (userID == playerID) {
 						// The user is in the team
 						foundTeam = true;
+						foundQuiz = true;
 						toRemoveTeamID=team.getTeamID();
 						toRemoveQuizID=quiz.getQuizID();
-
-						/*ArrayList<Integer> receivers = context.getUsersFromQuiz(quiz.getQuizID());
-						context.changeTeam(quiz.getQuizID(),team.getTeamID(), user.getUserID(), 'd');
-						if (quiz.getTeamMap().size()<Quiz.MINTEAMS && quiz.isRunning()) {
-							context.getQuizMap().remove(quiz.getQuizID());
-							context.terminateTimers(quiz.getQuizID());
-							quizRemoved=true;
-						}
-
-						ServerPlayerLeavesQuizEvent sPLQE=new ServerPlayerLeavesQuizEvent(quiz.getQuizID(),user.getUserID(),team.getTeamID(),team.getCaptainID(), quiz.isRunning());
-						sPLQE.addRecipients(receivers);
-						server.publishEvent(sPLQE);*/
 						break;
 					}
 				}
 				if (foundTeam) break;
 			}
 
-			/*if (!foundTeam) {
-				quiz.removeUnassignedPlayer(user.getUserID());
-				ServerPlayerLeavesQuizEvent sPLQE = new ServerPlayerLeavesQuizEvent(quiz.getQuizID(), userID, -1, -1,
-						quiz.isRunning());
-				sPLQE.addRecipients(context.getUsersFromQuiz(quiz.getQuizID()));
-				server.publishEvent(sPLQE);
+			for (int uPlayerID : quiz.getUnassignedPlayers().keySet()){
+				if (userID == uPlayerID) {
+					// The user is in the team
+					foundQuiz = true;
+					toRemoveQuizID=quiz.getQuizID();
+					break;
+				}
 			}
 
-			if (userID == quiz.getHostID()) {
-				// The user is the host of a quiz
-				// Remove the quiz
-				int quizID = quiz.getQuizID();
-				context.getQuizMap().remove(quizID);
-				context.terminateTimers(quiz.getQuizID());
-
-				// Send an event to all users
-				ServerHostLeavesQuizEvent sHLQE = new ServerHostLeavesQuizEvent(quizID);
-				sHLQE.addRecipients(context.getUserMap());
-				server.publishEvent(sHLQE);
-			}*/
-
-			if (quizRemoved) break;
+			if (foundQuiz) break;
 		}
 
-		if (toRemoveQuizID ==-1){
+		if (toRemoveQuizID != -1){
 			playerLeavesQuiz(toRemoveQuizID, userID, toRemoveTeamID);
 		}
 	}
@@ -241,6 +218,10 @@ public class Server extends EventPublisher {
 			if (team != null) {
 				context.changeTeam(quiz.getQuizID(), team.getTeamID(), user.getUserID(), 'd');
 				captainID = team.getCaptainID();
+				if (quiz.getTeamMap().size()<Quiz.MINTEAMS && quiz.isRunning()) {
+					context.getQuizMap().remove(quiz.getQuizID());
+					context.terminateTimers(quiz.getQuizID());
+				}
 			} else {
 				quiz.removeUnassignedPlayer(user.getUserID());
 			}
@@ -594,90 +575,93 @@ public class Server extends EventPublisher {
 
 			int userID = cNQE.getUserID();
 			int quizID = cNQE.getQuizID();
+			
+			if(cNQE.getQuestionID() == ServerContext.getContext().getQuiz(quizID).getRoundList().get(ServerContext.getContext().getQuiz(quizID).getCurrentRound()).getQuestionID()) {
+				
 
-			ServerContext context = ServerContext.getContext();
-			Quiz quiz = context.getQuiz(quizID);
-			if (quiz.isAnsweredByAll()) {
-
-				ArrayList<Integer> receivers = context.getUsersFromQuiz(quizID);
-				receivers.add(context.getQuiz(quizID).getHostID());
-
-				if ((quiz.getRoundList().get(quiz.getCurrentRound()).getCurrentQuestion() + 1) < quiz.getRoundList()
-						.get(quiz.getCurrentRound()).getQuestions()) {
-
-					Timer durationTimer = ServerContext.getContext().getQuizTimerMap().get(quizID);
-					if (durationTimer != null) {
-						durationTimer.cancel();
-						ServerContext.getContext().getQuizTimerMap().put(quizID, null);
-					}
-
-					int questionID;
-
-					switch (quiz.getRoundList().get(quiz.getCurrentRound()).getRoundType()) {
-					case IP:
-						Timer pixelTimer = ServerContext.getContext().getQuizPixelTimerMap().get(quizID);
-						if (pixelTimer != null) {
-							pixelTimer.cancel();
-							ServerContext.getContext().getQuizPixelTimerMap().put(quizID, null);
+				ServerContext context = ServerContext.getContext();
+				Quiz quiz = context.getQuiz(quizID);
+				if (quiz.isAnsweredByAll()) {
+	
+					ArrayList<Integer> receivers = context.getUsersFromQuiz(quizID);
+					receivers.add(context.getQuiz(quizID).getHostID());
+	
+					if ((quiz.getRoundList().get(quiz.getCurrentRound()).getCurrentQuestion() + 1) < quiz.getRoundList()
+							.get(quiz.getCurrentRound()).getQuestions()) {
+	
+						Timer durationTimer = ServerContext.getContext().getQuizTimerMap().get(quizID);
+						if (durationTimer != null) {
+							durationTimer.cancel();
+							ServerContext.getContext().getQuizTimerMap().put(quizID, null);
 						}
-
-						IPQuestion newIPQ = (IPQuestion) context
-								.getQuestion(quiz.getRoundList().get(quiz.getCurrentRound()).getNextQuestion());
-
-						questionID = newIPQ.getQuestionID();
-
-						ServerNewIPQuestionEvent sNIPQE = new ServerNewIPQuestionEvent(newIPQ.getQuestionID(),
-								newIPQ.getBufferedImage(), newIPQ.getPixelSize(), newIPQ.getAnswers(),
-								newIPQ.getCorrectAnswer());
-						sNIPQE.addRecipients(receivers);
-						server.publishEvent(sNIPQE);
-
-						pixelTimer = new Timer();
-						ServerContext.getContext().getQuizPixelTimerMap().put(quizID, pixelTimer);
-						IPQuestionTimerTask iPQTT = new IPQuestionTimerTask(quizID, newIPQ.getQuestionID(),
-								newIPQ.getPixelSize());
-						pixelTimer.scheduleAtFixedRate(iPQTT, 0, 1000);
-
-						break;
-					case MC:
-					default:
-						MCQuestion newMCQ = (MCQuestion) context
-								.getQuestion(quiz.getRoundList().get(quiz.getCurrentRound()).getNextQuestion());
-
-						questionID = newMCQ.getQuestionID();
-
-						ServerNewMCQuestionEvent sNMCQE = new ServerNewMCQuestionEvent(newMCQ.getQuestionID(),
-								newMCQ.getQuestion(), newMCQ.getAnswers(), newMCQ.getCorrectAnswer());
-						sNMCQE.addRecipients(receivers);
-						server.publishEvent(sNMCQE);
-						break;
-					}
-
-					durationTimer = new Timer();
-					ServerContext.getContext().getQuizTimerMap().put(quizID, durationTimer);
-					QuestionDurationTimerTask qDTT = new QuestionDurationTimerTask(quizID, questionID);
-					durationTimer.scheduleAtFixedRate(qDTT, 0, 1000);
-
-				} else {
-					if ((quiz.getCurrentRound() + 1) < quiz.getRounds()) {
-						ServerNewRoundEvent sNRE = new ServerNewRoundEvent(quiz.getCurrentRound() + 1);
-						receivers = context.getUsersFromQuiz(cNQE.getQuizID());
-						receivers.add(context.getQuiz(quizID).getHostID());
-						sNRE.addRecipients(receivers);
-						server.publishEvent(sNRE);
+	
+						int questionID;
+	
+						switch (quiz.getRoundList().get(quiz.getCurrentRound()).getRoundType()) {
+						case IP:
+							Timer pixelTimer = ServerContext.getContext().getQuizPixelTimerMap().get(quizID);
+							if (pixelTimer != null) {
+								pixelTimer.cancel();
+								ServerContext.getContext().getQuizPixelTimerMap().put(quizID, null);
+							}
+	
+							IPQuestion newIPQ = (IPQuestion) context
+									.getQuestion(quiz.getRoundList().get(quiz.getCurrentRound()).getNextQuestion());
+	
+							questionID = newIPQ.getQuestionID();
+	
+							ServerNewIPQuestionEvent sNIPQE = new ServerNewIPQuestionEvent(newIPQ.getQuestionID(),
+									newIPQ.getBufferedImage(), newIPQ.getPixelSize(), newIPQ.getAnswers(),
+									newIPQ.getCorrectAnswer());
+							sNIPQE.addRecipients(receivers);
+							server.publishEvent(sNIPQE);
+	
+							pixelTimer = new Timer();
+							ServerContext.getContext().getQuizPixelTimerMap().put(quizID, pixelTimer);
+							IPQuestionTimerTask iPQTT = new IPQuestionTimerTask(quizID, newIPQ.getQuestionID(),
+									newIPQ.getPixelSize());
+							pixelTimer.scheduleAtFixedRate(iPQTT, 0, 1000);
+	
+							break;
+						case MC:
+						default:
+							MCQuestion newMCQ = (MCQuestion) context
+									.getQuestion(quiz.getRoundList().get(quiz.getCurrentRound()).getNextQuestion());
+	
+							questionID = newMCQ.getQuestionID();
+	
+							ServerNewMCQuestionEvent sNMCQE = new ServerNewMCQuestionEvent(newMCQ.getQuestionID(),
+									newMCQ.getQuestion(), newMCQ.getAnswers(), newMCQ.getCorrectAnswer());
+							sNMCQE.addRecipients(receivers);
+							server.publishEvent(sNMCQE);
+							break;
+						}
+	
+						durationTimer = new Timer();
+						ServerContext.getContext().getQuizTimerMap().put(quizID, durationTimer);
+						QuestionDurationTimerTask qDTT = new QuestionDurationTimerTask(quizID, questionID);
+						durationTimer.scheduleAtFixedRate(qDTT, 0, 1000);
+	
 					} else {
-						ServerEndQuizEvent sEQE = new ServerEndQuizEvent();
-						sEQE.addRecipients(context.getUsersFromQuiz(quiz.getQuizID()));
-						server.publishEvent(sEQE);
+						if ((quiz.getCurrentRound() + 1) < quiz.getRounds()) {
+							ServerNewRoundEvent sNRE = new ServerNewRoundEvent(quiz.getCurrentRound() + 1);
+							receivers = context.getUsersFromQuiz(cNQE.getQuizID());
+							receivers.add(context.getQuiz(quizID).getHostID());
+							sNRE.addRecipients(receivers);
+							server.publishEvent(sNRE);
+						} else {
+							ServerEndQuizEvent sEQE = new ServerEndQuizEvent();
+							sEQE.addRecipients(context.getUsersFromQuiz(quiz.getQuizID()));
+							server.publishEvent(sEQE);
+						}
 					}
+				} else {
+					ServerNotAllAnsweredEvent sNAEE = new ServerNotAllAnsweredEvent();
+					sNAEE.addRecipient(userID);
+					server.publishEvent(sNAEE);
 				}
-			} else {
-				ServerNotAllAnsweredEvent sNAEE = new ServerNotAllAnsweredEvent();
-				sNAEE.addRecipient(userID);
-				server.publishEvent(sNAEE);
 			}
 		}
-
 	}
 
 	private static class CreateRoundHandler implements EventListener {
@@ -865,10 +849,11 @@ public class Server extends EventPublisher {
 
 			ServerContext context = ServerContext.getContext();
 			context.getQuizMap().get(quizID).setRunning(true);
-			context.getQuizMap().get(quizID).clearUnassignedPlayers();
 
 			ServerStartQuizEvent sSQE = new ServerStartQuizEvent(quizID);
 			sSQE.addRecipients(context.getUsersFromQuiz(quizID));
+
+			context.getQuizMap().get(quizID).clearUnassignedPlayers();
 			server.publishEvent(sSQE);
 		}
 

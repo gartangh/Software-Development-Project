@@ -32,68 +32,70 @@ public class PlayerLeavesQuizHandler implements EventListener {
 		ServerPlayerLeavesQuizEvent sPLQE = (ServerPlayerLeavesQuizEvent) event;
 		MainContext context = MainContext.getContext();
 		boolean enoughTeamsLeft=true;
-		if (context.getQuiz().getQuizID() == sPLQE.getQuizID()) {
-			if (sPLQE.getTeamID() != -1) {
-				if (sPLQE.getNewCaptainID() != -1) {// to be sure
-					Team team = context.getQuiz().getTeamMap().get(sPLQE.getTeamID());
-					int oldCaptainID = team.getCaptainID();
+		if (context.getQuiz()!=null){
+			if (context.getQuiz().getQuizID() == sPLQE.getQuizID()) {
+				if (sPLQE.getTeamID() != -1) {
+					if (sPLQE.getNewCaptainID() != -1) {// to be sure
+						Team team = context.getQuiz().getTeamMap().get(sPLQE.getTeamID());
+						int oldCaptainID = team.getCaptainID();
 
-					team.setCaptainID(sPLQE.getNewCaptainID());// the captain can change or the captain can be the											// same
-					team.removePlayer(sPLQE.getUserID());
+						team.setCaptainID(sPLQE.getNewCaptainID());// the captain can change or the captain can be the											// same
+						team.removePlayer(sPLQE.getUserID());
 
-					if (team.getPlayerMap().size() == 0) {
-						context.getQuiz().removeTeam(team.getTeamID());
-						if (sPLQE.isRunning() && context.getQuiz().getTeamMap().size()<Quiz.MINTEAMS){
-							enoughTeamsLeft=false;
+						if (team.getPlayerMap().size() == 0) {
+							context.getQuiz().removeTeam(team.getTeamID());
+							if (sPLQE.isRunning() && context.getQuiz().getTeamMap().size()<Quiz.MINTEAMS){
+								enoughTeamsLeft=false;
+							}
+						} else if (team.getCaptainID() == context.getUser().getUserID()
+								&& team.getCaptainID() != oldCaptainID) {
+							Platform.runLater(new Runnable() {
+								public void run() {
+									Alert alert = new Alert(AlertType.INFORMATION);
+									alert.initOwner(main.getPrimaryStage());
+									alert.setTitle("Captain left quiz");
+									alert.setHeaderText(null);
+									alert.setContentText("Your captain left the quiz, you are the captain now");
+									alert.showAndWait();
+								}
+							});
 						}
-					} else if (team.getCaptainID() == context.getUser().getUserID()
-							&& team.getCaptainID() != oldCaptainID) {
+					}
+				} else
+					context.getQuiz().removeUnassignedPlayer(sPLQE.getUserID());
+
+				if (context.getUser().getUserID() == sPLQE.getUserID() || !enoughTeamsLeft) {
+					context.setQuiz(null);
+					context.setTeam(null);
+					EventBroker.getEventBroker().removeEventListeners();
+
+					if (!enoughTeamsLeft){
 						Platform.runLater(new Runnable() {
 							public void run() {
 								Alert alert = new Alert(AlertType.INFORMATION);
 								alert.initOwner(main.getPrimaryStage());
-								alert.setTitle("Captain left quiz");
-								alert.setHeaderText(null);
-								alert.setContentText("Your captain left the quiz, you are the captain now");
+								alert.setTitle("Quiz ended");
+								alert.setHeaderText("There are not enough teams left to continue.");
+								alert.setContentText("Please select another quiz if you want to continue.");
 								alert.showAndWait();
+								main.showJoinQuizScene();
 							}
 						});
 					}
-				}
-			} else
-				context.getQuiz().removeUnassignedPlayer(sPLQE.getUserID());
+					else {
+						Platform.runLater(new Runnable() {
+							public void run() {
+								main.showJoinQuizScene();
+							}
+						});
+					}
 
-			if (context.getUser().getUserID() == sPLQE.getUserID() || !enoughTeamsLeft) {
-				context.setQuiz(null);
-				context.setTeam(null);
-				EventBroker.getEventBroker().removeEventListeners();
 
-				if (!enoughTeamsLeft){
-					Platform.runLater(new Runnable() {
-						public void run() {
-							Alert alert = new Alert(AlertType.INFORMATION);
-							alert.initOwner(main.getPrimaryStage());
-							alert.setTitle("Quiz ended");
-							alert.setHeaderText("There are not enough teams left to continue.");
-							alert.setContentText("Please select another quiz if you want to continue.");
-							alert.showAndWait();
-							main.showJoinQuizScene();
-						}
-					});
-				}
-				else {
-					Platform.runLater(new Runnable() {
-						public void run() {
-							main.showJoinQuizScene();
-						}
-					});
+				}else if (!sPLQE.isRunning()){
+					joinTeamController.updateViews();
 				}
 
-
-			}else if (!sPLQE.isRunning()){
-				joinTeamController.updateViews();
 			}
-
 		}
 
 	}

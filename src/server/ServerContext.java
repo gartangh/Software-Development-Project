@@ -33,9 +33,8 @@ public class ServerContext {
 	private Map<Integer, Quiz> quizMap = new HashMap<Integer, Quiz>();
 	private Map<Integer, Timer> quizTimerMap = new HashMap<Integer, Timer>();
 	private Map<Integer, Timer> quizPixelTimerMap = new HashMap<Integer, Timer>();
-
-
-	private Map<Integer, Map<Integer, Map<Integer, ArrayList<Integer>>>> orderedQuestionMap = new HashMap<Integer, Map<Integer, Map<Integer, ArrayList<Integer>>>>(); // Theme -> Diff -> Type -> QuestionID
+	// Theme -> Difficulty -> Type -> QuestionID
+	private Map<Integer, Map<Integer, Map<Integer, ArrayList<Integer>>>> orderedQuestionMap = new HashMap<Integer, Map<Integer, Map<Integer, ArrayList<Integer>>>>();
 	private Map<Integer, Question> allQuestions = new HashMap<Integer, Question>();
 	private Map<Integer, Integer> questionTypeMap = new HashMap<Integer, Integer>();
 	private Network network;
@@ -90,7 +89,7 @@ public class ServerContext {
 	public Map<Integer, Timer> getQuizTimerMap() {
 		return quizTimerMap;
 	}
-	
+
 	public Map<Integer, Timer> getQuizPixelTimerMap() {
 		return quizPixelTimerMap;
 	}
@@ -99,7 +98,7 @@ public class ServerContext {
 		return orderedQuestionMap;
 	}
 
-	public Map<Integer, Integer> getQuestionTypeMap(){
+	public Map<Integer, Integer> getQuestionTypeMap() {
 		return questionTypeMap;
 	}
 
@@ -130,28 +129,29 @@ public class ServerContext {
 				else if (type == 'd')
 					// Delete
 					team.removePlayer(user.getUserID());
-					if (team.getPlayerMap().size()>0){
-						if (team.getCaptainID()==user.getUserID()){
-							Random       random    = new Random();
-							List<Integer> keys      = new ArrayList<Integer>(team.getPlayerMap().keySet());
-							Integer       randomKey = keys.get( random.nextInt(keys.size()) );
-							team.setCaptainID(randomKey);
-						}
+				if (team.getPlayerMap().size() > 0) {
+					if (team.getCaptainID() == user.getUserID()) {
+						Random random = new Random();
+						List<Integer> keys = new ArrayList<Integer>(team.getPlayerMap().keySet());
+						Integer randomKey = keys.get(random.nextInt(keys.size()));
+						team.setCaptainID(randomKey);
 					}
-					else
-						quizMap.get(quizID).removeTeam(team.getTeamID());
+				} else
+					quizMap.get(quizID).removeTeam(team.getTeamID());
 
-					return user.getUsername();
-				}
+				return user.getUsername();
 			}
+		}
 
 		// Nothing to delete if teamID == -1
 		return null;
 	}
 
-	public void terminateTimers(int quizID){
-		if(this.quizTimerMap.get(quizID) != null) this.quizTimerMap.get(quizID).cancel();
-		if(this.quizPixelTimerMap.get(quizID) != null) this.quizPixelTimerMap.get(quizID).cancel();
+	public void terminateTimers(int quizID) {
+		if (this.quizTimerMap.get(quizID) != null)
+			this.quizTimerMap.get(quizID).cancel();
+		if (this.quizPixelTimerMap.get(quizID) != null)
+			this.quizPixelTimerMap.get(quizID).cancel();
 	}
 
 	// Methods
@@ -192,7 +192,7 @@ public class ServerContext {
 				BufferedReader bufferedReader = new BufferedReader(new FileReader(
 						Main.class.getResource("../server/files/" + themeFiles[themeFile]).toString().substring(6)));
 				String line = bufferedReader.readLine();
-				int [] count = new int[RoundType.values().length];
+				int[] count = new int[RoundType.values().length];
 				int diff = -1;
 				Map<Integer, ArrayList<Integer>> diffMap = null;
 				while (line != null) {
@@ -209,7 +209,6 @@ public class ServerContext {
 					if (questionType == null)
 						break;
 
-
 					String questionImageString = bufferedReader.readLine();
 					String answers[] = { bufferedReader.readLine(), bufferedReader.readLine(),
 							bufferedReader.readLine(), bufferedReader.readLine() };
@@ -224,17 +223,16 @@ public class ServerContext {
 					Question q = null;
 					int roundType = 0;
 
-					switch(questionType) {
+					switch (questionType) {
 					case "IP":
 						roundType = RoundType.IP.ordinal();
-						questionID += RoundType.IP.ordinal()*Math.pow(2, 30) + count[RoundType.IP.ordinal()];
-						String imgPath = ".\\files\\"+questionImageString;
+						questionID += RoundType.IP.ordinal() * Math.pow(2, 30) + count[RoundType.IP.ordinal()];
+						String imgPath = ".\\files\\" + questionImageString;
 						BufferedImage bufImage = ImageIO.read(getClass().getResourceAsStream(imgPath));
 						q = new IPQuestion(questionID, theme, difficulty, bufImage, false, answers, correctAnswer);
-						if(diffMap.containsKey(RoundType.IP.ordinal())) {
+						if (diffMap.containsKey(RoundType.IP.ordinal())) {
 							diffMap.get(RoundType.IP.ordinal()).add(questionID);
-						}
-						else {
+						} else {
 							ArrayList<Integer> IPList = new ArrayList<Integer>();
 							IPList.add(questionID);
 							diffMap.put(RoundType.IP.ordinal(), IPList);
@@ -243,12 +241,11 @@ public class ServerContext {
 						break;
 					case "MC":
 						roundType = RoundType.MC.ordinal();
-						questionID += RoundType.MC.ordinal()*Math.pow(2, 30) + count[RoundType.MC.ordinal()];
+						questionID += RoundType.MC.ordinal() * Math.pow(2, 30) + count[RoundType.MC.ordinal()];
 						q = new MCQuestion(questionID, theme, difficulty, questionImageString, answers, correctAnswer);
-						if(diffMap.containsKey(RoundType.MC.ordinal())) {
+						if (diffMap.containsKey(RoundType.MC.ordinal())) {
 							diffMap.get(RoundType.MC.ordinal()).add(questionID);
-						}
-						else {
+						} else {
 							ArrayList<Integer> MCList = new ArrayList<Integer>();
 							MCList.add(questionID);
 							diffMap.put(RoundType.MC.ordinal(), MCList);
@@ -280,19 +277,38 @@ public class ServerContext {
 	 * @return the users from quiz
 	 */
 	public ArrayList<Integer> getUsersFromQuiz(int quizID) {
-		ArrayList<Integer> r = null;
-		Quiz quiz = quizMap.get(quizID);
-		
-		if(quiz != null) {
-			r = new ArrayList<>();
-			for (Team team : quiz.getTeamMap().values())
-				for (int userID : team.getPlayerMap().keySet())
-					r.add(userID);
+		ArrayList<Integer> r = new ArrayList<>();
 
-			for (int userID : quiz.getUnassignedPlayers().keySet())
-				r.add(userID);
+		Quiz quiz = quizMap.get(quizID);
+		if (quiz != null) {
+			for (Team team : quiz.getTeamMap().values())
+				r.addAll(team.getPlayerMap().keySet());
+
+			r.addAll(quiz.getUnassignedPlayers().keySet());
 
 			r.add(quiz.getHostID());
+		}
+
+		return r;
+	}
+
+	/**
+	 * Gets the users from team.
+	 *
+	 * @param quizID
+	 *            the quiz ID
+	 * @param teamID
+	 *            the team ID
+	 * @return the users from team
+	 */
+	public ArrayList<Integer> getUsersFromTeam(int quizID, int teamID) {
+		ArrayList<Integer> r = new ArrayList<>();
+
+		Quiz quiz = quizMap.get(quizID);
+		if (quiz != null) {
+			Team team = quiz.getTeamMap().get(teamID);
+			if (team != null)
+				r.addAll(team.getPlayerMap().keySet());
 		}
 
 		return r;
