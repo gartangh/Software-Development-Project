@@ -71,7 +71,7 @@ public class Main extends Application {
 		// Set the application title
 		this.primaryStage.setTitle(QUIZNAME);
 		// Set the application icon
-	    this.primaryStage.getIcons().add(new Image("file:src/main/logo.png"));
+	    this.primaryStage.getIcons().add(new Image("file:resources/logo.png"));
 
 		// Connect to network with randomly generated client port between
 		// SERVERPORT + 1 and 65535 (2^16 - 1) and type CLIENT
@@ -101,7 +101,8 @@ public class Main extends Application {
 					dialog.setTitle("Text Input");
 					dialog.setHeaderText("Connect to the server");
 					dialog.setContentText("IP address server:");
-
+					((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons()
+							.add(new Image("file:resources/logo.png"));
 					result = dialog.showAndWait();
 					if (result.isPresent()){
 						try {
@@ -320,6 +321,7 @@ public class Main extends Application {
 			dialogStage.setTitle("New Team");
 			dialogStage.initModality(Modality.WINDOW_MODAL);
 			dialogStage.initOwner(primaryStage);
+			dialogStage.getIcons().add(new Image("file:resources/logo.png"));
 			Scene scene = new Scene(newteam);
 			dialogStage.setScene(scene);
 
