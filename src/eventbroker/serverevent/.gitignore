@@ -31,3 +31,5 @@
 /ServerNewQuizEvent.class
 /ServerNewTeamEvent.class
 /ServerNewPixelSizeEvent.class
+/ServerAlreadyLoggedInEvent.class
+/ServerQuestionTimeEvent.class

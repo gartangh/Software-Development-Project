@@ -153,9 +153,9 @@ public class AnswerVoteModel {
 						break;
 					}
 				}
-				else {
+				//else
 					//MainContext.getContext().getUser().addXp(100 * (MainContext.getContext().getQuestion().getDifficulty().ordinal() + 1));
-				}
+
 
 				switch (correctAnswer) {
 				case 0:

@@ -1,10 +1,13 @@
 package quiz.model;
 
 import javafx.application.Platform;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
@@ -23,7 +26,7 @@ public class WaitHostModel {
 	private ObjectProperty<Image> imageProperty;
 		
 	// Answer properties
-	private StringProperty answerPropertyA, answerPropertyB, answerPropertyC, answerPropertyD, correctAnswerProperty;
+	private StringProperty answerPropertyA, answerPropertyB, answerPropertyC, answerPropertyD, correctAnswerProperty, pointsProperty;
 	private RoundType roundType;
 		
 	public WaitHostModel() {
@@ -39,6 +42,7 @@ public class WaitHostModel {
 		answerPropertyC = new SimpleStringProperty();
 		answerPropertyD = new SimpleStringProperty();
 		correctAnswerProperty = new SimpleStringProperty();
+		pointsProperty = new SimpleStringProperty();
 	}
 	
 	public void updateQuestion() {
