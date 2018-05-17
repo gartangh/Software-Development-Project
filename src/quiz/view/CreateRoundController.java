@@ -31,7 +31,7 @@ public class CreateRoundController extends EventPublisher {
 	ChoiceBox<Integer> numberChoiceBox;
 
 	private StartRoundHandler startRoundHandler = new StartRoundHandler();
-	private NewMCQuestionHandler newMCQuestionHandler = new NewMCQuestionHandler();
+	//private NewMCQuestionHandler newMCQuestionHandler = new NewMCQuestionHandler();
 
 	// Reference to the main application
 	private Main main;
@@ -45,7 +45,7 @@ public class CreateRoundController extends EventPublisher {
 	private void initialize() {
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerStartRoundEvent.EVENTTYPE, startRoundHandler);
-		eventBroker.addEventListener(ServerNewMCQuestionEvent.EVENTTYPE, newMCQuestionHandler);
+		//eventBroker.addEventListener(ServerNewMCQuestionEvent.EVENTTYPE, newMCQuestionHandler);
 
 		roundTypeChoiceBox.setItems(FXCollections.observableArrayList(RoundType.values()));
 		roundTypeChoiceBox.getSelectionModel().selectFirst();
@@ -97,7 +97,6 @@ public class CreateRoundController extends EventPublisher {
 
 		int numberOfQuestions = numberChoiceBox.getValue();
 
-		main.showWaitHostScene(roundType);
 		ClientCreateRoundEvent cCRE = new ClientCreateRoundEvent(roundType, theme, difficulty, numberOfQuestions);
 		publishEvent(cCRE);
 	}
@@ -112,12 +111,14 @@ public class CreateRoundController extends EventPublisher {
 
 			EventBroker eventBroker = EventBroker.getEventBroker();
 			eventBroker.removeEventListener(startRoundHandler);
-			eventBroker.removeEventListener(newMCQuestionHandler);
+			
+			main.showWaitHostScene(sSRE.getRoundType());
+			//eventBroker.removeEventListener(newMCQuestionHandler);
 		}
 
 	}
 
-	private class NewMCQuestionHandler implements EventListener {
+	/*private class NewMCQuestionHandler implements EventListener {
 
 		@Override
 		public void handleEvent(Event event) {
@@ -131,6 +132,6 @@ public class CreateRoundController extends EventPublisher {
 			MainContext.getContext().setQuestion(mCQuestion);
 		}
 
-	}
+	}*/
 
 }

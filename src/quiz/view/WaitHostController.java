@@ -223,10 +223,10 @@ public class WaitHostController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event event) {
+			ServerEndQuizEvent sEQE = (ServerEndQuizEvent) event;
 			EventBroker eventBroker = EventBroker.getEventBroker();
 			eventBroker.removeEventListener(newRoundHandler);
 			eventBroker.removeEventListener(endQuizHandler);
-
 			main.showScoreboardScene();
 		}
 
