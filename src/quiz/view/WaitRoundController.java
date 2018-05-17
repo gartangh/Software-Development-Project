@@ -37,7 +37,7 @@ public class WaitRoundController extends EventPublisher {
 
 			main.showQuestionScene(sSRE.getRoundType());
 		}
-		
+
 	}
 
 }

@@ -5,15 +5,12 @@ import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
 import eventbroker.clientevent.ClientCreateRoundEvent;
-import eventbroker.serverevent.ServerNewMCQuestionEvent;
 import eventbroker.serverevent.ServerStartRoundEvent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
-import main.MainContext;
 import main.Main;
-import quiz.model.MCQuestion;
 import quiz.model.Round;
 import quiz.util.Difficulty;
 import quiz.util.RoundType;
@@ -31,7 +28,6 @@ public class CreateRoundController extends EventPublisher {
 	ChoiceBox<Integer> numberChoiceBox;
 
 	private StartRoundHandler startRoundHandler = new StartRoundHandler();
-	//private NewMCQuestionHandler newMCQuestionHandler = new NewMCQuestionHandler();
 
 	// Reference to the main application
 	private Main main;
@@ -45,7 +41,6 @@ public class CreateRoundController extends EventPublisher {
 	private void initialize() {
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerStartRoundEvent.EVENTTYPE, startRoundHandler);
-		//eventBroker.addEventListener(ServerNewMCQuestionEvent.EVENTTYPE, newMCQuestionHandler);
 
 		roundTypeChoiceBox.setItems(FXCollections.observableArrayList(RoundType.values()));
 		roundTypeChoiceBox.getSelectionModel().selectFirst();
@@ -106,32 +101,14 @@ public class CreateRoundController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event event) {
-			@SuppressWarnings("unused")
 			ServerStartRoundEvent sSRE = (ServerStartRoundEvent) event;
 
 			EventBroker eventBroker = EventBroker.getEventBroker();
 			eventBroker.removeEventListener(startRoundHandler);
 			
 			main.showWaitHostScene(sSRE.getRoundType());
-			//eventBroker.removeEventListener(newMCQuestionHandler);
 		}
 
 	}
-
-	/*private class NewMCQuestionHandler implements EventListener {
-
-		@Override
-		public void handleEvent(Event event) {
-			ServerNewMCQuestionEvent sNQE = (ServerNewMCQuestionEvent) event;
-
-			int questionID = sNQE.getQuestionID();
-			String question = sNQE.getQuestion();
-			String[] answers = sNQE.getAnswers();
-
-			MCQuestion mCQuestion = new MCQuestion(questionID, question, answers);
-			MainContext.getContext().setQuestion(mCQuestion);
-		}
-
-	}*/
 
 }

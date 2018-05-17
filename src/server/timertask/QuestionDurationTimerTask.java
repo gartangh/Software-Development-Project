@@ -1,18 +1,9 @@
 package server.timertask;
 
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.TimerTask;
 
 import eventbroker.EventPublisher;
-import eventbroker.serverevent.ServerQuestionTimeEvent;
-import eventbroker.serverevent.ServerVoteAnswerEvent;
 import eventbroker.timerevent.DurationTimerEvent;
-import quiz.model.IPQuestion;
-import quiz.model.MCQuestion;
-import quiz.model.Team;
-import quiz.util.RoundType;
-import server.ServerContext;
 
 public class QuestionDurationTimerTask extends TimerTask {
 
@@ -31,7 +22,7 @@ public class QuestionDurationTimerTask extends TimerTask {
 	@Override
 	public void run() {
 		seconds++;
-		if(seconds <= MAX_DURATION) {
+		if (seconds <= MAX_DURATION) {
 			DurationTimerEvent tDE = new DurationTimerEvent(seconds,quizID, questionID);
 			eventPublisher.publishEvent(tDE);
 		}

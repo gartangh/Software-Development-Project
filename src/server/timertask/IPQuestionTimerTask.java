@@ -1,12 +1,9 @@
 package server.timertask;
 
-import java.util.ArrayList;
 import java.util.TimerTask;
 
 import eventbroker.EventPublisher;
-import eventbroker.serverevent.ServerNewPixelSizeEvent;
 import eventbroker.timerevent.IPTimerEvent;
-import server.ServerContext;
 
 public class IPQuestionTimerTask extends TimerTask {
 

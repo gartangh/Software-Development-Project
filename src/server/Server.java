@@ -494,7 +494,7 @@ public class Server extends EventPublisher {
 			String userName = context.changeTeam(quizID, newTeamID, userID, 'a');
 			context.changeTeam(quizID, oldTeamID, userID, 'd');
 			if (cCTE.getOldTeamID() == -1)
-				// remove from unassinged list
+				// remove from unassigned list
 				context.getQuizMap().get(quizID).removeUnassignedPlayer(userID);
 
 			if (userName != null) {
@@ -904,7 +904,7 @@ public class Server extends EventPublisher {
 
 			ArrayList<Integer> receivers = new ArrayList<>();
 			ArrayList <Integer> users = ServerContext.getContext().getUsersFromQuiz(quizID);
-			if(users != null) {
+			if (users != null) {
 				receivers.addAll(ServerContext.getContext().getUsersFromQuiz(quizID));
 				receivers.add(ServerContext.getContext().getQuiz(quizID).getHostID());
 				sQTE.addRecipients(receivers);
@@ -918,7 +918,7 @@ public class Server extends EventPublisher {
 				int qType = ServerContext.getContext().getQuestionTypeMap().get(questionID);
 				int correctAnswer;
 
-				if(qType == RoundType.IP.ordinal()) {
+				if (qType == RoundType.IP.ordinal()) {
 					IPQuestion ipQ = (IPQuestion) ServerContext.getContext().getQuestion(questionID);
 					correctAnswer = ipQ.getCorrectAnswer();
 				}
@@ -927,7 +927,7 @@ public class Server extends EventPublisher {
 					correctAnswer = mcQ.getCorrectAnswer();
 				}
 
-				for(int teamID : unansweredTeams) {
+				for (int teamID : unansweredTeams) {
 					unansweredUsers.clear();
 					unansweredUsers.addAll(teamMap.get(teamID).getPlayerMap().keySet());
 					ServerVoteAnswerEvent sVAE =new ServerVoteAnswerEvent(teamID, questionID, -1, correctAnswer, 0);
@@ -960,7 +960,7 @@ public class Server extends EventPublisher {
 			server.publishEvent(sNPSE);
 
 		}
+		
 	}
-
 
 }
