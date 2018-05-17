@@ -4,7 +4,7 @@ import eventbroker.Event;
 
 @SuppressWarnings("serial")
 public class TimerNewPollEvent extends Event{
-	
+
 	public final static String EVENTTYPE = "TIMER_NEW_POLL";
 	private int pollID;
 

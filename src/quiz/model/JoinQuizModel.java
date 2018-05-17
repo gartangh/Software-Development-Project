@@ -70,6 +70,11 @@ public class JoinQuizModel {
 				for (QuizModel quiz : quizzes)
 					if (quiz.getQuizID() == quizID) {
 						quizzes.remove(quiz);
+						quiznameProperty.setValue("");
+						quizRoundsProperty.setValue("");
+						teamProperty.setValue("");
+						playersProperty.setValue("");
+						joinDisableProperty.setValue(true);
 						break;
 					}
 			}
