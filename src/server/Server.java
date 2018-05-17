@@ -76,25 +76,26 @@ public class Server extends EventPublisher {
 
 	// Singleton
 	private final static Server server = new Server();
-
-	private static CreateAccountHandler createAccountHandler = new CreateAccountHandler();
-	private static LogInHandler logInHandler = new LogInHandler();
-	private static LogOutHandler logOutHandler = new LogOutHandler();
-	private static JoinQuizHandler joinQuizHandler = new JoinQuizHandler();
-	private static CreateQuizHandler createQuizHandler = new CreateQuizHandler();
-	private static VoteHandler voteHandler = new VoteHandler();
-	private static AnswerHandler answerHandler = new AnswerHandler();
-	private static NewQuestionHandler newQuestionHandler = new NewQuestionHandler();
-	private static CreateRoundHandler createRoundHandler = new CreateRoundHandler();
-	private static ChatHandler chatHandler = new ChatHandler();
-	private static ScoreboardDataHandler scoreboardDataHandler = new ScoreboardDataHandler();
-	private static GetQuizzesHandler getQuizzesHandler = new GetQuizzesHandler();
-	private static CreateTeamHandler newTeamHandler = new CreateTeamHandler();
-	private static ChangeTeamHandler changeTeamHandler = new ChangeTeamHandler();
-	private static HostReadyHandler hostReadyHandler = new HostReadyHandler();
-	private static DeleteTeamHandler deleteTeamHandler = new DeleteTeamHandler();
-	private static LeaveQuizHandler leaveQuizHandler = new LeaveQuizHandler();
-	private static EndQuizHandler endQuizHandler = new EndQuizHandler();
+	
+	// Handlers
+	private final static CreateAccountHandler createAccountHandler = new CreateAccountHandler();
+	private final static LogInHandler logInHandler = new LogInHandler();
+	private final static LogOutHandler logOutHandler = new LogOutHandler();
+	private final static JoinQuizHandler joinQuizHandler = new JoinQuizHandler();
+	private final static CreateQuizHandler createQuizHandler = new CreateQuizHandler();
+	private final static VoteHandler voteHandler = new VoteHandler();
+	private final static AnswerHandler answerHandler = new AnswerHandler();
+	private final static NewQuestionHandler newQuestionHandler = new NewQuestionHandler();
+	private final static CreateRoundHandler createRoundHandler = new CreateRoundHandler();
+	private final static ChatHandler chatHandler = new ChatHandler();
+	private final static ScoreboardDataHandler scoreboardDataHandler = new ScoreboardDataHandler();
+	private final static GetQuizzesHandler getQuizzesHandler = new GetQuizzesHandler();
+	private final static CreateTeamHandler newTeamHandler = new CreateTeamHandler();
+	private final static ChangeTeamHandler changeTeamHandler = new ChangeTeamHandler();
+	private final static HostReadyHandler hostReadyHandler = new HostReadyHandler();
+	private final static DeleteTeamHandler deleteTeamHandler = new DeleteTeamHandler();
+	private final static LeaveQuizHandler leaveQuizHandler = new LeaveQuizHandler();
+	private final static EndQuizHandler endQuizHandler = new EndQuizHandler();
 
 	/**
 	 * The main method.
