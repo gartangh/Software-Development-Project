@@ -1,5 +1,6 @@
 package quiz.view;
 
+import eventbroker.ClientPollHandler;
 import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
@@ -57,6 +58,8 @@ public class LogInController extends EventPublisher {
 		eventBroker.addEventListener(ServerLogInFailEvent.EVENTTYPE, logInFailHandler);
 		eventBroker.addEventListener(ServerAlreadyLoggedInEvent.EVENTTYPE, alreadyLoggedInHandler);
 		eventBroker.addEventListener(ServerLogInSuccesEvent.EVENTTYPE, logInSuccesHandler);
+		
+		ClientPollHandler.disableClientPollHandler();
 	}
 
 	@FXML

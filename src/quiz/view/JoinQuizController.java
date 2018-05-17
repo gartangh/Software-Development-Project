@@ -2,6 +2,7 @@ package quiz.view;
 
 import java.util.ArrayList;
 
+import eventbroker.ClientPollHandler;
 import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
@@ -13,6 +14,7 @@ import eventbroker.serverevent.ServerGetQuizzesEvent;
 import eventbroker.serverevent.ServerHostLeavesQuizEvent;
 import eventbroker.serverevent.ServerJoinQuizEvent;
 import eventbroker.serverevent.ServerNewQuizEvent;
+import eventbroker.serverevent.ServerPollUserEvent;
 import eventbroker.serverevent.ServerStartQuizEvent;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
@@ -71,13 +73,14 @@ public class JoinQuizController extends EventPublisher {
 		startQuizHandler = new StartQuizHandler();
 		hostLeftQuizHandler = new HostLeftQuizHandler();
 
-
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerJoinQuizEvent.EVENTTYPE, joinQuizHandler);
 		eventBroker.addEventListener(ServerGetQuizzesEvent.EVENTTYPE, getQuizzesHandler);
 		eventBroker.addEventListener(ServerNewQuizEvent.EVENTTYPE, newQuizHandler);
 		eventBroker.addEventListener(ServerStartQuizEvent.EVENTTYPE, startQuizHandler);
 		eventBroker.addEventListener(ServerHostLeavesQuizEvent.EVENTTYPE, hostLeftQuizHandler);
+		
+		ClientPollHandler.activateClientPollHandler();
 
 		// Ask server for list of quizzes
 		ClientGetQuizzesEvent cGQE = new ClientGetQuizzesEvent();

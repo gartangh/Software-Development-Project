@@ -24,6 +24,7 @@ import eventbroker.clientevent.ClientLeaveQuizEvent;
 import eventbroker.clientevent.ClientLogInEvent;
 import eventbroker.clientevent.ClientLogOutEvent;
 import eventbroker.clientevent.ClientNewQuestionEvent;
+import eventbroker.clientevent.ClientPollAnswerEvent;
 import eventbroker.clientevent.ClientScoreboardDataEvent;
 import eventbroker.clientevent.ClientVoteEvent;
 import eventbroker.clientevent.ClientCreateTeamEvent;
@@ -49,6 +50,7 @@ import eventbroker.serverevent.ServerNewTeamEvent;
 import eventbroker.serverevent.ServerCreateTeamSuccesEvent;
 import eventbroker.serverevent.ServerNotAllAnsweredEvent;
 import eventbroker.serverevent.ServerPlayerLeavesQuizEvent;
+import eventbroker.serverevent.ServerPollUserEvent;
 import eventbroker.serverevent.ServerQuizNewPlayerEvent;
 import eventbroker.serverevent.ServerCreateQuizSuccesEvent;
 import eventbroker.serverevent.ServerCreateTeamFailEvent;
@@ -57,6 +59,8 @@ import eventbroker.serverevent.ServerNewQuizEvent;
 import eventbroker.serverevent.ServerStartQuizEvent;
 import eventbroker.serverevent.ServerStartRoundEvent;
 import eventbroker.serverevent.ServerVoteEvent;
+import eventbroker.timerevent.TimerNewPollEvent;
+import eventbroker.timerevent.TimerPollFinishedEvent;
 import javafx.scene.paint.Color;
 import main.Main;
 import quiz.model.Team;
@@ -95,6 +99,9 @@ public class Server extends EventPublisher {
 	private static DeleteTeamHandler deleteTeamHandler = new DeleteTeamHandler();
 	private static LeaveQuizHandler leaveQuizHandler = new LeaveQuizHandler();
 	private static EndQuizHandler endQuizHandler = new EndQuizHandler();
+	private static TimerNewPollHandler timerNewPollHandler = new TimerNewPollHandler();
+	private static PollAnswerHandler pollAnswerHandler = new PollAnswerHandler();
+	private static TimerPollFinishedHandler timerPollFinishedHandler = new TimerPollFinishedHandler();
 
 	/**
 	 * The main method.
@@ -144,9 +151,15 @@ public class Server extends EventPublisher {
 		eventBroker.addEventListener(ClientDeleteTeamEvent.EVENTTYPE, deleteTeamHandler);
 		eventBroker.addEventListener(ClientLeaveQuizEvent.EVENTTYPE, leaveQuizHandler);
 		eventBroker.addEventListener(ClientEndQuizEvent.EVENTTYPE, endQuizHandler);
+		eventBroker.addEventListener(TimerNewPollEvent.EVENTTYPE, timerNewPollHandler);
+		eventBroker.addEventListener(ClientPollAnswerEvent.EVENTTYPE, pollAnswerHandler);
+		eventBroker.addEventListener(TimerPollFinishedEvent.EVENTTYPE, timerPollFinishedHandler);
+
 
 		// Start the EventBroker
 		eventBroker.start();
+		
+		ServerContext.getContext().startPollTimer();
 
 		System.out.println("Server running ...");
 	}
@@ -874,6 +887,64 @@ public class Server extends EventPublisher {
 			context.getQuizMap().remove(quizID);
 		}
 
+	}
+	
+	private static class TimerNewPollHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			TimerNewPollEvent tNPE = (TimerNewPollEvent) event;
+			
+			ServerContext.getContext().setPollID(tNPE.getPollID());
+			ArrayList<Integer> polledUsers = ServerContext.getContext().getPolledUsers();
+			polledUsers.clear();
+			ServerContext.getContext().getPollAnsweredUsers().clear();
+			for(int quizID : ServerContext.getContext().getQuizMap().keySet()) {
+				polledUsers.addAll(ServerContext.getContext().getUsersFromQuiz(quizID));
+			}
+			
+			ServerPollUserEvent sPUE = new ServerPollUserEvent(tNPE.getPollID());
+			sPUE.addRecipients(polledUsers);
+			server.publishEvent(sPUE);
+		}
+
+	}
+	
+	private static class PollAnswerHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			ClientPollAnswerEvent cPAE = (ClientPollAnswerEvent) event;
+			
+			System.out.println("Received poll answer");
+			System.out.println("Server poll id: " + ServerContext.getContext().getPollID());
+			System.out.println("Received poll id: " + cPAE.getPollID());
+			
+			if(cPAE.getPollID() == ServerContext.getContext().getPollID()) {
+				System.out.println("=> Added");
+				ServerContext.getContext().getPollAnsweredUsers().add(cPAE.getUserID());
+			}
+			else System.out.println("=> Not added");
+		}
+	}
+	
+	private static class TimerPollFinishedHandler implements EventListener {
+
+		@Override
+		public void handleEvent(Event event) {
+			TimerPollFinishedEvent tPFE = (TimerPollFinishedEvent) event;
+			ServerContext context = ServerContext.getContext();
+			
+			if(tPFE.getPollID() == context.getPollID()) {
+				for(int userID : context.getPolledUsers()) {
+					if(!context.getPollAnsweredUsers().contains(userID)) {
+						Server.onConnectionLost(userID);
+						System.out.println("Kicked user " + userID + " (No poll answer)");
+					}
+				}
+				context.getPollAnsweredUsers().clear();
+			}
+		}
 	}
 
 }
