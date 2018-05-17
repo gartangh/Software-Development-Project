@@ -52,7 +52,7 @@ final public class EventBroker implements Runnable {
 		toRemoveListeners.add(el);
 	}
 	
-	void removeEventListeners() {
+	public void removeEventListeners() {
 		Network network = MainContext.getContext().getNetwork();
 		for (ArrayList<EventListener> topicListeners : listeners.values())
 			if (!topicListeners.contains(network))

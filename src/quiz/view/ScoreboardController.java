@@ -6,6 +6,7 @@ import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
+import eventbroker.PlayerLeavesQuizHandler;
 import eventbroker.clientevent.ClientEndQuizEvent;
 import eventbroker.clientevent.ClientScoreboardDataEvent;
 import eventbroker.serverevent.ServerScoreboardDataEvent;
@@ -101,7 +102,7 @@ public class ScoreboardController extends EventPublisher {
 	@FXML
 	private void handleBack() {
 		EventBroker eventBroker = EventBroker.getEventBroker();
-		eventBroker.removeEventListener(scoreboardDataHandler);
+		eventBroker.removeEventListeners();
 		
 		MainContext context = MainContext.getContext();
 		if (context.getQuiz().getHostID() == context.getUser().getUserID()) {
