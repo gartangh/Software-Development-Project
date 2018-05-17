@@ -9,7 +9,7 @@ import eventbroker.timerevent.TimerPollFinishedEvent;
 
 public class PollUsersTimerTask extends TimerTask {
 	
-	public static final int POLL_PERIOD = 1;
+	public static final int POLL_PERIOD = 5;
 	private int pollID;
 	private boolean started;
 	

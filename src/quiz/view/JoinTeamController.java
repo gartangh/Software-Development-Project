@@ -283,7 +283,6 @@ public class JoinTeamController extends EventPublisher {
 			if (quiz.getTeamMap().size()>=Quiz.MINTEAMS){
 				ClientHostReadyEvent cHRE = new ClientHostReadyEvent(quizID);
 				publishEvent(cHRE);
-				main.showCreateRoundScene();
 			}
 			else {
 				Alert alert = new Alert(AlertType.WARNING);

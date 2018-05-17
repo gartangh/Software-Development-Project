@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+import eventbroker.serverevent.ServerPollUserEvent;
 import main.MainContext;
 import network.Network;
 
@@ -52,15 +53,15 @@ final public class EventBroker implements Runnable {
 		toRemoveListeners.add(el);
 	}
 	
-	void removeEventListeners() {
+	public void removeEventListeners() {
 		Network network = MainContext.getContext().getNetwork();
 		for (ArrayList<EventListener> topicListeners : listeners.values())
-			if (!topicListeners.contains(network))
+			if (!(topicListeners.contains(network) || topicListeners.contains(ClientPollHandler.getClientPollHandler())))
 				toRemoveListeners.addAll(topicListeners);
 			else
 				for (EventListener listener : topicListeners)
-					if (listener != network)
-					toRemoveListeners.add(listener);
+					if (listener != network && listener != ClientPollHandler.getClientPollHandler())
+						toRemoveListeners.add(listener);
 	}
 
 	public void addEvent(EventPublisher source, Event event) {
@@ -73,6 +74,11 @@ final public class EventBroker implements Runnable {
 	}
 
 	private void process(EventPublisher source, Event event) {
+		if(event.type.equals(ServerPollUserEvent.EVENTTYPE)) {
+			System.out.println("got a poll");
+		}
+		
+		
 		for (Map.Entry<String, ArrayList<EventListener>> entry : newListeners.entrySet()) {
 			if (!listeners.containsKey(entry.getKey()))
 				listeners.put(entry.getKey(), entry.getValue());
@@ -93,8 +99,12 @@ final public class EventBroker implements Runnable {
 		for (Map.Entry<String, ArrayList<EventListener>> entry : listeners.entrySet())
 			if (entry.getKey().equals(event.getType()) || entry.getKey().equals("all"))
 				for (EventListener el : entry.getValue())
-					if (source != el)
+					if (source != el) {
+						if(event.type.equals(ServerPollUserEvent.EVENTTYPE)) {
+							System.out.println("got a poll");
+						}
 						el.handleEvent(event);
+					}
 	}
 
 	@Override

@@ -116,9 +116,8 @@ public class Team implements Serializable {
 
 	// Adder and remover
 	public void addPlayer(int userID, String username) {
-		if (playerMap.size() < players) {
+		if (playerMap.size() < players)
 			playerMap.put(userID, username);
-		}
 	}
 
 	public void removePlayer(int playerID) {
@@ -127,7 +126,7 @@ public class Team implements Serializable {
 
 	// Method
 	public void addPoints(int i) {
-		this.quizScore += i;
+		quizScore += i;
 	}
 
 	public void setCaptainID(int captainID) {
