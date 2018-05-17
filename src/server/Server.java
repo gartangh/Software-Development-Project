@@ -589,7 +589,6 @@ public class Server extends EventPublisher {
 				if (quiz.isAnsweredByAll()) {
 	
 					ArrayList<Integer> receivers = context.getUsersFromQuiz(quizID);
-					receivers.add(context.getQuiz(quizID).getHostID());
 	
 					if ((quiz.getRoundList().get(quiz.getCurrentRound()).getCurrentQuestion() + 1) < quiz.getRoundList()
 							.get(quiz.getCurrentRound()).getQuestions()) {
@@ -651,7 +650,6 @@ public class Server extends EventPublisher {
 						if ((quiz.getCurrentRound() + 1) < quiz.getRounds()) {
 							ServerNewRoundEvent sNRE = new ServerNewRoundEvent(quiz.getCurrentRound() + 1);
 							receivers = context.getUsersFromQuiz(cNQE.getQuizID());
-							receivers.add(context.getQuiz(quizID).getHostID());
 							sNRE.addRecipients(receivers);
 							server.publishEvent(sNRE);
 						} else {

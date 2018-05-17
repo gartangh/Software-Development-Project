@@ -75,7 +75,7 @@ public class ScoreboardController extends EventPublisher {
 	            	@Override
 	            	protected void updateItem(ScoreboardTeam item, boolean empty) {
 	            	    super.updateItem(item, empty);
-	            	    Team team =MainContext.getContext().getTeam();
+	            	    Team team = MainContext.getContext().getTeam();
 	            	    if (team != null && item !=null){
 		            	    if (item.getTeamID()==team.getTeamID()) {
 		            	        setStyle("-fx-font-weight: bold");
