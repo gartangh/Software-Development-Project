@@ -6,7 +6,6 @@ import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
-import eventbroker.PlayerLeavesQuizHandler;
 import eventbroker.clientevent.ClientEndQuizEvent;
 import eventbroker.clientevent.ClientScoreboardDataEvent;
 import eventbroker.serverevent.ServerScoreboardDataEvent;
