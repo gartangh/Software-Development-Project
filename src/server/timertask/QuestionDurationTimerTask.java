@@ -24,7 +24,6 @@ public class QuestionDurationTimerTask extends TimerTask {
 	private EventPublisher eventPublisher = new EventPublisher();
 
 	public QuestionDurationTimerTask(int quizID, int questionID) {
-		super();
 		this.quizID = quizID;
 		this.questionID = questionID;
 	}
@@ -36,9 +35,8 @@ public class QuestionDurationTimerTask extends TimerTask {
 			DurationTimerEvent tDE = new DurationTimerEvent(seconds,quizID, questionID);
 			eventPublisher.publishEvent(tDE);
 		}
-		else {
+		else
 			this.cancel();
-		}
 	}
 
 }

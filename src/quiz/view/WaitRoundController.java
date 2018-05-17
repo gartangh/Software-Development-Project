@@ -30,7 +30,6 @@ public class WaitRoundController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event event) {
-			@SuppressWarnings("unused")
 			ServerStartRoundEvent sSRE = (ServerStartRoundEvent) event;
 
 			EventBroker eventBroker = EventBroker.getEventBroker();
@@ -38,6 +37,7 @@ public class WaitRoundController extends EventPublisher {
 
 			main.showQuestionScene(sSRE.getRoundType());
 		}
-
+		
 	}
+
 }

@@ -186,8 +186,8 @@ public class WaitHostController extends EventPublisher {
 			MainContext.getContext().setQuestion(q);
 			MainContext.getContext().setRoundType(RoundType.IP);
 			waitHostModel.updateQuestion();
-
 		}
+		
 	}
 
 	private class UpdateTeamsHandler implements EventListener {
@@ -223,10 +223,10 @@ public class WaitHostController extends EventPublisher {
 
 		@Override
 		public void handleEvent(Event event) {
+			ServerEndQuizEvent sEQE = (ServerEndQuizEvent) event;
 			EventBroker eventBroker = EventBroker.getEventBroker();
 			eventBroker.removeEventListener(newRoundHandler);
 			eventBroker.removeEventListener(endQuizHandler);
-
 			main.showScoreboardScene();
 		}
 

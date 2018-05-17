@@ -185,10 +185,12 @@ public class Server extends EventPublisher {
 						foundQuiz = true;
 						toRemoveTeamID=team.getTeamID();
 						toRemoveQuizID=quiz.getQuizID();
+
 						break;
 					}
 				}
-				if (foundTeam) break;
+				if (foundTeam)
+					break;
 			}
 
 			for (int uPlayerID : quiz.getUnassignedPlayers().keySet()){
@@ -196,10 +198,10 @@ public class Server extends EventPublisher {
 					// The user is in the team
 					foundQuiz = true;
 					toRemoveQuizID=quiz.getQuizID();
+
 					break;
 				}
 			}
-
 			if (userID==quiz.getHostID()){
 				foundQuiz=true;
 				toRemoveQuizID=quiz.getQuizID();
@@ -208,9 +210,8 @@ public class Server extends EventPublisher {
 			if (foundQuiz) break;
 		}
 
-		if (toRemoveQuizID != -1){
+		if (toRemoveQuizID != -1)
 			playerLeavesQuiz(toRemoveQuizID, userID, toRemoveTeamID);
-		}
 	}
 
 	public static void playerLeavesQuiz(int quizID, int userID, int teamID) {
@@ -554,7 +555,8 @@ public class Server extends EventPublisher {
 			if (qType == RoundType.IP.ordinal()) {
 				IPQuestion iPQ = (IPQuestion) ServerContext.getContext().getQuestion(questionID);
 				correctAnswer = iPQ.getCorrectAnswer();
-			} else if (qType == RoundType.MC.ordinal()) {
+			}
+			else if (qType == RoundType.MC.ordinal()) {
 				MCQuestion mCQ = (MCQuestion) ServerContext.getContext().getQuestion(questionID);
 				correctAnswer = mCQ.getCorrectAnswer();
 			}
@@ -573,9 +575,9 @@ public class Server extends EventPublisher {
 				}
 			}
 
-			ServerVoteAnswerEvent serverAnswer = new ServerVoteAnswerEvent(teamID, questionID, answer, correctAnswer, points);
-			serverAnswer.addRecipients(receivers);
-			server.publishEvent(serverAnswer);
+			ServerVoteAnswerEvent sVAE = new ServerVoteAnswerEvent(teamID, questionID, answer, correctAnswer, points);
+			sVAE.addRecipients(receivers);
+			server.publishEvent(sVAE);
 		}
 
 	}
@@ -597,7 +599,6 @@ public class Server extends EventPublisher {
 				if (quiz.isAnsweredByAll()) {
 
 					ArrayList<Integer> receivers = context.getUsersFromQuiz(quizID);
-					receivers.add(context.getQuiz(quizID).getHostID());
 
 					if ((quiz.getRoundList().get(quiz.getCurrentRound()).getCurrentQuestion() + 1) < quiz.getRoundList()
 							.get(quiz.getCurrentRound()).getQuestions()) {
@@ -659,7 +660,6 @@ public class Server extends EventPublisher {
 						if ((quiz.getCurrentRound() + 1) < quiz.getRounds()) {
 							ServerNewRoundEvent sNRE = new ServerNewRoundEvent(quiz.getCurrentRound() + 1);
 							receivers = context.getUsersFromQuiz(cNQE.getQuizID());
-							receivers.add(context.getQuiz(quizID).getHostID());
 							sNRE.addRecipients(receivers);
 							server.publishEvent(sNRE);
 						} else {
