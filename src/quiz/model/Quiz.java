@@ -216,26 +216,34 @@ public class Quiz implements Serializable {
 
 	public int addPoints(int teamID, int questionID, int pixelSize, int answer) {
 		int qType = ServerContext.getContext().getQuestionTypeMap().get(questionID);
+		Question q = ServerContext.getContext().getQuestion(questionID);
 		int points = 0;
-		if(qType == RoundType.IP.ordinal()) {
-			IPQuestion iPQ = (IPQuestion) ServerContext.getContext().getQuestion(questionID);
+		if (qType == RoundType.IP.ordinal()) {
+			IPQuestion iPQ = (IPQuestion) q;
 			if (answer == iPQ.getCorrectAnswer()) {
 				points = (int) Math.floor(Math.log(pixelSize) / Math.log(2.0)) + 1;
 				
-				if (pixelSize > 10 && pixelSize < 100) {
+				if (pixelSize > 10 && pixelSize < 100)
 					points = (int) Math.ceil(points * 1.25);
-				} else if (pixelSize >= 100){
+				else if (pixelSize >= 100)
 					points = (int) Math.ceil(points * 1.75);
-				}
 			}
-				
-		} else if(qType == RoundType.MC.ordinal()){
-			MCQuestion mCQ = (MCQuestion) ServerContext.getContext().getQuestion(questionID);
+		}
+		else if (qType == RoundType.MC.ordinal()){
+			MCQuestion mCQ = (MCQuestion) q;
 			if (answer == mCQ.getCorrectAnswer())
-				points = 1;
+				points = 8;
 		}
 		
-		if(points > 0) teamMap.get(teamID).addPoints(points);
+		if (points > 0) {
+			points += q.getDifficulty().ordinal()*2;
+			teamMap.get(teamID).addPoints(points);
+			// Add XP to users
+			for (int userID : teamMap.get(teamID).getPlayerMap().keySet())
+				ServerContext.getContext().getUser(userID).addXp(points*10);			
+		}
+		
 		return points;
 	}
+	
 }

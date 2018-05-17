@@ -137,6 +137,7 @@ public class AnswerVoteModel {
 
 	public void updateAnswer(int answer, int correctAnswer, int points) {
 		Platform.runLater(new Runnable() {
+			@Override
 			public void run() {
 				if (answer != correctAnswer) {
 					switch (answer) {
@@ -154,9 +155,6 @@ public class AnswerVoteModel {
 						break;
 					}
 				}
-				//else
-					//MainContext.getContext().getUser().addXp(100 * (MainContext.getContext().getQuestion().getDifficulty().ordinal() + 1));
-
 
 				switch (correctAnswer) {
 				case 0:
@@ -178,7 +176,7 @@ public class AnswerVoteModel {
 				nextDisableProperty.setValue(false);
 				receivedPointsProperty.setValue(Integer.toString(points));
 				
-				if(roundType == RoundType.IP) {
+				if (roundType == RoundType.IP) {
 					IPQuestion ipQ = (IPQuestion) MainContext.getContext().getQuestion();
 					imageProperty.setValue(ipQ.getFullFXImage());
 				}
