@@ -17,7 +17,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import main.MainContext;
-import main.Main;
 
 final public class ChatController extends EventPublisher {
 
@@ -43,13 +42,11 @@ final public class ChatController extends EventPublisher {
 		EventBroker.getEventBroker().addEventListener(ChatMessage.SERVERTYPE, chatHandler);
 		chatTextField.setPromptText("Use '*' to send to all players");
 		chatTextArea.textProperty().bind(chatModel.getChatText());
-		// chatTextArea.setFont(Font.loadFont(Paths.get(".").toAbsolutePath().normalize().toString()
-		// + "\\Files\\OpenSansEmoji.ttf", 15));
 
 		try {
 			// Substring is to remove "file:/" before resource
 			BufferedReader bufferedReader = new BufferedReader(
-					new FileReader(Main.class.getResource("/chat/swearWords.txt").toString().substring(6)));
+					new FileReader(ChatController.class.getResource("swearWords.txt").toString().substring(6)));
 
 			String line;
 			while ((line = bufferedReader.readLine()) != null)
