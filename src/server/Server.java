@@ -200,6 +200,11 @@ public class Server extends EventPublisher {
 				}
 			}
 
+			if (userID==quiz.getHostID()){
+				foundQuiz=true;
+				toRemoveQuizID=quiz.getQuizID();
+			}
+
 			if (foundQuiz) break;
 		}
 
