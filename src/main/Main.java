@@ -42,7 +42,7 @@ public class Main extends Application {
 	 * The Constant LOCAL. True is for local development. False is for network
 	 * development and releases.
 	 */
-	public final static boolean LOCAL = true;
+	public final static boolean LOCAL = false;
 
 	/** The Constant SERVERPORT represents the port on the server. */
 	public final static int SERVERPORT = 1025;
@@ -125,7 +125,7 @@ public class Main extends Application {
 						alert.showAndWait();
 					}
 				}
-			
+
 				network.connect(result.get(), Main.SERVERPORT);
 			}
 
