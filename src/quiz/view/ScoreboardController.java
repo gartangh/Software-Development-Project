@@ -100,8 +100,6 @@ public class ScoreboardController extends EventPublisher {
 			ArrayList<ScoreboardTeam> scoreboardTeams = sSDE.getScoreboardTeams();
 
 			scoreboardModel.addScoreboardTeams(scoreboardTeams);
-
-			
 			
 			MainContext context = MainContext.getContext();
 			if (context.getQuiz().getHostID() == context.getUser().getUserID())
