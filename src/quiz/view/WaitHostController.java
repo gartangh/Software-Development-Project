@@ -217,16 +217,20 @@ public class WaitHostController extends EventPublisher {
 				waitHostModel.addTeam(teamNameID);
 			}
 		}
+		
 	}
 
 	private class EndQuizHandler implements EventListener {
 
 		@Override
 		public void handleEvent(Event event) {
+			@SuppressWarnings("unused")
 			ServerEndQuizEvent sEQE = (ServerEndQuizEvent) event;
+			
 			EventBroker eventBroker = EventBroker.getEventBroker();
 			eventBroker.removeEventListener(newRoundHandler);
 			eventBroker.removeEventListener(endQuizHandler);
+			
 			main.showScoreboardScene();
 		}
 

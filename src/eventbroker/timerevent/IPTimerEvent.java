@@ -3,7 +3,9 @@ package eventbroker.timerevent;
 import eventbroker.Event;
 import eventbroker.serverevent.ServerEvent;
 
+
 public class IPTimerEvent extends Event {
+@SuppressWarnings("serial")
 
 	public final static String EVENTTYPE = "SERVER_TIMER_IP";
 

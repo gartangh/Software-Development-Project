@@ -6,7 +6,6 @@ import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
 import eventbroker.EventPublisher;
-import eventbroker.PlayerLeavesQuizHandler;
 import eventbroker.clientevent.ClientEndQuizEvent;
 import eventbroker.clientevent.ClientScoreboardDataEvent;
 import eventbroker.serverevent.ServerScoreboardDataEvent;
@@ -23,7 +22,6 @@ import main.Main;
 import quiz.model.ScoreboardModel;
 import quiz.model.ScoreboardTeam;
 import quiz.model.Team;
-import quiz.model.TeamNameID;
 
 public class ScoreboardController extends EventPublisher {
 
