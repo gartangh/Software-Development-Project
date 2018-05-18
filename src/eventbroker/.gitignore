@@ -3,3 +3,10 @@
 /EventBroker.class
 /EventListener.class
 /EventPublisher.class
+/HostLeavesQuizHandler$1.class
+/HostLeavesQuizHandler.class
+/PlayerLeavesQuizHandler$1.class
+/PlayerLeavesQuizHandler$2.class
+/PlayerLeavesQuizHandler$3.class
+/PlayerLeavesQuizHandler.class
+/ClientPollHandler.class

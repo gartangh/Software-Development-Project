@@ -2,6 +2,7 @@ package quiz.view;
 
 import java.util.ArrayList;
 
+import eventbroker.ClientPollHandler;
 import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
@@ -14,11 +15,15 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.util.Callback;
 import main.MainContext;
 import main.Main;
 import quiz.model.ScoreboardModel;
 import quiz.model.ScoreboardTeam;
+import quiz.model.Team;
+import server.timertask.ClientCheckPollTimerTask;
 
 public class ScoreboardController extends EventPublisher {
 
@@ -53,6 +58,8 @@ public class ScoreboardController extends EventPublisher {
 	private void initialize() {
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerScoreboardDataEvent.EVENTTYPE, scoreboardDataHandler);
+		
+		ClientCheckPollTimerTask.getClientCheckPollTimerTask().disable();
 
 		scoreboardTable.setItems(scoreboardModel.getScoreboardTeams());
 		
@@ -63,6 +70,29 @@ public class ScoreboardController extends EventPublisher {
 		scoreColumn.setCellValueFactory(
 				cellData -> (new SimpleIntegerProperty(cellData.getValue().getScore()).asObject()));
 
+		
+		scoreboardTable.setRowFactory(new Callback<TableView<ScoreboardTeam>, TableRow<ScoreboardTeam>>() {
+	        @Override
+	        public TableRow<ScoreboardTeam> call(TableView<ScoreboardTeam> param) {
+	            return new TableRow<ScoreboardTeam>() {
+	            	@Override
+	            	protected void updateItem(ScoreboardTeam item, boolean empty) {
+	            	    super.updateItem(item, empty);
+	            	    Team team = MainContext.getContext().getTeam();
+	            	    if (team != null && item !=null){
+		            	    if (item.getTeamID()==team.getTeamID()) {
+		            	        setStyle("-fx-font-weight: bold");
+		            	    } else  {
+		            	        setStyle("");
+		            	    }
+	            	    }
+	            	    else setStyle("");
+	            	}
+	            };
+	        }
+	    });
+		
+		
 		if(MainContext.getContext().getUser().getUserID() == MainContext.getContext().getQuiz().getHostID()) {
 			ClientScoreboardDataEvent cSDE = new ClientScoreboardDataEvent();
 			publishEvent(cSDE);
@@ -75,7 +105,7 @@ public class ScoreboardController extends EventPublisher {
 	@FXML
 	private void handleBack() {
 		EventBroker eventBroker = EventBroker.getEventBroker();
-		eventBroker.removeEventListener(scoreboardDataHandler);
+		eventBroker.removeEventListeners();
 		
 		MainContext context = MainContext.getContext();
 		if (context.getQuiz().getHostID() == context.getUser().getUserID()) {
@@ -100,8 +130,6 @@ public class ScoreboardController extends EventPublisher {
 			ArrayList<ScoreboardTeam> scoreboardTeams = sSDE.getScoreboardTeams();
 
 			scoreboardModel.addScoreboardTeams(scoreboardTeams);
-
-			
 			
 			MainContext context = MainContext.getContext();
 			if (context.getQuiz().getHostID() == context.getUser().getUserID())
@@ -119,10 +147,17 @@ public class ScoreboardController extends EventPublisher {
 	
 	
 					if (curTeam != null) {
-						if (scoreboardTeams.get(0).getTeamID() == curTeamID)
-							scoreboardModel.updateWinnerLoser(curTeam.getTeamname() + ": WINNER WINNER CHICKEN DINNER");
-						else
-							scoreboardModel.updateWinnerLoser(curTeam.getTeamname() + ": LOSER");
+						if (scoreboardTeams.get(0).getTeamID() == curTeamID) {
+							if(scoreboardTeams.get(1).getScore() == curTeam.getScore())
+								scoreboardModel.updateWinnerLoser(curTeam.getTeamname() + ": TIED");
+							else
+								scoreboardModel.updateWinnerLoser(curTeam.getTeamname() + ": WINNER WINNER CHICKEN DINNER");
+						}
+						else {
+							if(scoreboardTeams.get(0).getScore() == curTeam.getScore())
+								scoreboardModel.updateWinnerLoser(curTeam.getTeamname() + ": TIED");
+							else scoreboardModel.updateWinnerLoser(curTeam.getTeamname() + ": LOSER");
+						}
 					}
 				}
 			}

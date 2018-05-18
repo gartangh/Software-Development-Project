@@ -1,0 +1,246 @@
+----------
+EASY
+----------
+MC
+How long is an Olympic swimming pool?
+25 meters
+50 meters
+60 meters
+100 meters
+1
+
+MC
+In which sport can you win the Davis Cup?
+Golf
+Soccer
+Basketball
+Tennis
+3
+
+MC
+What is the name of the Barcelona football stadium?
+Stadio Barca
+Camp Nuo
+El stadio
+Camp Nou
+3
+
+MC
+Who was the champion of the Tour de France from 1999 to 2005?
+Lance Armstrong
+Bradley Wiggins
+Chris Froome
+Alberto Contador
+0
+
+MC
+At what number does one begin when playing Darts?
+451
+501
+551
+601
+1
+
+IP
+climbing.jpeg
+Baseball
+Street Basketball
+Skateboarding
+Rock Climbing
+3
+
+IP
+surfing.jpeg
+Wakeboarding
+Swimming
+Surfing
+Ice Skating
+2
+
+IP
+cycling.jpeg
+Cricket
+Mini Golf
+Cycling
+Chess
+2
+
+IP
+skiing.jpeg
+Ice Skating
+Swimming
+Surfing
+Skiing
+3
+
+IP
+soccer.jpeg
+Ultimate Frisbee
+American Football
+Rugby
+Soccer
+3
+----------
+AVERAGE
+----------
+MC
+What is the national sport in Japan?
+Ping Pong
+Sumo Wrestling
+Fencing
+Basketball
+1
+
+MC
+In which year did Maradona score a goal with his hand?
+1966
+1976
+1986
+1996
+2
+
+MC
+How matches did Mohammed Ali lose in his career?
+None
+One
+Two
+Three
+1
+
+MC
+Which ball is worth the most points in English snooker?
+Black
+Red
+Purple
+Green
+0
+
+MC
+What was the Olympic city of 1992?
+Barcelona
+Athens
+Atlanta
+Peking
+0
+
+IP
+tennis.jpeg
+Tennis
+Golf
+Baseball
+Lacrosse
+0
+
+IP
+skateboarding.jpeg
+Zumba
+Roller Blading
+Skateboarding
+Trail Biking
+2
+
+IP
+baseball.jpeg
+Baseball
+American Football
+Rugby
+Soccer
+0
+
+IP
+swimming.jpeg
+Scuba Diving
+Water Polo
+Rafting
+Swimming
+3
+
+IP
+snowmobile.jpeg
+Jetskiing
+Snowmobile
+Snowboarding
+Mountain Climbing
+1
+----------
+HARD
+----------
+MC
+Which car won Fernando Alonso his first tittle in Formula 1 with?
+Toro Rosso
+Mercedes-Benz
+Ferrari
+Renault
+3
+
+MC
+Which popular fitness method was invented by a German?
+Weightlifting
+Yoga
+Pilates
+Benchpressing
+2
+
+MC
+How many players has a hockey team got on the ice?
+6
+8
+10
+11
+0
+
+MC
+Which nickname has Florence Griffith got?
+Flo the GOAT
+The flow
+Flo-Jo
+Floffy
+2
+
+MC
+How many minutes is a rugby match?
+60 minutes
+70 minutes
+80 minutes
+90 minutes
+2
+
+IP
+weightlifting.jpeg
+Surfing
+WeightLifting
+Paintball
+Freerunning
+1
+
+IP
+wakeboarding.jpeg
+Wakeboarding
+Skateboarding
+Roller Blading
+Kitesurfing
+0
+
+IP
+parapente.jpeg
+Surfing
+Parapente
+Snowmobiling
+Skiing
+1
+
+IP
+lacrosse.jpeg
+Lacrosse
+Horse Polo
+Field Hockey
+Bowling
+0
+
+IP
+archery.jpeg
+Basketball
+Archery
+Surfing
+Ice Skating
+1

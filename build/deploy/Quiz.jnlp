@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="Quiz.jnlp">
+  <information>
+    <title>Quiz</title>
+    <vendor>UGent</vendor>
+    <description>InstaPixel</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="Quiz.jar" size="2498319" download="eager" />
+  </resources>
+  <jfx:javafx-desc  width="0" height="0" main-class="main.Main"  name="InstaPixel" />
+  <update check="background"/>
+</jnlp>
