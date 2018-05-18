@@ -45,11 +45,11 @@ public class ChatModel {
 		// Add the latest message to chatTextArea
 		ChatMessage chatMessage = messages.poll();
 
-		if(chatMessage.getUserID() == MainContext.getContext().getQuiz().getHostID())
+		if (chatMessage.getUserID() == MainContext.getContext().getQuiz().getHostID())
 			if (chatText.getValue() == null)
-				chatText.setValue("[THE_ALMIGHTY_HOST] " + chatMessage.getUsername() + ": " + chatMessage.getMessage() + "\n");
+				chatText.setValue("[HOST] " + chatMessage.getUsername() + ": " + chatMessage.getMessage() + "\n");
 			else
-				chatText.setValue(chatText.getValue() + "[THE_ALMIGHTY_HOST] " + chatMessage.getUsername() + ": " + chatMessage.getMessage() + "\n");
+				chatText.setValue(chatText.getValue() + "[HOST] " + chatMessage.getUsername() + ": " + chatMessage.getMessage() + "\n");
 		else {
 			if (chatText.getValue() == null)
 				chatText.setValue("[" + chatMessage.getReceiverType() + "] " + chatMessage.getUsername() + ": " + chatMessage.getMessage() + "\n");

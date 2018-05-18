@@ -23,9 +23,12 @@ import quiz.model.Quiz;
 import quiz.model.Team;
 import quiz.model.TeamNameID;
 import quiz.model.User;
+import server.timertask.ClientCheckPollTimerTask;
+
 import java.util.Optional;
 import java.util.Map.Entry;
 import chat.ChatPanel;
+import eventbroker.ClientPollHandler;
 import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
@@ -105,6 +108,9 @@ public class JoinTeamController extends EventPublisher {
 		eventBroker.addEventListener(ServerQuizNewPlayerEvent.EVENTTYPE, quizNewPlayerHandler);
 		eventBroker.addEventListener(ServerDeleteTeamEvent.EVENTTYPE, quizDeleteTeamHandler);
 		eventBroker.addEventListener(ServerCreateTeamFailEvent.EVENTTYPE, createTeamFailHandler);
+		
+		ClientPollHandler.activateClientPollHandler();
+		ClientCheckPollTimerTask.getClientCheckPollTimerTask().activate();
 
 		teamNameColumn.setCellValueFactory(cellData -> cellData.getValue().getTeamname());
 		captainNameColumn.setCellValueFactory(cellData -> cellData.getValue().getCaptainName());
@@ -283,7 +289,6 @@ public class JoinTeamController extends EventPublisher {
 			if (quiz.getTeamMap().size()>=Quiz.MINTEAMS){
 				ClientHostReadyEvent cHRE = new ClientHostReadyEvent(quizID);
 				publishEvent(cHRE);
-				main.showCreateRoundScene();
 			}
 			else {
 				Alert alert = new Alert(AlertType.WARNING);

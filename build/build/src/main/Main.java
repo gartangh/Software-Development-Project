@@ -5,9 +5,11 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Timer;
 
 import eventbroker.EventBroker;
 import eventbroker.clientevent.ClientCreateTeamEvent;
+import eventbroker.serverevent.ServerPollUserEvent;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -32,6 +34,7 @@ import quiz.view.CreateRoundController;
 import quiz.view.ScoreboardController;
 import quiz.view.WaitHostController;
 import quiz.view.WaitRoundController;
+import server.timertask.ClientCheckPollTimerTask;
 
 public class Main extends Application {
 
@@ -49,6 +52,7 @@ public class Main extends Application {
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
+	private Timer pollTimer = new Timer();
 
 	/**
 	 * The main method.
@@ -71,7 +75,7 @@ public class Main extends Application {
 		// Set the application title
 		this.primaryStage.setTitle(QUIZNAME);
 		// Set the application icon
-	    this.primaryStage.getIcons().add(new Image("file:src/main/logo.png"));
+	    this.primaryStage.getIcons().add(new Image("file:resources/logo.png"));
 
 		// Connect to network with randomly generated client port between
 		// SERVERPORT + 1 and 65535 (2^16 - 1) and type CLIENT
@@ -82,7 +86,9 @@ public class Main extends Application {
 		// Close button
 		this.primaryStage.setOnCloseRequest(e -> {
 			EventBroker.getEventBroker().stop();
+			pollTimer.cancel();
 			network.terminate();
+			System.exit(0);
 		});
 
 		try {
@@ -97,11 +103,12 @@ public class Main extends Application {
 				boolean valid=false;
 				Optional<String> result=null;
 				while (!valid){
-					TextInputDialog dialog = new TextInputDialog("xxx.yyy.zzz.www");
+					TextInputDialog dialog = new TextInputDialog("XXX.YYY.ZZZ.WWW");
 					dialog.setTitle("Text Input");
 					dialog.setHeaderText("Connect to the server");
 					dialog.setContentText("IP address server:");
-
+					((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons()
+							.add(new Image("file:resources/logo.png"));
 					result = dialog.showAndWait();
 					if (result.isPresent()){
 						try {
@@ -112,9 +119,10 @@ public class Main extends Application {
 						} catch(NumberFormatException nfe) {
 							valid = false;
 						}
-					} else {
-						System.exit(0);
 					}
+					else
+						System.exit(0);
+
 					if (!valid){
 						Alert alert = new Alert(AlertType.WARNING);
 						alert.setTitle("Warning");
@@ -123,10 +131,9 @@ public class Main extends Application {
 						alert.showAndWait();
 					}
 				}
-					network.connect(result.get(), Main.SERVERPORT);
-				}
 
-				// The Java 8 way to get the response value (with lambda expression).
+				network.connect(result.get(), Main.SERVERPORT);
+			}
 
 			// Print own port
 			System.out.println(Integer.toString(network.getConnectionListener().getServerPort()));
@@ -136,6 +143,10 @@ public class Main extends Application {
 
 			// Start event broker
 			EventBroker.getEventBroker().start();
+
+			ClientCheckPollTimerTask.getClientCheckPollTimerTask().setMain(this);
+			EventBroker.getEventBroker().addEventListener(ServerPollUserEvent.EVENTTYPE, ClientCheckPollTimerTask.getClientCheckPollTimerTask());
+			pollTimer.scheduleAtFixedRate(ClientCheckPollTimerTask.getClientCheckPollTimerTask(), 0, 1000);
 
 			initRootLayout();
 
@@ -169,7 +180,7 @@ public class Main extends Application {
 	// Methods
 	private void initRootLayout() {
 		try {
-			// Load root layout from fxml file
+			// Load root layout from FXML file
 			FXMLLoader rootLayoutloader = new FXMLLoader();
 			rootLayoutloader.setLocation(Main.class.getResource("/quiz/view/RootLayout.fxml"));
 			rootLayout = (BorderPane) rootLayoutloader.load();
@@ -183,6 +194,7 @@ public class Main extends Application {
 			AnchorPane menu = (AnchorPane) menuLoader.load();
 
 			Platform.runLater(new Runnable() {
+				@Override
 				public void run() {
 					rootLayout.setTop(menu);
 				}
@@ -236,6 +248,7 @@ public class Main extends Application {
 			logInController.setMainApp(this);
 
 			Platform.runLater(new Runnable() {
+				@Override
 				public void run() {
 					rootLayout.setCenter(logIn);
 				}
@@ -257,6 +270,7 @@ public class Main extends Application {
 			joinQuizController.setMain(this);
 
 			Platform.runLater(new Runnable() {
+				@Override
 				public void run() {
 					rootLayout.setCenter(joinQuiz);
 				}
@@ -278,6 +292,7 @@ public class Main extends Application {
 			createQuizController.setMainApp(this);
 
 			Platform.runLater(new Runnable() {
+				@Override
 				public void run() {
 					rootLayout.setCenter(createQuiz);
 				}
@@ -299,6 +314,7 @@ public class Main extends Application {
 			joinTeamController.setMain(this);
 
 			Platform.runLater(new Runnable() {
+				@Override
 				public void run() {
 					rootLayout.setCenter(joinTeam);
 				}
@@ -320,6 +336,7 @@ public class Main extends Application {
 			dialogStage.setTitle("New Team");
 			dialogStage.initModality(Modality.WINDOW_MODAL);
 			dialogStage.initOwner(primaryStage);
+			dialogStage.getIcons().add(new Image("file:resources/logo.png"));
 			Scene scene = new Scene(newteam);
 			dialogStage.setScene(scene);
 
@@ -351,6 +368,7 @@ public class Main extends Application {
 			scoreboardController.setMainApp(this);
 
 			Platform.runLater(new Runnable() {
+				@Override
 				public void run() {
 					rootLayout.setCenter(scoreboard);
 				}
@@ -373,6 +391,7 @@ public class Main extends Application {
 			questionFormController.setMainApp(this);
 
 			Platform.runLater(new Runnable() {
+				@Override
 				public void run() {
 					rootLayout.setCenter(questionFormRoot);
 				}
@@ -394,6 +413,7 @@ public class Main extends Application {
 			waitRoundController.setMain(this);
 
 			Platform.runLater(new Runnable() {
+				@Override
 				public void run() {
 					rootLayout.setCenter(waitRoundRoot);
 				}
@@ -416,6 +436,7 @@ public class Main extends Application {
 			waitHostController.setMain(this);
 
 			Platform.runLater(new Runnable() {
+				@Override
 				public void run() {
 					rootLayout.setCenter(waitHostRoot);
 				}
@@ -437,6 +458,7 @@ public class Main extends Application {
 			roundMakerController.setMain(this);
 
 			Platform.runLater(new Runnable() {
+				@Override
 				public void run() {
 					rootLayout.setCenter(roundMakerRoot);
 				}

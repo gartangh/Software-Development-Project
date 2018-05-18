@@ -2,6 +2,7 @@ package quiz.view;
 
 import java.util.ArrayList;
 
+import eventbroker.ClientPollHandler;
 import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
@@ -26,6 +27,7 @@ import quiz.model.JoinQuizModel;
 import quiz.model.Quiz;
 import quiz.model.QuizModel;
 import quiz.model.User;
+import server.timertask.ClientCheckPollTimerTask;
 
 public class JoinQuizController extends EventPublisher {
 
@@ -71,13 +73,15 @@ public class JoinQuizController extends EventPublisher {
 		startQuizHandler = new StartQuizHandler();
 		hostLeftQuizHandler = new HostLeftQuizHandler();
 
-
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerJoinQuizEvent.EVENTTYPE, joinQuizHandler);
 		eventBroker.addEventListener(ServerGetQuizzesEvent.EVENTTYPE, getQuizzesHandler);
 		eventBroker.addEventListener(ServerNewQuizEvent.EVENTTYPE, newQuizHandler);
 		eventBroker.addEventListener(ServerStartQuizEvent.EVENTTYPE, startQuizHandler);
 		eventBroker.addEventListener(ServerHostLeavesQuizEvent.EVENTTYPE, hostLeftQuizHandler);
+		
+		ClientPollHandler.disableClientPollHandler();
+		ClientCheckPollTimerTask.getClientCheckPollTimerTask().disable();
 
 		// Ask server for list of quizzes
 		ClientGetQuizzesEvent cGQE = new ClientGetQuizzesEvent();
@@ -165,7 +169,13 @@ public class JoinQuizController extends EventPublisher {
 
 			int quizID = sHLQE.getQuizID();
 
-			joinQuizModel.removeQuiz(quizID);
+			boolean  isSelected=false;
+			if (selectedQuiz!=null){
+				if (quizID==selectedQuiz.getQuizID()){
+					isSelected=true;
+				}
+			}
+			joinQuizModel.removeQuiz(quizID,isSelected);
 
 		}
 
@@ -213,8 +223,14 @@ public class JoinQuizController extends EventPublisher {
 			ServerStartQuizEvent sSTQE = (ServerStartQuizEvent) event;
 
 			int quizID = sSTQE.getQuizID();
-
-			joinQuizModel.removeQuiz(quizID);
+			
+			boolean  isSelected=false;
+			if (selectedQuiz!=null){
+				if (quizID==selectedQuiz.getQuizID()){
+					isSelected=true;
+				}
+			}
+			joinQuizModel.removeQuiz(quizID,isSelected);
 		}
 
 	}

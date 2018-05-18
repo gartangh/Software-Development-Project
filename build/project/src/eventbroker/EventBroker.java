@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+import eventbroker.serverevent.ServerPollUserEvent;
 import main.MainContext;
 import network.Network;
+import server.timertask.ClientCheckPollTimerTask;
 
 final public class EventBroker implements Runnable {
 
@@ -52,15 +54,15 @@ final public class EventBroker implements Runnable {
 		toRemoveListeners.add(el);
 	}
 	
-	void removeEventListeners() {
+	public void removeEventListeners() {
 		Network network = MainContext.getContext().getNetwork();
 		for (ArrayList<EventListener> topicListeners : listeners.values())
-			if (!topicListeners.contains(network))
+			if (!(topicListeners.contains(network) || topicListeners.contains(ClientPollHandler.getClientPollHandler()) || topicListeners.contains(ClientCheckPollTimerTask.getClientCheckPollTimerTask())))
 				toRemoveListeners.addAll(topicListeners);
 			else
 				for (EventListener listener : topicListeners)
-					if (listener != network)
-					toRemoveListeners.add(listener);
+					if (listener != network && listener != ClientPollHandler.getClientPollHandler() && listener != ClientCheckPollTimerTask.getClientCheckPollTimerTask())
+						toRemoveListeners.add(listener);
 	}
 
 	public void addEvent(EventPublisher source, Event event) {
@@ -72,7 +74,7 @@ final public class EventBroker implements Runnable {
 		}
 	}
 
-	private void process(EventPublisher source, Event event) {
+	private void process(EventPublisher source, Event event) {		
 		for (Map.Entry<String, ArrayList<EventListener>> entry : newListeners.entrySet()) {
 			if (!listeners.containsKey(entry.getKey()))
 				listeners.put(entry.getKey(), entry.getValue());

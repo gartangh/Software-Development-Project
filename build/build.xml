@@ -85,6 +85,7 @@
 		<fx:resources id="appRes">
 			<fx:fileset dir="dist" includes="Quiz.jar"/>
 			<fx:fileset dir="dist" includes="libs/*"/>
+			<fx:fileset dir="dist" includes="resources/**"/>
 		</fx:resources>
 	
 		<fx:application id="fxApplication"

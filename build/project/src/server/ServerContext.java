@@ -22,6 +22,7 @@ import quiz.model.User;
 import quiz.util.Difficulty;
 import quiz.util.RoundType;
 import quiz.util.Theme;
+import server.timertask.PollUsersTimerTask;
 
 public class ServerContext {
 
@@ -36,6 +37,10 @@ public class ServerContext {
 	private Map<Integer, Map<Integer, Map<Integer, ArrayList<Integer>>>> orderedQuestionMap = new HashMap<Integer, Map<Integer, Map<Integer, ArrayList<Integer>>>>();
 	private Map<Integer, Question> allQuestions = new HashMap<Integer, Question>();
 	private Map<Integer, Integer> questionTypeMap = new HashMap<Integer, Integer>();
+	private int pollID;
+	private Timer pollTimer = null;
+	private ArrayList<Integer> polledUsers = new ArrayList<Integer>();
+	private ArrayList<Integer> pollAnsweredUsers = new ArrayList<Integer>();
 	private Network network;
 
 	// Getters and setters
@@ -323,5 +328,38 @@ public class ServerContext {
 	public Question getQuestion(int questionID) {
 		return allQuestions.get(questionID);
 	}
-
+	
+	public void setPollID(int pollID){
+		this.pollID = pollID;
+	}
+	
+	public int getPollID(){
+		return this.pollID;
+	}
+	
+	public void startPollTimer(){
+		if(this.pollTimer == null) {
+			this.pollTimer = new Timer();
+			
+			PollUsersTimerTask pUTT = new PollUsersTimerTask();
+			this.pollTimer.scheduleAtFixedRate(pUTT, 0, PollUsersTimerTask.POLL_PERIOD * 1000);
+		}
+	}
+	
+	public void endPollTimer(){
+		if(this.pollTimer != null) {
+			this.pollTimer.cancel();
+			this.pollTimer = null;
+		}
+	}
+	
+	public ArrayList<Integer> getPolledUsers(){
+		return polledUsers;
+	}
+	
+	public ArrayList<Integer> getPollAnsweredUsers(){
+		return pollAnsweredUsers;
+	}
+	
+	
 }

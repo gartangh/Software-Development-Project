@@ -1,5 +1,6 @@
 package quiz.view;
 
+import eventbroker.ClientPollHandler;
 import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
@@ -21,6 +22,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.media.MediaView;
 import main.Main;
 import quiz.model.User;
+import server.timertask.ClientCheckPollTimerTask;
 
 public class LogInController extends EventPublisher {
 
@@ -56,7 +58,7 @@ public class LogInController extends EventPublisher {
 		eventBroker.addEventListener(ServerCreateAccountSuccesEvent.EVENTTYPE, createAccountSuccesHandler);
 		eventBroker.addEventListener(ServerLogInFailEvent.EVENTTYPE, logInFailHandler);
 		eventBroker.addEventListener(ServerAlreadyLoggedInEvent.EVENTTYPE, alreadyLoggedInHandler);
-		eventBroker.addEventListener(ServerLogInSuccesEvent.EVENTTYPE, logInSuccesHandler);
+		eventBroker.addEventListener(ServerLogInSuccesEvent.EVENTTYPE, logInSuccesHandler);		
 	}
 
 	@FXML

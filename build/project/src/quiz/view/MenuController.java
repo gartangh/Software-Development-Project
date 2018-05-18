@@ -79,7 +79,7 @@ public class MenuController {
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Information");
 				alert.setHeaderText("Rules");
-				alert.setContentText("The rules of the quiz.");
+				alert.setContentText("The rules of the quiz:\nRESPECT each other.\nENJOY!");
 				alert.showAndWait();
 			}
 		});

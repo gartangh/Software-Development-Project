@@ -344,6 +344,9 @@ public class QuestionController extends EventPublisher {
 			
 			MainContext.getContext().setAnswered(true);
 			answerVoteModel.updateAnswer(answer, correctAnswer, points);
+			
+			// Add XP to user
+			MainContext.getContext().getUser().addXp(points*10);
 		}
 
 	}

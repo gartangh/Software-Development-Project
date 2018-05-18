@@ -63,13 +63,20 @@ public class JoinQuizModel {
 		});
 	}
 
-	public void removeQuiz(int quizID) {
+	public void removeQuiz(int quizID,boolean isSelected) {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
 				for (QuizModel quiz : quizzes)
 					if (quiz.getQuizID() == quizID) {
 						quizzes.remove(quiz);
+						if (isSelected){
+							quiznameProperty.setValue("");
+							quizRoundsProperty.setValue("");
+							teamProperty.setValue("");
+							playersProperty.setValue("");
+							joinDisableProperty.setValue(true);
+						}
 						break;
 					}
 			}

@@ -12,9 +12,9 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.LogInController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quiz.view.LogInController">
 	<center>
-		<VBox spacing="5.0">
+		<VBox alignment="CENTER" spacing="5.0">
 			<children>
 				<GridPane>
 					<columnConstraints>
@@ -32,12 +32,12 @@
 						<PasswordField fx:id="mPassword" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 					</children>
 				</GridPane>
-				<ButtonBar>
-					<buttons>
-						<Button fx:id="mCreateAccount" defaultButton="true" mnemonicParsing="false" onAction="#handleCreateAccount" text="Create Account" />
-						<Button fx:id="mLogIn" mnemonicParsing="false" onAction="#handleLogIn" text="Log In" />
-					</buttons>
-				</ButtonBar>
+            <ButtonBar buttonMinWidth="100.0" prefHeight="40.0" prefWidth="200.0">
+              <buttons>
+                <Button defaultButton="true" minWidth="70.0" mnemonicParsing="false" onAction="#handleCreateAccount" text="Create Account" />
+                  <Button minWidth="70.0" mnemonicParsing="false" onAction="#handleLogIn" text="Log In" />
+              </buttons>
+            </ButtonBar>
 			</children>
 			<padding>
 				<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
