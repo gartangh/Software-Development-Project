@@ -10,7 +10,7 @@ import main.Main;
 public class ClientCheckPollTimerTask extends TimerTask implements EventListener{
 	
 	public static final int POLL_TIMEOUT = PollUsersTimerTask.POLL_PERIOD*2;
-	public static final ClientCheckPollTimerTask clientCheckPollTimerTask = new ClientCheckPollTimerTask(); // Singleton
+	public static ClientCheckPollTimerTask clientCheckPollTimerTask = new ClientCheckPollTimerTask(); // Singleton
 	public static final Timer pollTimer = new Timer();
 	
 	private static Main main;
@@ -22,6 +22,13 @@ public class ClientCheckPollTimerTask extends TimerTask implements EventListener
 		super();
 		betweenPollsTime = 0;
 		activated = false;
+	}
+	
+	private ClientCheckPollTimerTask(Main main) {
+		super();
+		betweenPollsTime = 0;
+		activated = false;
+		ClientCheckPollTimerTask.main = main;
 	}
 	
 	public void setMain(Main main) {
@@ -59,7 +66,9 @@ public class ClientCheckPollTimerTask extends TimerTask implements EventListener
 	
 	public void disable() {
 		if(activated) {
+			Main temp = main;
 			this.cancel();
+			clientCheckPollTimerTask = new ClientCheckPollTimerTask(temp);
 			activated = false;
 		}
 	}
