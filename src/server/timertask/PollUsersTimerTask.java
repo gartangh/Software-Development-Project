@@ -1,6 +1,5 @@
 package server.timertask;
 
-import java.util.ArrayList;
 import java.util.TimerTask;
 
 import eventbroker.EventPublisher;
@@ -16,7 +15,6 @@ public class PollUsersTimerTask extends TimerTask {
 	private EventPublisher eventPublisher = new EventPublisher();
 	
 	public PollUsersTimerTask() {
-		super();
 		this.pollID = 0;
 		this.started = false;
 	}

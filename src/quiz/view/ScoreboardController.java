@@ -2,7 +2,6 @@ package quiz.view;
 
 import java.util.ArrayList;
 
-import eventbroker.ClientPollHandler;
 import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;

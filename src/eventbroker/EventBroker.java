@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import eventbroker.serverevent.ServerPollUserEvent;
 import main.MainContext;
 import network.Network;
 import server.timertask.ClientCheckPollTimerTask;

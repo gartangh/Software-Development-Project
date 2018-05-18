@@ -1,11 +1,9 @@
 package eventbroker.timerevent;
 
 import eventbroker.Event;
-import eventbroker.serverevent.ServerEvent;
 
-
-public class IPTimerEvent extends Event {
 @SuppressWarnings("serial")
+public class IPTimerEvent extends Event {
 
 	public final static String EVENTTYPE = "SERVER_TIMER_IP";
 
@@ -13,7 +11,7 @@ public class IPTimerEvent extends Event {
 	private int questionID;
 	private int pixelSize;
 
-	// Constructors
+	// Constructor
 	public IPTimerEvent(int pixelSize, int quizID, int questionID) {
 		super.type = EVENTTYPE;
 		this.pixelSize = pixelSize;
@@ -21,6 +19,7 @@ public class IPTimerEvent extends Event {
 		this.questionID = questionID;
 	}
 
+	// Getters
 	public int getQuizID() {
 		return quizID;
 	}
