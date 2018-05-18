@@ -23,6 +23,7 @@ import main.Main;
 import quiz.model.ScoreboardModel;
 import quiz.model.ScoreboardTeam;
 import quiz.model.Team;
+import server.timertask.ClientCheckPollTimerTask;
 
 public class ScoreboardController extends EventPublisher {
 
@@ -58,7 +59,7 @@ public class ScoreboardController extends EventPublisher {
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerScoreboardDataEvent.EVENTTYPE, scoreboardDataHandler);
 		
-		ClientPollHandler.disableClientPollHandler();
+		ClientCheckPollTimerTask.getClientCheckPollTimerTask().disable();
 
 		scoreboardTable.setItems(scoreboardModel.getScoreboardTeams());
 		

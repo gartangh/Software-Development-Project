@@ -52,7 +52,6 @@ public class Main extends Application {
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
-	private Timer pollTimer = new Timer();
 
 	/**
 	 * The main method.
@@ -86,7 +85,7 @@ public class Main extends Application {
 		// Close button
 		this.primaryStage.setOnCloseRequest(e -> {
 			EventBroker.getEventBroker().stop();
-			pollTimer.cancel();
+			ClientCheckPollTimerTask.getPollTimer().cancel();
 			network.terminate();
 			System.exit(0);
 		});
@@ -146,7 +145,7 @@ public class Main extends Application {
 			
 			ClientCheckPollTimerTask.getClientCheckPollTimerTask().setMain(this);
 			EventBroker.getEventBroker().addEventListener(ServerPollUserEvent.EVENTTYPE, ClientCheckPollTimerTask.getClientCheckPollTimerTask());
-			pollTimer.scheduleAtFixedRate(ClientCheckPollTimerTask.getClientCheckPollTimerTask(), 0, 1000);
+			//pollTimer.scheduleAtFixedRate(ClientCheckPollTimerTask.getClientCheckPollTimerTask(), 0, 1000);
 
 			initRootLayout();
 
