@@ -2,6 +2,7 @@ package quiz.view;
 
 import java.util.ArrayList;
 
+import eventbroker.ClientPollHandler;
 import eventbroker.Event;
 import eventbroker.EventBroker;
 import eventbroker.EventListener;
@@ -56,6 +57,8 @@ public class ScoreboardController extends EventPublisher {
 	private void initialize() {
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerScoreboardDataEvent.EVENTTYPE, scoreboardDataHandler);
+		
+		ClientPollHandler.disableClientPollHandler();
 
 		scoreboardTable.setItems(scoreboardModel.getScoreboardTeams());
 		
