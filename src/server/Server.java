@@ -981,17 +981,12 @@ public class Server extends EventPublisher {
 		public void handleEvent(Event event) {
 			TimerNewPollEvent tNPE = (TimerNewPollEvent) event;
 			
-			System.out.println("New poll: " + tNPE.getPollID());
-			
 			ServerContext.getContext().setPollID(tNPE.getPollID());
 			ArrayList<Integer> polledUsers = ServerContext.getContext().getPolledUsers();
 			polledUsers.clear();
 			ServerContext.getContext().getPollAnsweredUsers().clear();
 			for(int quizID : ServerContext.getContext().getQuizMap().keySet()) {
 				polledUsers.addAll(ServerContext.getContext().getUsersFromQuiz(quizID));
-				if(!polledUsers.isEmpty()) {
-					System.out.println(polledUsers.get(0));
-				}
 			}
 			
 			ServerPollUserEvent sPUE = new ServerPollUserEvent(tNPE.getPollID());
@@ -1007,15 +1002,9 @@ public class Server extends EventPublisher {
 		public void handleEvent(Event event) {
 			ClientPollAnswerEvent cPAE = (ClientPollAnswerEvent) event;
 			
-			System.out.println("Received poll answer");
-			System.out.println("Server poll id: " + ServerContext.getContext().getPollID());
-			System.out.println("Received poll id: " + cPAE.getPollID());
-			
 			if(cPAE.getPollID() == ServerContext.getContext().getPollID()) {
-				System.out.println("=> Added");
 				ServerContext.getContext().getPollAnsweredUsers().add(cPAE.getUserID());
 			}
-			else System.out.println("=> Not added");
 		}
 	}
 	
@@ -1025,8 +1014,6 @@ public class Server extends EventPublisher {
 		public void handleEvent(Event event) {
 			TimerPollFinishedEvent tPFE = (TimerPollFinishedEvent) event;
 			ServerContext context = ServerContext.getContext();
-			
-			System.out.println("Poll check: " + tPFE.getPollID());
 			
 			if(tPFE.getPollID() == context.getPollID()) {
 				for(int userID : context.getPolledUsers()) {

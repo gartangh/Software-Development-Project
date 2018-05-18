@@ -74,12 +74,7 @@ final public class EventBroker implements Runnable {
 		}
 	}
 
-	private void process(EventPublisher source, Event event) {
-		if(event.type.equals(ServerPollUserEvent.EVENTTYPE)) {
-			System.out.println("got a poll");
-		}
-		
-		
+	private void process(EventPublisher source, Event event) {		
 		for (Map.Entry<String, ArrayList<EventListener>> entry : newListeners.entrySet()) {
 			if (!listeners.containsKey(entry.getKey()))
 				listeners.put(entry.getKey(), entry.getValue());
@@ -100,12 +95,8 @@ final public class EventBroker implements Runnable {
 		for (Map.Entry<String, ArrayList<EventListener>> entry : listeners.entrySet())
 			if (entry.getKey().equals(event.getType()) || entry.getKey().equals("all"))
 				for (EventListener el : entry.getValue())
-					if (source != el) {
-						if(event.type.equals(ServerPollUserEvent.EVENTTYPE)) {
-							System.out.println("got a poll");
-						}
+					if (source != el)
 						el.handleEvent(event);
-					}
 	}
 
 	@Override

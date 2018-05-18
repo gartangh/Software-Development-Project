@@ -30,7 +30,6 @@ public class ClientCheckPollTimerTask extends TimerTask implements EventListener
 		synchronized(this) {
 			if(activated) {
 				betweenPollsTime++;
-				System.out.println("Between poll time: " + betweenPollsTime);
 				if(betweenPollsTime == POLL_TIMEOUT) {
 					main.onConnectionLost();
 				}
@@ -48,14 +47,12 @@ public class ClientCheckPollTimerTask extends TimerTask implements EventListener
 	
 	public void activate() {
 		synchronized(this) {
-			System.out.println("Activated poll timer check");
 			activated = true;
 		}
 	}
 	
 	public void disable() {
 		synchronized(this) {
-			System.out.println("Disabled poll timer check");
 			activated = false;
 			betweenPollsTime = 0;
 		}
