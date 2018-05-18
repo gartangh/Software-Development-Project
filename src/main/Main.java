@@ -143,7 +143,7 @@ public class Main extends Application {
 
 			// Start event broker
 			EventBroker.getEventBroker().start();
-			
+
 			ClientCheckPollTimerTask.getClientCheckPollTimerTask().setMain(this);
 			EventBroker.getEventBroker().addEventListener(ServerPollUserEvent.EVENTTYPE, ClientCheckPollTimerTask.getClientCheckPollTimerTask());
 			pollTimer.scheduleAtFixedRate(ClientCheckPollTimerTask.getClientCheckPollTimerTask(), 0, 1000);

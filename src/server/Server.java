@@ -166,7 +166,7 @@ public class Server extends EventPublisher {
 
 		// Start the EventBroker
 		eventBroker.start();
-		
+
 		ServerContext.getContext().startPollTimer();
 
 		System.out.println("Server running ...");
@@ -375,15 +375,17 @@ public class Server extends EventPublisher {
 			int quizID = cJQE.getQuizID();
 
 			ServerContext context = ServerContext.getContext();
-			context.getQuizMap().get(quizID).addUnassignedPlayer(userID, username);
+			if (context.getQuizMap().get(quizID)!=null){
+				context.getQuizMap().get(quizID).addUnassignedPlayer(userID, username);
 
-			ServerJoinQuizEvent sJQE = new ServerJoinQuizEvent(context.getQuizMap().get(quizID));
-			sJQE.addRecipient(userID);
-			server.publishEvent(sJQE);
+				ServerJoinQuizEvent sJQE = new ServerJoinQuizEvent(context.getQuizMap().get(quizID));
+				sJQE.addRecipient(userID);
+				server.publishEvent(sJQE);
 
-			ServerQuizNewPlayerEvent sQNP = new ServerQuizNewPlayerEvent(userID, username);
-			sQNP.addRecipients(context.getUsersFromQuiz(quizID));
-			server.publishEvent(sQNP);
+				ServerQuizNewPlayerEvent sQNP = new ServerQuizNewPlayerEvent(userID, username);
+				sQNP.addRecipients(context.getUsersFromQuiz(quizID));
+				server.publishEvent(sQNP);
+			}
 		}
 
 	}
@@ -972,15 +974,15 @@ public class Server extends EventPublisher {
 			server.publishEvent(sNPSE);
 
 		}
-		
+
 	}
-	
+
 	private static class TimerNewPollHandler implements EventListener {
 
 		@Override
 		public void handleEvent(Event event) {
 			TimerNewPollEvent tNPE = (TimerNewPollEvent) event;
-			
+
 			ServerContext.getContext().setPollID(tNPE.getPollID());
 			ArrayList<Integer> polledUsers = ServerContext.getContext().getPolledUsers();
 			polledUsers.clear();
@@ -988,33 +990,33 @@ public class Server extends EventPublisher {
 			for(int quizID : ServerContext.getContext().getQuizMap().keySet()) {
 				polledUsers.addAll(ServerContext.getContext().getUsersFromQuiz(quizID));
 			}
-			
+
 			ServerPollUserEvent sPUE = new ServerPollUserEvent(tNPE.getPollID());
 			sPUE.addRecipients(polledUsers);
 			server.publishEvent(sPUE);
 		}
 
 	}
-	
+
 	private static class PollAnswerHandler implements EventListener {
 
 		@Override
 		public void handleEvent(Event event) {
 			ClientPollAnswerEvent cPAE = (ClientPollAnswerEvent) event;
-			
+
 			if(cPAE.getPollID() == ServerContext.getContext().getPollID()) {
 				ServerContext.getContext().getPollAnsweredUsers().add(cPAE.getUserID());
 			}
 		}
 	}
-	
+
 	private static class TimerPollFinishedHandler implements EventListener {
 
 		@Override
 		public void handleEvent(Event event) {
 			TimerPollFinishedEvent tPFE = (TimerPollFinishedEvent) event;
 			ServerContext context = ServerContext.getContext();
-			
+
 			if(tPFE.getPollID() == context.getPollID()) {
 				for(int userID : context.getPolledUsers()) {
 					if(!context.getPollAnsweredUsers().contains(userID)) {
