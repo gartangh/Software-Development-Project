@@ -131,7 +131,7 @@ public class Main extends Application {
 						alert.showAndWait();
 					}
 				}
-			
+
 				network.connect(result.get(), Main.SERVERPORT);
 			}
 
