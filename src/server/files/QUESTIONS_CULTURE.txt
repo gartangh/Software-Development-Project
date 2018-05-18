@@ -26,7 +26,7 @@ The Bible
 2
 
 MC
-In which city can you see Michelangelo’s David?
+In which city can you see Michelangeloï¿½s David?
 Rome
 Florence
 Naples
@@ -39,7 +39,7 @@ Elvis Presley
 Michael Jackson
 2Pac
 Prince
-0
+1
 
 IP
 barackobama.jpeg
@@ -116,7 +116,7 @@ Santiago Calatrava
 2
 
 MC
-In which city is the composer Frédéric Chopin buried?
+In which city is the composer Frï¿½dï¿½ric Chopin buried?
 Marseille
 Lyon
 Paris

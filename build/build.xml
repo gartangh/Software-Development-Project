@@ -92,7 +92,7 @@
 			name="InstaPixel"
 			mainClass="main.Main"
 			toolkit="fx"
-			version="1.0"
+			version="1.1"
 		/>
 	
 		<mkdir dir="build/classes/META-INF" />
@@ -108,7 +108,7 @@
 			<manifest>
 				<attribute name="Implementation-Vendor" value="UGent"/>
 				<attribute name="Implementation-Title" value="InstaPixel"/>
-				<attribute name="Implementation-Version" value="1.0"/>
+				<attribute name="Implementation-Version" value="1.1"/>
 				<attribute name="JavaFX-Feature-Proxy" value="None"/>
 			</manifest>
 		</fx:jar>

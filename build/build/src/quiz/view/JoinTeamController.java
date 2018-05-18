@@ -90,7 +90,7 @@ public class JoinTeamController extends EventPublisher {
 		hostLeavesQuizHandler.setMain(main);
 		playerLeavesQuizHandler.setMain(main);
 		playerLeavesQuizHandler.setJoinTeamController(this);
-		
+
 		EventBroker eventBroker = EventBroker.getEventBroker();
 		eventBroker.addEventListener(ServerPlayerLeavesQuizEvent.EVENTTYPE, playerLeavesQuizHandler);
 		eventBroker.addEventListener(ServerHostLeavesQuizEvent.EVENTTYPE, hostLeavesQuizHandler);
@@ -108,7 +108,7 @@ public class JoinTeamController extends EventPublisher {
 		eventBroker.addEventListener(ServerQuizNewPlayerEvent.EVENTTYPE, quizNewPlayerHandler);
 		eventBroker.addEventListener(ServerDeleteTeamEvent.EVENTTYPE, quizDeleteTeamHandler);
 		eventBroker.addEventListener(ServerCreateTeamFailEvent.EVENTTYPE, createTeamFailHandler);
-		
+
 		ClientPollHandler.activateClientPollHandler();
 		ClientCheckPollTimerTask.getClientCheckPollTimerTask().activate();
 
@@ -554,6 +554,7 @@ public class JoinTeamController extends EventPublisher {
 			if (context.getTeam() == null) {
 				context.setQuiz(null);
 
+				EventBroker.getEventBroker().removeEventListeners();
 				main.showJoinQuizScene();
 
 				return;
