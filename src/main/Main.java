@@ -5,9 +5,11 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Timer;
 
 import eventbroker.EventBroker;
 import eventbroker.clientevent.ClientCreateTeamEvent;
+import eventbroker.serverevent.ServerPollUserEvent;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -32,6 +34,7 @@ import quiz.view.CreateRoundController;
 import quiz.view.ScoreboardController;
 import quiz.view.WaitHostController;
 import quiz.view.WaitRoundController;
+import server.timertask.ClientCheckPollTimerTask;
 
 public class Main extends Application {
 
@@ -42,13 +45,14 @@ public class Main extends Application {
 	 * The Constant LOCAL. True is for local development. False is for network
 	 * development and releases.
 	 */
-	public final static boolean LOCAL = true;
+	public final static boolean LOCAL = false;
 
 	/** The Constant SERVERPORT represents the port on the server. */
 	public final static int SERVERPORT = 1025;
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
+	private Timer pollTimer = new Timer();
 
 	/**
 	 * The main method.
@@ -82,7 +86,9 @@ public class Main extends Application {
 		// Close button
 		this.primaryStage.setOnCloseRequest(e -> {
 			EventBroker.getEventBroker().stop();
+			pollTimer.cancel();
 			network.terminate();
+			System.exit(0);
 		});
 
 		try {
@@ -137,6 +143,10 @@ public class Main extends Application {
 
 			// Start event broker
 			EventBroker.getEventBroker().start();
+			
+			ClientCheckPollTimerTask.getClientCheckPollTimerTask().setMain(this);
+			EventBroker.getEventBroker().addEventListener(ServerPollUserEvent.EVENTTYPE, ClientCheckPollTimerTask.getClientCheckPollTimerTask());
+			pollTimer.scheduleAtFixedRate(ClientCheckPollTimerTask.getClientCheckPollTimerTask(), 0, 1000);
 
 			initRootLayout();
 

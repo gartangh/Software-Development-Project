@@ -8,6 +8,7 @@ import java.util.Map;
 import eventbroker.serverevent.ServerPollUserEvent;
 import main.MainContext;
 import network.Network;
+import server.timertask.ClientCheckPollTimerTask;
 
 final public class EventBroker implements Runnable {
 
@@ -56,11 +57,11 @@ final public class EventBroker implements Runnable {
 	public void removeEventListeners() {
 		Network network = MainContext.getContext().getNetwork();
 		for (ArrayList<EventListener> topicListeners : listeners.values())
-			if (!(topicListeners.contains(network) || topicListeners.contains(ClientPollHandler.getClientPollHandler())))
+			if (!(topicListeners.contains(network) || topicListeners.contains(ClientPollHandler.getClientPollHandler()) || topicListeners.contains(ClientCheckPollTimerTask.getClientCheckPollTimerTask())))
 				toRemoveListeners.addAll(topicListeners);
 			else
 				for (EventListener listener : topicListeners)
-					if (listener != network && listener != ClientPollHandler.getClientPollHandler())
+					if (listener != network && listener != ClientPollHandler.getClientPollHandler() && listener != ClientCheckPollTimerTask.getClientCheckPollTimerTask())
 						toRemoveListeners.add(listener);
 	}
 

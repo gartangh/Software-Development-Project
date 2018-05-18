@@ -28,6 +28,7 @@ import quiz.model.JoinQuizModel;
 import quiz.model.Quiz;
 import quiz.model.QuizModel;
 import quiz.model.User;
+import server.timertask.ClientCheckPollTimerTask;
 
 public class JoinQuizController extends EventPublisher {
 
@@ -80,7 +81,8 @@ public class JoinQuizController extends EventPublisher {
 		eventBroker.addEventListener(ServerStartQuizEvent.EVENTTYPE, startQuizHandler);
 		eventBroker.addEventListener(ServerHostLeavesQuizEvent.EVENTTYPE, hostLeftQuizHandler);
 		
-		ClientPollHandler.activateClientPollHandler();
+		ClientPollHandler.disableClientPollHandler();
+		ClientCheckPollTimerTask.getClientCheckPollTimerTask().disable();
 
 		// Ask server for list of quizzes
 		ClientGetQuizzesEvent cGQE = new ClientGetQuizzesEvent();
