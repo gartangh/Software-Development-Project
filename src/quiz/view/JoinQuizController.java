@@ -14,7 +14,6 @@ import eventbroker.serverevent.ServerGetQuizzesEvent;
 import eventbroker.serverevent.ServerHostLeavesQuizEvent;
 import eventbroker.serverevent.ServerJoinQuizEvent;
 import eventbroker.serverevent.ServerNewQuizEvent;
-import eventbroker.serverevent.ServerPollUserEvent;
 import eventbroker.serverevent.ServerStartQuizEvent;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
@@ -170,7 +169,13 @@ public class JoinQuizController extends EventPublisher {
 
 			int quizID = sHLQE.getQuizID();
 
-			joinQuizModel.removeQuiz(quizID);
+			boolean  isSelected=false;
+			if (selectedQuiz!=null){
+				if (quizID==selectedQuiz.getQuizID()){
+					isSelected=true;
+				}
+			}
+			joinQuizModel.removeQuiz(quizID,isSelected);
 
 		}
 
@@ -218,8 +223,14 @@ public class JoinQuizController extends EventPublisher {
 			ServerStartQuizEvent sSTQE = (ServerStartQuizEvent) event;
 
 			int quizID = sSTQE.getQuizID();
-
-			joinQuizModel.removeQuiz(quizID);
+			
+			boolean  isSelected=false;
+			if (selectedQuiz!=null){
+				if (quizID==selectedQuiz.getQuizID()){
+					isSelected=true;
+				}
+			}
+			joinQuizModel.removeQuiz(quizID,isSelected);
 		}
 
 	}
