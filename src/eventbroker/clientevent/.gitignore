@@ -18,3 +18,4 @@
 /ClientScoreboardDataEvent.class
 /ClientStartRoundEvent.class
 /ClientVoteEvent.class
+/ClientPollAnswerEvent.class

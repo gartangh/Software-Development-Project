@@ -18,3 +18,8 @@
 /Server$VoteHandler.class
 /Server.class
 /ServerContext.class
+/Server$DurationTimerHandler.class
+/Server$IPTimerHandler.class
+/Server$PollAnswerHandler.class
+/Server$TimerNewPollHandler.class
+/Server$TimerPollFinishedHandler.class

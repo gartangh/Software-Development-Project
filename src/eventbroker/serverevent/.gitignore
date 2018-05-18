@@ -31,3 +31,4 @@
 /ServerStartRoundEvent.class
 /ServerVoteAnswerEvent.class
 /ServerVoteEvent.class
+/ServerPollUserEvent.class
