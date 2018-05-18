@@ -84,7 +84,7 @@ public class Server extends EventPublisher {
 
 	// Singleton
 	private final static Server server = new Server();
-	
+
 	// Handlers
 	private final static CreateAccountHandler createAccountHandler = new CreateAccountHandler();
 	private final static LogInHandler logInHandler = new LogInHandler();

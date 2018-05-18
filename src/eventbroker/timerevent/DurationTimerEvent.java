@@ -1,9 +1,11 @@
 package eventbroker.timerevent;
 
+import eventbroker.Event;
 import eventbroker.serverevent.ServerEvent;
 
+public class DurationTimerEvent extends Event {
 @SuppressWarnings("serial")
-public class DurationTimerEvent extends ServerEvent {
+
 
 	public final static String EVENTTYPE = "SERVER_TIMER_DURATION";
 

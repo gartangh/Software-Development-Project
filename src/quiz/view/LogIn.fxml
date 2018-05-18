@@ -32,12 +32,12 @@
 						<PasswordField fx:id="mPassword" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 					</children>
 				</GridPane>
-				<ButtonBar>
-					<buttons>
-						<Button fx:id="mCreateAccount" defaultButton="true" mnemonicParsing="false" onAction="#handleCreateAccount" text="Create Account" />
-						<Button fx:id="mLogIn" mnemonicParsing="false" onAction="#handleLogIn" text="Log In" />
-					</buttons>
-				</ButtonBar>
+            <ButtonBar prefHeight="40.0" prefWidth="200.0">
+              <buttons>
+                <Button defaultButton="true" minWidth="70.0" mnemonicParsing="false" onAction="#handleCreateAccount" text="Create Account" />
+                  <Button minWidth="70.0" mnemonicParsing="false" onAction="#handleLogIn" text="Log In" />
+              </buttons>
+            </ButtonBar>
 			</children>
 			<padding>
 				<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
